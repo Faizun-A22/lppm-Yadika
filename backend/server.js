@@ -13,6 +13,10 @@ dotenv.config();
 const authRoutes = require('./routes/authRoutes');
 const magangRoutes = require('./routes/mahasiswa/magangRoutes');
 
+// Import admin routes
+const adminBeritaRoutes = require('./routes/admin/beritaRoutes');
+const adminKegiatanRoutes = require('./routes/admin/kegiatanRoutes');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -27,14 +31,18 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
-app.use('/api', fakultasRoutes); 
 
 // Static files untuk upload
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Routes
+app.use('/api', fakultasRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/magang', magangRoutes);
+
+// Admin routes
+app.use('/api/admin/berita', adminBeritaRoutes);
+app.use('/api/admin/kegiatan', adminKegiatanRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

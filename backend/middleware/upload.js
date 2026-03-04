@@ -12,7 +12,9 @@ const createUploadDirs = () => {
         'uploads/magang/struktur_organisasi',
         'uploads/magang/mou',
         'uploads/magang/sertifikat',
-        'uploads/magang/logbook'
+        'uploads/magang/logbook',
+        'uploads/berita',        // Tambahkan folder untuk berita
+        'uploads/kegiatan'        // Tambahkan folder untuk kegiatan
     ];
 
     dirs.forEach(dir => {
@@ -27,36 +29,45 @@ createUploadDirs();
 // Configure storage
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        let uploadPath = 'uploads/magang/';
+        let uploadPath = 'uploads/';
         
-        // Determine folder based on fieldname
-        switch (file.fieldname) {
-            case 'krs':
-                uploadPath += 'krs';
-                break;
-            case 'khs':
-                uploadPath += 'khs';
-                break;
-            case 'bukti_pembayaran':
-                uploadPath += 'pembayaran';
-                break;
-            case 'surat_keterangan':
-                uploadPath += 'surat_keterangan';
-                break;
-            case 'struktur_organisasi':
-                uploadPath += 'struktur_organisasi';
-                break;
-            case 'mou':
-                uploadPath += 'mou';
-                break;
-            case 'sertifikat':
-                uploadPath += 'sertifikat';
-                break;
-            case 'logbook':
-                uploadPath += 'logbook';
-                break;
-            default:
-                uploadPath += 'others';
+        // Determine folder based on fieldname or route
+        if (req.baseUrl?.includes('berita')) {
+            uploadPath += 'berita';
+        } else if (req.baseUrl?.includes('kegiatan')) {
+            uploadPath += 'kegiatan';
+        } else {
+            // Default untuk magang
+            uploadPath += 'magang/';
+            
+            switch (file.fieldname) {
+                case 'krs':
+                    uploadPath += 'krs';
+                    break;
+                case 'khs':
+                    uploadPath += 'khs';
+                    break;
+                case 'bukti_pembayaran':
+                    uploadPath += 'pembayaran';
+                    break;
+                case 'surat_keterangan':
+                    uploadPath += 'surat_keterangan';
+                    break;
+                case 'struktur_organisasi':
+                    uploadPath += 'struktur_organisasi';
+                    break;
+                case 'mou':
+                    uploadPath += 'mou';
+                    break;
+                case 'sertifikat':
+                    uploadPath += 'sertifikat';
+                    break;
+                case 'logbook':
+                    uploadPath += 'logbook';
+                    break;
+                default:
+                    uploadPath += 'others';
+            }
         }
         
         cb(null, uploadPath);
@@ -64,20 +75,27 @@ const storage = multer.diskStorage({
     filename: (req, file, cb) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
         const ext = path.extname(file.originalname);
-        cb(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
+        
+        // Sanitize original filename
+        const sanitizedName = file.originalname
+            .replace(/\.[^/.]+$/, '') // Remove extension
+            .replace(/[^a-zA-Z0-9]/g, '-') // Replace special chars with hyphen
+            .toLowerCase();
+        
+        cb(null, `${sanitizedName}-${uniqueSuffix}${ext}`);
     }
 });
 
 // File filter
 const fileFilter = (req, file, cb) => {
-    const allowedTypes = /jpeg|jpg|png|pdf/;
+    const allowedTypes = /jpeg|jpg|png|gif|pdf/;
     const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
     const mimetype = allowedTypes.test(file.mimetype);
 
     if (mimetype && extname) {
         return cb(null, true);
     } else {
-        cb(new Error('Only .pdf, .jpg, .jpeg, .png files are allowed'));
+        cb(new Error('Only image files (jpeg, jpg, png, gif) and PDF are allowed'));
     }
 };
 
