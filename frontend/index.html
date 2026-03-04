@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LPPM ITB Yadika Pasuruan - Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#3B82F6',
+                        'secondary': '#8B5CF6',
+                        'accent': '#EC4899',
+                        'dark': '#1F2937',
+                        'light': '#F9FAFB',
+                    },
+                    animation: {
+                        'float-slow': 'float 6s ease-in-out infinite',
+                        'float-medium': 'float 4s ease-in-out infinite',
+                        'float-fast': 'float 3s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'gradient': 'gradient 8s ease infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        gradient: {
+                            '0%, 100%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' },
+                        },
+                    },
+                    backgroundImage: {
+                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 50%, #EC4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            background-size: 200% auto;
+            animation: gradient 3s ease infinite;
+        }
+        
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.4;
+            z-index: -1;
+        }
+        
+        .blob-1 {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, #3B82F6, #8B5CF6);
+            top: -100px;
+            right: -100px;
+            animation: float-slow 15s ease-in-out infinite;
+        }
+        
+        .blob-2 {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, #EC4899, #3B82F6);
+            bottom: -50px;
+            left: -50px;
+            animation: float-medium 12s ease-in-out infinite;
+        }
+        
+        .hero-gradient {
+            background: linear-gradient(135deg, #1E40AF 0%, #6B21A8 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-gradient::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,165.3C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+            background-size: cover;
+        }
+        
+        .footer-gradient {
+            background: linear-gradient(135deg, #1F2937 0%, #111827 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .footer-gradient::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        }
+        
+        .card-gradient {
+            background: linear-gradient(to bottom right, #ffffff, #f3f4f6);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card-gradient::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #3B82F6, #8B5CF6, #EC4899);
+        }
+        
+        .hover-glow {
+            transition: all 0.3s ease;
+        }
+        
+        .hover-glow:hover {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transform: translateY(-5px);
+        }
+        
+        .hover-grow {
+            transition: all 0.3s ease;
+        }
+        
+        .hover-grow:hover {
+            transform: scale(1.05);
+        }
+        
+        .card-3d {
+            transform-style: preserve-3d;
+            transition: transform 0.3s ease;
+        }
+        
+        .card-3d:hover {
+            transform: rotateY(5deg) rotateX(-5deg);
+        }
+        
+        .floating-element {
+            position: absolute;
+            z-index: 0;
+        }
+        
+        .custom-shape-divider-bottom-1690903031 {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            line-height: 0;
+        }
+        
+        .custom-shape-divider-bottom-1690903031 svg {
+            position: relative;
+            display: block;
+            width: calc(100% + 1.3px);
+            height: 60px;
+        }
+        
+        .custom-shape-divider-bottom-1690903031 .shape-fill {
+            fill: #F9FAFB;
+        }
+        
+        .smooth-scroll {
+            scroll-behavior: smooth;
+        }
+        
+        .backdrop-blur-md {
+            backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="font-sans bg-gray-50 smooth-scroll">
+    <!-- Floating Background Elements -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    
+    <!-- Floating Icons -->
+    <div class="floating-element top-20 left-10 text-blue-400 animate-float-slow text-4xl opacity-30">
+        <i class="bi bi-book"></i>
+    </div>
+    <div class="floating-element top-1/4 right-16 text-purple-400 animate-float-medium text-5xl opacity-30">
+        <i class="bi bi-briefcase"></i>
+    </div>
+    <div class="floating-element bottom-1/3 left-1/4 text-pink-400 animate-float-fast text-6xl opacity-30">
+        <i class="bi bi-people"></i>
+    </div>
+    
+    <!-- Navigasi Utama -->
+    <nav class="bg-white/90 backdrop-blur-md shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <!-- Logo Kampus -->
+                <div class="flex items-center space-x-2">
+                    <img src="images/logoyadika.png" alt="Logo ITB Yadika" class="h-12 w-12 object-contain rounded-lg shadow-md">
+                    <div>
+                        <span class="text-xl font-bold gradient-text">LPPM ITB Yadika</span>
+                        <p class="text-xs text-gray-600">Lembaga Penelitian & Pengabdian Masyarakat</p>
+                    </div>
+                </div>
+                
+                <!-- Menu Desktop -->
+                <div class="hidden lg:flex items-center space-x-6">
+                    <a href="index.html" class="text-blue-600 hover:text-blue-700 transition font-medium group relative">
+                        Dashboard
+                        <span class="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600"></span>
+                    </a>
+                    <a href="berita.html" class="text-gray-700 hover:text-blue-600 transition font-medium group relative">
+                        Berita & Kegiatan
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    <a href="magang-kkn.html" class="text-gray-700 hover:text-blue-600 transition font-medium group relative">
+                        Magang & KKN
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    <a href="repository.html" class="text-gray-700 hover:text-blue-600 transition font-medium group relative">
+                        Repository
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    <a href="login.html" class="relative inline-flex items-center px-6 py-2 overflow-hidden text-white bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg group hover:shadow-lg transition-all duration-300">
+                        <span class="absolute right-0 w-8 h-32 -mt-12 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 rotate-12 group-hover:-translate-x-40 ease"></span>
+                        <i class="bi bi-box-arrow-in-right mr-2"></i>
+                        <span class="relative">Login</span>
+                    </a>
+                </div>
+                
+                <!-- Menu Mobile Button -->
+                <button id="menu-mobile-button" class="lg:hidden text-gray-700 focus:outline-none">
+                    <i class="bi bi-list text-3xl"></i>
+                </button>
+            </div>
+            
+            <!-- Menu Mobile -->
+            <div id="menu-mobile" class="hidden lg:hidden mt-4 pb-4 space-y-2">
+                <a href="index.html" class="block py-3 px-4 rounded-lg text-blue-600 bg-blue-50 font-medium transition">Dashboard</a>
+                <a href="berita.html" class="block py-3 px-4 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition">Berita & Kegiatan</a>
+                <a href="magang-kkn.html" class="block py-3 px-4 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition">Magang & KKN</a>
+                <a href="repository.html" class="block py-3 px-4 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition">Repository</a>
+                <a href="login.html" class="block mt-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-3 rounded-lg font-medium hover:shadow-lg transition text-center">
+                    <i class="bi bi-box-arrow-in-right mr-2"></i>Login
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative hero-gradient text-white py-20 md:py-28 overflow-hidden">
+        <div class="container mx-auto px-4 flex flex-col lg:flex-row items-center relative z-10">
+            <div class="lg:w-1/2 mb-12 lg:mb-0" data-aos="fade-right" data-aos-duration="800">
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+                    LPPM <span class="gradient-text">ITB Yadika</span>
+                </h1>
+                <h2 class="text-2xl md:text-3xl font-semibold mb-6 text-blue-100">
+                    Lembaga Penelitian & Pengabdian Masyarakat
+                </h2>
+                <p class="text-lg md:text-xl mb-8 text-blue-100 max-w-lg">
+                    Mendukung pengembangan penelitian dan pengabdian masyarakat untuk kemajuan pendidikan dan kesejahteraan sosial.
+                </p>
+                <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                    <a href="#tentang" class="relative inline-flex items-center justify-center px-6 py-3 overflow-hidden text-blue-600 bg-white rounded-lg group hover:shadow-xl transition-all duration-300">
+                        <span class="absolute inset-0 w-full h-full transition-all duration-300 ease-out transform translate-x-full bg-blue-600 group-hover:translate-x-0"></span>
+                        <span class="relative flex items-center group-hover:text-white">
+                            <i class="bi bi-info-circle-fill mr-2 text-xl"></i> Tentang LPPM
+                        </span>
+                    </a>
+                    <a href="berita.html" class="relative inline-flex items-center justify-center px-6 py-3 overflow-hidden text-white border-2 border-white rounded-lg group hover:shadow-xl transition-all duration-300">
+                        <span class="absolute inset-0 w-full h-full transition-all duration-300 ease-out transform translate-x-full bg-white group-hover:translate-x-0"></span>
+                        <span class="relative flex items-center group-hover:text-blue-600">
+                            <i class="bi bi-newspaper mr-2 text-xl"></i> Berita Terbaru
+                        </span>
+                    </a>
+                </div>
+                
+                <div class="mt-12 flex items-center space-x-4">
+                    <div class="flex -space-x-2">
+                        <img src="https://picsum.photos/seed/person1/40/40.jpg" class="w-10 h-10 rounded-full border-2 border-white" alt="Researcher">
+                        <img src="https://picsum.photos/seed/person2/40/40.jpg" class="w-10 h-10 rounded-full border-2 border-white" alt="Researcher">
+                        <img src="https://picsum.photos/seed/person3/40/40.jpg" class="w-10 h-10 rounded-full border-2 border-white" alt="Researcher">
+                    </div>
+                    <div>
+                        <p class="text-blue-100 text-sm">Bergabung dengan <span class="font-semibold">100+ Peneliti</span></p>
+                        <div class="flex items-center">
+                            <i class="bi bi-star-fill text-yellow-300 mr-1"></i>
+                            <i class="bi bi-star-fill text-yellow-300 mr-1"></i>
+                            <i class="bi bi-star-fill text-yellow-300 mr-1"></i>
+                            <i class="bi bi-star-fill text-yellow-300 mr-1"></i>
+                            <i class="bi bi-star-fill text-yellow-300"></i>
+                            <span class="ml-2 text-blue-100 text-sm">4.9/5.0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="lg:w-1/2 flex justify-center" data-aos="fade-left" data-aos-duration="800" data-aos-delay="200">
+                <div class="relative">
+                    <img src="images/yadika.jpg" alt="Ilustrasi LPPM" class="w-full max-w-lg rounded-xl shadow-2xl animate-float-medium">
+                    <div class="absolute -bottom-6 -left-6 bg-white p-4 rounded-xl shadow-xl" data-aos="fade-up" data-aos-delay="600">
+                        <div class="flex items-center">
+                            <div class="bg-blue-100 p-2 rounded-lg mr-3">
+                                <i class="bi bi-check-circle-fill text-blue-600 text-xl"></i>
+                            </div>
+                            <p class="text-sm font-medium text-gray-700">50+ Penelitian<br><span class="text-blue-600">Tahun Ini</span></p>
+                        </div>
+                    </div>
+                    <div class="absolute -top-6 -right-6 bg-white p-4 rounded-xl shadow-xl" data-aos="fade-up" data-aos-delay="800">
+                        <div class="flex items-center">
+                            <div class="bg-purple-100 p-2 rounded-lg mr-3">
+                                <i class="bi bi-award-fill text-purple-600 text-xl"></i>
+                            </div>
+                            <p class="text-sm font-medium text-gray-700">25+ Pengabdian<br><span class="text-purple-600">Masyarakat</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Wave Shape Divider -->
+        <div class="custom-shape-divider-bottom-1690903031">
+            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="shape-fill"></path>
+            </svg>
+        </div>
+    </section>
+
+    <!-- Tentang LPPM Section -->
+    <section id="tentang" class="py-16 bg-white relative overflow-hidden">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Tentang <span class="gradient-text">LPPM ITB Yadika</span></h2>
+                <div class="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto mb-6 rounded-full"></div>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">Lembaga Penelitian dan Pengabdian Masyarakat (LPPM) ITB Yadika Pasuruan merupakan unit pendukung utama dalam mengembangkan penelitian dan pengabdian kepada masyarakat.</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="card-gradient p-8 rounded-xl shadow-lg hover-glow hover-grow transition-all duration-300 card-3d" data-aos="fade-up" data-aos-delay="100">
+                    <div class="bg-gradient-to-r from-blue-500 to-purple-500 text-white w-16 h-16 rounded-lg flex items-center justify-center mb-6 text-3xl">
+                        <i class="bi bi-search"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-gray-800">Penelitian</h3>
+                    <p class="text-gray-600">Mendorong dan mengembangkan kegiatan penelitian yang inovatif dan bermanfaat bagi kemajuan ilmu pengetahuan dan teknologi.</p>
+                    <div class="mt-6 pt-4 border-t border-gray-100">
+                        <a href="#" class="text-blue-500 hover:text-blue-600 font-medium flex items-center">
+                            Selengkapnya
+                            <i class="bi bi-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="card-gradient p-8 rounded-xl shadow-lg hover-glow hover-grow transition-all duration-300 card-3d" data-aos="fade-up" data-aos-delay="200">
+                    <div class="bg-gradient-to-r from-purple-500 to-pink-500 text-white w-16 h-16 rounded-lg flex items-center justify-center mb-6 text-3xl">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-gray-800">Pengabdian</h3>
+                    <p class="text-gray-600">Melaksanakan pengabdian kepada masyarakat untuk menerapkan ilmu pengetahuan dan teknologi dalam kehidupan nyata.</p>
+                    <div class="mt-6 pt-4 border-t border-gray-100">
+                        <a href="#" class="text-purple-500 hover:text-purple-600 font-medium flex items-center">
+                            Selengkapnya
+                            <i class="bi bi-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="card-gradient p-8 rounded-xl shadow-lg hover-glow hover-grow transition-all duration-300 card-3d" data-aos="fade-up" data-aos-delay="300">
+                    <div class="bg-gradient-to-r from-pink-500 to-blue-500 text-white w-16 h-16 rounded-lg flex items-center justify-center mb-6 text-3xl">
+                        <i class="bi bi-globe"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-gray-800">Kerjasama</h3>
+                    <p class="text-gray-600">Membangun jaringan kerjasama dengan institusi pemerintah, swasta, dan masyarakat untuk pengembangan tri dharma perguruan tinggi.</p>
+                    <div class="mt-6 pt-4 border-t border-gray-100">
+                        <a href="#" class="text-pink-500 hover:text-pink-600 font-medium flex items-center">
+                            Selengkapnya
+                            <i class="bi bi-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Statistik Section -->
+    <section class="py-16 bg-gray-50 relative overflow-hidden">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Statistik <span class="gradient-text">LPPM</span></h2>
+                <div class="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto mb-6 rounded-full"></div>
+            </div>
+            
+            <div class="grid md:grid-cols-4 gap-8">
+                <div class="text-center" data-aos="fade-up" data-aos-delay="100">
+                    <div class="bg-white p-8 rounded-xl shadow-lg hover-grow transition-all duration-300">
+                        <div class="text-4xl font-bold text-blue-600 mb-2">150+</div>
+                        <p class="text-gray-600">Penelitian</p>
+                    </div>
+                </div>
+                <div class="text-center" data-aos="fade-up" data-aos-delay="200">
+                    <div class="bg-white p-8 rounded-xl shadow-lg hover-grow transition-all duration-300">
+                        <div class="text-4xl font-bold text-purple-600 mb-2">75+</div>
+                        <p class="text-gray-600">Pengabdian</p>
+                    </div>
+                </div>
+                <div class="text-center" data-aos="fade-up" data-aos-delay="300">
+                    <div class="bg-white p-8 rounded-xl shadow-lg hover-grow transition-all duration-300">
+                        <div class="text-4xl font-bold text-pink-600 mb-2">50+</div>
+                        <p class="text-gray-600">Mitra</p>
+                    </div>
+                </div>
+                <div class="text-center" data-aos="fade-up" data-aos-delay="400">
+                    <div class="bg-white p-8 rounded-xl shadow-lg hover-grow transition-all duration-300">
+                        <div class="text-4xl font-bold text-green-600 mb-2">200+</div>
+                        <p class="text-gray-600">Peneliti</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Access Section -->
+    <section class="py-16 bg-white relative overflow-hidden">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Akses <span class="gradient-text">Cepat</span></h2>
+                <div class="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto mb-6 rounded-full"></div>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <a href="berita.html" class="bg-gradient-to-r from-blue-500 to-blue-600 p-6 rounded-xl text-white text-center hover-grow transition-all duration-300 shadow-lg" data-aos="fade-up" data-aos-delay="100">
+                    <i class="bi bi-newspaper text-4xl mb-4"></i>
+                    <h3 class="text-xl font-semibold">Berita & Kegiatan</h3>
+                    <p class="text-blue-100 mt-2">Informasi terbaru LPPM</p>
+                </a>
+                
+                <a href="magang-kkn.html" class="bg-gradient-to-r from-purple-500 to-purple-600 p-6 rounded-xl text-white text-center hover-grow transition-all duration-300 shadow-lg" data-aos="fade-up" data-aos-delay="200">
+                    <i class="bi bi-briefcase text-4xl mb-4"></i>
+                    <h3 class="text-xl font-semibold">Magang & KKN</h3>
+                    <p class="text-purple-100 mt-2">Program kemahasiswaan</p>
+                </a>
+                
+                <a href="repository.html" class="bg-gradient-to-r from-pink-500 to-pink-600 p-6 rounded-xl text-white text-center hover-grow transition-all duration-300 shadow-lg" data-aos="fade-up" data-aos-delay="300">
+                    <i class="bi bi-journal-text text-4xl mb-4"></i>
+                    <h3 class="text-xl font-semibold">Repository</h3>
+                    <p class="text-pink-100 mt-2">Koleksi penelitian</p>
+                </a>
+                
+                <a href="login.html" class="bg-gradient-to-r from-green-500 to-green-600 p-6 rounded-xl text-white text-center hover-grow transition-all duration-300 shadow-lg" data-aos="fade-up" data-aos-delay="400">
+                    <i class="bi bi-box-arrow-in-right text-4xl mb-4"></i>
+                    <h3 class="text-xl font-semibold">Login</h3>
+                    <p class="text-green-100 mt-2">Akses sistem LPPM</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer-gradient text-white py-12 relative overflow-hidden">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div data-aos="fade-up">
+                    <div class="flex items-center space-x-2 mb-4">
+                        <img src="images/logoyadika.png" alt="Logo ITB Yadika" class="h-10 w-10 object-contain rounded-lg">
+                        <span class="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">LPPM ITB Yadika</span>
+                    </div>
+                    <p class="text-gray-400 mb-4">Lembaga Penelitian dan Pengabdian Masyarakat ITB Yadika Pasuruan.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white text-xl transition">
+                            <i class="bi bi-facebook"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white text-xl transition">
+                            <i class="bi bi-instagram"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white text-xl transition">
+                            <i class="bi bi-twitter-x"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white text-xl transition">
+                            <i class="bi bi-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div data-aos="fade-up" data-aos-delay="100">
+                    <h3 class="text-xl font-semibold mb-4">Menu Utama</h3>
+                    <ul class="space-y-2">
+                        <li><a href="index.html" class="text-gray-400 hover:text-white transition flex items-center">
+                            <i class="bi bi-chevron-right mr-2 text-xs"></i>Dashboard</a></li>
+                        <li><a href="berita.html" class="text-gray-400 hover:text-white transition flex items-center">
+                            <i class="bi bi-chevron-right mr-2 text-xs"></i>Berita & Kegiatan</a></li>
+                        <li><a href="magang-kkn.html" class="text-gray-400 hover:text-white transition flex items-center">
+                            <i class="bi bi-chevron-right mr-2 text-xs"></i>Magang & KKN</a></li>
+                        <li><a href="repository.html" class="text-gray-400 hover:text-white transition flex items-center">
+                            <i class="bi bi-chevron-right mr-2 text-xs"></i>Repository</a></li>
+                        <li><a href="login.html" class="text-gray-400 hover:text-white transition flex items-center">
+                            <i class="bi bi-chevron-right mr-2 text-xs"></i>Login</a></li>
+                    </ul>
+                </div>
+                
+                <div data-aos="fade-up" data-aos-delay="200">
+                    <h3 class="text-xl font-semibold mb-4">Layanan</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition flex items-center">
+                            <i class="bi bi-chevron-right mr-2 text-xs"></i>Penelitian</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition flex items-center">
+                            <i class="bi bi-chevron-right mr-2 text-xs"></i>Pengabdian</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition flex items-center">
+                            <i class="bi bi-chevron-right mr-2 text-xs"></i>Kerjasama</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition flex items-center">
+                            <i class="bi bi-chevron-right mr-2 text-xs"></i>Publikasi</a></li>
+                    </ul>
+                </div>
+                
+                <div data-aos="fade-up" data-aos-delay="300">
+                    <h3 class="text-xl font-semibold mb-4">Kontak</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-center">
+                            <i class="bi bi-geo-alt mr-2"></i>
+                            JL. Salem No. 03, Bangil
+                        </li>
+                        <li class="flex items-center">
+                            <i class="bi bi-telephone mr-2"></i>
+                            +62 896 2992 7242
+                        </li>
+                        <li class="flex items-center">
+                            <i class="bi bi-envelope mr-2"></i>
+                            lppm@itbyadika.ac.id
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-12 pt-8 text-center text-gray-400" data-aos="fade-up">
+                <p>&copy; 2023 LPPM ITB Yadika Pasuruan. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="back-to-top" class="fixed bottom-8 right-8 bg-gradient-to-r from-blue-500 to-purple-500 text-white p-4 rounded-full shadow-lg opacity-0 invisible transition-all duration-300 hover:shadow-xl hover:scale-110">
+        <i class="bi bi-arrow-up"></i>
+    </button>
+
+    <!-- JavaScript -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            once: true,
+            disable: 'mobile'
+        });
+        
+        // Mobile Menu Toggle
+        document.getElementById('menu-mobile-button').addEventListener('click', function() {
+            const menu = document.getElementById('menu-mobile');
+            menu.classList.toggle('hidden');
+        });
+        
+        // Back to Top Button
+        const backToTopButton = document.getElementById('back-to-top');
+        
+        window.addEventListener('scroll', function() {
+            if (window.pageYOffset > 300) {
+                backToTopButton.classList.remove('opacity-0', 'invisible');
+                backToTopButton.classList.add('opacity-100', 'visible');
+            } else {
+                backToTopButton.classList.add('opacity-0', 'invisible');
+                backToTopButton.classList.remove('opacity-100', 'visible');
+            }
+        });
+        
+        backToTopButton.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+</body>
+</html>

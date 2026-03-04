@@ -1,0 +1,1884 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Pengajuan Penelitian & Pengabdian - LPPM ITB Yadika</title>
+    
+    <!-- CSS External Libraries -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        /* Custom CSS Styles */
+        .gradient-text { 
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            background-clip: text; 
+        }
+        
+        .nav-link { 
+            position: relative; 
+            transition: color 0.3s ease; 
+        }
+        
+        .nav-link::after { 
+            content: ''; 
+            position: absolute; 
+            width: 0; 
+            height: 2px; 
+            bottom: -5px; 
+            left: 50%; 
+            background-color: #1e40af; 
+            transition: all 0.3s ease; 
+        }
+        
+        .nav-link:hover::after, 
+        .nav-link.active::after { 
+            width: 100%; 
+            left: 0; 
+        }
+        
+        .nav-link.active { 
+            color: #1e40af; 
+            font-weight: 600; 
+        }
+
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #1e40af;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Status Badges */
+        .badge-draft { background: #fef3c7; color: #92400e; }
+        .badge-submitted { background: #dbeafe; color: #1e40af; }
+        .badge-review { background: #fef3c7; color: #92400e; }
+        .badge-revision { background: #fff7ed; color: #9a3412; }
+        .badge-approved { background: #d1fae5; color: #065f46; }
+        .badge-rejected { background: #fee2e2; color: #991b1b; }
+        .badge-completed { background: #e0e7ff; color: #3730a3; }
+
+        /* Card Hover */
+        .submission-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+        .submission-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .submission-card.penelitian { border-left-color: #3b82f6; }
+        .submission-card.pengabdian { border-left-color: #10b981; }
+
+        /* Timeline Status */
+        .timeline-container {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+            position: relative;
+        }
+        
+        .timeline-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .timeline-step:before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: -50%;
+            width: 100%;
+            height: 2px;
+            background: #e5e7eb;
+            z-index: -1;
+        }
+        
+        .timeline-step:first-child:before {
+            display: none;
+        }
+        
+        .timeline-step.active .timeline-dot {
+            background: #3b82f6;
+            border: 3px solid #bfdbfe;
+        }
+        
+        .timeline-step.completed .timeline-dot {
+            background: #10b981;
+        }
+        
+        .timeline-step.rejected .timeline-dot {
+            background: #ef4444;
+        }
+        
+        .timeline-dot {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e5e7eb;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+        
+        .timeline-label {
+            font-size: 12px;
+            color: #6b7280;
+        }
+        
+        .timeline-date {
+            font-size: 10px;
+            color: #9ca3af;
+        }
+
+        /* Form Styles */
+        .form-section {
+            background: #f9fafb;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            border: 1px solid #e5e7eb;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        /* File Upload */
+        .file-upload-area {
+            border: 2px dashed #d1d5db;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            text-align: center;
+            background: #f9fafb;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .file-upload-area:hover {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        /* Progress Steps */
+        .progress-step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .progress-step-number {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-weight: bold;
+            color: #6b7280;
+        }
+        
+        .progress-step.active .progress-step-number {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .progress-step.completed .progress-step-number {
+            background: #10b981;
+            color: white;
+        }
+        
+        .progress-step.rejected .progress-step-number {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .progress-step-content {
+            flex: 1;
+        }
+
+        /* Review Card */
+        .review-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .reviewer-comment {
+            background: #f3f4f6;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans antialiased">
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-white bg-opacity-90 z-50 flex items-center justify-center hidden">
+        <div class="text-center">
+            <div class="loading-spinner"></div>
+            <p class="mt-4 text-gray-600">Memuat data...</p>
+        </div>
+    </div>
+
+        <!-- Header / Navigation Bar -->
+    <header class="fixed top-0 left-0 right-0 bg-white shadow-md z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <!-- Logo and Brand -->
+            <a href="dosen-dashboard.html" class="flex items-center space-x-3">
+                <img src="https://via.placeholder.com/40x40/3B82F6/ffffff?text=LPPM" alt="Logo LPPM ITB Yadika" class="h-10 w-10 rounded">
+                <div>
+                    <h1 class="text-xl font-bold gradient-text">Portal Dosen</h1>
+                    <p class="text-xs text-gray-500">LPPM ITB Yadika</p>
+                </div>
+            </a>
+            
+            <!-- Navigation Menu -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="dosen-dashboard.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-home mr-2"></i>Dashboard
+                </a>
+                <a href="dosen-berita.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-newspaper mr-2"></i>Berita
+                </a>
+                                <a href="dosen-penelitian-pengabdian.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-flask mr-2"></i>Penelitian & Pengabdian
+                </a>
+                <a href="dosen-repository.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-archive mr-2"></i>Repository
+                </a>
+                <a href="dosen-profil.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-user-circle mr-2"></i>Profil Saya
+                </a>
+            </div>
+            
+            <!-- User Info & Logout -->
+            <div class="flex items-center space-x-4">
+                <div class="hidden md:block text-right">
+                    <p class="text-sm font-semibold text-gray-700" id="userNameDisplay">Loading...</p>
+                    <p class="text-xs text-gray-500" id="userNidnDisplay">-</p>
+                </div>
+                <button onclick="handleLogout()" class="flex items-center space-x-2 p-2 rounded-lg text-red-600 hover:bg-red-50 transition">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span class="hidden sm:inline">Logout</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-20">
+        <div class="container mx-auto px-6 py-8">
+            <!-- Page Header -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8" data-aos="fade-down">
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-800">Pengajuan Penelitian & Pengabdian</h2>
+                    <p class="text-gray-600">Sistem pengajuan terintegrasi dengan alur review LPPM</p>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="mt-4 md:mt-0 flex flex-wrap gap-3">
+                    <button onclick="openSubmissionModal('penelitian')" class="bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold py-3 px-6 rounded-lg hover:shadow-lg transition-all">
+                        <i class="fas fa-flask mr-2"></i>Ajukan Penelitian
+                    </button>
+                    <button onclick="openSubmissionModal('pengabdian')" class="bg-gradient-to-r from-green-600 to-green-700 text-white font-semibold py-3 px-6 rounded-lg hover:shadow-lg transition-all">
+                        <i class="fas fa-hands-helping mr-2"></i>Ajukan Pengabdian
+                    </button>
+                </div>
+            </div>
+
+            <!-- Informasi Alur Pengajuan -->
+            <div class="bg-blue-50 border-l-4 border-blue-600 rounded-lg p-4 mb-8" data-aos="fade-up">
+                <div class="flex items-start">
+                    <i class="fas fa-info-circle text-blue-600 text-xl mt-1 mr-3"></i>
+                    <div>
+                        <h4 class="font-semibold text-blue-900">Alur Pengajuan</h4>
+                        <p class="text-sm text-blue-800 mt-1">
+                            1. Dosen mengisi form pengajuan dan mengupload dokumen pendukung • 
+                            2. Tim LPPM akan melakukan review kelengkapan administrasi • 
+                            3. Jika ada revisi, dosen akan diminta melakukan perbaikan • 
+                            4. Setelah disetujui, dosen dapat mengupload laporan kemajuan dan laporan akhir • 
+                            5. Luaran penelitian (publikasi, HKI, buku) dapat diupload sebagai bukti luaran
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status Summary Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8" data-aos="fade-up">
+                <div class="bg-white rounded-xl shadow p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-500">Draft</p>
+                            <p class="text-2xl font-bold text-gray-600" id="countDraft">0</p>
+                        </div>
+                        <div class="bg-gray-100 rounded-full p-3">
+                            <i class="fas fa-pen text-gray-600"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-500">Dalam Review</p>
+                            <p class="text-2xl font-bold text-blue-600" id="countReview">0</p>
+                        </div>
+                        <div class="bg-blue-100 rounded-full p-3">
+                            <i class="fas fa-clock text-blue-600"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-500">Perlu Revisi</p>
+                            <p class="text-2xl font-bold text-orange-600" id="countRevision">0</p>
+                        </div>
+                        <div class="bg-orange-100 rounded-full p-3">
+                            <i class="fas fa-edit text-orange-600"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-500">Disetujui</p>
+                            <p class="text-2xl font-bold text-green-600" id="countApproved">0</p>
+                        </div>
+                        <div class="bg-green-100 rounded-full p-3">
+                            <i class="fas fa-check-circle text-green-600"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-500">Selesai</p>
+                            <p class="text-2xl font-bold text-purple-600" id="countCompleted">0</p>
+                        </div>
+                        <div class="bg-purple-100 rounded-full p-3">
+                            <i class="fas fa-check-double text-purple-600"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Section -->
+            <div class="bg-white rounded-xl shadow-lg p-6 mb-6" data-aos="fade-up">
+                <div class="flex flex-col md:flex-row gap-4">
+                    <div class="relative flex-1">
+                        <input type="text" id="searchInput" placeholder="Cari judul atau skema..." 
+                               class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        <i class="fas fa-search absolute left-3 top-3.5 text-gray-400"></i>
+                    </div>
+                    
+                    <select id="typeFilter" class="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        <option value="all">Semua Jenis</option>
+                        <option value="penelitian">Penelitian</option>
+                        <option value="pengabdian">Pengabdian</option>
+                    </select>
+                    
+                    <select id="statusFilter" class="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        <option value="all">Semua Status</option>
+                        <option value="draft">Draft</option>
+                        <option value="submitted">Terkirim</option>
+                        <option value="review">Review Administrasi</option>
+                        <option value="review_content">Review Substansi</option>
+                        <option value="revision">Perlu Revisi</option>
+                        <option value="approved">Disetujui</option>
+                        <option value="rejected">Ditolak</option>
+                        <option value="completed">Selesai</option>
+                    </select>
+                    
+                    <button onclick="filterSubmissions()" class="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+                        <i class="fas fa-filter mr-2"></i>Filter
+                    </button>
+                    
+                    <button onclick="resetFilters()" class="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 transition-colors">
+                        <i class="fas fa-redo-alt mr-2"></i>Reset
+                    </button>
+                </div>
+            </div>
+
+            <!-- Submissions List -->
+            <div id="submissionsContainer" class="space-y-4" data-aos="fade-up">
+                <!-- Submissions will be loaded here -->
+                <div class="text-center py-12">
+                    <div class="loading-spinner"></div>
+                    <p class="mt-4 text-gray-600">Memuat data...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Pengajuan -->
+    <div id="submissionModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6 border-b sticky top-0 bg-white flex justify-between items-center">
+                <h3 class="text-xl font-bold text-gray-800" id="modalTitle">Pengajuan Baru</h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+            
+            <div class="p-6">
+                <form id="submissionForm" onsubmit="event.preventDefault(); saveSubmission();">
+                    <input type="hidden" id="submissionId">
+                    <input type="hidden" id="submissionType">
+                    <input type="hidden" id="currentStatus">
+                    
+                    <div class="space-y-6">
+                        <!-- Identitas Pengusul -->
+                        <div class="form-section">
+                            <h4 class="form-section-title">
+                                <i class="fas fa-user mr-2 text-blue-600"></i>Identitas Pengusul
+                            </h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap <span class="text-red-500">*</span></label>
+                                    <input type="text" id="namaLengkap" value="Dr. Ahmad Fauzi, M.T." required 
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100" readonly>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">NIDN <span class="text-red-500">*</span></label>
+                                    <input type="text" id="nidn" value="1234567890" required 
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100" readonly>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Program Studi</label>
+                                    <input type="text" id="prodi" value="Teknik Informatika" 
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Jabatan Fungsional</label>
+                                    <select id="jabatan" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                        <option value="lektor">Lektor</option>
+                                        <option value="lektor_kepala">Lektor Kepala</option>
+                                        <option value="guru_besar">Guru Besar</option>
+                                        <option value="asisten_ahli">Asisten Ahli</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Informasi Proposal -->
+                        <div class="form-section">
+                            <h4 class="form-section-title">
+                                <i class="fas fa-file-alt mr-2 text-blue-600"></i>Informasi Proposal
+                            </h4>
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Judul Proposal <span class="text-red-500">*</span></label>
+                                    <textarea id="judul" rows="2" required 
+                                              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                              placeholder="Masukkan judul lengkap penelitian/pengabdian"></textarea>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Jenis Pendanaan <span class="text-red-500">*</span></label>
+                                        <select id="jenisPendanaan" required class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                            <option value="">Pilih Jenis Pendanaan</option>
+                                            <option value="internal">Internal (Dana ITB Yadika)</option>
+                                            <option value="eksternal">Eksternal (Hibah Luar)</option>
+                                            <option value="mandiri">Mandiri</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Skema <span class="text-red-500">*</span></label>
+                                        <select id="skema" required class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                            <option value="">Pilih Skema</option>
+                                            <optgroup label="Penelitian">
+                                                <option value="penelitian_dasar">Penelitian Dasar</option>
+                                                <option value="penelitian_terapan">Penelitian Terapan</option>
+                                                <option value="penelitian_pengembangan">Penelitian Pengembangan</option>
+                                                <option value="penelitian_kolaborasi">Penelitian Kolaborasi</option>
+                                            </optgroup>
+                                            <optgroup label="Pengabdian">
+                                                <option value="pengabdian_masyarakat">Pengabdian Masyarakat</option>
+                                                <option value="penerapan_ipteks">Penerapan Ipteks</option>
+                                                <option value="pemberdayaan_mitra">Pemberdayaan Mitra</option>
+                                                <option value="kkn_tematik">KKN Tematik</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Tahun Usulan <span class="text-red-500">*</span></label>
+                                        <select id="tahun" required class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                            <option value="2024">2024</option>
+                                            <option value="2023">2023</option>
+                                            <option value="2022">2022</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Durasi (Bulan)</label>
+                                        <input type="number" id="durasi" value="6" min="1" max="36"
+                                               class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Dana Usulan (Rp)</label>
+                                        <input type="number" id="dana" min="0" step="1000000"
+                                               class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Upload Dokumen Proposal -->
+                        <div class="form-section">
+                            <h4 class="form-section-title">
+                                <i class="fas fa-upload mr-2 text-blue-600"></i>Dokumen Proposal
+                            </h4>
+                            
+                            <div class="space-y-4">
+                                <!-- Juknis Download -->
+                                <div class="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-file-pdf text-blue-600 text-2xl mr-3"></i>
+                                        <div>
+                                            <p class="font-medium text-blue-900">Petunjuk Teknis Penyusunan Proposal</p>
+                                            <p class="text-xs text-blue-700">Download panduan lengkap</p>
+                                        </div>
+                                    </div>
+                                    <button type="button" onclick="downloadJuknis()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                                        <i class="fas fa-download mr-2"></i>Unduh
+                                    </button>
+                                </div>
+
+                                <!-- Upload Proposal -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        Proposal Lengkap <span class="text-red-500">*</span>
+                                        <span class="text-xs text-gray-500 ml-2">(PDF, maks 10MB)</span>
+                                    </label>
+                                    <div class="file-upload-area" onclick="document.getElementById('fileProposal').click()">
+                                        <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-2"></i>
+                                        <p class="text-sm text-gray-600" id="proposalFileName">Klik untuk upload file proposal</p>
+                                    </div>
+                                    <input type="file" id="fileProposal" accept=".pdf" class="hidden" onchange="updateFileName(this, 'proposalFileName')">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Luaran Penelitian -->
+                        <div class="form-section">
+                            <h4 class="form-section-title">
+                                <i class="fas fa-bullseye mr-2 text-blue-600"></i>Target Luaran
+                            </h4>
+                            
+                            <div class="space-y-4">
+                                <!-- Publikasi Ilmiah -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-3">Publikasi Ilmiah</label>
+                                    <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                                        <label class="flex items-center">
+                                            <input type="checkbox" id="pubSinta1" class="rounded text-blue-600">
+                                            <span class="ml-2 text-sm">SINTA 1-2</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" id="pubSinta3" class="rounded text-blue-600">
+                                            <span class="ml-2 text-sm">SINTA 3-4</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" id="pubSinta5" class="rounded text-blue-600">
+                                            <span class="ml-2 text-sm">SINTA 5-6</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" id="pubScopus" class="rounded text-blue-600">
+                                            <span class="ml-2 text-sm">Scopus Q1-Q2</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" id="pubScopus3" class="rounded text-blue-600">
+                                            <span class="ml-2 text-sm">Scopus Q3-Q4</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" id="pubInternasional" class="rounded text-blue-600">
+                                            <span class="ml-2 text-sm">Internasional Bereputasi</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" id="pubNasional" class="rounded text-blue-600">
+                                            <span class="ml-2 text-sm">Nasional Terakreditasi</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" id="pubNasionalNon" class="rounded text-blue-600">
+                                            <span class="ml-2 text-sm">Nasional Belum Terakreditasi</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- IPR (Kekayaan Intelektual) -->
+                                <div class="mt-4">
+                                    <label class="block text-sm font-medium text-gray-700 mb-3">HKI / IPR</label>
+                                    <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                                        <label class="flex items-center">
+                                            <input type="checkbox" id="hakiPaten" class="rounded text-blue-600">
+                                            <span class="ml-2 text-sm">Paten</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" id="hakiHakCipta" class="rounded text-blue-600">
+                                            <span class="ml-2 text-sm">Hak Cipta</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" id="hakiDesain" class="rounded text-blue-600">
+                                            <span class="ml-2 text-sm">Desain Industri</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" id="hakiMerek" class="rounded text-blue-600">
+                                            <span class="ml-2 text-sm">Merek</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" id="hakiRahasia" class="rounded text-blue-600">
+                                            <span class="ml-2 text-sm">Rahasia Dagang</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Book/IPR -->
+                                <div class="mt-4">
+                                    <label class="block text-sm font-medium text-gray-700 mb-3">Buku / Karya Ilmiah</label>
+                                    <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                                        <label class="flex items-center">
+                                            <input type="checkbox" id="bukuISBN" class="rounded text-blue-600">
+                                            <span class="ml-2 text-sm">Buku Ber-ISBN</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" id="bukuChapter" class="rounded text-blue-600">
+                                            <span class="ml-2 text-sm">Book Chapter</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" id="bukuMonograf" class="rounded text-blue-600">
+                                            <span class="ml-2 text-sm">Monograf</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" id="bukuReferensi" class="rounded text-blue-600">
+                                            <span class="ml-2 text-sm">Buku Referensi</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" id="bukuAjar" class="rounded text-blue-600">
+                                            <span class="ml-2 text-sm">Buku Ajar</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Pengabdian Specific -->
+                                <div class="mt-4" id="pengabdianLuaran">
+                                    <label class="block text-sm font-medium text-gray-700 mb-3">Luaran Pengabdian</label>
+                                    <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                                        <label class="flex items-center">
+                                            <input type="checkbox" id="pengabdianModel" class="rounded text-green-600">
+                                            <span class="ml-2 text-sm">Model/Purwarupa</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" id="pengabdianTeknologi" class="rounded text-green-600">
+                                            <span class="ml-2 text-sm">Teknologi Tepat Guna</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" id="pengabdianSistem" class="rounded text-green-600">
+                                            <span class="ml-2 text-sm">Sistem/Produk</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" id="pengabdianPelatihan" class="rounded text-green-600">
+                                            <span class="ml-2 text-sm">Modul Pelatihan</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" id="pengabdianVideo" class="rounded text-green-600">
+                                            <span class="ml-2 text-sm">Video/Panduan</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Submit Options -->
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div class="flex items-center">
+                                <input type="checkbox" id="saveAsDraft" class="rounded text-blue-600">
+                                <label for="saveAsDraft" class="ml-2 text-sm text-gray-700">Simpan sebagai draft</label>
+                            </div>
+                            <p class="text-xs text-gray-500">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                Centang untuk menyimpan draft, kosongkan untuk mengirim ke LPPM
+                            </p>
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="flex justify-end space-x-3 pt-4 border-t">
+                            <button type="button" onclick="closeModal()" 
+                                    class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
+                                Batal
+                            </button>
+                            <button type="submit" 
+                                    class="px-6 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:shadow-lg transition">
+                                Kirim Pengajuan
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Detail Pengajuan dengan Progress dan Upload Laporan -->
+    <div id="detailModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6 border-b sticky top-0 bg-white flex justify-between items-center">
+                <h3 class="text-xl font-bold text-gray-800" id="detailModalTitle">Detail Pengajuan</h3>
+                <button onclick="closeDetailModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+            
+            <div class="p-6" id="detailModalContent">
+                <!-- Content will be loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Upload Laporan -->
+    <div id="laporanModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl max-w-2xl w-full">
+            <div class="p-6 border-b sticky top-0 bg-white flex justify-between items-center">
+                <h3 class="text-xl font-bold text-gray-800" id="laporanModalTitle">Upload Laporan</h3>
+                <button onclick="closeLaporanModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+            
+            <div class="p-6">
+                <form id="laporanForm" onsubmit="event.preventDefault(); saveLaporan();">
+                    <input type="hidden" id="laporanSubmissionId">
+                    
+                    <div class="space-y-6">
+                        <!-- Laporan Kemajuan -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Laporan Kemajuan
+                                <span class="text-xs text-gray-500 ml-2">(PDF, maks 10MB)</span>
+                            </label>
+                            <div class="file-upload-area" onclick="document.getElementById('fileLaporanKemajuan').click()">
+                                <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-2"></i>
+                                <p class="text-sm text-gray-600" id="laporanKemajuanFileName">Klik untuk upload laporan kemajuan</p>
+                            </div>
+                            <input type="file" id="fileLaporanKemajuan" accept=".pdf" class="hidden" onchange="updateFileName(this, 'laporanKemajuanFileName')">
+                        </div>
+
+                        <!-- Laporan Akhir -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Laporan Akhir
+                                <span class="text-xs text-gray-500 ml-2">(PDF, maks 10MB)</span>
+                            </label>
+                            <div class="file-upload-area" onclick="document.getElementById('fileLaporanAkhir').click()">
+                                <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-2"></i>
+                                <p class="text-sm text-gray-600" id="laporanAkhirFileName">Klik untuk upload laporan akhir</p>
+                            </div>
+                            <input type="file" id="fileLaporanAkhir" accept=".pdf" class="hidden" onchange="updateFileName(this, 'laporanAkhirFileName')">
+                        </div>
+
+                        <!-- Upload Bukti Luaran -->
+                        <div class="border-t pt-4">
+                            <h4 class="font-semibold text-gray-700 mb-3">Upload Bukti Luaran</h4>
+                            
+                            <!-- Bukti Publikasi -->
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Bukti Publikasi
+                                    <span class="text-xs text-gray-500 ml-2">(PDF, maks 5MB)</span>
+                                </label>
+                                <div class="file-upload-area" onclick="document.getElementById('fileBuktiPublikasi').click()">
+                                    <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-2"></i>
+                                    <p class="text-sm text-gray-600" id="buktiPublikasiFileName">Upload artikel/reprint</p>
+                                </div>
+                                <input type="file" id="fileBuktiPublikasi" accept=".pdf" class="hidden" onchange="updateFileName(this, 'buktiPublikasiFileName')">
+                            </div>
+
+                            <!-- Bukti HKI -->
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Bukti HKI/IPR
+                                    <span class="text-xs text-gray-500 ml-2">(PDF, maks 5MB)</span>
+                                </label>
+                                <div class="file-upload-area" onclick="document.getElementById('fileBuktiHKI').click()">
+                                    <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-2"></i>
+                                    <p class="text-sm text-gray-600" id="buktiHKIFileName">Upload sertifikat/bukti pendaftaran</p>
+                                </div>
+                                <input type="file" id="fileBuktiHKI" accept=".pdf" class="hidden" onchange="updateFileName(this, 'buktiHKIFileName')">
+                            </div>
+
+                            <!-- Bukti Buku -->
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Bukti Buku/ISBN
+                                    <span class="text-xs text-gray-500 ml-2">(PDF, maks 5MB)</span>
+                                </label>
+                                <div class="file-upload-area" onclick="document.getElementById('fileBuktiBuku').click()">
+                                    <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-2"></i>
+                                    <p class="text-sm text-gray-600" id="buktiBukuFileName">Upload cover, ISBN, daftar isi</p>
+                                </div>
+                                <input type="file" id="fileBuktiBuku" accept=".pdf" class="hidden" onchange="updateFileName(this, 'buktiBukuFileName')">
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end space-x-3 pt-4 border-t">
+                            <button type="button" onclick="closeLaporanModal()" 
+                                    class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                                Batal
+                            </button>
+                            <button type="submit" 
+                                    class="px-6 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:shadow-lg">
+                                Simpan Laporan
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <script>
+        // Initialize AOS
+        AOS.init({ duration: 800, once: true });
+
+        // Auth functions
+        const auth = {
+            getUser: function() {
+                const userStr = localStorage.getItem('user');
+                return userStr ? JSON.parse(userStr) : null;
+            },
+            logout: function() {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = 'login.html';
+            }
+        };
+
+        // Mock Data Dosen
+        const dosenData = {
+            nama: 'Dr. Ahmad Fauzi, M.T.',
+            nidn: '1234567890',
+            prodi: 'Teknik Informatika',
+            email: 'ahmad.fauzi@yadika.ac.id',
+            jabatan: 'Lektor'
+        };
+
+        // Enhanced data pengajuan dengan progress dan laporan
+        let submissions = [
+            {
+                id: 1,
+                type: 'penelitian',
+                judul: 'Pengembangan Sistem Deteksi Dini Penyakit Tanaman Padi Berbasis AI',
+                skema: 'penelitian_terapan',
+                jenisPendanaan: 'internal',
+                bidangFokus: 'pangan',
+                tahun: 2024,
+                dana: 150000000,
+                status: 'review',
+                tanggalPengajuan: '2024-01-15',
+                tim: ['Dr. Ahmad Fauzi, M.T. (Ketua)', 'Prof. Bambang Suharto (Anggota)'],
+                luaran: {
+                    publikasi: ['Scopus Q1-Q2'],
+                    haki: ['Paten'],
+                    buku: ['Book Chapter']
+                },
+                progress: {
+                    administrasi: { status: 'completed', date: '2024-01-20', notes: 'Dokumen lengkap' },
+                    substansi: { status: 'active', date: '2024-01-21', notes: 'Dalam review substansi' },
+                    revisi: { status: 'pending', date: null, notes: '' },
+                    approval: { status: 'pending', date: null, notes: '' }
+                },
+                laporan: {
+                    kemajuan: null,
+                    akhir: null
+                },
+                catatan_review: [
+                    {
+                        reviewer: 'Tim LPPM',
+                        date: '2024-01-20',
+                        comment: 'Dokumen administrasi lengkap, lanjut review substansi',
+                        status: 'administrasi'
+                    }
+                ]
+            },
+            {
+                id: 2,
+                type: 'penelitian',
+                judul: 'Analisis Big Data untuk Prediksi Kebijakan Publik',
+                skema: 'penelitian_dasar',
+                jenisPendanaan: 'eksternal',
+                bidangFokus: 'teknologi_informasi',
+                tahun: 2024,
+                dana: 85000000,
+                status: 'revision',
+                tanggalPengajuan: '2024-02-01',
+                tim: ['Dr. Ahmad Fauzi, M.T. (Ketua)', 'Ir. Hendra Kurniawan (Anggota)'],
+                luaran: {
+                    publikasi: ['SINTA 3-4'],
+                    haki: ['Hak Cipta']
+                },
+                progress: {
+                    administrasi: { status: 'completed', date: '2024-02-05', notes: 'Dokumen lengkap' },
+                    substansi: { status: 'completed', date: '2024-02-10', notes: 'Perlu revisi' },
+                    revisi: { status: 'active', date: '2024-02-11', notes: 'Menunggu revisi dari dosen' },
+                    approval: { status: 'pending', date: null, notes: '' }
+                },
+                laporan: {
+                    kemajuan: null,
+                    akhir: null
+                },
+                catatan_review: [
+                    {
+                        reviewer: 'Tim LPPM',
+                        date: '2024-02-05',
+                        comment: 'Dokumen administrasi lengkap',
+                        status: 'administrasi'
+                    },
+                    {
+                        reviewer: 'Reviewer Substansi',
+                        date: '2024-02-10',
+                        comment: 'Metodologi penelitian perlu diperbaiki, tambahkan analisis statistik',
+                        status: 'substansi'
+                    }
+                ]
+            },
+            {
+                id: 3,
+                type: 'pengabdian',
+                judul: 'Pelatihan Digital Marketing untuk UMKM Bekasi',
+                skema: 'pengabdian_masyarakat',
+                jenisPendanaan: 'internal',
+                bidangFokus: 'sosial_humaniora',
+                tahun: 2024,
+                dana: 75000000,
+                status: 'approved',
+                tanggalPengajuan: '2024-02-15',
+                tim: ['Dr. Ahmad Fauzi, M.T. (Ketua)', 'Dr. Ratna Dewi (Anggota)'],
+                mitra: 'Komunitas UMKM Bekasi',
+                luaran: {
+                    publikasi: ['Nasional Terakreditasi'],
+                    pengabdian: ['Modul Pelatihan']
+                },
+                progress: {
+                    administrasi: { status: 'completed', date: '2024-02-18', notes: 'Dokumen lengkap' },
+                    substansi: { status: 'completed', date: '2024-02-20', notes: 'Substansi baik' },
+                    revisi: { status: 'completed', date: '2024-02-22', notes: 'Tidak ada revisi' },
+                    approval: { status: 'completed', date: '2024-02-25', notes: 'Disetujui' }
+                },
+                laporan: {
+                    kemajuan: null,
+                    akhir: null
+                },
+                catatan_review: [
+                    {
+                        reviewer: 'Tim LPPM',
+                        date: '2024-02-18',
+                        comment: 'Dokumen administrasi lengkap',
+                        status: 'administrasi'
+                    },
+                    {
+                        reviewer: 'Reviewer Substansi',
+                        date: '2024-02-20',
+                        comment: 'Program tepat sasaran, setujui',
+                        status: 'substansi'
+                    },
+                    {
+                        reviewer: 'Kapus LPPM',
+                        date: '2024-02-25',
+                        comment: 'Disetujui untuk dilaksanakan',
+                        status: 'approval'
+                    }
+                ]
+            },
+            {
+                id: 4,
+                type: 'penelitian',
+                judul: 'Rancang Bangun Sistem IoT untuk Smart Farming',
+                skema: 'penelitian_pengembangan',
+                jenisPendanaan: 'eksternal',
+                bidangFokus: 'teknologi_informasi',
+                tahun: 2023,
+                dana: 120000000,
+                status: 'completed',
+                tanggalPengajuan: '2023-03-10',
+                tim: ['Dr. Ahmad Fauzi, M.T. (Ketua)'],
+                luaran: {
+                    publikasi: ['Scopus Q3-Q4'],
+                    haki: ['Paten'],
+                    buku: ['Buku Ber-ISBN']
+                },
+                progress: {
+                    administrasi: { status: 'completed', date: '2023-03-15', notes: 'Dokumen lengkap' },
+                    substansi: { status: 'completed', date: '2023-03-20', notes: 'Substansi baik' },
+                    revisi: { status: 'completed', date: '2023-03-25', notes: 'Revisi minor' },
+                    approval: { status: 'completed', date: '2023-03-30', notes: 'Disetujui' }
+                },
+                laporan: {
+                    kemajuan: 'laporan_kemajuan_4.pdf',
+                    akhir: 'laporan_akhir_4.pdf',
+                    bukti_publikasi: 'publikasi_4.pdf',
+                    bukti_haki: 'haki_4.pdf',
+                    bukti_buku: 'buku_4.pdf'
+                },
+                catatan_review: [
+                    {
+                        reviewer: 'Tim LPPM',
+                        date: '2023-03-15',
+                        comment: 'Dokumen lengkap',
+                        status: 'administrasi'
+                    },
+                    {
+                        reviewer: 'Reviewer Substansi',
+                        date: '2023-03-20',
+                        comment: 'Penelitian inovatif, setujui',
+                        status: 'substansi'
+                    }
+                ]
+            }
+        ];
+
+        // Helper Functions
+        function showLoading() {
+            document.getElementById('loadingOverlay').classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.add('hidden');
+        }
+
+        function showNotification(message, type = 'success') {
+            Swal.fire({
+                icon: type,
+                title: type === 'success' ? 'Berhasil' : type === 'error' ? 'Gagal' : 'Informasi',
+                text: message,
+                timer: 2000,
+                showConfirmButton: false
+            });
+        }
+
+        function showConfirmation(message, callback) {
+            Swal.fire({
+                title: 'Konfirmasi',
+                text: message,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Ya',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    callback();
+                }
+            });
+        }
+
+        function handleLogout() {
+            showConfirmation('Apakah Anda yakin ingin logout?', () => {
+                auth.logout();
+            });
+        }
+
+        // Update User Info
+        function updateUserInfo() {
+            document.getElementById('userNameDisplay').textContent = dosenData.nama;
+            document.getElementById('userNidnDisplay').textContent = dosenData.nidn;
+        }
+
+        // Update Statistics
+        function updateStats() {
+            const draft = submissions.filter(s => s.status === 'draft').length;
+            const review = submissions.filter(s => ['submitted', 'review', 'review_content'].includes(s.status)).length;
+            const revision = submissions.filter(s => s.status === 'revision').length;
+            const approved = submissions.filter(s => s.status === 'approved').length;
+            const completed = submissions.filter(s => s.status === 'completed').length;
+            
+            document.getElementById('countDraft').textContent = draft;
+            document.getElementById('countReview').textContent = review;
+            document.getElementById('countRevision').textContent = revision;
+            document.getElementById('countApproved').textContent = approved;
+            document.getElementById('countCompleted').textContent = completed;
+        }
+
+        // Format Currency
+        function formatCurrency(amount) {
+            if (!amount) return '-';
+            return 'Rp ' + new Intl.NumberFormat('id-ID').format(amount);
+        }
+
+        // Format Date
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            return new Date(dateString).toLocaleDateString('id-ID', options);
+        }
+
+        // Get Status Badge
+        function getStatusBadge(status) {
+            const badges = {
+                'draft': { class: 'bg-gray-100 text-gray-800', text: 'Draft', icon: 'fa-pen' },
+                'submitted': { class: 'bg-blue-100 text-blue-800', text: 'Terkirim', icon: 'fa-paper-plane' },
+                'review': { class: 'bg-yellow-100 text-yellow-800', text: 'Review Admin', icon: 'fa-clock' },
+                'review_content': { class: 'bg-purple-100 text-purple-800', text: 'Review Substansi', icon: 'fa-search' },
+                'revision': { class: 'bg-orange-100 text-orange-800', text: 'Perlu Revisi', icon: 'fa-edit' },
+                'approved': { class: 'bg-green-100 text-green-800', text: 'Disetujui', icon: 'fa-check-circle' },
+                'rejected': { class: 'bg-red-100 text-red-800', text: 'Ditolak', icon: 'fa-times-circle' },
+                'completed': { class: 'bg-indigo-100 text-indigo-800', text: 'Selesai', icon: 'fa-check-double' }
+            };
+            return badges[status] || badges.submitted;
+        }
+
+        // Download Juknis
+        window.downloadJuknis = function() {
+            showNotification('File juknis akan diunduh', 'success');
+            // Simulasi download
+            setTimeout(() => {
+                showNotification('Download berhasil', 'success');
+            }, 1000);
+        };
+
+        // Filter Submissions
+        window.filterSubmissions = function() {
+            showLoading();
+            setTimeout(() => {
+                renderSubmissions();
+                hideLoading();
+            }, 300);
+        };
+
+        // Reset Filters
+        window.resetFilters = function() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('typeFilter').value = 'all';
+            document.getElementById('statusFilter').value = 'all';
+            renderSubmissions();
+        };
+
+        // Render Progress Timeline
+        function renderProgressTimeline(progress) {
+            const steps = [
+                { key: 'administrasi', label: 'Review Admin' },
+                { key: 'substansi', label: 'Review Substansi' },
+                { key: 'revisi', label: 'Revisi' },
+                { key: 'approval', label: 'Persetujuan' }
+            ];
+            
+            let html = '<div class="timeline-container">';
+            
+            steps.forEach((step, index) => {
+                const stepData = progress[step.key] || { status: 'pending', date: null };
+                let statusClass = '';
+                let icon = '';
+                
+                if (stepData.status === 'completed') {
+                    statusClass = 'completed';
+                    icon = 'fa-check';
+                } else if (stepData.status === 'active') {
+                    statusClass = 'active';
+                    icon = 'fa-spinner fa-pulse';
+                } else if (stepData.status === 'rejected') {
+                    statusClass = 'rejected';
+                    icon = 'fa-times';
+                } else {
+                    icon = 'fa-circle';
+                }
+                
+                html += `
+                    <div class="timeline-step ${statusClass}">
+                        <div class="timeline-dot">
+                            <i class="fas ${icon}"></i>
+                        </div>
+                        <div class="timeline-label">${step.label}</div>
+                        <div class="timeline-date">${stepData.date ? formatDate(stepData.date) : '-'}</div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            return html;
+        }
+
+        // Render Submissions
+        function renderSubmissions() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const typeFilter = document.getElementById('typeFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+
+            let filtered = submissions;
+
+            if (searchTerm) {
+                filtered = filtered.filter(s => 
+                    s.judul.toLowerCase().includes(searchTerm) || 
+                    s.skema.toLowerCase().includes(searchTerm)
+                );
+            }
+
+            if (typeFilter !== 'all') {
+                filtered = filtered.filter(s => s.type === typeFilter);
+            }
+
+            if (statusFilter !== 'all') {
+                filtered = filtered.filter(s => s.status === statusFilter);
+            }
+
+            if (filtered.length === 0) {
+                document.getElementById('submissionsContainer').innerHTML = `
+                    <div class="text-center py-12 bg-white rounded-lg shadow">
+                        <i class="fas fa-search text-5xl text-gray-300 mb-4"></i>
+                        <p class="text-gray-500">Tidak ada pengajuan ditemukan</p>
+                        <button onclick="openSubmissionModal('penelitian')" class="mt-4 text-blue-600 hover:text-blue-800">
+                            <i class="fas fa-plus-circle mr-1"></i>Buat Pengajuan Baru
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            const html = filtered.map(submission => {
+                const badge = getStatusBadge(submission.status);
+                const typeClass = submission.type === 'penelitian' ? 'penelitian' : 'pengabdian';
+                const typeIcon = submission.type === 'penelitian' ? 'fa-flask' : 'fa-hands-helping';
+                const typeColor = submission.type === 'penelitian' ? 'text-blue-600' : 'text-green-600';
+                
+                // Hitung progress
+                let progressPercent = 0;
+                if (submission.progress) {
+                    const steps = Object.values(submission.progress);
+                    const completed = steps.filter(s => s.status === 'completed').length;
+                    progressPercent = (completed / steps.length) * 100;
+                }
+                
+                return `
+                    <div class="submission-card ${typeClass} bg-white p-6 rounded-xl shadow hover:shadow-lg transition cursor-pointer" onclick="viewDetail(${submission.id})">
+                        <div class="flex flex-col lg:flex-row justify-between">
+                            <div class="flex-1">
+                                <div class="flex items-start">
+                                    <div class="bg-${submission.type === 'penelitian' ? 'blue' : 'green'}-100 rounded-full p-3 mr-4">
+                                        <i class="fas ${typeIcon} ${typeColor}"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="flex flex-wrap items-center gap-2 mb-2">
+                                            <span class="px-2 py-1 rounded text-xs font-semibold ${badge.class}">
+                                                <i class="fas ${badge.icon} mr-1"></i>${badge.text}
+                                            </span>
+                                            <span class="px-2 py-1 rounded text-xs font-semibold bg-purple-100 text-purple-800">
+                                                <i class="fas fa-tag mr-1"></i>${submission.jenisPendanaan}
+                                            </span>
+                                            <span class="text-sm text-gray-500">
+                                                <i class="far fa-calendar mr-1"></i>${formatDate(submission.tanggalPengajuan)}
+                                            </span>
+                                        </div>
+                                        
+                                        <h3 class="text-lg font-semibold text-gray-800">${submission.judul}</h3>
+                                        
+                                        <div class="mt-2 flex flex-wrap gap-4 text-sm text-gray-600">
+                                            <span><i class="fas fa-tag mr-1"></i>${submission.skema.replace(/_/g, ' ')}</span>
+                                            <span><i class="fas fa-coins mr-1"></i>${formatCurrency(submission.dana)}</span>
+                                            <span><i class="fas fa-users mr-1"></i>${submission.tim.length} Anggota</span>
+                                        </div>
+                                        
+                                        <!-- Progress Bar -->
+                                        <div class="mt-3">
+                                            <div class="flex items-center justify-between text-xs text-gray-500 mb-1">
+                                                <span>Progress Review</span>
+                                                <span>${Math.round(progressPercent)}%</span>
+                                            </div>
+                                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                                <div class="bg-blue-600 h-2 rounded-full" style="width: ${progressPercent}%"></div>
+                                            </div>
+                                        </div>
+                                        
+                                        ${submission.catatan_review && submission.catatan_review.length > 0 ? `
+                                            <div class="mt-2 p-2 bg-blue-50 rounded text-sm text-blue-700">
+                                                <i class="fas fa-info-circle mr-1"></i>
+                                                ${submission.catatan_review[submission.catatan_review.length - 1].comment}
+                                            </div>
+                                        ` : ''}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center lg:items-end mt-4 lg:mt-0 space-x-2">
+                                ${submission.status === 'revision' ? `
+                                    <button onclick="editSubmission(${submission.id}); event.stopPropagation()" 
+                                            class="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 text-sm">
+                                        <i class="fas fa-edit mr-1"></i>Revisi
+                                    </button>
+                                ` : submission.status === 'draft' ? `
+                                    <button onclick="editSubmission(${submission.id}); event.stopPropagation()" 
+                                            class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 text-sm">
+                                        <i class="fas fa-pen mr-1"></i>Lanjutkan
+                                    </button>
+                                ` : submission.status === 'approved' ? `
+                                    <button onclick="openLaporanModal(${submission.id}); event.stopPropagation()" 
+                                            class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 text-sm">
+                                        <i class="fas fa-upload mr-1"></i>Upload Laporan
+                                    </button>
+                                ` : ''}
+                                
+                                <button onclick="viewDetail(${submission.id}); event.stopPropagation()" 
+                                        class="bg-gray-100 text-gray-600 px-4 py-2 rounded-lg hover:bg-gray-200 text-sm">
+                                    <i class="fas fa-eye mr-1"></i>Detail
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('submissionsContainer').innerHTML = html;
+        }
+
+        // Open Submission Modal
+        window.openSubmissionModal = function(type, submissionId = null) {
+            document.getElementById('submissionType').value = type;
+            document.getElementById('modalTitle').textContent = type === 'penelitian' ? 'Pengajuan Penelitian Baru' : 'Pengajuan Pengabdian Baru';
+            
+            // Show/hide pengabdian specific fields
+            document.getElementById('pengabdianLuaran').style.display = type === 'pengabdian' ? 'block' : 'none';
+            
+            // Reset form
+            document.getElementById('submissionForm').reset();
+            document.getElementById('submissionId').value = '';
+            document.getElementById('currentStatus').value = 'draft';
+            
+            // Set default values
+            document.getElementById('judul').value = '';
+            document.getElementById('skema').value = '';
+            document.getElementById('jenisPendanaan').value = '';
+            
+            document.getElementById('submissionModal').classList.remove('hidden');
+        };
+
+        // Edit Submission
+        window.editSubmission = function(id) {
+            const submission = submissions.find(s => s.id === id);
+            if (!submission) return;
+
+            document.getElementById('submissionType').value = submission.type;
+            document.getElementById('submissionId').value = submission.id;
+            document.getElementById('currentStatus').value = submission.status;
+            document.getElementById('modalTitle').textContent = submission.type === 'penelitian' ? 'Edit Pengajuan Penelitian' : 'Edit Pengajuan Pengabdian';
+            
+            // Fill form with existing data
+            document.getElementById('judul').value = submission.judul || '';
+            document.getElementById('skema').value = submission.skema || '';
+            document.getElementById('jenisPendanaan').value = submission.jenisPendanaan || '';
+            document.getElementById('tahun').value = submission.tahun || '2024';
+            document.getElementById('durasi').value = submission.durasi || '6';
+            document.getElementById('dana').value = submission.dana || '';
+            
+            // Check luaran checkboxes if exist
+            if (submission.luaran) {
+                // Reset all checkboxes first
+                document.querySelectorAll('#submissionForm input[type="checkbox"]').forEach(cb => cb.checked = false);
+                
+                // Set publikasi
+                if (submission.luaran.publikasi) {
+                    submission.luaran.publikasi.forEach(pub => {
+                        if (pub.includes('SINTA 1-2')) document.getElementById('pubSinta1').checked = true;
+                        if (pub.includes('SINTA 3-4')) document.getElementById('pubSinta3').checked = true;
+                        if (pub.includes('SINTA 5-6')) document.getElementById('pubSinta5').checked = true;
+                        if (pub.includes('Scopus Q1-Q2')) document.getElementById('pubScopus').checked = true;
+                        if (pub.includes('Scopus Q3-Q4')) document.getElementById('pubScopus3').checked = true;
+                        if (pub.includes('Internasional')) document.getElementById('pubInternasional').checked = true;
+                        if (pub.includes('Nasional Terakreditasi')) document.getElementById('pubNasional').checked = true;
+                        if (pub.includes('Nasional Belum')) document.getElementById('pubNasionalNon').checked = true;
+                    });
+                }
+                
+                // Set HAKI
+                if (submission.luaran.haki) {
+                    submission.luaran.haki.forEach(h => {
+                        if (h.includes('Paten')) document.getElementById('hakiPaten').checked = true;
+                        if (h.includes('Hak Cipta')) document.getElementById('hakiHakCipta').checked = true;
+                        if (h.includes('Desain')) document.getElementById('hakiDesain').checked = true;
+                        if (h.includes('Merek')) document.getElementById('hakiMerek').checked = true;
+                        if (h.includes('Rahasia')) document.getElementById('hakiRahasia').checked = true;
+                    });
+                }
+                
+                // Set Buku
+                if (submission.luaran.buku) {
+                    submission.luaran.buku.forEach(b => {
+                        if (b.includes('ISBN')) document.getElementById('bukuISBN').checked = true;
+                        if (b.includes('Book Chapter')) document.getElementById('bukuChapter').checked = true;
+                        if (b.includes('Monograf')) document.getElementById('bukuMonograf').checked = true;
+                        if (b.includes('Referensi')) document.getElementById('bukuReferensi').checked = true;
+                        if (b.includes('Ajar')) document.getElementById('bukuAjar').checked = true;
+                    });
+                }
+            }
+            
+            document.getElementById('submissionModal').classList.remove('hidden');
+        };
+
+        // Save Submission
+        window.saveSubmission = function() {
+            const id = document.getElementById('submissionId').value;
+            const type = document.getElementById('submissionType').value;
+            const judul = document.getElementById('judul').value;
+            const skema = document.getElementById('skema').value;
+            const jenisPendanaan = document.getElementById('jenisPendanaan').value;
+            const tahun = document.getElementById('tahun').value;
+            const durasi = document.getElementById('durasi').value;
+            const dana = document.getElementById('dana').value;
+            const saveAsDraft = document.getElementById('saveAsDraft').checked;
+            
+            if (!judul || !skema || !jenisPendanaan) {
+                showNotification('Harap lengkapi field yang wajib diisi', 'error');
+                return;
+            }
+
+            // Get publikasi
+            const publikasi = [];
+            if (document.getElementById('pubSinta1').checked) publikasi.push('SINTA 1-2');
+            if (document.getElementById('pubSinta3').checked) publikasi.push('SINTA 3-4');
+            if (document.getElementById('pubSinta5').checked) publikasi.push('SINTA 5-6');
+            if (document.getElementById('pubScopus').checked) publikasi.push('Scopus Q1-Q2');
+            if (document.getElementById('pubScopus3').checked) publikasi.push('Scopus Q3-Q4');
+            if (document.getElementById('pubInternasional').checked) publikasi.push('Internasional Bereputasi');
+            if (document.getElementById('pubNasional').checked) publikasi.push('Nasional Terakreditasi');
+            if (document.getElementById('pubNasionalNon').checked) publikasi.push('Nasional Belum Terakreditasi');
+
+            // Get HAKI
+            const haki = [];
+            if (document.getElementById('hakiPaten').checked) haki.push('Paten');
+            if (document.getElementById('hakiHakCipta').checked) haki.push('Hak Cipta');
+            if (document.getElementById('hakiDesain').checked) haki.push('Desain Industri');
+            if (document.getElementById('hakiMerek').checked) haki.push('Merek');
+            if (document.getElementById('hakiRahasia').checked) haki.push('Rahasia Dagang');
+
+            // Get Buku
+            const buku = [];
+            if (document.getElementById('bukuISBN').checked) buku.push('Buku Ber-ISBN');
+            if (document.getElementById('bukuChapter').checked) buku.push('Book Chapter');
+            if (document.getElementById('bukuMonograf').checked) buku.push('Monograf');
+            if (document.getElementById('bukuReferensi').checked) buku.push('Buku Referensi');
+            if (document.getElementById('bukuAjar').checked) buku.push('Buku Ajar');
+
+            const newSubmission = {
+                id: id ? parseInt(id) : submissions.length + 1,
+                type: type,
+                judul: judul,
+                skema: skema,
+                jenisPendanaan: jenisPendanaan,
+                tahun: parseInt(tahun),
+                durasi: parseInt(durasi),
+                dana: dana ? parseInt(dana) : null,
+                status: saveAsDraft ? 'draft' : 'submitted',
+                tanggalPengajuan: new Date().toISOString().split('T')[0],
+                tim: ['Dr. Ahmad Fauzi, M.T. (Ketua)'],
+                luaran: {
+                    publikasi: publikasi,
+                    haki: haki,
+                    buku: buku
+                },
+                progress: {
+                    administrasi: { status: saveAsDraft ? 'pending' : 'active', date: null, notes: '' },
+                    substansi: { status: 'pending', date: null, notes: '' },
+                    revisi: { status: 'pending', date: null, notes: '' },
+                    approval: { status: 'pending', date: null, notes: '' }
+                },
+                laporan: {
+                    kemajuan: null,
+                    akhir: null
+                },
+                catatan_review: []
+            };
+
+            if (id) {
+                // Update existing
+                const index = submissions.findIndex(s => s.id === parseInt(id));
+                if (index !== -1) {
+                    submissions[index] = { ...submissions[index], ...newSubmission };
+                }
+            } else {
+                // Add new
+                submissions.push(newSubmission);
+            }
+            
+            closeModal();
+            updateStats();
+            renderSubmissions();
+            
+            showNotification(saveAsDraft ? 'Draft berhasil disimpan' : 'Pengajuan berhasil dikirim');
+        };
+
+        // Close Modal
+        window.closeModal = function() {
+            document.getElementById('submissionModal').classList.add('hidden');
+        };
+
+        // Update File Name
+        window.updateFileName = function(input, elementId) {
+            const fileName = input.files[0] ? input.files[0].name : 'Tidak ada file dipilih';
+            document.getElementById(elementId).textContent = fileName;
+        };
+
+        // View Detail
+        window.viewDetail = function(id) {
+            const submission = submissions.find(s => s.id === id);
+            if (!submission) return;
+
+            const badge = getStatusBadge(submission.status);
+            
+            document.getElementById('detailModalTitle').textContent = 'Detail Pengajuan';
+            
+            // Build luaran HTML
+            let luaranHtml = '';
+            if (submission.luaran) {
+                if (submission.luaran.publikasi && submission.luaran.publikasi.length > 0) {
+                    luaranHtml += `
+                        <div class="mt-3">
+                            <p class="text-sm font-medium text-gray-700">Publikasi Ilmiah:</p>
+                            <div class="flex flex-wrap gap-1 mt-1">
+                                ${submission.luaran.publikasi.map(p => `<span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">${p}</span>`).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                if (submission.luaran.haki && submission.luaran.haki.length > 0) {
+                    luaranHtml += `
+                        <div class="mt-3">
+                            <p class="text-sm font-medium text-gray-700">HKI/IPR:</p>
+                            <div class="flex flex-wrap gap-1 mt-1">
+                                ${submission.luaran.haki.map(h => `<span class="px-2 py-1 bg-green-100 text-green-800 rounded text-xs">${h}</span>`).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                if (submission.luaran.buku && submission.luaran.buku.length > 0) {
+                    luaranHtml += `
+                        <div class="mt-3">
+                            <p class="text-sm font-medium text-gray-700">Buku:</p>
+                            <div class="flex flex-wrap gap-1 mt-1">
+                                ${submission.luaran.buku.map(b => `<span class="px-2 py-1 bg-purple-100 text-purple-800 rounded text-xs">${b}</span>`).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            // Build review history HTML
+            let reviewHtml = '';
+            if (submission.catatan_review && submission.catatan_review.length > 0) {
+                reviewHtml = '<div class="mt-4"><h4 class="font-semibold text-gray-700 mb-2">Riwayat Review</h4>';
+                submission.catatan_review.forEach(review => {
+                    reviewHtml += `
+                        <div class="review-card">
+                            <div class="flex justify-between items-start">
+                                <span class="font-medium">${review.reviewer}</span>
+                                <span class="text-xs text-gray-500">${formatDate(review.date)}</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mt-1">${review.comment}</p>
+                            <span class="text-xs text-blue-600 mt-1 block">Status: ${review.status}</span>
+                        </div>
+                    `;
+                });
+                reviewHtml += '</div>';
+            }
+
+            // Build laporan status HTML
+            let laporanHtml = '';
+            if (submission.laporan) {
+                laporanHtml = '<div class="mt-4"><h4 class="font-semibold text-gray-700 mb-2">Laporan</h4>';
+                
+                if (submission.laporan.kemajuan) {
+                    laporanHtml += `
+                        <div class="flex items-center justify-between p-2 bg-green-50 rounded mb-2">
+                            <span class="text-sm"><i class="fas fa-check-circle text-green-600 mr-2"></i>Laporan Kemajuan</span>
+                            <button onclick="downloadFile('${submission.laporan.kemajuan}')" class="text-blue-600 hover:text-blue-800">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
+                    `;
+                }
+                
+                if (submission.laporan.akhir) {
+                    laporanHtml += `
+                        <div class="flex items-center justify-between p-2 bg-green-50 rounded mb-2">
+                            <span class="text-sm"><i class="fas fa-check-circle text-green-600 mr-2"></i>Laporan Akhir</span>
+                            <button onclick="downloadFile('${submission.laporan.akhir}')" class="text-blue-600 hover:text-blue-800">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
+                    `;
+                }
+                
+                if (submission.laporan.bukti_publikasi) {
+                    laporanHtml += `
+                        <div class="flex items-center justify-between p-2 bg-blue-50 rounded mb-2">
+                            <span class="text-sm"><i class="fas fa-file-pdf text-blue-600 mr-2"></i>Bukti Publikasi</span>
+                            <button onclick="downloadFile('${submission.laporan.bukti_publikasi}')" class="text-blue-600 hover:text-blue-800">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
+                    `;
+                }
+                
+                laporanHtml += '</div>';
+            }
+
+            document.getElementById('detailModalContent').innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex justify-between items-start">
+                        <span class="px-3 py-1 rounded-full text-xs font-semibold ${badge.class}">
+                            <i class="fas ${badge.icon} mr-1"></i>${badge.text}
+                        </span>
+                        <span class="text-sm text-gray-500">
+                            ID: #${submission.id}
+                        </span>
+                    </div>
+
+                    <!-- Progress Timeline -->
+                    ${submission.progress ? renderProgressTimeline(submission.progress) : ''}
+
+                    <div>
+                        <h4 class="font-semibold text-gray-700">Judul</h4>
+                        <p class="text-gray-600 mt-1">${submission.judul}</p>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-sm text-gray-500">Jenis</p>
+                            <p class="font-medium">${submission.type === 'penelitian' ? 'Penelitian' : 'Pengabdian'}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Skema</p>
+                            <p class="font-medium">${submission.skema.replace(/_/g, ' ')}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Pendanaan</p>
+                            <p class="font-medium">${submission.jenisPendanaan || '-'}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Tahun</p>
+                            <p class="font-medium">${submission.tahun}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Dana</p>
+                            <p class="font-medium text-green-600">${formatCurrency(submission.dana)}</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <p class="text-sm text-gray-500">Tanggal Pengajuan</p>
+                        <p class="font-medium">${formatDate(submission.tanggalPengajuan)}</p>
+                    </div>
+
+                    <div>
+                        <p class="text-sm text-gray-500 mb-2">Tim Pelaksana</p>
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            ${submission.tim.map(t => `<p class="text-sm">• ${t}</p>`).join('')}
+                        </div>
+                    </div>
+
+                    ${submission.mitra ? `
+                        <div class="bg-green-50 p-4 rounded-lg">
+                            <p class="text-sm font-medium text-green-800">Mitra Kerjasama</p>
+                            <p class="text-sm text-green-700 mt-1">${submission.mitra}</p>
+                        </div>
+                    ` : ''}
+
+                    <!-- Target Luaran -->
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <p class="text-sm font-medium text-gray-700 mb-2">Target Luaran</p>
+                        ${luaranHtml || '<p class="text-sm text-gray-500">Belum ada target luaran</p>'}
+                    </div>
+
+                    <!-- Laporan Status -->
+                    ${laporanHtml}
+
+                    <!-- Review History -->
+                    ${reviewHtml}
+
+                    <!-- Action Buttons -->
+                    <div class="flex justify-end space-x-3 pt-4 border-t">
+                        ${submission.status === 'revision' ? `
+                            <button onclick="editSubmission(${submission.id}); closeDetailModal()" 
+                                    class="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600">
+                                <i class="fas fa-edit mr-2"></i>Revisi Sekarang
+                            </button>
+                        ` : ''}
+                        
+                        ${submission.status === 'approved' ? `
+                            <button onclick="openLaporanModal(${submission.id}); closeDetailModal()" 
+                                    class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">
+                                <i class="fas fa-upload mr-2"></i>Upload Laporan
+                            </button>
+                        ` : ''}
+                        
+                        <button onclick="closeDetailModal()" 
+                                class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300">
+                            Tutup
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('detailModal').classList.remove('hidden');
+        };
+
+        // Open Laporan Modal
+        window.openLaporanModal = function(id) {
+            const submission = submissions.find(s => s.id === id);
+            if (!submission) return;
+            
+            document.getElementById('laporanSubmissionId').value = id;
+            document.getElementById('laporanModalTitle').textContent = `Upload Laporan - ${submission.judul.substring(0, 50)}...`;
+            
+            // Reset file names
+            document.getElementById('laporanKemajuanFileName').textContent = 'Klik untuk upload laporan kemajuan';
+            document.getElementById('laporanAkhirFileName').textContent = 'Klik untuk upload laporan akhir';
+            document.getElementById('buktiPublikasiFileName').textContent = 'Upload artikel/reprint';
+            document.getElementById('buktiHKIFileName').textContent = 'Upload sertifikat/bukti pendaftaran';
+            document.getElementById('buktiBukuFileName').textContent = 'Upload cover, ISBN, daftar isi';
+            
+            document.getElementById('laporanModal').classList.remove('hidden');
+        };
+
+        // Save Laporan
+        window.saveLaporan = function() {
+            const id = parseInt(document.getElementById('laporanSubmissionId').value);
+            const submission = submissions.find(s => s.id === id);
+            
+            if (!submission) return;
+            
+            // Simulasi upload file
+            const laporanKemajuan = document.getElementById('fileLaporanKemajuan').files[0];
+            const laporanAkhir = document.getElementById('fileLaporanAkhir').files[0];
+            const buktiPublikasi = document.getElementById('fileBuktiPublikasi').files[0];
+            const buktiHKI = document.getElementById('fileBuktiHKI').files[0];
+            const buktiBuku = document.getElementById('fileBuktiBuku').files[0];
+            
+            // Update submission
+            if (!submission.laporan) {
+                submission.laporan = {};
+            }
+            
+            if (laporanKemajuan) {
+                submission.laporan.kemajuan = `laporan_kemajuan_${id}_${Date.now()}.pdf`;
+            }
+            
+            if (laporanAkhir) {
+                submission.laporan.akhir = `laporan_akhir_${id}_${Date.now()}.pdf`;
+            }
+            
+            if (buktiPublikasi) {
+                submission.laporan.bukti_publikasi = `publikasi_${id}_${Date.now()}.pdf`;
+            }
+            
+            if (buktiHKI) {
+                submission.laporan.bukti_haki = `haki_${id}_${Date.now()}.pdf`;
+            }
+            
+            if (buktiBuku) {
+                submission.laporan.bukti_buku = `buku_${id}_${Date.now()}.pdf`;
+            }
+            
+            // Update status jika semua laporan sudah diupload
+            if (submission.laporan.kemajuan && submission.laporan.akhir) {
+                submission.status = 'completed';
+                if (submission.progress) {
+                    submission.progress.approval = { status: 'completed', date: new Date().toISOString().split('T')[0], notes: 'Laporan lengkap' };
+                }
+            }
+            
+            closeLaporanModal();
+            updateStats();
+            renderSubmissions();
+            
+            showNotification('Laporan berhasil diupload');
+        };
+
+        // Close Detail Modal
+        window.closeDetailModal = function() {
+            document.getElementById('detailModal').classList.add('hidden');
+        };
+
+        // Close Laporan Modal
+        window.closeLaporanModal = function() {
+            document.getElementById('laporanModal').classList.add('hidden');
+        };
+
+        // Download File
+        window.downloadFile = function(filename) {
+            showNotification(`Mengunduh file: ${filename}`, 'success');
+        };
+
+        // Initialize Page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set user data
+            if (!localStorage.getItem('user')) {
+                localStorage.setItem('user', JSON.stringify(dosenData));
+            }
+            
+            updateUserInfo();
+            updateStats();
+            
+            // Load submissions
+            showLoading();
+            setTimeout(() => {
+                renderSubmissions();
+                hideLoading();
+            }, 500);
+        });
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            const submissionModal = document.getElementById('submissionModal');
+            const detailModal = document.getElementById('detailModal');
+            const laporanModal = document.getElementById('laporanModal');
+            
+            if (event.target === submissionModal) {
+                closeModal();
+            }
+            if (event.target === detailModal) {
+                closeDetailModal();
+            }
+            if (event.target === laporanModal) {
+                closeLaporanModal();
+            }
+        };
+    </script>
+</body>
+</html>

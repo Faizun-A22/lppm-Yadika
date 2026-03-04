@@ -1,0 +1,1566 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelola Berita & Kegiatan - LPPM ITB Yadika</title>
+    
+    <!-- CSS External Libraries -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        .gradient-text { 
+            background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            background-clip: text; 
+        }
+        
+        .nav-link { 
+            position: relative; 
+            transition: color 0.3s ease; 
+        }
+        
+        .nav-link::after { 
+            content: ''; 
+            position: absolute; 
+            width: 0; 
+            height: 2px; 
+            bottom: -5px; 
+            left: 50%; 
+            background-color: #3B82F6; 
+            transition: all 0.3s ease; 
+        }
+        
+        .nav-link:hover::after, 
+        .nav-link.active::after { 
+            width: 100%; 
+            left: 0; 
+        }
+        
+        .nav-link.active { 
+            color: #3B82F6; 
+            font-weight: 600; 
+        }
+
+        /* Tab Styles */
+        .tab-button {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .tab-button.active {
+            color: #2563eb;
+            border-bottom: 2px solid #2563eb;
+            font-weight: 600;
+        }
+        .tab-button:not(.active):hover {
+            color: #4b5563;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        .tab-pane { display: none; }
+        .tab-pane.active { display: block; }
+
+        /* Card Styles */
+        .stat-card {
+            transition: all 0.3s ease;
+            border: none;
+            border-radius: 16px;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        /* Status Badges */
+        .badge-draft { background: #fef3c7; color: #92400e; }
+        .badge-published { background: #d1fae5; color: #065f46; }
+        .badge-scheduled { background: #dbeafe; color: #1e40af; }
+        .badge-archived { background: #e5e7eb; color: #374151; }
+        .badge-upcoming { background: #fef3c7; color: #92400e; }
+        .badge-ongoing { background: #dbeafe; color: #1e40af; }
+        .badge-completed { background: #d1fae5; color: #065f46; }
+        .badge-cancelled { background: #fee2e2; color: #991b1b; }
+
+        /* Modal Styles */
+        .modal-content { border-radius: 16px; border: none; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        .modal-header { border-bottom: 1px solid #e5e7eb; padding: 1.5rem; }
+        .modal-body { padding: 1.5rem; }
+        .modal-footer { border-top: 1px solid #e5e7eb; padding: 1.5rem; }
+
+        /* File Upload */
+        .file-upload-area {
+            border: 2px dashed #d1d5db;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            text-align: center;
+            background: #f9fafb;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .file-upload-area:hover {
+            border-color: #3B82F6;
+            background: #eff6ff;
+        }
+
+        /* Summernote Custom */
+        .note-editor.note-frame {
+            border: 1px solid #e5e7eb !important;
+            border-radius: 0.75rem !important;
+        }
+        .note-toolbar {
+            background: #f9fafb !important;
+            border-bottom: 1px solid #e5e7eb !important;
+            border-radius: 0.75rem 0.75rem 0 0 !important;
+        }
+        .note-statusbar {
+            background: #f9fafb !important;
+            border-top: 1px solid #e5e7eb !important;
+            border-radius: 0 0 0.75rem 0.75rem !important;
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3B82F6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans antialiased">
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-white bg-opacity-90 z-50 flex items-center justify-center hidden">
+        <div class="text-center">
+            <div class="loading-spinner"></div>
+            <p class="mt-4 text-gray-600">Memuat data...</p>
+        </div>
+    </div>
+
+    <!-- Top Navigation Bar -->
+    <header class="fixed top-0 left-0 right-0 bg-white shadow-md z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <!-- Logo and Brand -->
+            <a href="admin-dashboard.html" class="flex items-center space-x-3">
+                <img src="images/logoyadika.png" alt="Logo" class="h-10 w-10">
+                <div>
+                    <h1 class="text-xl font-bold gradient-text">LPPM Admin</h1>
+                    <p class="text-xs text-gray-500">ITB Yadika</p>
+                </div>
+            </a>
+
+            <!-- Navigation Links -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="admin-dashboard.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+                </a>
+                <a href="manage-kegiatan.html" class="nav-link active text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-calendar-alt mr-2"></i>Kegiatan & Berita
+                </a>
+                <a href="manage-repository.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-book mr-2"></i>Repository
+                </a>
+                <a href="manage-magang-kkn.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-briefcase mr-2"></i>Magang & KKN
+                </a>
+            </div>
+
+            <!-- User Profile / Logout -->
+            <div class="flex items-center space-x-4">
+                <span class="text-sm text-gray-600 hidden sm:block">Admin LPPM</span>
+                <button onclick="handleLogout()" class="flex items-center space-x-2 p-2 rounded-lg text-red-600 hover:bg-red-50 transition">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span class="hidden sm:inline">Logout</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-20">
+        <div class="container mx-auto px-6 py-8">
+            <!-- Header Section -->
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6" data-aos="fade-down">
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-800">Kelola Berita & Kegiatan</h2>
+                    <p class="text-gray-600">Buat, edit, dan publikasikan berita atau kegiatan LPPM.</p>
+                </div>
+                <div class="flex space-x-3 mt-4 md:mt-0">
+                    <button id="btnTambahBerita" onclick="openModal('berita')" class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-2 rounded-lg font-medium hover:shadow-lg transition-all duration-300 inline-flex items-center">
+                        <i class="fas fa-plus mr-2"></i> Tambah Berita
+                    </button>
+                    <button id="btnTambahKegiatan" onclick="openModal('kegiatan')" class="bg-gradient-to-r from-purple-500 to-pink-600 text-white px-6 py-2 rounded-lg font-medium hover:shadow-lg transition-all duration-300 inline-flex items-center">
+                        <i class="fas fa-plus mr-2"></i> Tambah Kegiatan
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6" data-aos="fade-up">
+                <!-- Total Berita -->
+                <div class="stat-card bg-white p-6 rounded-xl shadow">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-sm text-gray-500">Total Berita</p>
+                            <h3 class="text-2xl font-bold text-gray-800" id="totalBerita">0</h3>
+                        </div>
+                        <div class="bg-blue-100 rounded-full p-3">
+                            <i class="fas fa-newspaper text-blue-600"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex justify-between text-sm">
+                        <span class="text-green-600"><i class="fas fa-check-circle"></i> <span id="beritaPublished">0</span> Published</span>
+                        <span class="text-yellow-600"><i class="fas fa-clock"></i> <span id="beritaDraft">0</span> Draft</span>
+                    </div>
+                </div>
+
+                <!-- Total Kegiatan -->
+                <div class="stat-card bg-white p-6 rounded-xl shadow">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-sm text-gray-500">Total Kegiatan</p>
+                            <h3 class="text-2xl font-bold text-gray-800" id="totalKegiatan">0</h3>
+                        </div>
+                        <div class="bg-purple-100 rounded-full p-3">
+                            <i class="fas fa-calendar-alt text-purple-600"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex justify-between text-sm">
+                        <span class="text-blue-600"><i class="fas fa-hourglass-half"></i> <span id="kegiatanUpcoming">0</span> Akan Datang</span>
+                        <span class="text-green-600"><i class="fas fa-play-circle"></i> <span id="kegiatanOngoing">0</span> Berlangsung</span>
+                    </div>
+                </div>
+
+                <!-- Total Pengunjung (Statistik) -->
+                <div class="stat-card bg-white p-6 rounded-xl shadow">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-sm text-gray-500">Total Pembaca</p>
+                            <h3 class="text-2xl font-bold text-gray-800" id="totalViews">12.5k</h3>
+                        </div>
+                        <div class="bg-green-100 rounded-full p-3">
+                            <i class="fas fa-eye text-green-600"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4 text-sm text-gray-500">
+                        <i class="fas fa-chart-line mr-1"></i> +15% minggu ini
+                    </div>
+                </div>
+
+                <!-- Jadwal Mendatang -->
+                <div class="stat-card bg-white p-6 rounded-xl shadow">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-sm text-gray-500">Kegiatan Mendatang</p>
+                            <h3 class="text-2xl font-bold text-gray-800" id="kegiatanMendatang">3</h3>
+                        </div>
+                        <div class="bg-orange-100 rounded-full p-3">
+                            <i class="fas fa-calendar-check text-orange-600"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4 text-sm text-gray-500">
+                        <i class="fas fa-clock mr-1"></i> Dalam 7 hari ke depan
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Navigator -->
+            <div class="border-b border-gray-200 mb-6" data-aos="fade-up">
+                <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="tabNav">
+                    <li class="mr-2">
+                        <button class="tab-button inline-block p-4 border-b-2 rounded-t-lg" id="tabBeritaBtn" data-tab="berita">
+                            <i class="fas fa-newspaper mr-2"></i>Berita
+                        </button>
+                    </li>
+                    <li class="mr-2">
+                        <button class="tab-button inline-block p-4 border-b-2 rounded-t-lg" id="tabKegiatanBtn" data-tab="kegiatan">
+                            <i class="fas fa-calendar-alt mr-2"></i>Kegiatan
+                        </button>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Panel Berita -->
+            <div id="panelBerita" class="tab-pane active" data-aos="fade-up">
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="p-4 border-b border-gray-200">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="relative">
+                                <input type="text" id="searchBerita" placeholder="Cari judul berita..." 
+                                       class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                            </div>
+                            <select id="filterKategoriBerita" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option value="">Semua Kategori</option>
+                                <option value="pengumuman">Pengumuman</option>
+                                <option value="kegiatan">Kegiatan</option>
+                                <option value="prestasi">Prestasi</option>
+                                <option value="kerjasama">Kerjasama</option>
+                            </select>
+                            <select id="filterStatusBerita" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option value="">Semua Status</option>
+                                <option value="published">Published</option>
+                                <option value="draft">Draft</option>
+                                <option value="scheduled">Terjadwal</option>
+                                <option value="archived">Archived</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="w-full">
+                            <thead class="bg-gray-50 text-gray-700">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Judul</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Kategori</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Penulis</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Tanggal</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Views</th>
+                                    <th class="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="beritaTableBody" class="bg-white divide-y divide-gray-200">
+                                <!-- Data will be loaded here -->
+                                <tr>
+                                    <td colspan="7" class="text-center py-8 text-gray-500">
+                                        <i class="fas fa-spinner fa-spin mr-2"></i> Memuat data...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+                        <div class="text-sm text-gray-500" id="beritaPaginationInfo"></div>
+                        <div class="flex space-x-2">
+                            <button onclick="changeBeritaPage('prev')" class="px-3 py-1 border rounded-lg hover:bg-gray-50">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <span id="beritaCurrentPage" class="px-3 py-1">1</span>
+                            <button onclick="changeBeritaPage('next')" class="px-3 py-1 border rounded-lg hover:bg-gray-50">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel Kegiatan -->
+            <div id="panelKegiatan" class="tab-pane" data-aos="fade-up">
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="p-4 border-b border-gray-200">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div class="relative">
+                                <input type="text" id="searchKegiatan" placeholder="Cari kegiatan..." 
+                                       class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                                <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                            </div>
+                            <select id="filterJenisKegiatan" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                                <option value="">Semua Jenis</option>
+                                <option value="seminar">Seminar</option>
+                                <option value="workshop">Workshop</option>
+                                <option value="pelatihan">Pelatihan</option>
+                                <option value="konferensi">Konferensi</option>
+                            </select>
+                            <select id="filterStatusKegiatan" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                                <option value="">Semua Status</option>
+                                <option value="upcoming">Akan Datang</option>
+                                <option value="ongoing">Berlangsung</option>
+                                <option value="completed">Selesai</option>
+                                <option value="cancelled">Dibatalkan</option>
+                            </select>
+                            <input type="month" id="filterBulanKegiatan" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                        </div>
+                    </div>
+
+                    <!-- Calendar View Toggle -->
+                    <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+                        <h3 class="font-semibold text-gray-700">Daftar Kegiatan</h3>
+                        <div class="flex space-x-2">
+                            <button onclick="toggleView('list')" class="px-3 py-1 bg-blue-100 text-blue-600 rounded-lg text-sm">
+                                <i class="fas fa-list mr-1"></i>List
+                            </button>
+                            <button onclick="toggleView('calendar')" class="px-3 py-1 bg-gray-100 text-gray-600 rounded-lg text-sm">
+                                <i class="fas fa-calendar mr-1"></i>Kalender
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- List View -->
+                    <div id="kegiatanListView" class="table-responsive">
+                        <table class="w-full">
+                            <thead class="bg-gray-50 text-gray-700">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Nama Kegiatan</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Jenis</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Tanggal</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Lokasi</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Peserta</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="kegiatanTableBody" class="bg-white divide-y divide-gray-200">
+                                <!-- Data will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Calendar View (Simple) -->
+                    <div id="kegiatanCalendarView" class="p-4 hidden">
+                        <div class="grid grid-cols-7 gap-2 text-center">
+                            <div class="font-semibold text-sm py-2">Min</div>
+                            <div class="font-semibold text-sm py-2">Sen</div>
+                            <div class="font-semibold text-sm py-2">Sel</div>
+                            <div class="font-semibold text-sm py-2">Rab</div>
+                            <div class="font-semibold text-sm py-2">Kam</div>
+                            <div class="font-semibold text-sm py-2">Jum</div>
+                            <div class="font-semibold text-sm py-2">Sab</div>
+                            <!-- Calendar days will be generated by JavaScript -->
+                        </div>
+                        <div id="calendarDays" class="grid grid-cols-7 gap-2 mt-2"></div>
+                    </div>
+
+                    <div class="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+                        <div class="text-sm text-gray-500" id="kegiatanPaginationInfo"></div>
+                        <div class="flex space-x-2">
+                            <button onclick="changeKegiatanPage('prev')" class="px-3 py-1 border rounded-lg hover:bg-gray-50">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <span id="kegiatanCurrentPage" class="px-3 py-1">1</span>
+                            <button onclick="changeKegiatanPage('next')" class="px-3 py-1 border rounded-lg hover:bg-gray-50">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- MODAL GABUNGAN -->
+    <div id="crudModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50 flex items-center justify-center">
+        <div class="relative bg-white rounded-lg shadow-xl w-11/12 md:w-3/4 lg:w-2/3 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center p-6 border-b sticky top-0 bg-white">
+                <h3 class="text-xl font-bold text-gray-900" id="modalTitle">Tambah Berita Baru</h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form class="p-6" id="modalForm" onsubmit="event.preventDefault(); saveData();">
+                <input type="hidden" id="editId">
+                <input type="hidden" id="currentType">
+                
+                <!-- Form Berita -->
+                <div id="formBerita">
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Judul Berita <span class="text-red-500">*</span></label>
+                            <input type="text" id="beritaJudul" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500" required>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Kategori <span class="text-red-500">*</span></label>
+                            <select id="beritaKategori" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500" required>
+                                <option value="">Pilih Kategori</option>
+                                <option value="pengumuman">Pengumuman</option>
+                                <option value="kegiatan">Kegiatan</option>
+                                <option value="prestasi">Prestasi</option>
+                                <option value="kerjasama">Kerjasama</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Penulis</label>
+                            <input type="text" id="beritaPenulis" value="Admin LPPM" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Tanggal Publikasi</label>
+                            <input type="datetime-local" id="beritaTanggal" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Thumbnail</label>
+                        <div class="file-upload-area" onclick="document.getElementById('beritaThumbnail').click()">
+                            <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-2"></i>
+                            <p class="text-sm text-gray-600" id="thumbnailFileName">Klik untuk upload gambar thumbnail</p>
+                            <p class="text-xs text-gray-400 mt-1">Format: JPG, PNG (max 2MB)</p>
+                        </div>
+                        <input type="file" id="beritaThumbnail" accept="image/*" class="hidden" onchange="updateFileName(this, 'thumbnailFileName')">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Konten Berita <span class="text-red-500">*</span></label>
+                        <textarea id="beritaKonten" rows="10" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"></textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Status</label>
+                        <select id="beritaStatus" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <option value="draft">Draft</option>
+                            <option value="published">Published</option>
+                            <option value="scheduled">Terjadwal</option>
+                            <option value="archived">Archived</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Form Kegiatan -->
+                <div id="formKegiatan" class="hidden">
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Nama Kegiatan <span class="text-red-500">*</span></label>
+                            <input type="text" id="kegiatanNama" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500" required>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Jenis Kegiatan <span class="text-red-500">*</span></label>
+                            <select id="kegiatanJenis" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500" required>
+                                <option value="">Pilih Jenis</option>
+                                <option value="seminar">Seminar</option>
+                                <option value="workshop">Workshop</option>
+                                <option value="pelatihan">Pelatihan</option>
+                                <option value="konferensi">Konferensi</option>
+                                <option value="lainnya">Lainnya</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Tanggal Mulai</label>
+                            <input type="datetime-local" id="kegiatanTanggalMulai" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Tanggal Selesai</label>
+                            <input type="datetime-local" id="kegiatanTanggalSelesai" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500">
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Lokasi</label>
+                        <input type="text" id="kegiatanLokasi" placeholder="Contoh: Auditorium ITB Yadika" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Kapasitas Peserta</label>
+                            <input type="number" id="kegiatanKapasitas" min="1" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Pendaftar Saat Ini</label>
+                            <input type="number" id="kegiatanPendaftar" min="0" value="0" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500">
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Narasumber / Pembicara</label>
+                        <input type="text" id="kegiatanNarasumber" placeholder="Pisahkan dengan koma" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Deskripsi Kegiatan</label>
+                        <textarea id="kegiatanDeskripsi" rows="5" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500"></textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Poster / Banner</label>
+                        <div class="file-upload-area" onclick="document.getElementById('kegiatanPoster').click()">
+                            <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-2"></i>
+                            <p class="text-sm text-gray-600" id="posterFileName">Klik untuk upload poster</p>
+                            <p class="text-xs text-gray-400 mt-1">Format: JPG, PNG, PDF (max 5MB)</p>
+                        </div>
+                        <input type="file" id="kegiatanPoster" accept="image/*,.pdf" class="hidden" onchange="updateFileName(this, 'posterFileName')">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Link Pendaftaran</label>
+                        <input type="url" id="kegiatanLink" placeholder="https://forms.gle/..." class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Status</label>
+                        <select id="kegiatanStatus" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500">
+                            <option value="upcoming">Akan Datang</option>
+                            <option value="ongoing">Berlangsung</option>
+                            <option value="completed">Selesai</option>
+                            <option value="cancelled">Dibatalkan</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="flex justify-end space-x-3 pt-4 border-t">
+                    <button type="button" onclick="closeModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
+                        Batal
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg hover:shadow-lg transition" id="modalSubmitBtn">
+                        Simpan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Detail -->
+    <div id="detailModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50 flex items-center justify-center">
+        <div class="relative bg-white rounded-lg shadow-xl w-11/12 md:w-3/4 lg:w-1/2 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center p-6 border-b">
+                <h3 class="text-xl font-bold text-gray-900" id="detailModalTitle">Detail</h3>
+                <button onclick="closeDetailModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6" id="detailModalContent">
+                <!-- Content will be loaded dynamically -->
+            </div>
+            <div class="flex justify-end p-6 border-t">
+                <button onclick="closeDetailModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Konfirmasi -->
+    <div id="confirmModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50 flex items-center justify-center">
+        <div class="relative bg-white rounded-lg shadow-xl w-11/12 md:w-1/3">
+            <div class="p-6">
+                <div class="text-center">
+                    <i class="fas fa-exclamation-triangle text-yellow-500 text-5xl mb-4"></i>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2" id="confirmTitle">Konfirmasi</h3>
+                    <p class="text-gray-600 mb-6" id="confirmMessage">Apakah Anda yakin ingin menghapus data ini?</p>
+                    <div class="flex justify-center space-x-3">
+                        <button onclick="closeConfirmModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
+                            Batal
+                        </button>
+                        <button id="confirmActionBtn" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+                            Hapus
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        // Initialize AOS
+        AOS.init({ duration: 800, once: true });
+
+        // ==================== MOCK DATA ====================
+        let beritaData = [
+            {
+                id: 1,
+                judul: 'Workshop Penulisan Jurnal Internasional',
+                kategori: 'kegiatan',
+                penulis: 'Admin LPPM',
+                tanggal: '2024-01-15T10:00',
+                konten: '<p>Workshop penulisan jurnal internasional akan dilaksanakan pada tanggal 15 Januari 2024. Workshop ini bertujuan untuk meningkatkan kemampuan dosen dalam menulis artikel jurnal internasional bereputasi.</p><p>Narasumber: Prof. Dr. John Doe dari Universitas Indonesia.</p>',
+                thumbnail: null,
+                status: 'published',
+                views: 245,
+                created_at: '2024-01-10'
+            },
+            {
+                id: 2,
+                judul: 'Pengumuman Hasil Seleksi Reviewer',
+                kategori: 'pengumuman',
+                penulis: 'Admin LPPM',
+                tanggal: '2024-01-20T09:00',
+                konten: '<p>Berdasarkan hasil seleksi administrasi dan wawancara, berikut adalah daftar reviewer yang lolos seleksi...</p>',
+                thumbnail: null,
+                status: 'published',
+                views: 567,
+                created_at: '2024-01-18'
+            },
+            {
+                id: 3,
+                judul: 'Dosen ITB Yadika Raih Hibah Penelitian',
+                kategori: 'prestasi',
+                penulis: 'Admin LPPM',
+                tanggal: '2024-01-25T14:30',
+                konten: '<p>Dr. Ahmad Fauzi, M.T. berhasil meraih hibah penelitian dari Kemenristekdikti senilai Rp 200 juta untuk penelitian tentang kecerdasan buatan.</p>',
+                thumbnail: null,
+                status: 'draft',
+                views: 89,
+                created_at: '2024-01-22'
+            }
+        ];
+
+        let kegiatanData = [
+            {
+                id: 1,
+                nama: 'Seminar Nasional Teknologi Informasi',
+                jenis: 'seminar',
+                tanggal_mulai: '2024-02-10T08:00',
+                tanggal_selesai: '2024-02-10T16:00',
+                lokasi: 'Auditorium ITB Yadika',
+                kapasitas: 200,
+                pendaftar: 145,
+                narasumber: 'Prof. Dr. Budi Santoso, Dr. Rina Wijaya',
+                deskripsi: 'Seminar Nasional dengan tema "Transformasi Digital untuk Masa Depan Indonesia"',
+                poster: null,
+                link_pendaftaran: 'https://forms.gle/example',
+                status: 'upcoming',
+                created_at: '2024-01-05'
+            },
+            {
+                id: 2,
+                nama: 'Pelatihan Metodologi Penelitian',
+                jenis: 'pelatihan',
+                tanggal_mulai: '2024-01-25T09:00',
+                tanggal_selesai: '2024-01-27T16:00',
+                lokasi: 'Ruang Seminar Lantai 3',
+                kapasitas: 50,
+                pendaftar: 38,
+                narasumber: 'Dr. Ahmad Fauzi',
+                deskripsi: 'Pelatihan metodologi penelitian kuantitatif dan kualitatif bagi dosen muda',
+                poster: null,
+                link_pendaftaran: 'https://forms.gle/example2',
+                status: 'ongoing',
+                created_at: '2024-01-02'
+            },
+            {
+                id: 3,
+                nama: 'Workshop Penyusunan Proposal Hibah',
+                jenis: 'workshop',
+                tanggal_mulai: '2024-02-15T08:30',
+                tanggal_selesai: '2024-02-16T15:30',
+                lokasi: 'Online (Zoom)',
+                kapasitas: 100,
+                pendaftar: 72,
+                narasumber: 'Tim Reviewer LPPM',
+                deskripsi: 'Workshop penyusunan proposal hibah penelitian dan pengabdian',
+                poster: null,
+                link_pendaftaran: 'https://forms.gle/example3',
+                status: 'upcoming',
+                created_at: '2024-01-15'
+            }
+        ];
+
+        // Pagination variables
+        let beritaCurrentPage = 1;
+        let kegiatanCurrentPage = 1;
+        const itemsPerPage = 5;
+
+        // ==================== UTILITY FUNCTIONS ====================
+        function showLoading() {
+            document.getElementById('loadingOverlay').classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.add('hidden');
+        }
+
+        function showNotification(message, type = 'success') {
+            Swal.fire({
+                icon: type,
+                title: type === 'success' ? 'Berhasil' : type === 'error' ? 'Gagal' : 'Informasi',
+                text: message,
+                timer: 2000,
+                showConfirmButton: false
+            });
+        }
+
+        function showConfirmation(message, callback) {
+            document.getElementById('confirmMessage').textContent = message;
+            document.getElementById('confirmModal').classList.remove('hidden');
+            
+            document.getElementById('confirmActionBtn').onclick = function() {
+                closeConfirmModal();
+                callback();
+            };
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('confirmModal').classList.add('hidden');
+        }
+
+        function handleLogout() {
+            showConfirmation('Apakah Anda yakin ingin logout?', () => {
+                window.location.href = '../../login.html';
+            });
+        }
+
+        // Update file name
+        function updateFileName(input, elementId) {
+            const fileName = input.files[0] ? input.files[0].name : 'Tidak ada file dipilih';
+            document.getElementById(elementId).textContent = fileName;
+        }
+
+        // Format date
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            return new Date(dateString).toLocaleDateString('id-ID', options);
+        }
+
+        function formatDateTime(dateString) {
+            if (!dateString) return '-';
+            const options = { 
+                day: 'numeric', 
+                month: 'long', 
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            return new Date(dateString).toLocaleDateString('id-ID', options);
+        }
+
+        // Get status badge class
+        function getStatusBadge(status, type = 'berita') {
+            const badges = {
+                berita: {
+                    'draft': 'badge-draft',
+                    'published': 'badge-published',
+                    'scheduled': 'badge-scheduled',
+                    'archived': 'badge-archived'
+                },
+                kegiatan: {
+                    'upcoming': 'badge-upcoming',
+                    'ongoing': 'badge-ongoing',
+                    'completed': 'badge-completed',
+                    'cancelled': 'badge-cancelled'
+                }
+            };
+            return badges[type][status] || 'bg-gray-100 text-gray-800';
+        }
+
+        function getStatusText(status, type = 'berita') {
+            const texts = {
+                berita: {
+                    'draft': 'Draft',
+                    'published': 'Published',
+                    'scheduled': 'Terjadwal',
+                    'archived': 'Archived'
+                },
+                kegiatan: {
+                    'upcoming': 'Akan Datang',
+                    'ongoing': 'Berlangsung',
+                    'completed': 'Selesai',
+                    'cancelled': 'Dibatalkan'
+                }
+            };
+            return texts[type][status] || status;
+        }
+
+        // ==================== TAB FUNCTIONALITY ====================
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const panels = {
+            berita: document.getElementById('panelBerita'),
+            kegiatan: document.getElementById('panelKegiatan')
+        };
+        const btnTambahBerita = document.getElementById('btnTambahBerita');
+        const btnTambahKegiatan = document.getElementById('btnTambahKegiatan');
+
+        function updateButtonsForTab(tabId) {
+            if (tabId === 'berita') {
+                btnTambahBerita.classList.remove('hidden');
+                btnTambahKegiatan.classList.add('hidden');
+            } else {
+                btnTambahBerita.classList.add('hidden');
+                btnTambahKegiatan.classList.remove('hidden');
+            }
+        }
+
+        function activateTab(tabId) {
+            panels.berita.classList.remove('active');
+            panels.kegiatan.classList.remove('active');
+            panels[tabId].classList.add('active');
+
+            tabButtons.forEach(btn => {
+                btn.classList.remove('active', 'text-blue-600', 'border-blue-600');
+                if (btn.dataset.tab === tabId) {
+                    btn.classList.add('active', 'text-blue-600', 'border-blue-600');
+                }
+            });
+
+            updateButtonsForTab(tabId);
+            
+            // Load data for the tab
+            if (tabId === 'berita') {
+                renderBeritaTable();
+            } else {
+                renderKegiatanTable();
+            }
+        }
+
+        tabButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                activateTab(btn.dataset.tab);
+                
+                const url = new URL(window.location);
+                if (btn.dataset.tab === 'kegiatan') {
+                    url.searchParams.set('tab', 'kegiatan');
+                } else {
+                    url.searchParams.delete('tab');
+                }
+                window.history.pushState({}, '', url);
+            });
+        });
+
+        // Set initial tab from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const initialTab = urlParams.get('tab') === 'kegiatan' ? 'kegiatan' : 'berita';
+        activateTab(initialTab);
+
+        // ==================== BERITA FUNCTIONS ====================
+        function renderBeritaTable() {
+            const search = document.getElementById('searchBerita')?.value || '';
+            const kategori = document.getElementById('filterKategoriBerita')?.value || '';
+            const status = document.getElementById('filterStatusBerita')?.value || '';
+
+            let filtered = beritaData;
+
+            if (search) {
+                filtered = filtered.filter(b => 
+                    b.judul.toLowerCase().includes(search.toLowerCase())
+                );
+            }
+
+            if (kategori) {
+                filtered = filtered.filter(b => b.kategori === kategori);
+            }
+
+            if (status) {
+                filtered = filtered.filter(b => b.status === status);
+            }
+
+            updateStats();
+
+            const start = (beritaCurrentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const paginatedData = filtered.slice(start, end);
+
+            const tbody = document.getElementById('beritaTableBody');
+            
+            if (paginatedData.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="text-center py-8 text-gray-500">
+                            <i class="fas fa-newspaper text-4xl mb-3"></i><br>
+                            Tidak ada data berita
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = paginatedData.map(berita => {
+                const badgeClass = getStatusBadge(berita.status, 'berita');
+                const statusText = getStatusText(berita.status, 'berita');
+                
+                return `
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4">
+                            <div class="font-medium text-gray-900">${berita.judul.substring(0, 50)}${berita.judul.length > 50 ? '...' : ''}</div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="px-2 py-1 text-xs rounded-full ${getKategoriClass(berita.kategori)}">
+                                ${berita.kategori}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-600">${berita.penulis}</td>
+                        <td class="px-6 py-4 text-sm text-gray-600">${formatDate(berita.tanggal)}</td>
+                        <td class="px-6 py-4">
+                            <span class="px-2 py-1 text-xs rounded-full ${badgeClass}">
+                                ${statusText}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-600">${berita.views}</td>
+                        <td class="px-6 py-4 text-center">
+                            <button onclick="viewDetail('berita', ${berita.id})" class="text-blue-600 hover:text-blue-900 mr-3" title="Detail">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button onclick="editData('berita', ${berita.id})" class="text-green-600 hover:text-green-900 mr-3" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="deleteData('berita', ${berita.id})" class="text-red-600 hover:text-red-900" title="Hapus">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            document.getElementById('beritaPaginationInfo').innerHTML = 
+                `Menampilkan ${start + 1} - ${Math.min(end, filtered.length)} dari ${filtered.length} data`;
+            document.getElementById('beritaCurrentPage').textContent = beritaCurrentPage;
+        }
+
+        function getKategoriClass(kategori) {
+            const classes = {
+                'pengumuman': 'bg-yellow-100 text-yellow-800',
+                'kegiatan': 'bg-blue-100 text-blue-800',
+                'prestasi': 'bg-green-100 text-green-800',
+                'kerjasama': 'bg-purple-100 text-purple-800'
+            };
+            return classes[kategori] || 'bg-gray-100 text-gray-800';
+        }
+
+        function changeBeritaPage(direction) {
+            const filtered = filterBeritaData();
+            const totalPages = Math.ceil(filtered.length / itemsPerPage);
+            
+            if (direction === 'prev' && beritaCurrentPage > 1) {
+                beritaCurrentPage--;
+            } else if (direction === 'next' && beritaCurrentPage < totalPages) {
+                beritaCurrentPage++;
+            }
+            renderBeritaTable();
+        }
+
+        function filterBeritaData() {
+            const search = document.getElementById('searchBerita')?.value || '';
+            const kategori = document.getElementById('filterKategoriBerita')?.value || '';
+            const status = document.getElementById('filterStatusBerita')?.value || '';
+
+            let filtered = beritaData;
+
+            if (search) {
+                filtered = filtered.filter(b => 
+                    b.judul.toLowerCase().includes(search.toLowerCase())
+                );
+            }
+
+            if (kategori) {
+                filtered = filtered.filter(b => b.kategori === kategori);
+            }
+
+            if (status) {
+                filtered = filtered.filter(b => b.status === status);
+            }
+
+            return filtered;
+        }
+
+        // ==================== KEGIATAN FUNCTIONS ====================
+        function renderKegiatanTable() {
+            const search = document.getElementById('searchKegiatan')?.value || '';
+            const jenis = document.getElementById('filterJenisKegiatan')?.value || '';
+            const status = document.getElementById('filterStatusKegiatan')?.value || '';
+            const bulan = document.getElementById('filterBulanKegiatan')?.value || '';
+
+            let filtered = kegiatanData;
+
+            if (search) {
+                filtered = filtered.filter(k => 
+                    k.nama.toLowerCase().includes(search.toLowerCase())
+                );
+            }
+
+            if (jenis) {
+                filtered = filtered.filter(k => k.jenis === jenis);
+            }
+
+            if (status) {
+                filtered = filtered.filter(k => k.status === status);
+            }
+
+            if (bulan) {
+                filtered = filtered.filter(k => 
+                    k.tanggal_mulai.startsWith(bulan)
+                );
+            }
+
+            const start = (kegiatanCurrentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const paginatedData = filtered.slice(start, end);
+
+            const tbody = document.getElementById('kegiatanTableBody');
+            
+            if (paginatedData.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="text-center py-8 text-gray-500">
+                            <i class="fas fa-calendar-alt text-4xl mb-3"></i><br>
+                            Tidak ada data kegiatan
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = paginatedData.map(kegiatan => {
+                const badgeClass = getStatusBadge(kegiatan.status, 'kegiatan');
+                const statusText = getStatusText(kegiatan.status, 'kegiatan');
+                
+                return `
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4">
+                            <div class="font-medium text-gray-900">${kegiatan.nama.substring(0, 50)}${kegiatan.nama.length > 50 ? '...' : ''}</div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="px-2 py-1 text-xs rounded-full bg-purple-100 text-purple-800">
+                                ${kegiatan.jenis}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-600">${formatDateTime(kegiatan.tanggal_mulai)}</td>
+                        <td class="px-6 py-4 text-sm text-gray-600">${kegiatan.lokasi}</td>
+                        <td class="px-6 py-4 text-sm text-gray-600">${kegiatan.pendaftar}/${kegiatan.kapasitas}</td>
+                        <td class="px-6 py-4">
+                            <span class="px-2 py-1 text-xs rounded-full ${badgeClass}">
+                                ${statusText}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            <button onclick="viewDetail('kegiatan', ${kegiatan.id})" class="text-blue-600 hover:text-blue-900 mr-3" title="Detail">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button onclick="editData('kegiatan', ${kegiatan.id})" class="text-green-600 hover:text-green-900 mr-3" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="deleteData('kegiatan', ${kegiatan.id})" class="text-red-600 hover:text-red-900" title="Hapus">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            document.getElementById('kegiatanPaginationInfo').innerHTML = 
+                `Menampilkan ${start + 1} - ${Math.min(end, filtered.length)} dari ${filtered.length} data`;
+            document.getElementById('kegiatanCurrentPage').textContent = kegiatanCurrentPage;
+        }
+
+        function changeKegiatanPage(direction) {
+            const filtered = filterKegiatanData();
+            const totalPages = Math.ceil(filtered.length / itemsPerPage);
+            
+            if (direction === 'prev' && kegiatanCurrentPage > 1) {
+                kegiatanCurrentPage--;
+            } else if (direction === 'next' && kegiatanCurrentPage < totalPages) {
+                kegiatanCurrentPage++;
+            }
+            renderKegiatanTable();
+        }
+
+        function filterKegiatanData() {
+            const search = document.getElementById('searchKegiatan')?.value || '';
+            const jenis = document.getElementById('filterJenisKegiatan')?.value || '';
+            const status = document.getElementById('filterStatusKegiatan')?.value || '';
+            const bulan = document.getElementById('filterBulanKegiatan')?.value || '';
+
+            let filtered = kegiatanData;
+
+            if (search) {
+                filtered = filtered.filter(k => 
+                    k.nama.toLowerCase().includes(search.toLowerCase())
+                );
+            }
+
+            if (jenis) {
+                filtered = filtered.filter(k => k.jenis === jenis);
+            }
+
+            if (status) {
+                filtered = filtered.filter(k => k.status === status);
+            }
+
+            if (bulan) {
+                filtered = filtered.filter(k => 
+                    k.tanggal_mulai.startsWith(bulan)
+                );
+            }
+
+            return filtered;
+        }
+
+        // Toggle view (list/calendar)
+        function toggleView(view) {
+            const listView = document.getElementById('kegiatanListView');
+            const calendarView = document.getElementById('kegiatanCalendarView');
+            
+            if (view === 'list') {
+                listView.classList.remove('hidden');
+                calendarView.classList.add('hidden');
+                renderKegiatanTable();
+            } else {
+                listView.classList.add('hidden');
+                calendarView.classList.remove('hidden');
+                renderCalendar();
+            }
+        }
+
+        function renderCalendar() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth();
+            
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            
+            let calendarHTML = '';
+            
+            // Empty cells for days before month starts
+            for (let i = 0; i < firstDay; i++) {
+                calendarHTML += '<div class="text-center p-2 text-gray-400"></div>';
+            }
+            
+            // Days of the month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const kegiatanHariIni = kegiatanData.filter(k => 
+                    k.tanggal_mulai.startsWith(date)
+                );
+                
+                calendarHTML += `
+                    <div class="border rounded-lg p-2 min-h-[80px] ${kegiatanHariIni.length > 0 ? 'bg-blue-50' : ''}">
+                        <div class="font-semibold text-sm">${day}</div>
+                        ${kegiatanHariIni.slice(0, 2).map(k => `
+                            <div class="text-xs bg-blue-200 rounded p-1 mt-1 truncate" title="${k.nama}">
+                                ${k.nama.substring(0, 15)}...
+                            </div>
+                        `).join('')}
+                        ${kegiatanHariIni.length > 2 ? `<div class="text-xs text-gray-500">+${kegiatanHariIni.length - 2} lagi</div>` : ''}
+                    </div>
+                `;
+            }
+            
+            document.getElementById('calendarDays').innerHTML = calendarHTML;
+        }
+
+        // ==================== STATS FUNCTIONS ====================
+        function updateStats() {
+            document.getElementById('totalBerita').textContent = beritaData.length;
+            document.getElementById('beritaPublished').textContent = beritaData.filter(b => b.status === 'published').length;
+            document.getElementById('beritaDraft').textContent = beritaData.filter(b => b.status === 'draft').length;
+            
+            document.getElementById('totalKegiatan').textContent = kegiatanData.length;
+            document.getElementById('kegiatanUpcoming').textContent = kegiatanData.filter(k => k.status === 'upcoming').length;
+            document.getElementById('kegiatanOngoing').textContent = kegiatanData.filter(k => k.status === 'ongoing').length;
+            document.getElementById('kegiatanMendatang').textContent = kegiatanData.filter(k => k.status === 'upcoming').length;
+        }
+
+        // ==================== MODAL FUNCTIONS ====================
+        window.openModal = function(type, id = null) {
+            document.getElementById('currentType').value = type;
+            
+            if (type === 'berita') {
+                document.getElementById('modalTitle').innerText = id ? 'Edit Berita' : 'Tambah Berita Baru';
+                document.getElementById('formBerita').classList.remove('hidden');
+                document.getElementById('formKegiatan').classList.add('hidden');
+                document.getElementById('modalSubmitBtn').className = 'px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg hover:shadow-lg transition';
+                
+                if (id) {
+                    // Load data for editing
+                    const berita = beritaData.find(b => b.id === id);
+                    if (berita) {
+                        document.getElementById('editId').value = berita.id;
+                        document.getElementById('beritaJudul').value = berita.judul;
+                        document.getElementById('beritaKategori').value = berita.kategori;
+                        document.getElementById('beritaPenulis').value = berita.penulis;
+                        document.getElementById('beritaTanggal').value = berita.tanggal;
+                        document.getElementById('beritaKonten').value = berita.konten;
+                        document.getElementById('beritaStatus').value = berita.status;
+                    }
+                } else {
+                    // Reset form
+                    document.getElementById('editId').value = '';
+                    document.getElementById('beritaJudul').value = '';
+                    document.getElementById('beritaKategori').value = '';
+                    document.getElementById('beritaPenulis').value = 'Admin LPPM';
+                    document.getElementById('beritaTanggal').value = '';
+                    document.getElementById('beritaKonten').value = '';
+                    document.getElementById('beritaStatus').value = 'draft';
+                    document.getElementById('thumbnailFileName').textContent = 'Klik untuk upload gambar thumbnail';
+                }
+            } else {
+                document.getElementById('modalTitle').innerText = id ? 'Edit Kegiatan' : 'Tambah Kegiatan Baru';
+                document.getElementById('formBerita').classList.add('hidden');
+                document.getElementById('formKegiatan').classList.remove('hidden');
+                document.getElementById('modalSubmitBtn').className = 'px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-lg hover:shadow-lg transition';
+                
+                if (id) {
+                    // Load data for editing
+                    const kegiatan = kegiatanData.find(k => k.id === id);
+                    if (kegiatan) {
+                        document.getElementById('editId').value = kegiatan.id;
+                        document.getElementById('kegiatanNama').value = kegiatan.nama;
+                        document.getElementById('kegiatanJenis').value = kegiatan.jenis;
+                        document.getElementById('kegiatanTanggalMulai').value = kegiatan.tanggal_mulai;
+                        document.getElementById('kegiatanTanggalSelesai').value = kegiatan.tanggal_selesai;
+                        document.getElementById('kegiatanLokasi').value = kegiatan.lokasi;
+                        document.getElementById('kegiatanKapasitas').value = kegiatan.kapasitas;
+                        document.getElementById('kegiatanPendaftar').value = kegiatan.pendaftar;
+                        document.getElementById('kegiatanNarasumber').value = kegiatan.narasumber;
+                        document.getElementById('kegiatanDeskripsi').value = kegiatan.deskripsi;
+                        document.getElementById('kegiatanLink').value = kegiatan.link_pendaftaran || '';
+                        document.getElementById('kegiatanStatus').value = kegiatan.status;
+                    }
+                } else {
+                    // Reset form
+                    document.getElementById('editId').value = '';
+                    document.getElementById('kegiatanNama').value = '';
+                    document.getElementById('kegiatanJenis').value = '';
+                    document.getElementById('kegiatanTanggalMulai').value = '';
+                    document.getElementById('kegiatanTanggalSelesai').value = '';
+                    document.getElementById('kegiatanLokasi').value = '';
+                    document.getElementById('kegiatanKapasitas').value = '';
+                    document.getElementById('kegiatanPendaftar').value = '0';
+                    document.getElementById('kegiatanNarasumber').value = '';
+                    document.getElementById('kegiatanDeskripsi').value = '';
+                    document.getElementById('kegiatanLink').value = '';
+                    document.getElementById('kegiatanStatus').value = 'upcoming';
+                    document.getElementById('posterFileName').textContent = 'Klik untuk upload poster';
+                }
+            }
+            
+            document.getElementById('crudModal').classList.remove('hidden');
+        };
+
+        window.closeModal = function() {
+            document.getElementById('crudModal').classList.add('hidden');
+        };
+
+        // Save data
+        window.saveData = function() {
+            const type = document.getElementById('currentType').value;
+            const id = document.getElementById('editId').value;
+            
+            if (type === 'berita') {
+                const beritaData = {
+                    id: id ? parseInt(id) : beritaData.length + 1,
+                    judul: document.getElementById('beritaJudul').value,
+                    kategori: document.getElementById('beritaKategori').value,
+                    penulis: document.getElementById('beritaPenulis').value,
+                    tanggal: document.getElementById('beritaTanggal').value || new Date().toISOString(),
+                    konten: document.getElementById('beritaKonten').value,
+                    thumbnail: null,
+                    status: document.getElementById('beritaStatus').value,
+                    views: 0,
+                    created_at: new Date().toISOString()
+                };
+
+                if (id) {
+                    // Update existing
+                    const index = window.beritaData.findIndex(b => b.id === parseInt(id));
+                    if (index !== -1) {
+                        window.beritaData[index] = { ...window.beritaData[index], ...beritaData };
+                    }
+                } else {
+                    // Add new
+                    window.beritaData.push(beritaData);
+                }
+            } else {
+                const kegiatan = {
+                    id: id ? parseInt(id) : kegiatanData.length + 1,
+                    nama: document.getElementById('kegiatanNama').value,
+                    jenis: document.getElementById('kegiatanJenis').value,
+                    tanggal_mulai: document.getElementById('kegiatanTanggalMulai').value,
+                    tanggal_selesai: document.getElementById('kegiatanTanggalSelesai').value,
+                    lokasi: document.getElementById('kegiatanLokasi').value,
+                    kapasitas: parseInt(document.getElementById('kegiatanKapasitas').value) || 0,
+                    pendaftar: parseInt(document.getElementById('kegiatanPendaftar').value) || 0,
+                    narasumber: document.getElementById('kegiatanNarasumber').value,
+                    deskripsi: document.getElementById('kegiatanDeskripsi').value,
+                    poster: null,
+                    link_pendaftaran: document.getElementById('kegiatanLink').value,
+                    status: document.getElementById('kegiatanStatus').value,
+                    created_at: new Date().toISOString()
+                };
+
+                if (id) {
+                    // Update existing
+                    const index = kegiatanData.findIndex(k => k.id === parseInt(id));
+                    if (index !== -1) {
+                        kegiatanData[index] = { ...kegiatanData[index], ...kegiatan };
+                    }
+                } else {
+                    // Add new
+                    kegiatanData.push(kegiatan);
+                }
+            }
+
+            showNotification('Data berhasil disimpan', 'success');
+            closeModal();
+            
+            // Refresh current tab
+            if (type === 'berita') {
+                renderBeritaTable();
+            } else {
+                renderKegiatanTable();
+            }
+            updateStats();
+        };
+
+        // View detail
+        window.viewDetail = function(type, id) {
+            const data = type === 'berita' 
+                ? beritaData.find(b => b.id === id)
+                : kegiatanData.find(k => k.id === id);
+            
+            if (!data) return;
+
+            document.getElementById('detailModalTitle').textContent = 
+                type === 'berita' ? 'Detail Berita' : 'Detail Kegiatan';
+            
+            let content = '';
+            if (type === 'berita') {
+                content = `
+                    <div class="space-y-4">
+                        <h3 class="text-xl font-bold">${data.judul}</h3>
+                        <div class="flex items-center text-sm text-gray-500 space-x-4">
+                            <span><i class="fas fa-user mr-1"></i>${data.penulis}</span>
+                            <span><i class="fas fa-calendar mr-1"></i>${formatDateTime(data.tanggal)}</span>
+                            <span><i class="fas fa-eye mr-1"></i>${data.views} views</span>
+                        </div>
+                        <div class="prose max-w-none">
+                            ${data.konten}
+                        </div>
+                    </div>
+                `;
+            } else {
+                content = `
+                    <div class="space-y-4">
+                        <h3 class="text-xl font-bold">${data.nama}</h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-sm text-gray-500">Jenis</p>
+                                <p class="font-medium">${data.jenis}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">Status</p>
+                                <p><span class="px-2 py-1 text-xs rounded-full ${getStatusBadge(data.status, 'kegiatan')}">
+                                    ${getStatusText(data.status, 'kegiatan')}
+                                </span></p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">Tanggal Mulai</p>
+                                <p class="font-medium">${formatDateTime(data.tanggal_mulai)}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">Tanggal Selesai</p>
+                                <p class="font-medium">${formatDateTime(data.tanggal_selesai)}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">Lokasi</p>
+                                <p class="font-medium">${data.lokasi}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">Peserta</p>
+                                <p class="font-medium">${data.pendaftar}/${data.kapasitas}</p>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Narasumber</p>
+                            <p>${data.narasumber || '-'}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Deskripsi</p>
+                            <p>${data.deskripsi || '-'}</p>
+                        </div>
+                        ${data.link_pendaftaran ? `
+                            <div>
+                                <p class="text-sm text-gray-500">Link Pendaftaran</p>
+                                <a href="${data.link_pendaftaran}" target="_blank" class="text-blue-600 hover:underline">${data.link_pendaftaran}</a>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }
+
+            document.getElementById('detailModalContent').innerHTML = content;
+            document.getElementById('detailModal').classList.remove('hidden');
+        };
+
+        window.closeDetailModal = function() {
+            document.getElementById('detailModal').classList.add('hidden');
+        };
+
+        // Edit data
+        window.editData = function(type, id) {
+            openModal(type, id);
+        };
+
+        // Delete data
+        window.deleteData = function(type, id) {
+            showConfirmation('Apakah Anda yakin ingin menghapus data ini?', () => {
+                if (type === 'berita') {
+                    beritaData = beritaData.filter(b => b.id !== id);
+                    renderBeritaTable();
+                } else {
+                    kegiatanData = kegiatanData.filter(k => k.id !== id);
+                    renderKegiatanTable();
+                }
+                updateStats();
+                showNotification('Data berhasil dihapus', 'success');
+            });
+        };
+
+        // ==================== SEARCH AND FILTER LISTENERS ====================
+        document.getElementById('searchBerita')?.addEventListener('input', () => {
+            beritaCurrentPage = 1;
+            renderBeritaTable();
+        });
+        document.getElementById('filterKategoriBerita')?.addEventListener('change', () => {
+            beritaCurrentPage = 1;
+            renderBeritaTable();
+        });
+        document.getElementById('filterStatusBerita')?.addEventListener('change', () => {
+            beritaCurrentPage = 1;
+            renderBeritaTable();
+        });
+
+        document.getElementById('searchKegiatan')?.addEventListener('input', () => {
+            kegiatanCurrentPage = 1;
+            renderKegiatanTable();
+        });
+        document.getElementById('filterJenisKegiatan')?.addEventListener('change', () => {
+            kegiatanCurrentPage = 1;
+            renderKegiatanTable();
+        });
+        document.getElementById('filterStatusKegiatan')?.addEventListener('change', () => {
+            kegiatanCurrentPage = 1;
+            renderKegiatanTable();
+        });
+        document.getElementById('filterBulanKegiatan')?.addEventListener('change', () => {
+            kegiatanCurrentPage = 1;
+            renderKegiatanTable();
+        });
+
+        // Close modals when clicking outside
+        document.getElementById('crudModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('crudModal')) {
+                closeModal();
+            }
+        });
+
+        document.getElementById('detailModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('detailModal')) {
+                closeDetailModal();
+            }
+        });
+
+        document.getElementById('confirmModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('confirmModal')) {
+                closeConfirmModal();
+            }
+        });
+
+        // Initialize data
+        document.addEventListener('DOMContentLoaded', () => {
+            renderBeritaTable();
+            renderKegiatanTable();
+            updateStats();
+        });
+    </script>
+</body>
+</html>

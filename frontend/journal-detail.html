@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Jurnal - LPPM ITB Yadika Pasuruan</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#1E40AF',
+                        'secondary': '#6B21A8',
+                        'accent': '#BE185D',
+                        'dark': '#111827',
+                        'light': '#F9FAFB',
+                    },
+                    animation: {
+                        'float-slow': 'float 6s ease-in-out infinite',
+                        'float-medium': 'float 4s ease-in-out infinite',
+                        'float-fast': 'float 3s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'gradient': 'gradient 8s ease infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        gradient: {
+                            '0%, 100%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' },
+                        },
+                    },
+                    backgroundImage: {
+                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        .gradient-text {
+            background: linear-gradient(135deg, #1E40AF 0%, #6B21A8 50%, #BE185D 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            background-size: 200% auto;
+            animation: gradient 3s ease infinite;
+        }
+        
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.4;
+            z-index: -1;
+        }
+        
+        .blob-1 {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, #1E40AF, #6B21A8);
+            top: -100px;
+            right: -100px;
+            animation: float-slow 15s ease-in-out infinite;
+        }
+        
+        .blob-2 {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, #BE185D, #1E40AF);
+            bottom: -50px;
+            left: -50px;
+            animation: float-medium 12s ease-in-out infinite;
+        }
+        
+        .hero-gradient {
+            background: linear-gradient(135deg, #1E40AF 0%, #6B21A8 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-gradient::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,165.3C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+            background-size: cover;
+        }
+        
+        .footer-gradient {
+            background: linear-gradient(135deg, #1F2937 0%, #111827 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .footer-gradient::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        }
+        
+        .card-gradient {
+            background: linear-gradient(to bottom right, #ffffff, #f3f4f6);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card-gradient::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #1E40AF, #6B21A8, #BE185D);
+        }
+        
+        .hover-glow {
+            transition: all 0.3s ease;
+        }
+        
+        .hover-glow:hover {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transform: translateY(-5px);
+        }
+        
+        .hover-grow {
+            transition: all 0.3s ease;
+        }
+        
+        .hover-grow:hover {
+            transform: scale(1.05);
+        }
+        
+        .card-3d {
+            transform-style: preserve-3d;
+            transition: transform 0.3s ease;
+        }
+        
+        .card-3d:hover {
+            transform: rotateY(5deg) rotateX(-5deg);
+        }
+        
+        .floating-element {
+            position: absolute;
+            z-index: 0;
+        }
+        
+        .custom-shape-divider-bottom-1690903031 {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            line-height: 0;
+        }
+        
+        .custom-shape-divider-bottom-1690903031 svg {
+            position: relative;
+            display: block;
+            width: calc(100% + 1.3px);
+            height: 60px;
+        }
+        
+        .custom-shape-divider-bottom-1690903031 .shape-fill {
+            fill: #F9FAFB;
+        }
+        
+        .smooth-scroll {
+            scroll-behavior: smooth;
+        }
+        
+        .backdrop-blur-md {
+            backdrop-filter: blur(12px);
+        }
+        
+        .journal-type-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+        
+        .spirit-badge {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .josiati-badge {
+            background-color: #f3e8ff;
+            color: #6b21a8;
+        }
+        
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid #3498db;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            background-color: #fee;
+            color: #c33;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .related-journal-card {
+            transition: all 0.3s ease;
+        }
+        
+        .related-journal-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .citation-text {
+            background-color: #f8f9fa;
+            border-left: 4px solid #1E40AF;
+            padding: 15px;
+            font-family: monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .tab-button {
+            padding: 0.5rem 1rem;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .tab-button.active {
+            border-bottom-color: #1E40AF;
+            color: #1E40AF;
+        }
+    </style>
+</head>
+<body class="font-sans bg-gray-50 smooth-scroll">
+    <!-- Floating Background Elements -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    
+    <!-- Navigasi Utama -->
+    <nav class="bg-white/90 backdrop-blur-md shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <!-- Logo Kampus -->
+                <div class="flex items-center space-x-2">
+                    <img src="https://picsum.photos/seed/logoyadika/50/50.jpg" alt="Logo ITB Yadika" class="h-12 w-12 object-contain rounded-lg">
+                    <div>
+                        <span class="text-xl font-bold gradient-text">LPPM ITB Yadika</span>
+                        <p class="text-xs text-gray-600">Lembaga Penelitian & Pengabdian Masyarakat</p>
+                    </div>
+                </div>
+                
+                <!-- Menu Desktop -->
+                <div class="hidden lg:flex items-center space-x-6">
+                    <a href="index.html" class="text-gray-700 hover:text-blue-600 transition font-medium group relative">
+                        Dashboard
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    <a href="berita.html" class="text-gray-700 hover:text-blue-600 transition font-medium group relative">
+                        Berita & Kegiatan
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    <a href="magang-kkn.html" class="text-gray-700 hover:text-blue-600 transition font-medium group relative">
+                        Magang & KKN
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    <a href="repository.html" class="text-blue-600 hover:text-blue-700 transition font-medium group relative">
+                        Repository
+                        <span class="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600"></span>
+                    </a>
+                    <a href="#" class="relative inline-flex items-center px-6 py-2 overflow-hidden text-white bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg group hover:shadow-lg transition-all duration-300">
+                        <span class="absolute right-0 w-8 h-32 -mt-12 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 rotate-12 group-hover:-translate-x-40 ease"></span>
+                        <i class="bi bi-box-arrow-in-right mr-2"></i>
+                        <span class="relative">Login</span>
+                    </a>
+                </div>
+                
+                <!-- Menu Mobile Button -->
+                <button id="menu-mobile-button" class="lg:hidden text-gray-700 focus:outline-none">
+                    <i class="bi bi-list text-3xl"></i>
+                </button>
+            </div>
+            
+            <!-- Menu Mobile -->
+            <div id="menu-mobile" class="hidden lg:hidden mt-4 pb-4 space-y-2">
+                <a href="index.html" class="block py-3 px-4 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition">Dashboard</a>
+                <a href="berita.html" class="block py-3 px-4 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition">Berita & Kegiatan</a>
+                <a href="magang-kkn.html" class="block py-3 px-4 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition">Magang & KKN</a>
+                <a href="repository.html" class="block py-3 px-4 rounded-lg text-blue-600 bg-blue-50 font-medium transition">Repository</a>
+                <a href="#" class="block mt-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-3 rounded-lg font-medium hover:shadow-lg transition text-center">
+                    <i class="bi bi-box-arrow-in-right mr-2"></i>Login
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative hero-gradient text-white py-16 md:py-20 overflow-hidden">
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="flex items-center mb-6" data-aos="fade-up">
+                <a href="repository.html" class="text-blue-100 hover:text-white transition mr-2">
+                    <i class="bi bi-arrow-left mr-2"></i>Kembali ke Repository
+                </a>
+            </div>
+            
+            <div class="text-center" data-aos="fade-up" data-aos-duration="800">
+                <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight" id="journal-title">
+                    <!-- Title will be populated dynamically -->
+                </h1>
+                <div class="flex flex-wrap justify-center items-center gap-4 text-blue-100" id="journal-meta">
+                    <!-- Meta information will be populated dynamically -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Wave Shape Divider -->
+        <div class="custom-shape-divider-bottom-1690903031">
+            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="shape-fill"></path>
+            </svg>
+        </div>
+    </section>
+
+    <!-- Journal Detail Content -->
+    <section class="py-12 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="grid lg:grid-cols-4 gap-8">
+                <!-- Sidebar -->
+                <div class="lg:col-span-1">
+                    <!-- Download & Actions -->
+                    <div class="bg-white p-6 rounded-xl shadow-lg mb-6" data-aos="fade-right">
+                        <h3 class="text-lg font-semibold mb-4 text-gray-800">Aksi</h3>
+                        <div class="space-y-3">
+                            <a href="#" id="download-pdf" class="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-3 rounded-lg hover:shadow-lg transition-all duration-300 text-center flex items-center justify-center">
+                                <i class="bi bi-file-earmark-pdf mr-2"></i>Unduh PDF
+                            </a>
+                            <button class="w-full bg-green-500 text-white px-4 py-3 rounded-lg hover:bg-green-600 transition flex items-center justify-center" onclick="shareJournal()">
+                                <i class="bi bi-share mr-2"></i>Bagikan
+                            </button>
+                            <button class="w-full bg-purple-500 text-white px-4 py-3 rounded-lg hover:bg-purple-600 transition flex items-center justify-center" onclick="bookmarkJournal()">
+                                <i class="bi bi-bookmark mr-2"></i>Simpan
+                            </button>
+                            <button class="w-full bg-gray-200 text-gray-700 px-4 py-3 rounded-lg hover:bg-gray-300 transition flex items-center justify-center" onclick="printJournal()">
+                                <i class="bi bi-printer mr-2"></i>Cetak
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Journal Info -->
+                    <div class="bg-white p-6 rounded-xl shadow-lg mb-6" data-aos="fade-right" data-aos-delay="100">
+                        <h3 class="text-lg font-semibold mb-4 text-gray-800">Informasi Jurnal</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <p class="text-sm text-gray-500 mb-1">Jenis Jurnal</p>
+                                <p class="font-medium" id="journal-type">-</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500 mb-1">Tahun Terbit</p>
+                                <p class="font-medium" id="journal-year">-</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500 mb-1">Tanggal Dibuat</p>
+                                <p class="font-medium" id="journal-created-date">-</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500 mb-1">Diperbarui</p>
+                                <p class="font-medium" id="journal-updated-date">-</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Citation -->
+                    <div class="bg-white p-6 rounded-xl shadow-lg" data-aos="fade-right" data-aos-delay="200">
+                        <h3 class="text-lg font-semibold mb-4 text-gray-800">Citation</h3>
+                        <div class="space-y-3">
+                            <div class="tab-buttons flex space-x-2 mb-3">
+                                <button class="tab-button active" onclick="showCitationTab('apa')">APA</button>
+                                <button class="tab-button" onclick="showCitationTab('mla')">MLA</button>
+                                <button class="tab-button" onclick="showCitationTab('chicago')">Chicago</button>
+                            </div>
+                            <div id="apa-citation" class="tab-content active">
+                                <div class="citation-text" id="apa-citation-text">-</div>
+                                <button class="mt-2 text-blue-600 hover:text-blue-700 text-sm" onclick="copyCitation('apa')">
+                                    <i class="bi bi-clipboard mr-1"></i>Salin
+                                </button>
+                            </div>
+                            <div id="mla-citation" class="tab-content">
+                                <div class="citation-text" id="mla-citation-text">-</div>
+                                <button class="mt-2 text-blue-600 hover:text-blue-700 text-sm" onclick="copyCitation('mla')">
+                                    <i class="bi bi-clipboard mr-1"></i>Salin
+                                </button>
+                            </div>
+                            <div id="chicago-citation" class="tab-content">
+                                <div class="citation-text" id="chicago-citation-text">-</div>
+                                <button class="mt-2 text-blue-600 hover:text-blue-700 text-sm" onclick="copyCitation('chicago')">
+                                    <i class="bi bi-clipboard mr-1"></i>Salin
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="lg:col-span-3">
+                    <!-- Loading indicator -->
+                    <div id="loading-indicator" class="loading-spinner"></div>
+                    
+                    <!-- Error message (hidden by default) -->
+                    <div id="error-message" class="error-message hidden">
+                        Terjadi kesalahan saat memuat data jurnal. Silakan coba lagi nanti.
+                    </div>
+                    
+                    <!-- Journal Content -->
+                    <div id="journal-content" class="hidden">
+                        <!-- Authors -->
+                        <div class="bg-white rounded-xl shadow-lg p-6 mb-6" data-aos="fade-up">
+                            <h3 class="text-xl font-semibold mb-4 text-gray-800">Penulis</h3>
+                            <div class="flex flex-wrap gap-3" id="journal-authors">
+                                <!-- Authors will be populated dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Abstract -->
+                        <div class="bg-white rounded-xl shadow-lg p-6 mb-6" data-aos="fade-up" data-aos-delay="100">
+                            <h3 class="text-xl font-semibold mb-4 text-gray-800">Abstrak</h3>
+                            <p class="text-gray-600 leading-relaxed" id="journal-abstract">
+                                <!-- Abstract will be populated dynamically -->
+                            </p>
+                        </div>
+
+                        <!-- Keywords -->
+                        <div class="bg-white rounded-xl shadow-lg p-6 mb-6" data-aos="fade-up" data-aos-delay="200">
+                            <h3 class="text-xl font-semibold mb-4 text-gray-800">Kata Kunci</h3>
+                            <div class="flex flex-wrap gap-2" id="journal-keywords">
+                                <!-- Keywords will be populated dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- PDF Preview -->
+                        <div class="bg-white rounded-xl shadow-lg p-6 mb-6" data-aos="fade-up" data-aos-delay="300" id="pdf-preview-container">
+                            <h3 class="text-xl font-semibold mb-4 text-gray-800">Pratinjau Dokumen</h3>
+                            <div class="bg-gray-100 rounded-lg p-4 text-center" id="pdf-preview">
+                                <!-- PDF preview will be populated dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Related Journals -->
+                        <div class="bg-white rounded-xl shadow-lg p-6" data-aos="fade-up" data-aos-delay="400">
+                            <h3 class="text-xl font-semibold mb-4 text-gray-800">Jurnal Terkait</h3>
+                            <div class="space-y-4" id="related-journals">
+                                <!-- Related journals will be populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer-gradient text-white py-12 relative overflow-hidden">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div data-aos="fade-up">
+                    <div class="flex items-center space-x-2 mb-4">
+                        <img src="https://picsum.photos/seed/logoyadika/50/50.jpg" alt="Logo ITB Yadika" class="h-10 w-10 object-contain rounded-lg">
+                        <span class="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">LPPM ITB Yadika</span>
+                    </div>
+                    <p class="text-gray-400 mb-4">Lembaga Penelitian dan Pengabdian Masyarakat ITB Yadika Pasuruan.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white text-xl transition">
+                            <i class="bi bi-facebook"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white text-xl transition">
+                            <i class="bi bi-instagram"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white text-xl transition">
+                            <i class="bi bi-twitter-x"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white text-xl transition">
+                            <i class="bi bi-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div data-aos="fade-up" data-aos-delay="100">
+                    <h3 class="text-xl font-semibold mb-4">Menu Utama</h3>
+                    <ul class="space-y-2">
+                        <li><a href="index.html" class="text-gray-400 hover:text-white transition flex items-center">
+                            <i class="bi bi-chevron-right mr-2 text-xs"></i>Dashboard</a></li>
+                        <li><a href="berita.html" class="text-gray-400 hover:text-white transition flex items-center">
+                            <i class="bi bi-chevron-right mr-2 text-xs"></i>Berita & Kegiatan</a></li>
+                        <li><a href="magang-kkn.html" class="text-gray-400 hover:text-white transition flex items-center">
+                            <i class="bi bi-chevron-right mr-2 text-xs"></i>Magang & KKN</a></li>
+                        <li><a href="repository.html" class="text-gray-400 hover:text-white transition flex items-center">
+                            <i class="bi bi-chevron-right mr-2 text-xs"></i>Repository</a></li>
+                    </ul>
+                </div>
+                
+                <div data-aos="fade-up" data-aos-delay="200">
+                    <h3 class="text-xl font-semibold mb-4">Layanan</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition flex items-center">
+                            <i class="bi bi-chevron-right mr-2 text-xs"></i>Penelitian</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition flex items-center">
+                            <i class="bi bi-chevron-right mr-2 text-xs"></i>Pengabdian</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition flex items-center">
+                            <i class="bi bi-chevron-right mr-2 text-xs"></i>Kerjasama</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition flex items-center">
+                            <i class="bi bi-chevron-right mr-2 text-xs"></i>Publikasi</a></li>
+                    </ul>
+                </div>
+                
+                <div data-aos="fade-up" data-aos-delay="300">
+                    <h3 class="text-xl font-semibold mb-4">Kontak</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-center">
+                            <i class="bi bi-geo-alt mr-2"></i>
+                            JL. Salem No. 03, Bangil
+                        </li>
+                        <li class="flex items-center">
+                            <i class="bi bi-telephone mr-2"></i>
+                            +62 896 2992 7242
+                        </li>
+                        <li class="flex items-center">
+                            <i class="bi bi-envelope mr-2"></i>
+                            lppm@itbyadika.ac.id
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-12 pt-8 text-center text-gray-400" data-aos="fade-up">
+                <p>&copy; 2023 LPPM ITB Yadika Pasuruan. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="back-to-top" class="fixed bottom-8 right-8 bg-gradient-to-r from-blue-500 to-purple-500 text-white p-4 rounded-full shadow-lg opacity-0 invisible transition-all duration-300 hover:shadow-xl hover:scale-110">
+        <i class="bi bi-arrow-up"></i>
+    </button>
+
+    <!-- JavaScript -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Initialize AOS
+AOS.init({
+    duration: 800,
+    once: true,
+    disable: 'mobile'
+});
+
+// API Base URL
+const API_BASE_URL = 'http://localhost:5000/api';
+
+// State management
+let journal = null;
+let relatedJournals = [];
+
+// DOM Elements
+const loadingIndicator = document.getElementById('loading-indicator');
+const errorMessage = document.getElementById('error-message');
+const journalContent = document.getElementById('journal-content');
+
+// Initialize the page
+document.addEventListener('DOMContentLoaded', function() {
+    setupEventListeners();
+    fetchJournalDetail();
+});
+
+// Setup event listeners
+function setupEventListeners() {
+    // Mobile menu toggle
+    document.getElementById('menu-mobile-button').addEventListener('click', function() {
+        const menu = document.getElementById('menu-mobile');
+        menu.classList.toggle('hidden');
+    });
+    
+    // Back to top button
+    const backToTopButton = document.getElementById('back-to-top');
+    
+    window.addEventListener('scroll', function() {
+        if (window.pageYOffset > 300) {
+            backToTopButton.classList.remove('opacity-0', 'invisible');
+            backToTopButton.classList.add('opacity-100', 'visible');
+        } else {
+            backToTopButton.classList.add('opacity-0', 'invisible');
+            backToTopButton.classList.remove('opacity-100', 'visible');
+        }
+    });
+    
+    backToTopButton.addEventListener('click', function() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+}
+
+// Get journal ID and type from URL
+function getJournalParams() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return {
+        id: urlParams.get('id'),
+        type: urlParams.get('type')
+    };
+}
+
+// Fetch journal detail
+async function fetchJournalDetail() {
+    try {
+        showLoading();
+        
+        const { id, type } = getJournalParams();
+        
+        if (!id || !type) {
+            throw new Error('Parameter ID dan tipe jurnal diperlukan');
+        }
+        
+        if (type !== 'spirit' && type !== 'josiati') {
+            throw new Error('Tipe jurnal tidak valid');
+        }
+        
+        // GUNAKAN ENDPOINT YANG BARU
+        const response = await fetch(`${API_BASE_URL}/journals/${type}/${id}`);
+        
+        if (!response.ok) {
+            let errorMessage = 'Failed to fetch journal detail';
+            try {
+                const errorData = await response.json();
+                errorMessage = errorData.message || errorMessage;
+            } catch (e) {
+                errorMessage = response.statusText || errorMessage;
+            }
+            throw new Error(errorMessage);
+        }
+        
+        const data = await response.json();
+        
+        if (data.success === false) {
+            throw new Error(data.message || 'Response tidak valid');
+        }
+        
+        journal = data.data;
+        
+        if (!journal) {
+            throw new Error('Data jurnal tidak ditemukan');
+        }
+        
+        // Update UI
+        updateJournalDetail();
+        fetchRelatedJournals();
+        
+        hideLoading();
+        journalContent.classList.remove('hidden');
+    } catch (error) {
+        console.error('Error fetching journal detail:', error);
+        showError(error.message);
+        hideLoading();
+    }
+}
+
+// Fetch related journals
+async function fetchRelatedJournals() {
+    try {
+        // Fetch both spirit and josiati journals
+        const [spiritResponse, josiatiResponse] = await Promise.all([
+            fetch(`${API_BASE_URL}/journals/spirit`),
+            fetch(`${API_BASE_URL}/journals/josiati`)
+        ]);
+        
+        if (!spiritResponse.ok || !josiatiResponse.ok) {
+            throw new Error('Failed to fetch related journals');
+        }
+        
+        const spiritData = await spiritResponse.json();
+        const josiatiData = await josiatiResponse.json();
+        
+        // Combine both types of journals
+        const allJournals = [
+            ...spiritData.data.map(j => ({ ...j, journal_type: 'spirit' })),
+            ...josiatiData.data.map(j => ({ ...j, journal_type: 'josiati' }))
+        ];
+        
+        // Filter out current journal and get related ones
+        relatedJournals = allJournals
+            .filter(j => j.id !== journal.id)
+            .filter(j => j.journal_type === journal.journal_type) // Same type
+            .slice(0, 3); // Get only 3 related journals
+        
+        // Update UI
+        updateRelatedJournals();
+    } catch (error) {
+        console.error('Error fetching related journals:', error);
+    }
+}
+
+// Update journal detail
+function updateJournalDetail() {
+    // Update title
+    document.getElementById('journal-title').textContent = journal.title;
+    
+    // Update meta information
+    const metaContainer = document.getElementById('journal-meta');
+    metaContainer.innerHTML = `
+        <span class="journal-type-badge ${journal.journal_type === 'spirit' ? 'spirit-badge' : 'josiati-badge'}">
+            ${journal.journal_type === 'spirit' ? 'Spirit Journal' : 'Josiati Journal'}
+        </span>
+        <span><i class="bi bi-calendar3 mr-1"></i>${journal.year}</span>
+        <span><i class="bi bi-person mr-1"></i>${journal.authors}</span>
+    `;
+    
+    // Update journal info
+    document.getElementById('journal-type').textContent = journal.journal_type === 'spirit' ? 'Spirit Journal' : 'Josiati Journal';
+    document.getElementById('journal-year').textContent = journal.year;
+    document.getElementById('journal-created-date').textContent = new Date(journal.created_at).toLocaleDateString('id-ID');
+    document.getElementById('journal-updated-date').textContent = new Date(journal.updated_at).toLocaleDateString('id-ID');
+    
+    // Update authors
+    const authorsContainer = document.getElementById('journal-authors');
+    const authors = journal.authors.split(',').map(author => author.trim());
+    authorsContainer.innerHTML = '';
+    authors.forEach(author => {
+        const authorEl = document.createElement('div');
+        authorEl.className = 'bg-gray-100 px-3 py-2 rounded-lg flex items-center';
+        authorEl.innerHTML = `
+            <img src="https://picsum.photos/seed/${author.replace(/\s+/g, '')}/40/40.jpg" class="w-8 h-8 rounded-full mr-2" alt="${author}">
+            <span class="font-medium">${author}</span>
+        `;
+        authorsContainer.appendChild(authorEl);
+    });
+    
+    // Update abstract
+    document.getElementById('journal-abstract').textContent = journal.abstract || 'Tidak ada abstrak tersedia untuk jurnal ini.';
+    
+    // Update keywords
+    const keywordsContainer = document.getElementById('journal-keywords');
+    if (journal.keywords) {
+        const keywords = journal.keywords.split(',').map(keyword => keyword.trim());
+        keywordsContainer.innerHTML = '';
+        keywords.forEach(keyword => {
+            const keywordEl = document.createElement('span');
+            keywordEl.className = 'bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-sm';
+            keywordEl.textContent = keyword;
+            keywordsContainer.appendChild(keywordEl);
+        });
+    } else {
+        keywordsContainer.innerHTML = '<p class="text-gray-500">Tidak ada kata kunci tersedia untuk jurnal ini.</p>';
+    }
+    
+    // Update PDF preview
+    const pdfPreview = document.getElementById('pdf-preview');
+    const downloadPdfBtn = document.getElementById('download-pdf');
+
+     if (journal.file_path) {
+        pdfPreview.innerHTML = `
+            <div class="bg-gray-200 rounded-lg h-64 flex items-center justify-center">
+                <div class="text-center">
+                    <i class="bi bi-file-earmark-pdf text-6xl text-red-500 mb-4"></i>
+                    <p class="text-gray-600 mb-4">Pratinjau PDF tersedia</p>
+                    <div class="space-x-4">
+                        <a href="${API_BASE_URL}/journals/${journal.journal_type}/${journal.id}/view" target="_blank" 
+                           class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition inline-block">
+                            <i class="bi bi-eye mr-2"></i>Lihat PDF
+                        </a>
+                        <a href="${API_BASE_URL}/journals/${journal.journal_type}/${journal.id}/download" 
+                           class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition inline-block">
+                            <i class="bi bi-download mr-2"></i>Unduh PDF
+                        </a>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+         downloadPdfBtn.href = `${API_BASE_URL}/journals/${journal.journal_type}/${journal.id}/download`;
+        downloadPdfBtn.target = '_blank';
+    } else {
+        pdfPreview.innerHTML = `
+            <div class="bg-gray-200 rounded-lg h-64 flex items-center justify-center">
+                <div class="text-center">
+                    <i class="bi bi-file-earmark-x text-6xl text-gray-400 mb-4"></i>
+                    <p class="text-gray-500">File PDF tidak tersedia untuk jurnal ini.</p>
+                </div>
+            </div>
+        `;
+        downloadPdfBtn.style.display = 'none';
+    }
+    
+    // Update citations
+    updateCitations();
+    
+    // Update bookmark button
+    updateBookmarkButton();
+}
+// Update citations
+function updateCitations() {
+    const authors = journal.authors.split(',').map(author => author.trim());
+    const year = journal.year;
+    const title = journal.title;
+    const journalType = journal.journal_type === 'spirit' ? 'Spirit Journal' : 'Josiati Journal';
+    
+    // APA citation
+    const apaCitation = authors.length > 1 
+        ? `${authors[0]} et al. (${year}). ${title}. ${journalType}.`
+        : `${authors[0]} (${year}). ${title}. ${journalType}.`;
+    document.getElementById('apa-citation-text').textContent = apaCitation;
+    
+    // MLA citation
+    const mlaCitation = authors.length > 1
+        ? `${authors[0]} et al. "${title}." ${journalType}, ${year}.`
+        : `${authors[0]}. "${title}." ${journalType}, ${year}.`;
+    document.getElementById('mla-citation-text').textContent = mlaCitation;
+    
+    // Chicago citation
+    const chicagoCitation = authors.length > 1
+        ? `${authors[0]} et al. "${title}." ${journalType} (${year}).`
+        : `${authors[0]}. "${title}." ${journalType} (${year}).`;
+    document.getElementById('chicago-citation-text').textContent = chicagoCitation;
+}
+
+// Update related journals
+function updateRelatedJournals() {
+    const relatedJournalsContainer = document.getElementById('related-journals');
+    
+    if (relatedJournals.length === 0) {
+        relatedJournalsContainer.innerHTML = '<p class="text-gray-500">Tidak ada jurnal terkait yang ditemukan.</p>';
+        return;
+    }
+    
+    relatedJournalsContainer.innerHTML = '';
+    relatedJournals.forEach(relatedJournal => {
+        const journalCard = document.createElement('div');
+        journalCard.className = 'related-journal-card bg-gray-50 rounded-lg p-4';
+        
+        const typeClass = relatedJournal.journal_type === 'spirit' ? 'spirit-badge' : 'josiati-badge';
+        const typeName = relatedJournal.journal_type === 'spirit' ? 'Spirit Journal' : 'Josiati Journal';
+        
+        journalCard.innerHTML = `
+            <div class="flex items-start">
+                <div class="flex-1">
+                    <h4 class="font-semibold text-gray-800 mb-2">
+                        <a href="journal-detail.html?id=${relatedJournal.id}&type=${relatedJournal.journal_type}" class="hover:text-blue-600 transition">
+                            ${relatedJournal.title}
+                        </a>
+                    </h4>
+                    <div class="flex items-center text-sm text-gray-600 mb-2">
+                        <span class="mr-4"><i class="bi bi-person mr-1"></i>${relatedJournal.authors}</span>
+                        <span class="mr-4"><i class="bi bi-calendar3 mr-1"></i>${relatedJournal.year}</span>
+                    </div>
+                    <p class="text-gray-600 text-sm line-clamp-2">
+                        ${relatedJournal.abstract || 'Tidak ada abstrak tersedia untuk jurnal ini.'}
+                    </p>
+                    <div class="mt-2">
+                        <span class="journal-type-badge ${typeClass}">${typeName}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        relatedJournalsContainer.appendChild(journalCard);
+    });
+}
+
+// Show citation tab
+function showCitationTab(format) {
+    // Hide all tabs
+    document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    
+    // Remove active class from all buttons
+    document.querySelectorAll('.tab-button').forEach(button => {
+        button.classList.remove('active');
+    });
+    
+    // Show selected tab
+    document.getElementById(`${format}-citation`).classList.add('active');
+    
+    // Add active class to selected button
+    event.target.classList.add('active');
+}
+
+// Copy citation
+function copyCitation(format) {
+    const citationText = document.getElementById(`${format}-citation-text`).textContent;
+    
+    navigator.clipboard.writeText(citationText).then(() => {
+        // Show success message
+        const button = event.target;
+        const originalText = button.innerHTML;
+        button.innerHTML = '<i class="bi bi-check mr-1"></i>Disalin!';
+        
+        setTimeout(() => {
+            button.innerHTML = originalText;
+        }, 2000);
+    }).catch(err => {
+        console.error('Error copying citation:', err);
+    });
+}
+
+// Fungsi helper untuk copy ke clipboard
+// Fungsi helper untuk copy ke clipboard
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        alert('Link jurnal telah disalin ke clipboard!');
+    }).catch(err => {
+        console.error('Error copying to clipboard:', err);
+        // Fallback untuk browser lama
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        alert('Link jurnal telah disalin ke clipboard!');
+    });
+}
+// Share journal
+function shareJournal() {
+    const url = window.location.href;
+    const title = journal.title;
+
+    if (navigator.share) {
+        navigator.share({
+            title: title,
+            text: `Lihat jurnal "${title}" dari repository LPPM ITB Yadika`,
+            url: url
+        }).catch(err => {
+            console.error('Error sharing:', err);
+            // Fallback jika share gagal
+            copyToClipboard(url);
+        });
+    } else {
+        // Fallback: copy to clipboard
+        copyToClipboard(url);
+    }
+}
+
+// Bookmark journal
+function bookmarkJournal() {
+    // Simpan ke localStorage
+    const bookmarks = JSON.parse(localStorage.getItem('journalBookmarks') || '[]');
+    
+    // Cek apakah sudah ada di bookmark
+    const existingIndex = bookmarks.findIndex(b => b.id === journal.id && b.type === journal.journal_type);
+    
+    if (existingIndex === -1) {
+        // Tambah ke bookmark
+        bookmarks.push({
+            id: journal.id,
+            type: journal.journal_type,
+            title: journal.title,
+            authors: journal.authors,
+            year: journal.year,
+            addedAt: new Date().toISOString()
+        });
+        
+        localStorage.setItem('journalBookmarks', JSON.stringify(bookmarks));
+        alert('Jurnal telah ditambahkan ke bookmark!');
+    } else {
+        // Hapus dari bookmark
+        bookmarks.splice(existingIndex, 1);
+        localStorage.setItem('journalBookmarks', JSON.stringify(bookmarks));
+        alert('Jurnal telah dihapus dari bookmark!');
+    }
+    
+    // Update tombol bookmark
+    updateBookmarkButton();
+}
+
+// Fungsi untuk update tampilan tombol bookmark
+function updateBookmarkButton() {
+    if (!journal) return;
+    
+    const bookmarks = JSON.parse(localStorage.getItem('journalBookmarks') || '[]');
+    const isBookmarked = bookmarks.some(b => b.id === journal.id && b.type === journal.journal_type);
+    const bookmarkBtn = document.querySelector('button[onclick="bookmarkJournal()"]');
+    
+    if (isBookmarked) {
+        bookmarkBtn.innerHTML = '<i class="bi bi-bookmark-fill mr-2"></i>Hapus Bookmark';
+        bookmarkBtn.classList.remove('bg-purple-500', 'hover:bg-purple-600');
+        bookmarkBtn.classList.add('bg-yellow-500', 'hover:bg-yellow-600');
+    } else {
+        bookmarkBtn.innerHTML = '<i class="bi bi-bookmark mr-2"></i>Simpan';
+        bookmarkBtn.classList.remove('bg-yellow-500', 'hover:bg-yellow-600');
+        bookmarkBtn.classList.add('bg-purple-500', 'hover:bg-purple-600');
+    }
+}
+
+// Print journal
+function printJournal() {
+    window.print();
+}
+
+// Show loading indicator
+function showLoading() {
+    loadingIndicator.style.display = 'block';
+    errorMessage.classList.add('hidden');
+    journalContent.classList.add('hidden');
+}
+
+// Hide loading indicator
+function hideLoading() {
+    loadingIndicator.style.display = 'none';
+}
+
+// Show error message
+function showError(message) {
+    errorMessage.textContent = message || 'Terjadi kesalahan saat memuat data jurnal. Silakan coba lagi nanti.';
+    errorMessage.classList.remove('hidden');
+    journalContent.classList.add('hidden');
+}
+    </script>
+</body>
+</html>

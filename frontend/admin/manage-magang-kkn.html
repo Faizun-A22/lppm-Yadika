@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelola Magang & KKN - LPPM ITB Yadika</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .gradient-text { background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .nav-link { position: relative; transition: color 0.3s ease; }
+        .nav-link::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -5px; left: 50%; background-color: #3B82F6; transition: all 0.3s ease; }
+        .nav-link:hover::after, .nav-link.active::after { width: 100%; left: 0; }
+        .nav-link.active { color: #3B82F6; font-weight: 600; }
+        
+        /* Status Badges */
+        .badge-pending { background-color: #fef3c7; color: #92400e; padding: 4px 8px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+        .badge-approved { background-color: #d1fae5; color: #065f46; padding: 4px 8px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+        .badge-rejected { background-color: #fee2e2; color: #991b1b; padding: 4px 8px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+        .badge-verified { background-color: #dbeafe; color: #1e40af; padding: 4px 8px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+        
+        /* Modal Styles */
+        .modal-content { border-radius: 16px; border: none; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        .modal-header { border-bottom: 1px solid #e5e7eb; padding: 1.5rem; }
+        .modal-body { padding: 1.5rem; }
+        .modal-footer { border-top: 1px solid #e5e7eb; padding: 1.5rem; }
+        
+        /* Table Styles */
+        .table th { font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; }
+        .table td { vertical-align: middle; }
+        .btn-group-sm>.btn, .btn-sm { padding: 0.25rem 0.5rem; font-size: 0.75rem; }
+        
+        /* Card Stats */
+        .stat-card { transition: all 0.3s ease; border: none; border-radius: 16px; }
+        .stat-card:hover { transform: translateY(-5px); box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
+        
+        /* Search Box */
+        .search-box { position: relative; }
+        .search-box input { padding-left: 40px; border-radius: 30px; border: 1px solid #e5e7eb; }
+        .search-box i { position: absolute; left: 15px; top: 12px; color: #9ca3af; }
+        
+        /* Section Navigation */
+        .section-tabs { border-bottom: 1px solid #e5e7eb; margin-bottom: 2rem; }
+        .section-tab { padding: 0.75rem 1.5rem; font-weight: 600; color: #6b7280; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.3s ease; }
+        .section-tab:hover { color: #3B82F6; }
+        .section-tab.active { color: #3B82F6; border-bottom-color: #3B82F6; }
+        
+        /* Content Sections */
+        .content-section { display: none; }
+        .content-section.active { display: block; }
+        
+        /* File Preview */
+        .file-preview { padding: 10px; background-color: #f9fafb; border-radius: 8px; margin-top: 5px; }
+        .file-preview a { color: #3B82F6; text-decoration: none; }
+        .file-preview a:hover { text-decoration: underline; }
+        
+        /* Loading Spinner */
+        .loading-spinner { text-align: center; padding: 40px; }
+        .loading-spinner i { font-size: 2rem; color: #3B82F6; }
+        
+        /* Empty State */
+        .empty-state { text-align: center; padding: 40px; color: #9ca3af; }
+        .empty-state i { font-size: 3rem; margin-bottom: 1rem; }
+        
+        /* Alert Messages */
+        .alert { border-radius: 12px; border: none; padding: 1rem 1.5rem; margin-bottom: 1.5rem; }
+        .alert-success { background-color: #d1fae5; color: #065f46; }
+        .alert-danger { background-color: #fee2e2; color: #991b1b; }
+        .alert-warning { background-color: #fef3c7; color: #92400e; }
+        .alert-info { background-color: #dbeafe; color: #1e40af; }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans antialiased">
+    <!-- Top Navigation Bar -->
+    <header class="fixed top-0 left-0 right-0 bg-white shadow-md z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <!-- Logo and Brand -->
+            <a href="admin-dashboard.html" class="flex items-center space-x-3">
+                <img src="images/logoyadika.png" alt="Logo" class="h-10 w-10">
+                <div>
+                    <h1 class="text-xl font-bold gradient-text">LPPM Admin</h1>
+                    <p class="text-xs text-gray-500">ITB Yadika</p>
+                </div>
+            </a>
+
+            <!-- Navigation Links -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="admin-dashboard.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+                </a>
+                <a href="manage-kegiatan.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-calendar-alt mr-2"></i>Kegiatan
+                </a>
+                <a href="manage-repository.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-book mr-2"></i>Repository
+                </a>
+                <a href="#" class="nav-link active text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-briefcase mr-2"></i>Magang & KKN
+                </a>
+            </div>
+
+            <!-- User Profile / Logout -->
+            <div class="flex items-center space-x-4">
+                <span class="text-sm text-gray-600 hidden sm:block">Admin LPPM</span>
+                <a href="'../../login.html'" class="flex items-center space-x-2 p-2 rounded-lg text-red-600 hover:bg-red-50 transition">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span class="hidden sm:inline">Logout</span>
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-20">
+        <div class="container mx-auto px-6 py-8">
+            <!-- Header Section -->
+            <header class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between" data-aos="fade-down">
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-800">Kelola Magang & KKN</h2>
+                    <p class="text-gray-600">Kelola program, registrasi, dan luaran mahasiswa.</p>
+                </div>
+                <div class="mt-4 md:mt-0 flex space-x-3">
+                    <button onclick="openAddProgramModal()" class="bg-gradient-to-r from-green-500 to-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:shadow-lg transition-all duration-300">
+                        <i class="fas fa-plus mr-2"></i> Program Baru
+                    </button>
+                    <button onclick="openAddRegistrationModal()" class="bg-gradient-to-r from-purple-500 to-pink-600 text-white px-6 py-2 rounded-lg font-medium hover:shadow-lg transition-all duration-300">
+                        <i class="fas fa-user-plus mr-2"></i> Tambah Registrasi
+                    </button>
+                </div>
+            </header>
+
+            <!-- Section Tabs -->
+            <div class="section-tabs flex overflow-x-auto" data-aos="fade-up">
+                <div class="section-tab active" onclick="showSection('program-section')">Program Magang/KKN</div>
+                <div class="section-tab" onclick="showSection('registrations-section')">Registrasi</div>
+                <div class="section-tab" onclick="showSection('luaran-section')">Luaran Wajib</div>
+                <div class="section-tab" onclick="showSection('stats-section')">Statistik</div>
+            </div>
+
+            <!-- Program Section -->
+            <section id="program-section" class="content-section active" data-aos="fade-up">
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="p-4 border-b border-gray-200 flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+                        <div class="relative flex-1 max-w-md">
+                            <input type="text" id="searchProgram" placeholder="Cari program..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                        </div>
+                        <div class="flex space-x-2">
+                            <select id="filterJenisProgram" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                                <option value="">Semua Jenis</option>
+                                <option value="magang">Magang</option>
+                                <option value="kkn">KKN</option>
+                            </select>
+                            <button onclick="loadProgramData()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="w-full">
+                            <thead class="bg-gray-50 text-gray-700">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Nama Program</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Jenis</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Periode</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Kuota</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Pendaftar</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="programTableBody" class="bg-white divide-y divide-gray-200">
+                                <!-- Data will be loaded here -->
+                                <tr>
+                                    <td colspan="7" class="text-center py-8 text-gray-500">
+                                        <i class="fas fa-spinner fa-spin mr-2"></i> Memuat data...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+                        <div class="text-sm text-gray-500" id="programPaginationInfo"></div>
+                        <div class="flex space-x-2">
+                            <button onclick="changeProgramPage('prev')" class="px-3 py-1 border rounded-lg hover:bg-gray-50">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <span id="programCurrentPage" class="px-3 py-1">1</span>
+                            <button onclick="changeProgramPage('next')" class="px-3 py-1 border rounded-lg hover:bg-gray-50">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Registrations Section -->
+            <section id="registrations-section" class="content-section" data-aos="fade-up">
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="p-4 border-b border-gray-200">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="relative">
+                                <input type="text" id="searchRegistration" placeholder="Cari NIM/Nama..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                                <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                            </div>
+                            <select id="filterJenisRegistration" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                                <option value="">Semua Jenis</option>
+                                <option value="magang">Magang</option>
+                                <option value="kkn">KKN</option>
+                            </select>
+                            <select id="filterStatusRegistration" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                                <option value="">Semua Status</option>
+                                <option value="pending">Pending</option>
+                                <option value="approved">Disetujui</option>
+                                <option value="rejected">Ditolak</option>
+                                <option value="verified">Terverifikasi</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- KKN Registrations Table -->
+                    <div class="p-4">
+                        <h3 class="text-lg font-semibold mb-4">Registrasi KKN</h3>
+                        <div class="table-responsive">
+                            <table class="w-full">
+                                <thead class="bg-gray-50 text-gray-700">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-xs font-medium uppercase">NIM</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium uppercase">Nama</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium uppercase">Program Studi</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium uppercase">Desa</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium uppercase">Status</th>
+                                        <th class="px-4 py-3 text-center text-xs font-medium uppercase">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="kknRegistrationTableBody" class="divide-y divide-gray-200">
+                                    <!-- Data will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Magang Registrations Table -->
+                    <div class="p-4 border-t border-gray-200">
+                        <h3 class="text-lg font-semibold mb-4">Registrasi Magang</h3>
+                        <div class="table-responsive">
+                            <table class="w-full">
+                                <thead class="bg-gray-50 text-gray-700">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-xs font-medium uppercase">NIM</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium uppercase">Nama</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium uppercase">Program Studi</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium uppercase">Perusahaan</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium uppercase">Status</th>
+                                        <th class="px-4 py-3 text-center text-xs font-medium uppercase">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="magangRegistrationTableBody" class="divide-y divide-gray-200">
+                                    <!-- Data will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Luaran Section -->
+            <section id="luaran-section" class="content-section" data-aos="fade-up">
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="p-4 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold mb-4">Luaran Wajib KKN</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                            <select id="filterDesaLuaran" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                                <option value="">Semua Desa</option>
+                            </select>
+                            <select id="filterStatusLuaran" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                                <option value="">Semua Status</option>
+                                <option value="pending">Pending</option>
+                                <option value="approved">Disetujui</option>
+                                <option value="rejected">Ditolak</option>
+                            </select>
+                            <button onclick="loadLuaranData()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                                <i class="fas fa-search mr-2"></i> Cari
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="w-full">
+                            <thead class="bg-gray-50 text-gray-700">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">No</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">NIM</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Desa</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Judul Kegiatan</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Video</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Poster</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">MOU</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Status</th>
+                                    <th class="px-4 py-3 text-center text-xs font-medium uppercase">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="luaranTableBody" class="divide-y divide-gray-200">
+                                <!-- Data will be loaded here -->
+                                <tr>
+                                    <td colspan="9" class="text-center py-8 text-gray-500">
+                                        <i class="fas fa-spinner fa-spin mr-2"></i> Memuat data...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Stats Section -->
+            <section id="stats-section" class="content-section" data-aos="fade-up">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                    <!-- Total KKN Card -->
+                    <div class="stat-card bg-gradient-to-br from-blue-500 to-blue-600 text-white p-6 rounded-xl shadow-lg">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="text-sm opacity-90">Total Pendaftar KKN</p>
+                                <h3 class="text-3xl font-bold" id="totalKknStats">0</h3>
+                            </div>
+                            <i class="fas fa-users text-4xl opacity-50"></i>
+                        </div>
+                        <div class="mt-4 flex justify-between text-sm">
+                            <span><i class="fas fa-check-circle"></i> <span id="approvedKknStats">0</span> Disetujui</span>
+                            <span><i class="fas fa-clock"></i> <span id="pendingKknStats">0</span> Pending</span>
+                        </div>
+                    </div>
+
+                    <!-- Total Magang Card -->
+                    <div class="stat-card bg-gradient-to-br from-green-500 to-green-600 text-white p-6 rounded-xl shadow-lg">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="text-sm opacity-90">Total Pendaftar Magang</p>
+                                <h3 class="text-3xl font-bold" id="totalMagangStats">0</h3>
+                            </div>
+                            <i class="fas fa-briefcase text-4xl opacity-50"></i>
+                        </div>
+                        <div class="mt-4 flex justify-between text-sm">
+                            <span><i class="fas fa-check-circle"></i> <span id="approvedMagangStats">0</span> Disetujui</span>
+                            <span><i class="fas fa-clock"></i> <span id="pendingMagangStats">0</span> Pending</span>
+                        </div>
+                    </div>
+
+                    <!-- Desa Card -->
+                    <div class="stat-card bg-gradient-to-br from-purple-500 to-purple-600 text-white p-6 rounded-xl shadow-lg">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="text-sm opacity-90">Desa Tersedia</p>
+                                <h3 class="text-3xl font-bold" id="totalDesaStats">0</h3>
+                            </div>
+                            <i class="fas fa-map-marker-alt text-4xl opacity-50"></i>
+                        </div>
+                        <div class="mt-4 flex justify-between text-sm">
+                            <span><i class="fas fa-users"></i> <span id="totalKuotaStats">0</span> Kuota</span>
+                            <span><i class="fas fa-user-plus"></i> <span id="terisiKuotaStats">0</span> Terisi</span>
+                        </div>
+                    </div>
+
+                    <!-- Program Card -->
+                    <div class="stat-card bg-gradient-to-br from-orange-500 to-orange-600 text-white p-6 rounded-xl shadow-lg">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="text-sm opacity-90">Total Program</p>
+                                <h3 class="text-3xl font-bold" id="totalProgramStats">0</h3>
+                            </div>
+                            <i class="fas fa-calendar-alt text-4xl opacity-50"></i>
+                        </div>
+                        <div class="mt-4 flex justify-between text-sm">
+                            <span><i class="fas fa-graduation-cap"></i> <span id="programKknStats">0</span> KKN</span>
+                            <span><i class="fas fa-briefcase"></i> <span id="programMagangStats">0</span> Magang</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Chart KKN -->
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h4 class="text-lg font-semibold mb-4">Status Registrasi KKN</h4>
+                        <canvas id="kknChart" height="250"></canvas>
+                    </div>
+
+                    <!-- Chart Magang -->
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h4 class="text-lg font-semibold mb-4">Status Registrasi Magang</h4>
+                        <canvas id="magangChart" height="250"></canvas>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Modal Program -->
+    <div id="programModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50 flex items-center justify-center">
+        <div class="relative bg-white rounded-lg shadow-xl w-11/12 md:w-3/4 lg:w-1/2 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center p-6 border-b">
+                <h3 class="text-xl font-bold text-gray-900" id="programModalTitle">Buka Program Baru</h3>
+                <button onclick="closeProgramModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form id="programForm" class="p-6" onsubmit="saveProgram(event)">
+                <input type="hidden" id="programId">
+                
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Nama Program <span class="text-red-500">*</span></label>
+                    <input type="text" id="programName" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500" required>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Jenis <span class="text-red-500">*</span></label>
+                        <select id="programType" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500" required>
+                            <option value="">Pilih Jenis</option>
+                            <option value="magang">Magang</option>
+                            <option value="kkn">KKN</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Kuota <span class="text-red-500">*</span></label>
+                        <input type="number" id="programQuota" min="1" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500" required>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Periode <span class="text-red-500">*</span></label>
+                    <input type="text" id="programPeriode" placeholder="Contoh: Jan - Mar 2024" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500" required>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Deskripsi</label>
+                    <textarea id="programDescription" rows="3" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500"></textarea>
+                </div>
+                
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeProgramModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
+                        Batal
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-gradient-to-r from-green-500 to-blue-600 text-white rounded-lg hover:shadow-lg transition">
+                        Simpan Program
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Registrasi -->
+    <div id="registrationModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50 flex items-center justify-center">
+        <div class="relative bg-white rounded-lg shadow-xl w-11/12 md:w-3/4 lg:w-2/3 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center p-6 border-b">
+                <h3 class="text-xl font-bold text-gray-900" id="registrationModalTitle">Tambah Registrasi</h3>
+                <button onclick="closeRegistrationModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form id="registrationForm" class="p-6" onsubmit="saveRegistration(event)">
+                <input type="hidden" id="registrationId">
+                <input type="hidden" id="registrationType" value="kkn">
+                
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Jenis <span class="text-red-500">*</span></label>
+                        <select id="registrationTypeSelect" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500" onchange="toggleRegistrationForm()" required>
+                            <option value="kkn">KKN</option>
+                            <option value="magang">Magang</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2">NIM <span class="text-red-500">*</span></label>
+                        <input type="text" id="registrationNim" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500" required>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Nama Lengkap <span class="text-red-500">*</span></label>
+                        <input type="text" id="registrationName" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500" required>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Email <span class="text-red-500">*</span></label>
+                        <input type="email" id="registrationEmail" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500" required>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Program Studi <span class="text-red-500">*</span></label>
+                        <select id="registrationStudyProgram" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500" required>
+                            <option value="">Pilih Prodi</option>
+                            <option value="manajemen">Manajemen</option>
+                            <option value="akuntansi">Akuntansi</option>
+                            <option value="hukum_bisnis">Hukum Bisnis</option>
+                            <option value="sistem_informasi">Sistem Informasi</option>
+                            <option value="teknik_informatika">Teknik Informatika</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Telepon</label>
+                        <input type="text" id="registrationPhone" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500">
+                    </div>
+                </div>
+                
+                <!-- KKN Fields -->
+                <div id="kknFields">
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Desa Tujuan</label>
+                        <select id="registrationVillage" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500">
+                            <option value="">Pilih Desa</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Magang Fields -->
+                <div id="magangFields" style="display: none;">
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Nama Perusahaan</label>
+                            <input type="text" id="registrationCompany" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Bidang Magang</label>
+                            <input type="text" id="registrationField" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Durasi (bulan)</label>
+                            <input type="number" id="registrationDuration" min="1" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Status</label>
+                    <select id="registrationStatus" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500">
+                        <option value="pending">Pending</option>
+                        <option value="approved">Disetujui</option>
+                        <option value="rejected">Ditolak</option>
+                        <option value="verified">Terverifikasi</option>
+                    </select>
+                </div>
+                
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeRegistrationModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
+                        Batal
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-gradient-to-r from-green-500 to-blue-600 text-white rounded-lg hover:shadow-lg transition">
+                        Simpan Registrasi
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Detail -->
+    <div id="detailModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50 flex items-center justify-center">
+        <div class="relative bg-white rounded-lg shadow-xl w-11/12 md:w-3/4 lg:w-1/2 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center p-6 border-b">
+                <h3 class="text-xl font-bold text-gray-900">Detail Registrasi</h3>
+                <button onclick="closeDetailModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6" id="detailModalContent">
+                <!-- Content will be loaded here -->
+            </div>
+            <div class="flex justify-end p-6 border-t">
+                <button onclick="closeDetailModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Verifikasi -->
+    <div id="verificationModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50 flex items-center justify-center">
+        <div class="relative bg-white rounded-lg shadow-xl w-11/12 md:w-3/4 lg:w-1/2">
+            <div class="flex justify-between items-center p-6 border-b">
+                <h3 class="text-xl font-bold text-gray-900">Verifikasi Luaran</h3>
+                <button onclick="closeVerificationModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form id="verificationForm" class="p-6" onsubmit="submitVerification(event)">
+                <input type="hidden" id="verificationId">
+                <input type="hidden" id="verificationType">
+                
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Status Verifikasi</label>
+                    <select id="verificationStatus" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500" required>
+                        <option value="approved">Disetujui</option>
+                        <option value="rejected">Ditolak</option>
+                    </select>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Catatan</label>
+                    <textarea id="verificationNotes" rows="3" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500" placeholder="Berikan catatan jika diperlukan..."></textarea>
+                </div>
+                
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeVerificationModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
+                        Batal
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-gradient-to-r from-green-500 to-blue-600 text-white rounded-lg hover:shadow-lg transition">
+                        Simpan Verifikasi
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script>
+        // ==================== INITIALIZATION ====================
+        AOS.init({ duration: 800, once: true });
+
+        // API Base URL
+        const API_BASE_URL = 'http://localhost:3000/api';
+
+        // Global Variables
+        let currentProgramPage = 1;
+        let programData = [];
+        let kknRegistrationData = [];
+        let magangRegistrationData = [];
+        let luaranData = [];
+        let kknChart, magangChart;
+
+        // ==================== SECTION NAVIGATION ====================
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Update tab active state
+            document.querySelectorAll('.section-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Load section data if needed
+            switch(sectionId) {
+                case 'program-section':
+                    loadProgramData();
+                    break;
+                case 'registrations-section':
+                    loadRegistrationData();
+                    break;
+                case 'luaran-section':
+                    loadLuaranData();
+                    loadDesaOptions();
+                    break;
+                case 'stats-section':
+                    loadStatsData();
+                    break;
+            }
+        }
+
+        // ==================== PROGRAM FUNCTIONS ====================
+        async function loadProgramData() {
+            const search = document.getElementById('searchProgram').value;
+            const jenis = document.getElementById('filterJenisProgram').value;
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/programs?page=${currentProgramPage}&search=${search}&jenis=${jenis}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    renderProgramTable(data.data);
+                    updateProgramPagination(data.pagination);
+                }
+            } catch (error) {
+                console.error('Error loading programs:', error);
+                showAlert('Gagal memuat data program', 'danger');
+            }
+        }
+
+        function renderProgramTable(programs) {
+            const tbody = document.getElementById('programTableBody');
+            
+            if (!programs || programs.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="text-center py-8 text-gray-500">
+                            <i class="fas fa-folder-open text-4xl mb-3"></i><br>
+                            Tidak ada data program
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tbody.innerHTML = programs.map(program => `
+                <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900">${program.name}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${program.type === 'magang' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}">
+                            ${program.type === 'magang' ? 'Magang' : 'KKN'}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${program.period}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${program.quota}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${program.registered || 0}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${program.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">
+                            ${program.status === 'active' ? 'Aktif' : 'Tidak Aktif'}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+                        <button onclick="viewProgramDetail('${program.id}')" class="text-indigo-600 hover:text-indigo-900 mr-3" title="Lihat Detail">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button onclick="editProgram('${program.id}')" class="text-green-600 hover:text-green-900 mr-3" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button onclick="deleteProgram('${program.id}')" class="text-red-600 hover:text-red-900" title="Hapus">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function updateProgramPagination(pagination) {
+            document.getElementById('programPaginationInfo').innerHTML = 
+                `Menampilkan ${((pagination.currentPage - 1) * pagination.itemsPerPage) + 1} - ${Math.min(pagination.currentPage * pagination.itemsPerPage, pagination.totalItems)} dari ${pagination.totalItems} data`;
+            document.getElementById('programCurrentPage').textContent = pagination.currentPage;
+        }
+
+        function changeProgramPage(direction) {
+            if (direction === 'prev' && currentProgramPage > 1) {
+                currentProgramPage--;
+            } else if (direction === 'next') {
+                currentProgramPage++;
+            }
+            loadProgramData();
+        }
+
+        function openAddProgramModal() {
+            document.getElementById('programModalTitle').textContent = 'Buka Program Baru';
+            document.getElementById('programForm').reset();
+            document.getElementById('programId').value = '';
+            document.getElementById('programModal').classList.remove('hidden');
+        }
+
+        function closeProgramModal() {
+            document.getElementById('programModal').classList.add('hidden');
+        }
+
+        async function saveProgram(event) {
+            event.preventDefault();
+            
+            const programId = document.getElementById('programId').value;
+            const programData = {
+                name: document.getElementById('programName').value,
+                type: document.getElementById('programType').value,
+                quota: document.getElementById('programQuota').value,
+                period: document.getElementById('programPeriode').value,
+                description: document.getElementById('programDescription').value
+            };
+            
+            try {
+                const url = programId ? `${API_BASE_URL}/programs/${programId}` : `${API_BASE_URL}/programs`;
+                const method = programId ? 'PUT' : 'POST';
+                
+                const response = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(programData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert(programId ? 'Program berhasil diupdate' : 'Program berhasil ditambahkan', 'success');
+                    closeProgramModal();
+                    loadProgramData();
+                } else {
+                    showAlert(result.message, 'danger');
+                }
+            } catch (error) {
+                console.error('Error saving program:', error);
+                showAlert('Gagal menyimpan program', 'danger');
+            }
+        }
+
+        async function deleteProgram(id) {
+            if (!confirm('Apakah Anda yakin ingin menghapus program ini?')) return;
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/programs/${id}`, {
+                    method: 'DELETE'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('Program berhasil dihapus', 'success');
+                    loadProgramData();
+                } else {
+                    showAlert(result.message, 'danger');
+                }
+            } catch (error) {
+                console.error('Error deleting program:', error);
+                showAlert('Gagal menghapus program', 'danger');
+            }
+        }
+
+        // ==================== REGISTRATION FUNCTIONS ====================
+        async function loadRegistrationData() {
+            const search = document.getElementById('searchRegistration').value;
+            const jenis = document.getElementById('filterJenisRegistration').value;
+            const status = document.getElementById('filterStatusRegistration').value;
+            
+            try {
+                // Load KKN Registrations
+                if (jenis === '' || jenis === 'kkn') {
+                    const kknResponse = await fetch(`${API_BASE_URL}/kkn-registrations?search=${search}&status=${status}`);
+                    const kknData = await kknResponse.json();
+                    if (kknData.success) {
+                        renderKKNRegistrationTable(kknData.data);
+                    }
+                }
+                
+                // Load Magang Registrations
+                if (jenis === '' || jenis === 'magang') {
+                    const magangResponse = await fetch(`${API_BASE_URL}/magang-registrations?search=${search}&status=${status}`);
+                    const magangData = await magangResponse.json();
+                    if (magangData.success) {
+                        renderMagangRegistrationTable(magangData.data);
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading registrations:', error);
+                showAlert('Gagal memuat data registrasi', 'danger');
+            }
+        }
+
+        function renderKKNRegistrationTable(registrations) {
+            const tbody = document.getElementById('kknRegistrationTableBody');
+            
+            if (!registrations || registrations.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="text-center py-4 text-gray-500">
+                            Tidak ada data registrasi KKN
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tbody.innerHTML = registrations.map(reg => `
+                <tr class="hover:bg-gray-50">
+                    <td class="px-4 py-3">${reg.nim}</td>
+                    <td class="px-4 py-3">
+                        <div class="font-medium">${reg.full_name}</div>
+                        <div class="text-xs text-gray-500">${reg.email}</div>
+                    </td>
+                    <td class="px-4 py-3">${formatStudyProgram(reg.study_program)}</td>
+                    <td class="px-4 py-3">${reg.village || '-'}</td>
+                    <td class="px-4 py-3">
+                        <span class="${getStatusBadgeClass(reg.status)}">${getStatusText(reg.status)}</span>
+                    </td>
+                    <td class="px-4 py-3 text-center">
+                        <button onclick="viewRegistrationDetail('kkn', '${reg.nim}')" class="text-blue-600 hover:text-blue-900 mr-2" title="Lihat Detail">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button onclick="editRegistration('kkn', '${reg.nim}')" class="text-green-600 hover:text-green-900 mr-2" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button onclick="deleteRegistration('kkn', '${reg.nim}')" class="text-red-600 hover:text-red-900" title="Hapus">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderMagangRegistrationTable(registrations) {
+            const tbody = document.getElementById('magangRegistrationTableBody');
+            
+            if (!registrations || registrations.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="text-center py-4 text-gray-500">
+                            Tidak ada data registrasi Magang
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tbody.innerHTML = registrations.map(reg => `
+                <tr class="hover:bg-gray-50">
+                    <td class="px-4 py-3">${reg.nim}</td>
+                    <td class="px-4 py-3">
+                        <div class="font-medium">${reg.full_name}</div>
+                        <div class="text-xs text-gray-500">${reg.email}</div>
+                    </td>
+                    <td class="px-4 py-3">${formatStudyProgram(reg.study_program)}</td>
+                    <td class="px-4 py-3">${reg.company || '-'}</td>
+                    <td class="px-4 py-3">
+                        <span class="${getStatusBadgeClass(reg.status)}">${getStatusText(reg.status)}</span>
+                    </td>
+                    <td class="px-4 py-3 text-center">
+                        <button onclick="viewRegistrationDetail('magang', '${reg.nim}')" class="text-blue-600 hover:text-blue-900 mr-2" title="Lihat Detail">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button onclick="editRegistration('magang', '${reg.nim}')" class="text-green-600 hover:text-green-900 mr-2" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button onclick="deleteRegistration('magang', '${reg.nim}')" class="text-red-600 hover:text-red-900" title="Hapus">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function openAddRegistrationModal() {
+            document.getElementById('registrationModalTitle').textContent = 'Tambah Registrasi Baru';
+            document.getElementById('registrationForm').reset();
+            document.getElementById('registrationId').value = '';
+            toggleRegistrationForm();
+            document.getElementById('registrationModal').classList.remove('hidden');
+        }
+
+        function closeRegistrationModal() {
+            document.getElementById('registrationModal').classList.add('hidden');
+        }
+
+        function toggleRegistrationForm() {
+            const type = document.getElementById('registrationTypeSelect').value;
+            document.getElementById('registrationType').value = type;
+            
+            if (type === 'kkn') {
+                document.getElementById('kknFields').style.display = 'block';
+                document.getElementById('magangFields').style.display = 'none';
+                loadVillageOptions();
+            } else {
+                document.getElementById('kknFields').style.display = 'none';
+                document.getElementById('magangFields').style.display = 'block';
+            }
+        }
+
+        async function loadVillageOptions() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/villages`);
+                const data = await response.json();
+                
+                const select = document.getElementById('registrationVillage');
+                select.innerHTML = '<option value="">Pilih Desa</option>';
+                
+                if (data.success && data.data) {
+                    data.data.forEach(village => {
+                        select.innerHTML += `<option value="${village.id}">${village.name} (Kuota: ${village.available_quota})</option>`;
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading villages:', error);
+            }
+        }
+
+        async function saveRegistration(event) {
+            event.preventDefault();
+            
+            const type = document.getElementById('registrationType').value;
+            const nim = document.getElementById('registrationNim').value;
+            
+            const registrationData = {
+                nim: nim,
+                full_name: document.getElementById('registrationName').value,
+                email: document.getElementById('registrationEmail').value,
+                study_program: document.getElementById('registrationStudyProgram').value,
+                phone: document.getElementById('registrationPhone').value,
+                status: document.getElementById('registrationStatus').value
+            };
+            
+            if (type === 'kkn') {
+                registrationData.village_id = document.getElementById('registrationVillage').value;
+            } else {
+                registrationData.company = document.getElementById('registrationCompany').value;
+                registrationData.internship_field = document.getElementById('registrationField').value;
+                registrationData.duration = document.getElementById('registrationDuration').value;
+            }
+            
+            try {
+                const url = `${API_BASE_URL}/${type}-registrations`;
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(registrationData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('Registrasi berhasil ditambahkan', 'success');
+                    closeRegistrationModal();
+                    loadRegistrationData();
+                } else {
+                    showAlert(result.message, 'danger');
+                }
+            } catch (error) {
+                console.error('Error saving registration:', error);
+                showAlert('Gagal menyimpan registrasi', 'danger');
+            }
+        }
+
+        async function viewRegistrationDetail(type, nim) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/${type}-registrations/${nim}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    const data = result.data;
+                    let content = '';
+                    
+                    if (type === 'kkn') {
+                        content = `
+                            <div class="grid grid-cols-2 gap-4">
+                                <div><strong>NIM:</strong> ${data.nim}</div>
+                                <div><strong>Nama:</strong> ${data.full_name}</div>
+                                <div><strong>Email:</strong> ${data.email}</div>
+                                <div><strong>Telepon:</strong> ${data.phone}</div>
+                                <div><strong>Program Studi:</strong> ${formatStudyProgram(data.study_program)}</div>
+                                <div><strong>Desa:</strong> ${data.village || '-'}</div>
+                                <div><strong>Ukuran Jaket:</strong> ${data.jacket_size || '-'}</div>
+                                <div><strong>Status:</strong> <span class="${getStatusBadgeClass(data.status)}">${getStatusText(data.status)}</span></div>
+                                <div><strong>Tanggal Daftar:</strong> ${formatDate(data.created_at)}</div>
+                            </div>
+                            <h4 class="font-bold mt-4 mb-2">File Dokumen:</h4>
+                            <div class="grid grid-cols-3 gap-2">
+                                ${data.krs_file ? `<div><a href="${API_BASE_URL}/uploads/${data.krs_file}" target="_blank" class="text-blue-600">KRS</a></div>` : ''}
+                                ${data.khs_file ? `<div><a href="${API_BASE_URL}/uploads/${data.khs_file}" target="_blank" class="text-blue-600">KHS</a></div>` : ''}
+                                ${data.payment_file ? `<div><a href="${API_BASE_URL}/uploads/${data.payment_file}" target="_blank" class="text-blue-600">Bukti Bayar</a></div>` : ''}
+                            </div>
+                        `;
+                    } else {
+                        content = `
+                            <div class="grid grid-cols-2 gap-4">
+                                <div><strong>NIM:</strong> ${data.nim}</div>
+                                <div><strong>Nama:</strong> ${data.full_name}</div>
+                                <div><strong>Email:</strong> ${data.email}</div>
+                                <div><strong>Telepon:</strong> ${data.phone}</div>
+                                <div><strong>Program Studi:</strong> ${formatStudyProgram(data.study_program)}</div>
+                                <div><strong>Perusahaan:</strong> ${data.company || '-'}</div>
+                                <div><strong>Bidang:</strong> ${data.internship_field || '-'}</div>
+                                <div><strong>Durasi:</strong> ${data.duration || '-'} bulan</div>
+                                <div><strong>Status:</strong> <span class="${getStatusBadgeClass(data.status)}">${getStatusText(data.status)}</span></div>
+                                <div><strong>Tanggal Daftar:</strong> ${formatDate(data.created_at)}</div>
+                            </div>
+                        `;
+                    }
+                    
+                    document.getElementById('detailModalContent').innerHTML = content;
+                    document.getElementById('detailModal').classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Error viewing detail:', error);
+                showAlert('Gagal memuat detail', 'danger');
+            }
+        }
+
+        function closeDetailModal() {
+            document.getElementById('detailModal').classList.add('hidden');
+        }
+
+        async function deleteRegistration(type, nim) {
+            if (!confirm('Apakah Anda yakin ingin menghapus registrasi ini?')) return;
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/${type}-registrations/${nim}`, {
+                    method: 'DELETE'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('Registrasi berhasil dihapus', 'success');
+                    loadRegistrationData();
+                } else {
+                    showAlert(result.message, 'danger');
+                }
+            } catch (error) {
+                console.error('Error deleting registration:', error);
+                showAlert('Gagal menghapus registrasi', 'danger');
+            }
+        }
+
+        // ==================== LUARAN FUNCTIONS ====================
+        async function loadDesaOptions() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/villages`);
+                const data = await response.json();
+                
+                const select = document.getElementById('filterDesaLuaran');
+                select.innerHTML = '<option value="">Semua Desa</option>';
+                
+                if (data.success && data.data) {
+                    data.data.forEach(village => {
+                        select.innerHTML += `<option value="${village.id}">${village.name}</option>`;
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading villages:', error);
+            }
+        }
+
+        async function loadLuaranData() {
+            const desa = document.getElementById('filterDesaLuaran').value;
+            const status = document.getElementById('filterStatusLuaran').value;
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/luaran-kkn?desa=${desa}&status=${status}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    renderLuaranTable(result.data);
+                }
+            } catch (error) {
+                console.error('Error loading luaran:', error);
+                showAlert('Gagal memuat data luaran', 'danger');
+            }
+        }
+
+        function renderLuaranTable(data) {
+            const tbody = document.getElementById('luaranTableBody');
+            
+            if (!data || data.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="9" class="text-center py-8 text-gray-500">
+                            <i class="fas fa-file-alt text-4xl mb-3"></i><br>
+                            Tidak ada data luaran
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tbody.innerHTML = data.map((item, index) => `
+                <tr class="hover:bg-gray-50">
+                    <td class="px-4 py-3">${index + 1}</td>
+                    <td class="px-4 py-3">${item.nim}</td>
+                    <td class="px-4 py-3">${item.village_name}</td>
+                    <td class="px-4 py-3">${item.activity_title}</td>
+                    <td class="px-4 py-3">
+                        ${item.video_link ? 
+                            `<a href="${item.video_link}" target="_blank" class="text-blue-600"><i class="fab fa-youtube"></i> Lihat</a>` : 
+                            '<span class="text-gray-400">-</span>'}
+                    </td>
+                    <td class="px-4 py-3">
+                        ${item.poster_link ? 
+                            `<a href="${API_BASE_URL}${item.poster_link}" target="_blank" class="text-blue-600"><i class="fas fa-image"></i> Lihat</a>` : 
+                            '<span class="text-gray-400">-</span>'}
+                    </td>
+                    <td class="px-4 py-3">
+                        ${item.mou_file ? 
+                            `<a href="${API_BASE_URL}${item.mou_file}" target="_blank" class="text-blue-600"><i class="fas fa-file-pdf"></i> Download</a>` : 
+                            '<span class="text-gray-400">-</span>'}
+                    </td>
+                    <td class="px-4 py-3">
+                        <span class="${getStatusBadgeClass(item.status)}">${getStatusText(item.status)}</span>
+                    </td>
+                    <td class="px-4 py-3 text-center">
+                        <button onclick="openVerificationModal('${item.id}')" class="text-blue-600 hover:text-blue-900" title="Verifikasi">
+                            <i class="fas fa-check-circle"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function openVerificationModal(id) {
+            document.getElementById('verificationId').value = id;
+            document.getElementById('verificationForm').reset();
+            document.getElementById('verificationModal').classList.remove('hidden');
+        }
+
+        function closeVerificationModal() {
+            document.getElementById('verificationModal').classList.add('hidden');
+        }
+
+        async function submitVerification(event) {
+            event.preventDefault();
+            
+            const id = document.getElementById('verificationId').value;
+            const data = {
+                status: document.getElementById('verificationStatus').value,
+                notes: document.getElementById('verificationNotes').value
+            };
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/luaran-kkn/${id}/verifikasi`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('Verifikasi berhasil disimpan', 'success');
+                    closeVerificationModal();
+                    loadLuaranData();
+                } else {
+                    showAlert(result.message, 'danger');
+                }
+            } catch (error) {
+                console.error('Error submitting verification:', error);
+                showAlert('Gagal menyimpan verifikasi', 'danger');
+            }
+        }
+
+        // ==================== STATS FUNCTIONS ====================
+        async function loadStatsData() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/dashboard/stats`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    updateStatsCards(result.data);
+                    updateCharts(result.data);
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        function updateStatsCards(data) {
+            document.getElementById('totalKknStats').textContent = data.kkn.total || 0;
+            document.getElementById('approvedKknStats').textContent = data.kkn.approved || 0;
+            document.getElementById('pendingKknStats').textContent = data.kkn.pending || 0;
+            
+            document.getElementById('totalMagangStats').textContent = data.magang.total || 0;
+            document.getElementById('approvedMagangStats').textContent = data.magang.approved || 0;
+            document.getElementById('pendingMagangStats').textContent = data.magang.pending || 0;
+            
+            document.getElementById('totalDesaStats').textContent = data.villages.total || 0;
+            document.getElementById('totalKuotaStats').textContent = data.villages.total_quota || 0;
+            document.getElementById('terisiKuotaStats').textContent = data.villages.used_quota || 0;
+            
+            document.getElementById('totalProgramStats').textContent = data.programs.total || 0;
+            document.getElementById('programKknStats').textContent = data.programs.kkn || 0;
+            document.getElementById('programMagangStats').textContent = data.programs.magang || 0;
+        }
+
+        function updateCharts(data) {
+            if (!kknChart) {
+                // Initialize KKN Chart
+                const kknCtx = document.getElementById('kknChart').getContext('2d');
+                kknChart = new Chart(kknCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Disetujui', 'Pending', 'Ditolak', 'Terverifikasi'],
+                        datasets: [{
+                            data: [
+                                data.kkn.approved || 0,
+                                data.kkn.pending || 0,
+                                data.kkn.rejected || 0,
+                                data.kkn.verified || 0
+                            ],
+                            backgroundColor: ['#10b981', '#f59e0b', '#ef4444', '#3b82f6'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+            } else {
+                kknChart.data.datasets[0].data = [
+                    data.kkn.approved || 0,
+                    data.kkn.pending || 0,
+                    data.kkn.rejected || 0,
+                    data.kkn.verified || 0
+                ];
+                kknChart.update();
+            }
+
+            if (!magangChart) {
+                // Initialize Magang Chart
+                const magangCtx = document.getElementById('magangChart').getContext('2d');
+                magangChart = new Chart(magangCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Disetujui', 'Pending', 'Ditolak', 'Terverifikasi'],
+                        datasets: [{
+                            data: [
+                                data.magang.approved || 0,
+                                data.magang.pending || 0,
+                                data.magang.rejected || 0,
+                                data.magang.verified || 0
+                            ],
+                            backgroundColor: ['#10b981', '#f59e0b', '#ef4444', '#3b82f6'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+            } else {
+                magangChart.data.datasets[0].data = [
+                    data.magang.approved || 0,
+                    data.magang.pending || 0,
+                    data.magang.rejected || 0,
+                    data.magang.verified || 0
+                ];
+                magangChart.update();
+            }
+        }
+
+        // ==================== UTILITY FUNCTIONS ====================
+        function formatStudyProgram(program) {
+            const programs = {
+                'manajemen': 'Manajemen',
+                'akuntansi': 'Akuntansi',
+                'hukum_bisnis': 'Hukum Bisnis',
+                'sistem_informasi': 'Sistem Informasi',
+                'teknik_informatika': 'Teknik Informatika'
+            };
+            return programs[program] || program;
+        }
+
+        function getStatusBadgeClass(status) {
+            const classes = {
+                'pending': 'badge-pending',
+                'approved': 'badge-approved',
+                'rejected': 'badge-rejected',
+                'verified': 'badge-verified'
+            };
+            return classes[status] || 'badge-pending';
+        }
+
+        function getStatusText(status) {
+            const texts = {
+                'pending': 'Pending',
+                'approved': 'Disetujui',
+                'rejected': 'Ditolak',
+                'verified': 'Terverifikasi'
+            };
+            return texts[status] || status;
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('id-ID', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function showAlert(message, type) {
+            // Remove existing alerts
+            document.querySelectorAll('.alert').forEach(alert => alert.remove());
+            
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type} fixed top-20 right-5 z-50 max-w-md`;
+            alert.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <span>${message}</span>
+                    <button onclick="this.parentElement.parentElement.remove()" class="ml-4">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(alert);
+            
+            setTimeout(() => {
+                if (alert.parentNode) {
+                    alert.remove();
+                }
+            }, 5000);
+        }
+
+        // ==================== EVENT LISTENERS ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize AOS
+            AOS.init();
+            
+            // Load initial data
+            loadProgramData();
+            loadStatsData();
+            
+            // Search listeners
+            document.getElementById('searchProgram').addEventListener('input', debounce(loadProgramData, 500));
+            document.getElementById('filterJenisProgram').addEventListener('change', loadProgramData);
+            
+            document.getElementById('searchRegistration').addEventListener('input', debounce(loadRegistrationData, 500));
+            document.getElementById('filterJenisRegistration').addEventListener('change', loadRegistrationData);
+            document.getElementById('filterStatusRegistration').addEventListener('change', loadRegistrationData);
+        });
+
+        // Debounce function
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+    </script>
+</body>
+</html>

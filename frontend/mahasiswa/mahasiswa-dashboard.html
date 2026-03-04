@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Mahasiswa - LPPM ITB Yadika</title>
+    
+    <!-- CSS External Libraries -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        /* Custom CSS Styles */
+        .gradient-text { 
+            background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            background-clip: text; 
+        }
+        
+        .nav-link { 
+            position: relative; 
+            transition: color 0.3s ease; 
+        }
+        
+        .nav-link::after { 
+            content: ''; 
+            position: absolute; 
+            width: 0; 
+            height: 2px; 
+            bottom: -5px; 
+            left: 50%; 
+            background-color: #3B82F6; 
+            transition: all 0.3s ease; 
+        }
+        
+        .nav-link:hover::after, 
+        .nav-link.active::after { 
+            width: 100%; 
+            left: 0; 
+        }
+        
+        .nav-link.active { 
+            color: #3B82F6; 
+            font-weight: 600; 
+        }
+
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3B82F6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans antialiased">
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-white bg-opacity-90 z-50 flex items-center justify-center hidden">
+        <div class="text-center">
+            <div class="loading-spinner"></div>
+            <p class="mt-4 text-gray-600">Memuat data...</p>
+        </div>
+    </div>
+
+    <!-- Header / Navigation Bar -->
+    <header class="fixed top-0 left-0 right-0 bg-white shadow-md z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <!-- Logo and Brand -->
+            <a href="mahasiswa-dashboard.html" class="flex items-center space-x-3">
+                <img src="../images/logoyadika.png" alt="Logo LPPM ITB Yadika" class="h-10 w-10">
+                <div>
+                    <h1 class="text-xl font-bold gradient-text">Portal Mahasiswa</h1>
+                    <p class="text-xs text-gray-500">LPPM ITB Yadika</p>
+                </div>
+            </a>
+            
+            <!-- Navigation Menu -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="mahasiswa-dashboard.html" class="nav-link active text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-home mr-2"></i>Dashboard
+                </a>
+                <a href="mahasiswa-berita.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-newspaper mr-2"></i>Berita
+                </a>
+                <a href="mahasiswa-kegiatan.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-calendar-alt mr-2"></i>Kegiatan
+                </a>
+                <a href="mahasiswa-repository.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-book mr-2"></i>Repository
+                </a>
+                <a href="mahasiswa-magang-kkn.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-briefcase mr-2"></i>Magang & KKN
+                </a>
+                <a href="mahasiswa-profil.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-user-circle mr-2"></i>Profil Saya
+                </a>
+            </div>
+            
+            <!-- User Info & Logout -->
+            <div class="flex items-center space-x-4">
+                <div class="hidden md:block text-right">
+                    <p class="text-sm font-semibold text-gray-700" id="userNameDisplay">Loading...</p>
+                    <p class="text-xs text-gray-500" id="userNimDisplay">-</p>
+                </div>
+                <button onclick="handleLogout()" class="flex items-center space-x-2 p-2 rounded-lg text-red-600 hover:bg-red-50 transition">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span class="hidden sm:inline">Logout</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="pt-20">
+        <div class="container mx-auto px-6 py-8">
+            <!-- Welcome Section -->
+            <header class="mb-8" data-aos="fade-down">
+                <h2 class="text-3xl font-bold text-gray-800" id="welcomeMessage">
+                    Selamat datang, <span id="userName">Mahasiswa</span>!
+                </h2>
+                <p class="text-gray-600" id="userInfo">
+                    NIM: <span id="userNim">-</span> | Program Studi: <span id="userProdi">-</span>
+                </p>
+            </header>
+
+            <!-- Quick Actions Grid -->
+            <section class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8" data-aos="fade-up" data-aos-delay="100">
+                <!-- Search Repository Card -->
+                <a href="mahasiswa-repository.html" class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-all text-center group">
+                    <i class="fas fa-search text-3xl text-blue-500 group-hover:scale-110 transition-transform"></i>
+                    <p class="mt-2 text-sm font-medium text-gray-700">Cari Repository</p>
+                </a>
+                
+                <!-- Submit Internship/KKN Card -->
+                <a href="mahasiswa-magang-kkn.html" class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-all text-center group">
+                    <i class="fas fa-plus-circle text-3xl text-green-500 group-hover:scale-110 transition-transform"></i>
+                    <p class="mt-2 text-sm font-medium text-gray-700">Ajukan Magang/KKN</p>
+                </a>
+                
+                <!-- View Announcements Card -->
+                <a href="mahasiswa-berita.html" class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-all text-center group">
+                    <i class="fas fa-bullhorn text-3xl text-purple-500 group-hover:scale-110 transition-transform"></i>
+                    <p class="mt-2 text-sm font-medium text-gray-700">Lihat Pengumuman</p>
+                </a>
+                
+                <!-- Edit Profile Card -->
+                <a href="mahasiswa-profil.html" class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-all text-center group">
+                    <i class="fas fa-user-edit text-3xl text-pink-500 group-hover:scale-110 transition-transform"></i>
+                    <p class="mt-2 text-sm font-medium text-gray-700">Edit Profil</p>
+                </a>
+            </section>
+
+            <!-- Statistics Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8" data-aos="fade-up" data-aos-delay="150">
+                <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white">
+                    <i class="fas fa-file-alt text-3xl mb-2"></i>
+                    <h4 class="text-lg font-semibold">Total Repository</h4>
+                    <p class="text-3xl font-bold" id="totalRepository">0</p>
+                </div>
+                <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg p-6 text-white">
+                    <i class="fas fa-briefcase text-3xl mb-2"></i>
+                    <h4 class="text-lg font-semibold">Magang Aktif</h4>
+                    <p class="text-3xl font-bold" id="magangAktif">0</p>
+                </div>
+                <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg p-6 text-white">
+                    <i class="fas fa-users text-3xl mb-2"></i>
+                    <h4 class="text-lg font-semibold">KKN Aktif</h4>
+                    <p class="text-3xl font-bold" id="kknAktif">0</p>
+                </div>
+                <div class="bg-gradient-to-br from-pink-500 to-pink-600 rounded-xl shadow-lg p-6 text-white">
+                    <i class="fas fa-certificate text-3xl mb-2"></i>
+                    <h4 class="text-lg font-semibold">Sertifikat</h4>
+                    <p class="text-3xl font-bold" id="totalSertifikat">0</p>
+                </div>
+            </div>
+
+            <!-- Information Grid Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Latest Announcements Panel -->
+                <div class="lg:col-span-2 bg-white rounded-xl shadow-lg p-6" data-aos="fade-right">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-bullhorn mr-2 text-purple-500"></i> 
+                        Pengumuman Terbaru
+                    </h3>
+                    
+                    <div class="space-y-4" id="pengumumanList">
+                        <!-- Announcements will be loaded here -->
+                        <div class="text-center text-gray-500 py-8">
+                            <i class="fas fa-spinner fa-spin mr-2"></i>Memuat pengumuman...
+                        </div>
+                    </div>
+                    
+                    <!-- View All Link -->
+                    <a href="mahasiswa-berita.html" class="mt-4 inline-block text-sm font-medium text-purple-600 hover:text-purple-800">
+                        Lihat Semua Pengumuman &rarr;
+                    </a>
+                </div>
+
+                <!-- Upcoming Activities Panel -->
+                <div class="bg-white rounded-xl shadow-lg p-6" data-aos="fade-left">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-calendar-check mr-2 text-green-500"></i> 
+                        Kegiatan Mendatang
+                    </h3>
+                    
+                    <div class="space-y-4" id="kegiatanList">
+                        <!-- Activities will be loaded here -->
+                        <div class="text-center text-gray-500 py-8">
+                            <i class="fas fa-spinner fa-spin mr-2"></i>Memuat kegiatan...
+                        </div>
+                    </div>
+                    
+                    <!-- View Calendar Link -->
+                    <a href="mahasiswa-kegiatan.html" class="mt-4 inline-block text-sm font-medium text-green-600 hover:text-green-800">
+                        Lihat Kalender &rarr;
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Initialize AOS
+        AOS.init({ duration: 800, once: true });
+
+        // API Configuration
+        const API_CONFIG = {
+            BASE_URL: 'http://localhost:3000'
+        };
+
+        // Utility Functions
+        function showLoading() {
+            document.getElementById('loadingOverlay').classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.add('hidden');
+        }
+
+        function getToken() {
+            return localStorage.getItem('token');
+        }
+
+        function getUser() {
+            const userStr = localStorage.getItem('user');
+            return userStr ? JSON.parse(userStr) : null;
+        }
+
+        // Check Authentication
+        function checkAuth() {
+            const token = getToken();
+            const user = getUser();
+            
+            if (!token || !user) {
+                window.location.href = '../login.html';
+                return false;
+            }
+
+            if (user.role !== 'mahasiswa') {
+                alert('Anda tidak memiliki akses ke halaman ini');
+                window.location.href = '../login.html';
+                return false;
+            }
+
+            return true;
+        }
+
+        // Logout Function
+        window.handleLogout = function() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '../login.html';
+        };
+
+        // Load User Data
+        async function loadUserData() {
+            const user = getUser();
+            
+            if (user) {
+                document.getElementById('userName').textContent = user.name || 'Mahasiswa';
+                document.getElementById('userNameDisplay').textContent = user.name || 'Mahasiswa';
+                
+                // Try to load additional profile data
+                try {
+                    const response = await fetch(`${API_CONFIG.BASE_URL}/api/mahasiswa/profile`, {
+                        headers: {
+                            'Authorization': `Bearer ${getToken()}`
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        const profile = data.data;
+                        
+                        document.getElementById('userNim').textContent = profile.nim || '-';
+                        document.getElementById('userNimDisplay').textContent = profile.nim || '-';
+                        document.getElementById('userProdi').textContent = profile.prodi || 'Teknik Informatika';
+                        
+                        // Update statistics
+                        document.getElementById('totalRepository').textContent = profile.total_repository || 0;
+                        document.getElementById('magangAktif').textContent = profile.magang_aktif || 0;
+                        document.getElementById('kknAktif').textContent = profile.kkn_aktif || 0;
+                        document.getElementById('totalSertifikat').textContent = profile.total_sertifikat || 0;
+                    }
+                } catch (error) {
+                    console.error('Error loading profile:', error);
+                }
+            }
+        }
+
+        // Load Announcements
+        async function loadAnnouncements() {
+            try {
+                const response = await fetch(`${API_CONFIG.BASE_URL}/api/pengumuman?limit=2`, {
+                    headers: {
+                        'Authorization': `Bearer ${getToken()}`
+                    }
+                });
+                
+                const container = document.getElementById('pengumumanList');
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const announcements = data.data || [];
+                    
+                    if (announcements.length === 0) {
+                        container.innerHTML = '<div class="text-center text-gray-500 py-4">Belum ada pengumuman</div>';
+                    } else {
+                        container.innerHTML = announcements.map(item => `
+                            <div class="border-l-4 border-purple-500 pl-4 hover:bg-gray-50 p-2 rounded transition">
+                                <h4 class="font-semibold text-gray-800">${item.judul}</h4>
+                                <p class="text-sm text-gray-600">${item.isi_singkat || item.konten || ''}</p>
+                                <span class="text-xs text-gray-400">${item.tanggal || 'Baru saja'}</span>
+                            </div>
+                        `).join('');
+                    }
+                } else {
+                    container.innerHTML = '<div class="text-center text-gray-500 py-4">Gagal memuat pengumuman</div>';
+                }
+            } catch (error) {
+                console.error('Error loading announcements:', error);
+                document.getElementById('pengumumanList').innerHTML = '<div class="text-center text-gray-500 py-4">Terjadi kesalahan</div>';
+            }
+        }
+
+        // Load Activities
+        async function loadActivities() {
+            try {
+                const response = await fetch(`${API_CONFIG.BASE_URL}/api/kegiatan?limit=2`, {
+                    headers: {
+                        'Authorization': `Bearer ${getToken()}`
+                    }
+                });
+                
+                const container = document.getElementById('kegiatanList');
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const activities = data.data || [];
+                    
+                    if (activities.length === 0) {
+                        container.innerHTML = '<div class="text-center text-gray-500 py-4">Belum ada kegiatan</div>';
+                    } else {
+                        container.innerHTML = activities.map(item => `
+                            <div class="flex items-start space-x-3">
+                                <div class="bg-${item.warna || 'green'}-100 rounded-full p-2 mt-1">
+                                    <i class="fas fa-${item.icon || 'calendar'} text-${item.warna || 'green'}-600 text-xs"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-gray-800 text-sm">${item.nama}</h4>
+                                    <p class="text-xs text-gray-500">${item.tanggal}, ${item.waktu || 'TBA'}</p>
+                                </div>
+                            </div>
+                        `).join('');
+                    }
+                } else {
+                    container.innerHTML = '<div class="text-center text-gray-500 py-4">Gagal memuat kegiatan</div>';
+                }
+            } catch (error) {
+                console.error('Error loading activities:', error);
+                document.getElementById('kegiatanList').innerHTML = '<div class="text-center text-gray-500 py-4">Terjadi kesalahan</div>';
+            }
+        }
+
+        // Initialize Page
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Check authentication first
+            if (!checkAuth()) return;
+            
+            showLoading();
+            
+            try {
+                // Load all data
+                await Promise.all([
+                    loadUserData(),
+                    loadAnnouncements(),
+                    loadActivities()
+                ]);
+            } catch (error) {
+                console.error('Error loading page data:', error);
+            } finally {
+                hideLoading();
+            }
+        });
+    </script>
+</body>
+</html>

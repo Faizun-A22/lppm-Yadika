@@ -1,0 +1,1543 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Program Magang - Portal Mahasiswa LPPM ITB Yadika</title>
+    
+    <!-- CSS External Libraries -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        /* ========== CUSTOM CSS STYLES ========== */
+        
+        /* Gradient Text */
+        .gradient-text { 
+            background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            background-clip: text; 
+        }
+        
+        /* Navigation Links */
+        .nav-link { 
+            position: relative; 
+            transition: color 0.3s ease; 
+        }
+        
+        .nav-link::after { 
+            content: ''; 
+            position: absolute; 
+            width: 0; 
+            height: 2px; 
+            bottom: -5px; 
+            left: 50%; 
+            background-color: #3B82F6; 
+            transition: all 0.3s ease; 
+        }
+        
+        .nav-link:hover::after, 
+        .nav-link.active::after { 
+            width: 100%; 
+            left: 0; 
+        }
+        
+        .nav-link.active { 
+            color: #3B82F6; 
+            font-weight: 600; 
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3B82F6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Tab Buttons */
+        .tab-button { 
+            transition: all 0.3s ease; 
+        }
+        
+        .tab-button.active { 
+            background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%); 
+            color: white; 
+        }
+        
+        /* Timeline Styles */
+        .timeline-item {
+            position: relative;
+            padding-left: 30px;
+            margin-bottom: 20px;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: -20px;
+            width: 2px;
+            background: linear-gradient(to bottom, #8B5CF6, #3B82F6);
+        }
+        
+        .timeline-item:last-child::before {
+            display: none;
+        }
+        
+        .timeline-dot {
+            position: absolute;
+            left: -5px;
+            top: 0;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #8B5CF6;
+            border: 2px solid white;
+            box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.3);
+        }
+        
+        .timeline-item.completed .timeline-dot {
+            background: #10B981;
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.3);
+        }
+        
+        .timeline-item.active .timeline-dot {
+            background: #3B82F6;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+        }
+        
+        /* Status Badges */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-badge.pending { background: #FEF3C7; color: #92400E; }
+        .status-badge.verified { background: #DBEAFE; color: #1E40AF; }
+        .status-badge.approved { background: #D1FAE5; color: #065F46; }
+        .status-badge.rejected { background: #FEE2E2; color: #991B1B; }
+        .status-badge.completed { background: #E0E7FF; color: #3730A3; }
+        
+        /* Card Hover Effects */
+        .process-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .process-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        /* File Upload Area */
+        .file-upload-area {
+            border: 2px dashed #E5E7EB;
+            transition: all 0.3s ease;
+        }
+        
+        .file-upload-area:hover {
+            border-color: #8B5CF6;
+            background: #F5F3FF;
+        }
+        
+        /* Stepper */
+        .stepper-item {
+            position: relative;
+            flex: 1;
+            text-align: center;
+        }
+        
+        .stepper-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 60%;
+            width: 80%;
+            height: 2px;
+            background: #E5E7EB;
+            z-index: 0;
+        }
+        
+        .stepper-item.active .stepper-number {
+            background: linear-gradient(135deg, #3B82F6, #8B5CF6);
+            color: white;
+            border-color: transparent;
+        }
+        
+        .stepper-item.completed .stepper-number {
+            background: #10B981;
+            color: white;
+            border-color: transparent;
+        }
+        
+        .stepper-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid #E5E7EB;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin: 0 auto 10px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* File Preview */
+        .file-preview {
+            background: #F9FAFB;
+            border: 1px solid #E5E7EB;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+        }
+        
+        /* Button Loading Spinner */
+        .loading-spinner-sm {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.6s linear infinite;
+            margin-right: 0.5rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans antialiased">
+    <!-- ========== LOADING OVERLAY ========== -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-white bg-opacity-90 z-50 flex items-center justify-center hidden">
+        <div class="text-center">
+            <div class="loading-spinner"></div>
+            <p class="mt-4 text-gray-600">Memuat data...</p>
+        </div>
+    </div>
+
+    <!-- ========== HEADER / NAVIGATION BAR ========== -->
+    <header class="fixed top-0 left-0 right-0 bg-white shadow-md z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <!-- Logo and Brand -->
+            <a href="mahasiswa-dashboard.html" class="flex items-center space-x-3">
+                <img src="../images/logoyadika.png" alt="Logo LPPM ITB Yadika" class="h-10 w-10">
+                <div>
+                    <h1 class="text-xl font-bold gradient-text">Portal Mahasiswa</h1>
+                    <p class="text-xs text-gray-500">LPPM ITB Yadika</p>
+                </div>
+            </a>
+            
+            <!-- Navigation Menu -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="mahasiswa-dashboard.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-home mr-2"></i>Dashboard
+                </a>
+                <a href="mahasiswa-berita.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-newspaper mr-2"></i>Berita
+                </a>
+                <a href="mahasiswa-kegiatan.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-calendar-alt mr-2"></i>Kegiatan
+                </a>
+                <a href="mahasiswa-repository.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-book mr-2"></i>Repository
+                </a>
+                <a href="mahasiswa-magang.html" class="nav-link active text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-briefcase mr-2"></i>Magang
+                </a>
+                <a href="mahasiswa-profil.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-user-circle mr-2"></i>Profil Saya
+                </a>
+            </div>
+            
+            <!-- User Info & Logout -->
+            <div class="flex items-center space-x-4">
+                <div class="hidden md:block text-right">
+                    <p class="text-sm font-semibold text-gray-700" id="userNameDisplay">Loading...</p>
+                    <p class="text-xs text-gray-500" id="userNimDisplay">-</p>
+                </div>
+                <button onclick="handleLogout()" class="flex items-center space-x-2 p-2 rounded-lg text-red-600 hover:bg-red-50 transition">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span class="hidden sm:inline">Logout</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- ========== MAIN CONTENT ========== -->
+    <main class="pt-20">
+        <div class="container mx-auto px-6 py-8">
+            <!-- Header Section -->
+            <header class="mb-8" data-aos="fade-down">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+                    <div>
+                        <h2 class="text-3xl font-bold text-gray-800">Program Magang</h2>
+                        <p class="text-gray-600">Kelola seluruh proses magang Anda dalam satu tempat</p>
+                    </div>
+                    <div class="mt-4 md:mt-0">
+                        <div class="bg-white rounded-lg shadow px-4 py-2">
+                            <span class="text-sm text-gray-600">Status Keseluruhan:</span>
+                            <span class="ml-2 status-badge" id="overallStatus">Memuat...</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Tab Navigation -->
+            <div class="bg-white rounded-xl shadow-lg p-2 mb-6" data-aos="fade-up">
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="showSection('proses')" class="tab-button flex-1 py-3 px-4 rounded-lg text-center font-medium text-gray-700 hover:bg-gray-100 transition-all active" id="tabProses">
+                        <i class="fas fa-clock mr-2"></i>Proses Saya
+                    </button>
+                    <button onclick="showSection('pendaftaran')" class="tab-button flex-1 py-3 px-4 rounded-lg text-center font-medium text-gray-700 hover:bg-gray-100 transition-all" id="tabPendaftaran">
+                        <i class="fas fa-file-signature mr-2"></i>Pendaftaran
+                    </button>
+                    <button onclick="showSection('perusahaan')" class="tab-button flex-1 py-3 px-4 rounded-lg text-center font-medium text-gray-700 hover:bg-gray-100 transition-all" id="tabPerusahaan">
+                        <i class="fas fa-building mr-2"></i>Data Perusahaan
+                    </button>
+                    <button onclick="showSection('luaran')" class="tab-button flex-1 py-3 px-4 rounded-lg text-center font-medium text-gray-700 hover:bg-gray-100 transition-all" id="tabLuaran">
+                        <i class="fas fa-tasks mr-2"></i>Luaran Wajib
+                    </button>
+                </div>
+            </div>
+
+            <!-- ========== SECTION: PROSES SAYA ========== -->
+            <div id="sectionProses" class="section-content">
+                <!-- Status Overview Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    <div class="bg-white rounded-xl shadow p-4" data-aos="fade-up" data-aos-delay="100">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-file-signature text-blue-600 text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm text-gray-600">Pendaftaran</p>
+                                <p class="text-lg font-bold text-gray-800" id="statusPendaftaran">Memuat...</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow p-4" data-aos="fade-up" data-aos-delay="200">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-building text-purple-600 text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm text-gray-600">Perusahaan</p>
+                                <p class="text-lg font-bold text-gray-800" id="statusPerusahaan">Memuat...</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow p-4" data-aos="fade-up" data-aos-delay="300">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm text-gray-600">Verifikasi</p>
+                                <p class="text-lg font-bold text-gray-800" id="statusVerifikasi">Memuat...</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow p-4" data-aos="fade-up" data-aos-delay="400">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-tasks text-yellow-600 text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm text-gray-600">Luaran</p>
+                                <p class="text-lg font-bold text-gray-800" id="statusLuaran">Memuat...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timeline Progress -->
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-6" data-aos="fade-up">
+                    <h3 class="text-lg font-bold text-gray-800 mb-6">Progress Tahapan Magang</h3>
+                    
+                    <!-- Stepper -->
+                    <div class="flex mb-8">
+                        <div class="stepper-item" id="step1">
+                            <div class="stepper-number">1</div>
+                            <div class="text-sm font-medium">Pendaftaran</div>
+                            <div class="text-xs text-gray-500" id="step1Status">-</div>
+                        </div>
+                        <div class="stepper-item" id="step2">
+                            <div class="stepper-number">2</div>
+                            <div class="text-sm font-medium">Data Perusahaan</div>
+                            <div class="text-xs text-gray-500" id="step2Status">-</div>
+                        </div>
+                        <div class="stepper-item" id="step3">
+                            <div class="stepper-number">3</div>
+                            <div class="text-sm font-medium">Pelaksanaan</div>
+                            <div class="text-xs text-gray-500" id="step3Status">-</div>
+                        </div>
+                        <div class="stepper-item" id="step4">
+                            <div class="stepper-number">4</div>
+                            <div class="text-sm font-medium">Luaran</div>
+                            <div class="text-xs text-gray-500" id="step4Status">-</div>
+                        </div>
+                    </div>
+
+                    <!-- Timeline Details -->
+                    <div id="timelineDetails" class="space-y-4">
+                        <div class="text-center text-gray-500 py-4">
+                            <i class="fas fa-spinner fa-spin mr-2"></i>Memuat timeline...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Daftar Pengajuan -->
+                <div class="bg-white rounded-xl shadow-lg p-6" data-aos="fade-up">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Riwayat Pengajuan</h3>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jenis</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Keterangan</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200" id="riwayatTable">
+                                <tr>
+                                    <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                                        <i class="fas fa-spinner fa-spin mr-2"></i>Memuat data...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== SECTION: PENDAFTARAN MAGANG ========== -->
+            <div id="sectionPendaftaran" class="section-content hidden">
+                <div class="bg-white rounded-xl shadow-lg p-6" data-aos="fade-up">
+                    <h3 class="text-xl font-bold text-gray-800 mb-6">Formulir Pendaftaran Magang</h3>
+                    
+                    <form id="magangForm" class="space-y-6">
+                        <!-- Data Diri -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap</label>
+                                <input type="text" id="magangFullName" readonly class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">NIM</label>
+                                <input type="text" id="magangNim" readonly class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Program Studi</label>
+                                <select id="magangStudyProgram" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                                    <option value="">Pilih Program Studi</option>
+                                    <option value="manajemen">Manajemen</option>
+                                    <option value="akuntansi">Akuntansi</option>
+                                    <option value="hukum_bisnis">Hukum Bisnis</option>
+                                    <option value="sistem_informasi">Sistem Informasi</option>
+                                    <option value="teknik_informatika">Teknik Informatika</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Nomor HP</label>
+                                <input type="tel" id="magangPhone" placeholder="08xxxxxxxxxx" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                                <input type="email" id="magangEmail" readonly class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Domisili/Tempat Tinggal</label>
+                                <input type="text" id="magangDomicile" placeholder="Jakarta Selatan" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                            </div>
+                        </div>
+
+                        <!-- Semester -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Semester</label>
+                            <select id="magangSemester" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                                <option value="">Pilih Semester</option>
+                                <option value="6">Semester 6</option>
+                                <option value="7">Semester 7</option>
+                                <option value="8">Semester 8</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Upload Dokumen -->
+                        <div class="space-y-4">
+                            <h4 class="font-semibold text-gray-800">Upload Dokumen Persyaratan</h4>
+                            
+                            <div class="file-upload-area p-4 rounded-lg">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Bukti KRS</label>
+                                <input type="file" id="magangKrs" accept=".pdf,.jpg,.png" class="w-full">
+                                <p class="text-xs text-gray-500 mt-1">Format: PDF/JPG/PNG, Maks 2MB</p>
+                            </div>
+                            
+                            <div class="file-upload-area p-4 rounded-lg">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">KHS (Semester 1-5)</label>
+                                <input type="file" id="magangKhs" accept=".pdf,.jpg,.png" class="w-full">
+                                <p class="text-xs text-gray-500 mt-1">Format: PDF/JPG/PNG, Maks 2MB</p>
+                            </div>
+                            
+                            <div class="file-upload-area p-4 rounded-lg">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Bukti Pembayaran</label>
+                                <input type="file" id="magangPayment" accept=".pdf,.jpg,.png" class="w-full">
+                                <p class="text-xs text-gray-500 mt-1">Format: PDF/JPG/PNG, Maks 2MB</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Checkbox Persetujuan -->
+                        <div class="flex items-center">
+                            <input type="checkbox" id="magangAgreeTerms" class="mr-2">
+                            <label for="magangAgreeTerms" class="text-sm text-gray-600">
+                                Saya menyatakan bahwa data yang diisi adalah benar dan siap mengikuti program magang
+                            </label>
+                        </div>
+                        
+                        <!-- Tombol Submit -->
+                        <div class="flex justify-end space-x-3">
+                            <button type="button" onclick="cancelRegistration()" class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
+                                Batal
+                            </button>
+                            <button type="submit" class="px-6 py-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-lg hover:shadow-lg transition">
+                                Daftar Magang
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- ========== SECTION: DATA PERUSAHAAN ========== -->
+            <div id="sectionPerusahaan" class="section-content hidden">
+                <div class="bg-white rounded-xl shadow-lg p-6" data-aos="fade-up">
+                    <h3 class="text-xl font-bold text-gray-800 mb-6">Form Data Perusahaan Magang</h3>
+                    
+                    <form id="perusahaanForm" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Nama Perusahaan/Instansi</label>
+                                <input type="text" id="companyName" placeholder="PT Maju Jaya" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Bidang Magang</label>
+                                <input type="text" id="internshipField" placeholder="Digital Marketing" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Posisi Magang</label>
+                                <input type="text" id="position" placeholder="Marketing Intern" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Durasi Magang (Bulan)</label>
+                                <input type="number" id="duration" min="1" max="12" placeholder="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Tanggal Mulai</label>
+                                <input type="date" id="startDate" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Tanggal Selesai</label>
+                                <input type="date" id="endDate" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Alamat Perusahaan</label>
+                            <textarea id="companyAddress" rows="3" placeholder="Jl. Sudirman No. 123, Jakarta" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required></textarea>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Nama Pembimbing Lapangan</label>
+                                <input type="text" id="supervisor" placeholder="Bapak Ahmad" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Kontak Pembimbing</label>
+                                <input type="tel" id="supervisorContact" placeholder="08123456789" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Email Pembimbing</label>
+                                <input type="email" id="supervisorEmail" placeholder="ahmad@company.com" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Jabatan Pembimbing</label>
+                                <input type="text" id="supervisorPosition" placeholder="HR Manager" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <h4 class="font-semibold text-gray-800">Upload Dokumen Perusahaan</h4>
+                            
+                            <div class="file-upload-area p-4 rounded-lg">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Surat Keterangan/KTA Tempat Kerja</label>
+                                <input type="file" id="workCertificate" accept=".pdf,.jpg,.png" class="w-full" required>
+                                <p class="text-xs text-gray-500 mt-1">Format: PDF/JPG/PNG, Maks 2MB</p>
+                            </div>
+                            
+                            <div class="file-upload-area p-4 rounded-lg">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Struktur Organisasi Perusahaan</label>
+                                <input type="file" id="companyStructure" accept=".pdf,.jpg,.png" class="w-full">
+                                <p class="text-xs text-gray-500 mt-1">Format: PDF/JPG/PNG, Maks 2MB (Opsional)</p>
+                            </div>
+                            
+                            <!-- File Preview Container -->
+                            <div id="filePreviewContainer"></div>
+                        </div>
+                        
+                        <div class="flex justify-end space-x-3">
+                            <button type="button" onclick="cancelCompanyData()" class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
+                                Batal
+                            </button>
+                            <button type="submit" class="px-6 py-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-lg hover:shadow-lg transition">
+                                Simpan Data Perusahaan
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Daftar Perusahaan yang sudah diinput -->
+                <div class="mt-6 bg-white rounded-xl shadow-lg p-6" data-aos="fade-up">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Riwayat Data Perusahaan</h3>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama Perusahaan</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Bidang</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Periode</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="perusahaanTable" class="divide-y divide-gray-200">
+                                <tr>
+                                    <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                                        <i class="fas fa-spinner fa-spin mr-2"></i>Memuat data...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== SECTION: LUARAN WAJIB ========== -->
+            <div id="sectionLuaran" class="section-content hidden">
+                <div class="bg-white rounded-xl shadow-lg p-6" data-aos="fade-up">
+                    <h3 class="text-xl font-bold text-gray-800 mb-6">Input Luaran Wajib Magang</h3>
+                    
+                    <form id="luaranMagangForm" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Nama Perusahaan</label>
+                                <input type="text" id="nama_perusahaan" readonly class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Posisi Magang</label>
+                                <input type="text" id="posisi_magang" placeholder="Marketing Intern" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Periode Mulai</label>
+                                <input type="date" id="mulai_magang" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Periode Selesai</label>
+                                <input type="date" id="selesai_magang" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Judul Proyek/Tugas Akhir Magang</label>
+                            <input type="text" id="judul_proyek" placeholder="Strategi Digital Marketing UMKM" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Deskripsi Pekerjaan</label>
+                            <textarea id="deskripsi_pekerjaan" rows="3" placeholder="Jelaskan tugas dan tanggung jawab selama magang..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"></textarea>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <h4 class="font-semibold text-gray-800">Link Google Drive Luaran</h4>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Link GD Poster Presentasi</label>
+                                <input type="url" id="link_poster_magang" placeholder="https://drive.google.com/..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Link GD Laporan Magang</label>
+                                <input type="url" id="link_laporan" placeholder="https://drive.google.com/..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Link GD Foto Kegiatan</label>
+                                <input type="url" id="link_foto" placeholder="https://drive.google.com/..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <h4 class="font-semibold text-gray-800">Upload Dokumen</h4>
+                            
+                            <div class="file-upload-area p-4 rounded-lg">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Upload MOU Magang (PDF)</label>
+                                <input type="file" id="file_mou_magang" accept=".pdf" class="w-full">
+                                <p class="text-xs text-gray-500 mt-1">Format PDF, Maks 5MB</p>
+                            </div>
+                            
+                            <div class="file-upload-area p-4 rounded-lg">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Upload Sertifikat Magang (PDF/JPG)</label>
+                                <input type="file" id="sertifikat_magang" accept=".pdf,.jpg,.jpeg" class="w-full">
+                                <p class="text-xs text-gray-500 mt-1">Format PDF/JPG, Maks 5MB</p>
+                            </div>
+                            
+                            <div class="file-upload-area p-4 rounded-lg">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Upload Logbook Magang (PDF)</label>
+                                <input type="file" id="logbook_magang" accept=".pdf" class="w-full">
+                                <p class="text-xs text-gray-500 mt-1">Format PDF, Maks 5MB (Opsional)</p>
+                            </div>
+                            
+                            <!-- File Info -->
+                            <div id="file-info-mou-magang" class="text-sm text-gray-600">Belum ada file MOU yang dipilih</div>
+                            <div id="file-info-sertifikat" class="text-sm text-gray-600">Belum ada file sertifikat yang dipilih</div>
+                            <div id="file-info-logbook" class="text-sm text-gray-600">Belum ada file logbook yang dipilih</div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Keterangan Tambahan</label>
+                            <textarea id="keterangan_magang" rows="3" placeholder="Tambahkan keterangan lain jika diperlukan" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"></textarea>
+                        </div>
+                        
+                        <div class="flex justify-end space-x-3">
+                            <button type="button" onclick="cancelLuaran()" class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
+                                Batal
+                            </button>
+                            <button type="submit" class="px-6 py-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-lg hover:shadow-lg transition">
+                                Simpan Luaran
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Daftar Luaran yang sudah diupload -->
+                <div class="mt-6 bg-white rounded-xl shadow-lg p-6" data-aos="fade-up">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Riwayat Upload Luaran</h3>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Jenis Luaran</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tanggal Upload</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="luaranMagangTable" class="divide-y divide-gray-200">
+                                <tr>
+                                    <td colspan="4" class="px-6 py-4 text-center text-gray-500">
+                                        <i class="fas fa-spinner fa-spin mr-2"></i>Memuat data...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ========== SCRIPTS ========== -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="../js/auth.js"></script>
+    
+    <script>
+        // ========== INITIALIZATION ==========
+        AOS.init({ duration: 800, once: true });
+        
+        // ========== STATE MANAGEMENT ==========
+        let currentUser = null;
+        let magangData = null;
+        let perusahaanList = [];
+        
+        // ========== UI HELPER FUNCTIONS ==========
+        
+        // Show loading overlay
+        function showLoading() {
+            document.getElementById('loadingOverlay').classList.remove('hidden');
+        }
+
+        // Hide loading overlay
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.add('hidden');
+        }
+
+        // Show notification
+        function showNotification(message, isSuccess = true) {
+            Swal.fire({
+                icon: isSuccess ? 'success' : 'error',
+                title: isSuccess ? 'Berhasil' : 'Gagal',
+                text: message,
+                timer: 2000,
+                showConfirmButton: false
+            });
+        }
+
+        // Get user data from auth
+        function getUser() {
+            return auth.getUser();
+        }
+
+        // Update user info in header
+        function updateUserInfo() {
+            const user = getUser();
+            if (user) {
+                document.getElementById('userNameDisplay').textContent = user.name || 'Mahasiswa';
+                document.getElementById('userNimDisplay').textContent = user.nim || '-';
+                
+                // Update form fields
+                document.getElementById('magangFullName').value = user.name || '';
+                document.getElementById('magangNim').value = user.nim || '';
+                document.getElementById('magangEmail').value = user.email || '';
+            }
+        }
+
+        // Logout function
+        window.handleLogout = function() {
+            auth.logout();
+        };
+        
+        // ========== SECTION NAVIGATION ==========
+        function showSection(section) {
+            // Hide all sections
+            document.querySelectorAll('.section-content').forEach(el => {
+                el.classList.add('hidden');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab-button').forEach(el => {
+                el.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(`section${section.charAt(0).toUpperCase() + section.slice(1)}`).classList.remove('hidden');
+            
+            // Add active class to clicked tab
+            document.getElementById(`tab${section.charAt(0).toUpperCase() + section.slice(1)}`).classList.add('active');
+        }
+        
+        // ========== DATA LOADING ==========
+        async function loadMagangData() {
+            try {
+                // Simulate API call
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                // Mock data
+                magangData = {
+                    hasRegistration: true,
+                    registration: {
+                        status: 'approved',
+                        date: '2024-06-10',
+                        programStudi: 'Sistem Informasi',
+                        semester: 6
+                    },
+                    perusahaan: {
+                        status: 'pending',
+                        date: '2024-06-15',
+                        name: 'PT Maju Jaya',
+                        bidang: 'Digital Marketing'
+                    },
+                    verification: {
+                        status: 'verified',
+                        date: '2024-06-12'
+                    },
+                    outputs: [
+                        { type: 'Poster Presentasi', date: '2024-08-20', status: 'approved' },
+                        { type: 'Laporan Magang', date: '2024-08-20', status: 'pending' }
+                    ]
+                };
+                
+                perusahaanList = [
+                    {
+                        id: 1,
+                        name: 'PT Maju Jaya',
+                        bidang: 'Digital Marketing',
+                        periode: 'Juli - Sept 2024',
+                        status: 'approved'
+                    }
+                ];
+                
+                updateStatusUI();
+                
+            } catch (error) {
+                console.error('Error loading magang data:', error);
+            }
+        }
+        
+        // ========== UI UPDATE FUNCTIONS ==========
+        function updateStatusUI() {
+            if (!magangData) return;
+            
+            // Update status cards
+            document.getElementById('statusPendaftaran').textContent = 
+                magangData.registration?.status === 'approved' ? 'Disetujui' : 
+                magangData.registration?.status === 'pending' ? 'Menunggu' : 'Belum Daftar';
+                
+            document.getElementById('statusPerusahaan').textContent = 
+                magangData.perusahaan?.status === 'approved' ? 'Disetujui' :
+                magangData.perusahaan?.status === 'pending' ? 'Dalam Review' : 'Belum Input';
+                
+            document.getElementById('statusVerifikasi').textContent = 
+                magangData.verification?.status === 'verified' ? 'Terverifikasi' : 'Belum';
+                
+            document.getElementById('statusLuaran').textContent = 
+                magangData.outputs?.length > 0 ? magangData.outputs.length + ' Upload' : 'Belum Input';
+            
+            // Update overall status
+            const overallStatus = document.getElementById('overallStatus');
+            if (magangData.registration?.status === 'approved' && magangData.perusahaan?.status === 'pending') {
+                overallStatus.textContent = 'Dalam Proses';
+                overallStatus.className = 'ml-2 status-badge pending';
+            } else if (magangData.registration?.status === 'approved' && magangData.perusahaan?.status === 'approved') {
+                overallStatus.textContent = 'Aktif';
+                overallStatus.className = 'ml-2 status-badge approved';
+            } else {
+                overallStatus.textContent = 'Belum Mulai';
+                overallStatus.className = 'ml-2 status-badge pending';
+            }
+            
+            // Update all UI components
+            updateStepper();
+            updateTimeline();
+            updateRiwayatTable();
+            updatePerusahaanTable();
+            updateLuaranTable();
+            
+            // Update form with saved data
+            if (magangData.registration) {
+                document.getElementById('magangStudyProgram').value = magangData.registration.programStudi || '';
+                document.getElementById('magangSemester').value = magangData.registration.semester || '';
+            }
+            
+            if (magangData.perusahaan) {
+                document.getElementById('nama_perusahaan').value = magangData.perusahaan.name || '';
+            }
+        }
+        
+        // Update stepper
+        function updateStepper() {
+            const steps = {
+                1: { element: document.getElementById('step1'), status: magangData.registration?.status },
+                2: { element: document.getElementById('step2'), status: magangData.perusahaan?.status },
+                3: { element: document.getElementById('step3'), status: magangData.verification?.status },
+                4: { element: document.getElementById('step4'), status: magangData.outputs?.length > 0 ? 'completed' : 'pending' }
+            };
+            
+            for (let i = 1; i <= 4; i++) {
+                const step = steps[i];
+                step.element.classList.remove('active', 'completed');
+                
+                if (step.status === 'approved' || step.status === 'verified' || (i === 4 && step.status === 'completed')) {
+                    step.element.classList.add('completed');
+                    document.getElementById(`step${i}Status`).textContent = 'Selesai';
+                } else if (step.status === 'pending' || (i === 3 && step.status === 'verified')) {
+                    step.element.classList.add('active');
+                    document.getElementById(`step${i}Status`).textContent = 'Dalam Proses';
+                } else {
+                    document.getElementById(`step${i}Status`).textContent = 'Belum Dimulai';
+                }
+            }
+        }
+        
+        // Update timeline
+        function updateTimeline() {
+            const timeline = document.getElementById('timelineDetails');
+            
+            const items = [
+                {
+                    title: 'Pendaftaran Magang',
+                    status: magangData.registration?.status,
+                    description: magangData.registration?.status === 'approved' ? 
+                        'Pendaftaran telah diverifikasi dan disetujui' : 
+                        magangData.registration?.status === 'pending' ? 
+                        'Pendaftaran sedang dalam proses verifikasi' : 
+                        'Belum melakukan pendaftaran',
+                    date: magangData.registration?.date || '-'
+                },
+                {
+                    title: 'Input Data Perusahaan',
+                    status: magangData.perusahaan?.status,
+                    description: magangData.perusahaan?.status === 'approved' ? 
+                        'Data perusahaan telah disetujui' : 
+                        magangData.perusahaan?.status === 'pending' ? 
+                        'Data perusahaan sedang direview oleh DPL' : 
+                        'Belum menginput data perusahaan',
+                    date: magangData.perusahaan?.date || '-'
+                },
+                {
+                    title: 'Pelaksanaan Magang',
+                    status: magangData.registration?.status === 'approved' && magangData.perusahaan?.status === 'approved' ? 'active' : 'pending',
+                    description: 'Menunggu persetujuan data perusahaan dan jadwal pelaksanaan',
+                    date: '-'
+                },
+                {
+                    title: 'Input Luaran',
+                    status: magangData.outputs?.length > 0 ? 'completed' : 'pending',
+                    description: magangData.outputs?.length > 0 ? 
+                        'Luaran telah diupload' : 
+                        'Upload luaran setelah pelaksanaan magang',
+                    date: '-'
+                }
+            ];
+            
+            timeline.innerHTML = items.map((item, index) => {
+                const statusClass = item.status === 'approved' || item.status === 'completed' ? 'completed' : 
+                                   item.status === 'pending' || item.status === 'active' ? 'active' : '';
+                
+                return `
+                    <div class="timeline-item ${statusClass}">
+                        <div class="timeline-dot"></div>
+                        <div class="ml-4">
+                            <div class="flex items-center">
+                                <h4 class="font-semibold text-gray-800">${item.title}</h4>
+                                <span class="ml-3 text-xs ${
+                                    item.status === 'approved' ? 'bg-green-100 text-green-800' :
+                                    item.status === 'pending' ? 'bg-blue-100 text-blue-800' :
+                                    'bg-gray-100 text-gray-800'
+                                } px-2 py-1 rounded-full">
+                                    ${item.status === 'approved' ? 'Selesai' :
+                                      item.status === 'pending' ? 'Dalam Proses' :
+                                      item.status === 'active' ? 'Aktif' : 'Menunggu'}
+                                </span>
+                            </div>
+                            <p class="text-sm text-gray-600">${item.description}</p>
+                            ${item.date !== '-' ? `<p class="text-xs text-gray-400 mt-1">${item.date}</p>` : ''}
+                            ${item.status === 'pending' && item.title === 'Input Data Perusahaan' ? `
+                                <div class="mt-2 w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-blue-600 rounded-full h-2" style="width: 60%"></div>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Update riwayat table
+        function updateRiwayatTable() {
+            const table = document.getElementById('riwayatTable');
+            
+            const rows = [];
+            
+            if (magangData.registration) {
+                rows.push({
+                    type: 'Pendaftaran',
+                    icon: 'fa-file-signature',
+                    color: 'blue',
+                    date: magangData.registration.date,
+                    status: magangData.registration.status,
+                    description: 'PT Maju Jaya',
+                    action: 'pendaftaran'
+                });
+            }
+            
+            if (magangData.perusahaan) {
+                rows.push({
+                    type: 'Data Perusahaan',
+                    icon: 'fa-building',
+                    color: 'purple',
+                    date: magangData.perusahaan.date,
+                    status: magangData.perusahaan.status,
+                    description: magangData.perusahaan.bidang,
+                    action: 'perusahaan'
+                });
+            }
+            
+            if (rows.length === 0) {
+                table.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">Belum ada riwayat pengajuan</td></tr>';
+                return;
+            }
+            
+            table.innerHTML = rows.map(row => `
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <i class="fas ${row.icon} text-${row.color}-500 mr-2"></i>
+                            <span class="text-sm text-gray-900">${row.type}</span>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${row.date}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="status-badge ${
+                            row.status === 'approved' ? 'approved' :
+                            row.status === 'pending' ? 'pending' : 'rejected'
+                        }">${
+                            row.status === 'approved' ? 'Disetujui' :
+                            row.status === 'pending' ? 'Diproses' : 'Ditolak'
+                        }</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${row.description}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                        <button class="text-blue-600 hover:text-blue-800 mr-2" onclick="viewDetail('${row.type}')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        ${row.type === 'Data Perusahaan' && row.status === 'pending' ? `
+                            <button class="text-green-600 hover:text-green-800" onclick="editPerusahaan()">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        ` : ''}
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        // Update perusahaan table
+        function updatePerusahaanTable() {
+            const table = document.getElementById('perusahaanTable');
+            
+            if (perusahaanList.length > 0) {
+                table.innerHTML = perusahaanList.map(company => `
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap">${company.name}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">${company.bidang}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">${company.periode}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="status-badge ${company.status}">${
+                                company.status === 'approved' ? 'Terverifikasi' :
+                                company.status === 'pending' ? 'Dalam Review' : 'Ditolak'
+                            }</span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <button class="text-blue-600 hover:text-blue-800" onclick="viewCompanyDetail(${company.id})">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            } else {
+                table.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">Belum ada data perusahaan</td></tr>';
+            }
+        }
+        
+        // Update luaran table
+        function updateLuaranTable() {
+            const table = document.getElementById('luaranMagangTable');
+            
+            if (magangData.outputs && magangData.outputs.length > 0) {
+                table.innerHTML = magangData.outputs.map(output => `
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap">${output.type}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">${output.date}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="status-badge ${
+                                output.status === 'approved' ? 'approved' :
+                                output.status === 'pending' ? 'pending' : 'rejected'
+                            }">${
+                                output.status === 'approved' ? 'Terverifikasi' :
+                                output.status === 'pending' ? 'Dalam Review' : 'Ditolak'
+                            }</span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <button class="text-blue-600 hover:text-blue-800"><i class="fas fa-eye"></i></button>
+                        </td>
+                    </tr>
+                `).join('');
+            } else {
+                table.innerHTML = '<tr><td colspan="4" class="px-6 py-4 text-center text-gray-500">Belum ada luaran yang diupload</td></tr>';
+            }
+        }
+        
+        // ========== FILE HANDLING ==========
+        
+        // Setup file preview
+        function setupFilePreview() {
+            const fileInput = document.getElementById('workCertificate');
+            const previewContainer = document.getElementById('filePreviewContainer');
+            
+            if (fileInput) {
+                fileInput.addEventListener('change', function() {
+                    const file = this.files[0];
+                    if (file) {
+                        // Validasi ukuran file
+                        if (file.size > 2 * 1024 * 1024) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Ukuran File Terlalu Besar',
+                                text: 'Maksimal ukuran file adalah 2MB'
+                            });
+                            this.value = '';
+                            return;
+                        }
+                        
+                        // Validasi tipe file
+                        const validTypes = ['application/pdf', 'image/jpeg', 'image/png'];
+                        if (!validTypes.includes(file.type)) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Tipe File Tidak Valid',
+                                text: 'Hanya file PDF, JPG, atau PNG yang diperbolehkan'
+                            });
+                            this.value = '';
+                            return;
+                        }
+                        
+                        // Tampilkan preview
+                        const fileType = file.type === 'application/pdf' ? 'pdf' : 'image';
+                        const icon = fileType === 'pdf' ? 'fa-file-pdf text-red-500' : 'fa-file-image text-blue-500';
+                        
+                        previewContainer.innerHTML = `
+                            <div class="file-preview">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <i class="fas ${icon} text-xl mr-2"></i>
+                                        <div>
+                                            <div class="file-name text-sm font-medium">${file.name}</div>
+                                            <div class="file-size text-xs text-gray-500">${formatFileSize(file.size)}</div>
+                                        </div>
+                                    </div>
+                                    <button type="button" onclick="removeFile()" class="text-red-500 hover:text-red-700">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        previewContainer.innerHTML = '';
+                    }
+                });
+            }
+        }
+        
+        // Remove file
+        window.removeFile = function() {
+            document.getElementById('workCertificate').value = '';
+            document.getElementById('filePreviewContainer').innerHTML = '';
+        };
+        
+        // Format file size
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        // ========== FORM HANDLERS ==========
+        
+        // Pendaftaran form
+        document.getElementById('magangForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!document.getElementById('magangAgreeTerms').checked) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Perhatian',
+                    text: 'Anda harus menyetujui pernyataan di atas'
+                });
+                return;
+            }
+            
+            Swal.fire({
+                title: 'Konfirmasi Pendaftaran',
+                text: 'Apakah Anda yakin ingin mendaftar magang?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#8B5CF6',
+                cancelButtonColor: '#6B7280',
+                confirmButtonText: 'Ya, Daftar!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    showLoading();
+                    
+                    setTimeout(() => {
+                        hideLoading();
+                        Swal.fire({
+                            title: 'Berhasil!',
+                            text: 'Pendaftaran magang Anda telah diterima',
+                            icon: 'success',
+                            confirmButtonColor: '#8B5CF6'
+                        }).then(() => {
+                            showSection('proses');
+                        });
+                    }, 1500);
+                }
+            });
+        });
+        
+        // Perusahaan form
+        document.getElementById('perusahaanForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            Swal.fire({
+                title: 'Simpan Data Perusahaan',
+                text: 'Pastikan semua data sudah benar',
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#8B5CF6',
+                confirmButtonText: 'Simpan'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    showLoading();
+                    
+                    setTimeout(() => {
+                        hideLoading();
+                        Swal.fire({
+                            title: 'Tersimpan!',
+                            text: 'Data perusahaan berhasil disimpan',
+                            icon: 'success',
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                    }, 1500);
+                }
+            });
+        });
+        
+        // Luaran form
+        document.getElementById('luaranMagangForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            Swal.fire({
+                title: 'Simpan Luaran',
+                text: 'Pastikan semua data sudah benar',
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#8B5CF6',
+                confirmButtonText: 'Simpan'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    showLoading();
+                    
+                    setTimeout(() => {
+                        hideLoading();
+                        Swal.fire({
+                            title: 'Tersimpan!',
+                            text: 'Data luaran berhasil disimpan',
+                            icon: 'success',
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                    }, 1500);
+                }
+            });
+        });
+        
+        // ========== HELPER FUNCTIONS ==========
+        function viewDetail(type) {
+            Swal.fire({
+                title: `Detail ${type}`,
+                html: `
+                    <div class="text-left">
+                        <p><strong>ID Pengajuan:</strong> MAG-2024-001</p>
+                        <p><strong>Tanggal:</strong> 10 Juni 2024</p>
+                        <p><strong>Status:</strong> Disetujui</p>
+                        <p><strong>Keterangan:</strong> PT Maju Jaya</p>
+                    </div>
+                `,
+                icon: 'info',
+                confirmButtonColor: '#8B5CF6'
+            });
+        }
+        
+        function viewCompanyDetail(id) {
+            Swal.fire({
+                title: 'Detail Perusahaan',
+                html: `
+                    <div class="text-left">
+                        <p><strong>Nama:</strong> PT Maju Jaya</p>
+                        <p><strong>Bidang:</strong> Digital Marketing</p>
+                        <p><strong>Periode:</strong> Juli - Sept 2024</p>
+                        <p><strong>Pembimbing:</strong> Bapak Ahmad</p>
+                        <p><strong>Kontak:</strong> 08123456789</p>
+                    </div>
+                `,
+                icon: 'info',
+                confirmButtonColor: '#8B5CF6'
+            });
+        }
+        
+        function editPerusahaan() {
+            showSection('perusahaan');
+            
+            document.getElementById('sectionPerusahaan').scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+        
+        function cancelRegistration() {
+            Swal.fire({
+                title: 'Batal',
+                text: 'Pendaftaran dibatalkan',
+                icon: 'info',
+                timer: 1500,
+                showConfirmButton: false
+            });
+        }
+        
+        function cancelCompanyData() {
+            Swal.fire({
+                title: 'Batal',
+                text: 'Input data perusahaan dibatalkan',
+                icon: 'info',
+                timer: 1500,
+                showConfirmButton: false
+            });
+        }
+        
+        function cancelLuaran() {
+            Swal.fire({
+                title: 'Batal',
+                text: 'Input luaran dibatalkan',
+                icon: 'info',
+                timer: 1500,
+                showConfirmButton: false
+            });
+        }
+        
+        // ========== FILE UPLOAD HANDLERS FOR LUARAN ==========
+        document.getElementById('file_mou_magang')?.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const infoElement = document.getElementById('file-info-mou-magang');
+            
+            if (file) {
+                if (file.size > 5 * 1024 * 1024) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ukuran File Terlalu Besar',
+                        text: 'Maksimal ukuran file adalah 5MB'
+                    });
+                    this.value = '';
+                    infoElement.textContent = 'Belum ada file MOU yang dipilih';
+                } else if (file.type !== 'application/pdf') {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Tipe File Tidak Valid',
+                        text: 'File MOU harus dalam format PDF'
+                    });
+                    this.value = '';
+                    infoElement.textContent = 'Belum ada file MOU yang dipilih';
+                } else {
+                    infoElement.textContent = `File terpilih: ${file.name} (${formatFileSize(file.size)})`;
+                }
+            } else {
+                infoElement.textContent = 'Belum ada file MOU yang dipilih';
+            }
+        });
+        
+        document.getElementById('sertifikat_magang')?.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const infoElement = document.getElementById('file-info-sertifikat');
+            
+            if (file) {
+                if (file.size > 5 * 1024 * 1024) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ukuran File Terlalu Besar',
+                        text: 'Maksimal ukuran file adalah 5MB'
+                    });
+                    this.value = '';
+                    infoElement.textContent = 'Belum ada file sertifikat yang dipilih';
+                } else {
+                    infoElement.textContent = `File terpilih: ${file.name} (${formatFileSize(file.size)})`;
+                }
+            } else {
+                infoElement.textContent = 'Belum ada file sertifikat yang dipilih';
+            }
+        });
+        
+        document.getElementById('logbook_magang')?.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const infoElement = document.getElementById('file-info-logbook');
+            
+            if (file) {
+                if (file.size > 5 * 1024 * 1024) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ukuran File Terlalu Besar',
+                        text: 'Maksimal ukuran file adalah 5MB'
+                    });
+                    this.value = '';
+                    infoElement.textContent = 'Belum ada file logbook yang dipilih';
+                } else {
+                    infoElement.textContent = `File terpilih: ${file.name} (${formatFileSize(file.size)})`;
+                }
+            } else {
+                infoElement.textContent = 'Belum ada file logbook yang dipilih';
+            }
+        });
+        
+        // ========== PAGE INITIALIZATION ==========
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Check authentication first
+            if (!auth.requireRole('mahasiswa')) return;
+            
+            showLoading();
+            
+            try {
+                // Update user info
+                updateUserInfo();
+                
+                // Load magang data
+                await loadMagangData();
+                
+                // Setup file preview
+                setupFilePreview();
+                
+            } catch (error) {
+                console.error('Error initializing page:', error);
+                showNotification('Gagal memuat data', false);
+            } finally {
+                hideLoading();
+            }
+        });
+    </script>
+</body>
+</html>

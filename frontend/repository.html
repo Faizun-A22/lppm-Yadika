@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repository Jurnal - LPPM ITB Yadika Pasuruan</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#1E40AF',
+                        'secondary': '#6B21A8',
+                        'accent': '#BE185D',
+                        'dark': '#111827',
+                        'light': '#F9FAFB',
+                    },
+                    animation: {
+                        'float-slow': 'float 6s ease-in-out infinite',
+                        'float-medium': 'float 4s ease-in-out infinite',
+                        'float-fast': 'float 3s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'gradient': 'gradient 8s ease infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        gradient: {
+                            '0%, 100%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' },
+                        },
+                    },
+                    backgroundImage: {
+                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        .gradient-text {
+            background: linear-gradient(135deg, #1E40AF 0%, #6B21A8 50%, #BE185D 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            background-size: 200% auto;
+            animation: gradient 3s ease infinite;
+        }
+        
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.4;
+            z-index: -1;
+        }
+        
+        .blob-1 {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, #1E40AF, #6B21A8);
+            top: -100px;
+            right: -100px;
+            animation: float-slow 15s ease-in-out infinite;
+        }
+        
+        .blob-2 {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, #BE185D, #1E40AF);
+            bottom: -50px;
+            left: -50px;
+            animation: float-medium 12s ease-in-out infinite;
+        }
+        
+        .hero-gradient {
+            background: linear-gradient(135deg, #1E40AF 0%, #6B21A8 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-gradient::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,165.3C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+            background-size: cover;
+        }
+        
+        .footer-gradient {
+            background: linear-gradient(135deg, #1F2937 0%, #111827 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .footer-gradient::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        }
+        
+        .card-gradient {
+            background: linear-gradient(to bottom right, #ffffff, #f3f4f6);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card-gradient::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #1E40AF, #6B21A8, #BE185D);
+        }
+        
+        .hover-glow {
+            transition: all 0.3s ease;
+        }
+        
+        .hover-glow:hover {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transform: translateY(-5px);
+        }
+        
+        .hover-grow {
+            transition: all 0.3s ease;
+        }
+        
+        .hover-grow:hover {
+            transform: scale(1.05);
+        }
+        
+        .card-3d {
+            transform-style: preserve-3d;
+            transition: transform 0.3s ease;
+        }
+        
+        .card-3d:hover {
+            transform: rotateY(5deg) rotateX(-5deg);
+        }
+        
+        .floating-element {
+            position: absolute;
+            z-index: 0;
+        }
+        
+        .custom-shape-divider-bottom-1690903031 {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            line-height: 0;
+        }
+        
+        .custom-shape-divider-bottom-1690903031 svg {
+            position: relative;
+            display: block;
+            width: calc(100% + 1.3px);
+            height: 60px;
+        }
+        
+        .custom-shape-divider-bottom-1690903031 .shape-fill {
+            fill: #F9FAFB;
+        }
+        
+        .smooth-scroll {
+            scroll-behavior: smooth;
+        }
+        
+        .backdrop-blur-md {
+            backdrop-filter: blur(12px);
+        }
+        
+        .search-container {
+            position: relative;
+        }
+        
+        .search-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            z-index: 20;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+        }
+        
+        .search-suggestions.active {
+            display: block;
+        }
+        
+        .search-suggestion-item {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #e5e7eb;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .search-suggestion-item:hover {
+            background-color: #f3f4f6;
+        }
+        
+        .search-suggestion-item:last-child {
+            border-bottom: none;
+        }
+        
+        .advanced-search {
+            display: none;
+            background: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            margin-top: 1rem;
+        }
+        
+        .advanced-search.active {
+            display: block;
+        }
+        
+        .filter-tag {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .filter-tag:hover {
+            transform: translateY(-2px);
+        }
+        
+        .filter-tag.active {
+            background-color: #1E40AF;
+            color: white;
+        }
+        
+        .jurnal-card {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .jurnal-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.05) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .jurnal-card:hover::before {
+            opacity: 1;
+        }
+        
+        .jurnal-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .tag-btn {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .tag-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .filter-select {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            border: 1px solid #d1d5db;
+            background-color: white;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: #1E40AF;
+            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+        }
+        
+        .category-item {
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.375rem;
+            transition: all 0.2s;
+        }
+        
+        .category-item:hover {
+            background-color: #eff6ff;
+        }
+        
+        .pagination-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            transition: all 0.2s;
+        }
+        
+        .pagination-btn:hover {
+            background-color: #f3f4f6;
+        }
+        
+        .pagination-btn.active {
+            background-color: #1E40AF;
+            color: white;
+        }
+        
+        .action-btn {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        
+        .action-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid #3498db;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            background-color: #fee;
+            color: #c33;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .journal-type-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+        
+        .spirit-badge {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .josiati-badge {
+            background-color: #f3e8ff;
+            color: #6b21a8;
+        }
+    </style>
+</head>
+<body class="font-sans bg-gray-50 smooth-scroll">
+    <!-- Floating Background Elements -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    
+    <!-- Navigasi Utama -->
+    <nav class="bg-white/90 backdrop-blur-md shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <!-- Logo Kampus -->
+                <div class="flex items-center space-x-2">
+                    <img src="https://picsum.photos/seed/logoyadika/50/50.jpg" alt="Logo ITB Yadika" class="h-12 w-12 object-contain rounded-lg">
+                    <div>
+                        <span class="text-xl font-bold gradient-text">LPPM ITB Yadika</span>
+                        <p class="text-xs text-gray-600">Lembaga Penelitian & Pengabdian Masyarakat</p>
+                    </div>
+                </div>
+                
+                <!-- Menu Desktop -->
+                <div class="hidden lg:flex items-center space-x-6">
+                    <a href="index.html" class="text-gray-700 hover:text-blue-600 transition font-medium group relative">
+                        Dashboard
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    <a href="berita.html" class="text-gray-700 hover:text-blue-600 transition font-medium group relative">
+                        Berita & Kegiatan
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    <a href="magang-kkn.html" class="text-gray-700 hover:text-blue-600 transition font-medium group relative">
+                        Magang & KKN
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    <a href="repository.html" class="text-blue-600 hover:text-blue-700 transition font-medium group relative">
+                        Repository
+                        <span class="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600"></span>
+                    </a>
+                    <a href="login.html" class="relative inline-flex items-center px-6 py-2 overflow-hidden text-white bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg group hover:shadow-lg transition-all duration-300">
+                        <span class="absolute right-0 w-8 h-32 -mt-12 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 rotate-12 group-hover:-translate-x-40 ease"></span>
+                        <i class="bi bi-box-arrow-in-right mr-2"></i>
+                        <span class="relative">Login</span>
+                    </a>
+                </div>
+                
+                <!-- Menu Mobile Button -->
+                <button id="menu-mobile-button" class="lg:hidden text-gray-700 focus:outline-none">
+                    <i class="bi bi-list text-3xl"></i>
+                </button>
+            </div>
+            
+            <!-- Menu Mobile -->
+            <div id="menu-mobile" class="hidden lg:hidden mt-4 pb-4 space-y-2">
+                <a href="index.html" class="block py-3 px-4 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition">Dashboard</a>
+                <a href="berita.html" class="block py-3 px-4 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition">Berita & Kegiatan</a>
+                <a href="magang-kkn.html" class="block py-3 px-4 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition">Magang & KKN</a>
+                <a href="repository.html" class="block py-3 px-4 rounded-lg text-blue-600 bg-blue-50 font-medium transition">Repository</a>
+                <a href="#" class="block mt-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-3 rounded-lg font-medium hover:shadow-lg transition text-center">
+                    <i class="bi bi-box-arrow-in-right mr-2"></i>Login
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative hero-gradient text-white py-16 md:py-20 overflow-hidden">
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="text-center" data-aos="fade-up" data-aos-duration="800">
+                <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight">
+                    Repository <span class="gradient-text">Jurnal</span>
+                </h1>
+                <p class="text-lg md:text-xl mb-8 text-blue-100 max-w-3xl mx-auto">
+                    Koleksi lengkap jurnal penelitian, publikasi ilmiah, dan karya akademik dari civitas academica ITB Yadika Pasuruan
+                </p>
+                
+                <!-- Search Bar -->
+                <div class="max-w-3xl mx-auto" data-aos="fade-up" data-aos-delay="200">
+                    <div class="bg-white rounded-lg shadow-xl p-2 flex items-center search-container">
+                        <input type="text" id="search-input" placeholder="Cari jurnal, penulis, atau kata kunci..." class="flex-1 px-4 py-3 text-gray-700 focus:outline-none">
+                        <button class="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all duration-300" id="search-btn">
+                            <i class="bi bi-search"></i>
+                        </button>
+                        <button class="ml-2 text-gray-500 hover:text-gray-700 transition" id="advanced-search-toggle">
+                            <i class="bi bi-sliders"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Search Suggestions -->
+                    <div class="search-suggestions" id="search-suggestions">
+                        <!-- Suggestions will be populated dynamically -->
+                    </div>
+                    
+                    <!-- Advanced Search -->
+                    <div class="advanced-search" id="advanced-search">
+                        <h3 class="text-lg font-semibold mb-4 text-gray-800">Pencarian Lanjutan</h3>
+                        <div class="grid md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Judul</label>
+                                <input type="text" id="advanced-title" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Penulis</label>
+                                <input type="text" id="advanced-authors" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Abstrak</label>
+                                <input type="text" id="advanced-abstract" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Kata Kunci</label>
+                                <input type="text" id="advanced-keywords" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                        </div>
+                        <div class="flex justify-end">
+                            <button class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition mr-2" id="reset-advanced-search">Reset</button>
+                            <button class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition" id="apply-advanced-search">Cari</button>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 flex flex-wrap justify-center gap-2">
+                        <span class="text-blue-100 text-sm">Populer:</span>
+                        <button class="tag-btn" data-keyword="teknologi">teknologi</button>
+                        <button class="tag-btn" data-keyword="pendidikan">pendidikan</button>
+                        <button class="tag-btn" data-keyword="ekonomi">ekonomi</button>
+                        <button class="tag-btn" data-keyword="kesehatan">kesehatan</button>
+                        <button class="tag-btn" data-keyword="lingkungan">lingkungan</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Wave Shape Divider -->
+        <div class="custom-shape-divider-bottom-1690903031">
+            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="shape-fill"></path>
+            </svg>
+        </div>
+    </section>
+
+    <!-- Filter Section -->
+    <section class="py-8 bg-white border-b sticky top-16 z-40">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <div class="flex flex-wrap items-center gap-4">
+                    <div class="flex items-center space-x-2">
+                        <label class="text-sm font-medium text-gray-700">Jenis Jurnal:</label>
+                        <select class="filter-select" id="journal-type-filter">
+                            <option value="">Semua Jenis</option>
+                            <option value="spirit">Spirit Journal</option>
+                            <option value="josiati">Josiati Journal</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <label class="text-sm font-medium text-gray-700">Tahun:</label>
+                        <select class="filter-select" id="year-filter">
+                            <option value="">Semua Tahun</option>
+                            <!-- Years will be populated dynamically -->
+                        </select>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <label class="text-sm font-medium text-gray-700">Urutkan:</label>
+                        <select class="filter-select" id="sort-filter">
+                            <option value="newest">Terbaru</option>
+                            <option value="oldest">Terlama</option>
+                            <option value="title">Judul</option>
+                            <option value="year">Tahun</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="text-sm text-gray-600">
+                    <span id="results-count">0</span> hasil ditemukan
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Repository Content -->
+    <section class="py-12 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="grid lg:grid-cols-4 gap-8">
+                <!-- Sidebar -->
+                <div class="lg:col-span-1">
+                    <!-- Statistics -->
+                    <div class="bg-white p-6 rounded-xl shadow-lg mb-6" data-aos="fade-right">
+                        <h3 class="text-lg font-semibold mb-4 text-gray-800">Statistik Repository</h3>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600">Total Jurnal</span>
+                                <span class="font-semibold text-blue-600" id="total-journals">0</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600">Spirit Journal</span>
+                                <span class="font-semibold text-purple-600" id="spirit-journals">0</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600">Josiati Journal</span>
+                                <span class="font-semibold text-green-600" id="josiati-journals">0</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600">Download</span>
+                                <span class="font-semibold text-orange-600" id="total-downloads">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Categories -->
+                    <div class="bg-white p-6 rounded-xl shadow-lg mb-6" data-aos="fade-right" data-aos-delay="100">
+                        <h3 class="text-lg font-semibold mb-4 text-gray-800">Kategori Populer</h3>
+                        <div class="space-y-2" id="categories-container">
+                            <!-- Categories will be populated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Top Authors -->
+                    <div class="bg-white p-6 rounded-xl shadow-lg" data-aos="fade-right" data-aos-delay="200">
+                        <h3 class="text-lg font-semibold mb-4 text-gray-800">Penulis Top</h3>
+                        <div class="space-y-3" id="authors-container">
+                            <!-- Authors will be populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="lg:col-span-3">
+                    <div id="jurnal-container" class="space-y-6">
+                        <!-- Loading indicator -->
+                        <div id="loading-indicator" class="loading-spinner"></div>
+                        
+                        <!-- Error message (hidden by default) -->
+                        <div id="error-message" class="error-message hidden">
+                            Terjadi kesalahan saat memuat data jurnal. Silakan coba lagi nanti.
+                        </div>
+                        
+                        <!-- Jurnal items will be populated dynamically -->
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="mt-12 flex justify-center">
+                        <nav class="flex space-x-2" id="pagination-container">
+                            <!-- Pagination will be populated dynamically -->
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer-gradient text-white py-12 relative overflow-hidden">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div data-aos="fade-up">
+                    <div class="flex items-center space-x-2 mb-4">
+                        <img src="https://picsum.photos/seed/logoyadika/50/50.jpg" alt="Logo ITB Yadika" class="h-10 w-10 object-contain rounded-lg">
+                        <span class="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">LPPM ITB Yadika</span>
+                    </div>
+                    <p class="text-gray-400 mb-4">Lembaga Penelitian dan Pengabdian Masyarakat ITB Yadika Pasuruan.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white text-xl transition">
+                            <i class="bi bi-facebook"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white text-xl transition">
+                            <i class="bi bi-instagram"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white text-xl transition">
+                            <i class="bi bi-twitter-x"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white text-xl transition">
+                            <i class="bi bi-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div data-aos="fade-up" data-aos-delay="100">
+                    <h3 class="text-xl font-semibold mb-4">Menu Utama</h3>
+                    <ul class="space-y-2">
+                        <li><a href="index.html" class="text-gray-400 hover:text-white transition flex items-center">
+                            <i class="bi bi-chevron-right mr-2 text-xs"></i>Dashboard</a></li>
+                        <li><a href="berita.html" class="text-gray-400 hover:text-white transition flex items-center">
+                            <i class="bi bi-chevron-right mr-2 text-xs"></i>Berita & Kegiatan</a></li>
+                        <li><a href="magang-kkn.html" class="text-gray-400 hover:text-white transition flex items-center">
+                            <i class="bi bi-chevron-right mr-2 text-xs"></i>Magang & KKN</a></li>
+                        <li><a href="repository.html" class="text-gray-400 hover:text-white transition flex items-center">
+                            <i class="bi bi-chevron-right mr-2 text-xs"></i>Repository</a></li>
+                    </ul>
+                </div>
+                
+                <div data-aos="fade-up" data-aos-delay="200">
+                    <h3 class="text-xl font-semibold mb-4">Layanan</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition flex items-center">
+                            <i class="bi bi-chevron-right mr-2 text-xs"></i>Penelitian</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition flex items-center">
+                            <i class="bi bi-chevron-right mr-2 text-xs"></i>Pengabdian</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition flex items-center">
+                            <i class="bi bi-chevron-right mr-2 text-xs"></i>Kerjasama</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition flex items-center">
+                            <i class="bi bi-chevron-right mr-2 text-xs"></i>Publikasi</a></li>
+                    </ul>
+                </div>
+                
+                <div data-aos="fade-up" data-aos-delay="300">
+                    <h3 class="text-xl font-semibold mb-4">Kontak</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-center">
+                            <i class="bi bi-geo-alt mr-2"></i>
+                            JL. Salem No. 03, Bangil
+                        </li>
+                        <li class="flex items-center">
+                            <i class="bi bi-telephone mr-2"></i>
+                            +62 896 2992 7242
+                        </li>
+                        <li class="flex items-center">
+                            <i class="bi bi-envelope mr-2"></i>
+                            lppm@itbyadika.ac.id
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-12 pt-8 text-center text-gray-400" data-aos="fade-up">
+                <p>&copy; 2023 LPPM ITB Yadika Pasuruan. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="back-to-top" class="fixed bottom-8 right-8 bg-gradient-to-r from-blue-500 to-purple-500 text-white p-4 rounded-full shadow-lg opacity-0 invisible transition-all duration-300 hover:shadow-xl hover:scale-110">
+        <i class="bi bi-arrow-up"></i>
+    </button>
+
+    <!-- JavaScript -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            once: true,
+            disable: 'mobile'
+        });
+        
+        // API Base URL
+        const API_BASE_URL = 'http://localhost:5000/api';
+        
+        // State management
+        let allJournals = [];
+        let filteredJournals = [];
+        let currentPage = 1;
+        const itemsPerPage = 5;
+        
+        // DOM Elements
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const errorMessage = document.getElementById('error-message');
+        const jurnalContainer = document.getElementById('jurnal-container');
+        const resultsCount = document.getElementById('results-count');
+        const paginationContainer = document.getElementById('pagination-container');
+        const searchInput = document.getElementById('search-input');
+        const searchSuggestions = document.getElementById('search-suggestions');
+        const advancedSearchToggle = document.getElementById('advanced-search-toggle');
+        const advancedSearch = document.getElementById('advanced-search');
+        const journalTypeFilter = document.getElementById('journal-type-filter');
+        const yearFilter = document.getElementById('year-filter');
+        const sortFilter = document.getElementById('sort-filter');
+        const totalJournalsEl = document.getElementById('total-journals');
+        const spiritJournalsEl = document.getElementById('spirit-journals');
+        const josiatiJournalsEl = document.getElementById('josiati-journals');
+        const totalDownloadsEl = document.getElementById('total-downloads');
+        const categoriesContainer = document.getElementById('categories-container');
+        const authorsContainer = document.getElementById('authors-container');
+        
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchJournals();
+            setupEventListeners();
+        });
+        
+        // Setup event listeners
+        function setupEventListeners() {
+            // Mobile menu toggle
+            document.getElementById('menu-mobile-button').addEventListener('click', function() {
+                const menu = document.getElementById('menu-mobile');
+                menu.classList.toggle('hidden');
+            });
+            
+            // Back to top button
+            const backToTopButton = document.getElementById('back-to-top');
+            
+            window.addEventListener('scroll', function() {
+                if (window.pageYOffset > 300) {
+                    backToTopButton.classList.remove('opacity-0', 'invisible');
+                    backToTopButton.classList.add('opacity-100', 'visible');
+                } else {
+                    backToTopButton.classList.add('opacity-0', 'invisible');
+                    backToTopButton.classList.remove('opacity-100', 'visible');
+                }
+            });
+            
+            backToTopButton.addEventListener('click', function() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+            
+            // Search functionality
+            searchInput.addEventListener('focus', function() {
+                if (this.value.length > 0) {
+                    searchSuggestions.classList.add('active');
+                }
+            });
+            
+            searchInput.addEventListener('input', function() {
+                if (this.value.length > 0) {
+                    searchSuggestions.classList.add('active');
+                    updateSearchSuggestions(this.value);
+                } else {
+                    searchSuggestions.classList.remove('active');
+                }
+            });
+            
+            document.addEventListener('click', function(e) {
+                if (!searchInput.contains(e.target) && !searchSuggestions.contains(e.target)) {
+                    searchSuggestions.classList.remove('active');
+                }
+            });
+            
+            // Advanced search toggle
+            advancedSearchToggle.addEventListener('click', function() {
+                advancedSearch.classList.toggle('active');
+            });
+            
+            // Apply advanced search
+            document.getElementById('apply-advanced-search').addEventListener('click', function() {
+                applyAdvancedSearch();
+            });
+            
+            // Reset advanced search
+            document.getElementById('reset-advanced-search').addEventListener('click', function() {
+                document.getElementById('advanced-title').value = '';
+                document.getElementById('advanced-authors').value = '';
+                document.getElementById('advanced-abstract').value = '';
+                document.getElementById('advanced-keywords').value = '';
+            });
+            
+            // Filter and sort
+            journalTypeFilter.addEventListener('change', applyFilters);
+            yearFilter.addEventListener('change', applyFilters);
+            sortFilter.addEventListener('change', applyFilters);
+            
+            // Tag buttons
+            document.querySelectorAll('.tag-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    searchInput.value = this.getAttribute('data-keyword');
+                    performSearch();
+                });
+            });
+        }
+        
+        // Fetch journals from API
+        async function fetchJournals() {
+            try {
+                showLoading();
+                
+                // Fetch both spirit and josiati journals
+                const [spiritResponse, josiatiResponse] = await Promise.all([
+                    fetch(`${API_BASE_URL}/journals/spirit`),
+                    fetch(`${API_BASE_URL}/journals/josiati`)
+                ]);
+                
+                if (!spiritResponse.ok || !josiatiResponse.ok) {
+                    throw new Error('Failed to fetch journals');
+                }
+                
+                const spiritData = await spiritResponse.json();
+                const josiatiData = await josiatiResponse.json();
+                
+                // Combine both types of journals
+                allJournals = [
+                    ...spiritData.data.map(journal => ({ ...journal, journal_type: 'spirit' })),
+                    ...josiatiData.data.map(journal => ({ ...journal, journal_type: 'josiati' }))
+                ];
+                
+                // Initialize filtered journals with all journals
+                filteredJournals = [...allJournals];
+                
+                // Update UI
+                updateStatistics();
+                updateCategories();
+                updateAuthors();
+                updateYearFilter();
+                applyFilters();
+                
+                hideLoading();
+            } catch (error) {
+                console.error('Error fetching journals:', error);
+                showError();
+                hideLoading();
+            }
+        }
+        
+        // Update statistics
+        function updateStatistics() {
+            const spiritCount = allJournals.filter(j => j.journal_type === 'spirit').length;
+            const josiatiCount = allJournals.filter(j => j.journal_type === 'josiati').length;
+            
+            totalJournalsEl.textContent = allJournals.length;
+            spiritJournalsEl.textContent = spiritCount;
+            josiatiJournalsEl.textContent = josiatiCount;
+            
+            // Simulate download count (since we don't have this data in the API)
+            totalDownloadsEl.textContent = Math.floor(allJournals.length * 12.5);
+        }
+        
+        // Update categories
+        function updateCategories() {
+            // Extract keywords from all journals
+            const allKeywords = [];
+            allJournals.forEach(journal => {
+                if (journal.keywords) {
+                    const keywords = journal.keywords.split(',').map(k => k.trim());
+                    allKeywords.push(...keywords);
+                }
+            });
+            
+            // Count keyword occurrences
+            const keywordCounts = {};
+            allKeywords.forEach(keyword => {
+                keywordCounts[keyword] = (keywordCounts[keyword] || 0) + 1;
+            });
+            
+            // Sort by count and take top 5
+            const topKeywords = Object.entries(keywordCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5);
+            
+            // Update UI
+            categoriesContainer.innerHTML = '';
+            topKeywords.forEach(([keyword, count]) => {
+                const categoryItem = document.createElement('a');
+                categoryItem.href = '#';
+                categoryItem.className = 'category-item flex items-center justify-between p-2 rounded-lg hover:bg-blue-50 transition';
+                categoryItem.innerHTML = `
+                    <span class="flex items-center">
+                        <i class="bi bi-tag mr-2 text-blue-600"></i>
+                        ${keyword}
+                    </span>
+                    <span class="bg-blue-100 text-blue-600 px-2 py-1 rounded-full text-xs">${count}</span>
+                `;
+                
+                categoryItem.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    searchInput.value = keyword;
+                    performSearch();
+                });
+                
+                categoriesContainer.appendChild(categoryItem);
+            });
+        }
+        
+        // Update authors
+        function updateAuthors() {
+            // Extract authors from all journals
+            const allAuthors = [];
+            allJournals.forEach(journal => {
+                if (journal.authors) {
+                    const authors = journal.authors.split(',').map(a => a.trim());
+                    allAuthors.push(...authors);
+                }
+            });
+            
+            // Count author occurrences
+            const authorCounts = {};
+            allAuthors.forEach(author => {
+                authorCounts[author] = (authorCounts[author] || 0) + 1;
+            });
+            
+            // Sort by count and take top 3
+            const topAuthors = Object.entries(authorCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 3);
+            
+            // Update UI
+            authorsContainer.innerHTML = '';
+            topAuthors.forEach(([author, count], index) => {
+                const authorItem = document.createElement('div');
+                authorItem.className = 'flex items-center space-x-3';
+                authorItem.innerHTML = `
+                    <img src="https://picsum.photos/seed/author${index}/40/40.jpg" class="w-10 h-10 rounded-full" alt="${author}">
+                    <div class="flex-1">
+                        <p class="font-medium text-gray-800">${author}</p>
+                        <p class="text-xs text-gray-500">${count} publikasi</p>
+                    </div>
+                `;
+                authorsContainer.appendChild(authorItem);
+            });
+        }
+        
+        // Update year filter
+        function updateYearFilter() {
+            // Extract years from all journals
+            const years = [...new Set(allJournals.map(journal => journal.year))];
+            years.sort((a, b) => b - a); // Sort descending
+            
+            // Update UI
+            yearFilter.innerHTML = '<option value="">Semua Tahun</option>';
+            years.forEach(year => {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year;
+                yearFilter.appendChild(option);
+            });
+        }
+        
+        // Apply filters and sorting
+        function applyFilters() {
+            const journalType = journalTypeFilter.value;
+            const year = yearFilter.value;
+            const sortBy = sortFilter.value;
+            
+            // Apply filters
+            filteredJournals = allJournals.filter(journal => {
+                const typeMatch = !journalType || journal.journal_type === journalType;
+                const yearMatch = !year || journal.year == year;
+                return typeMatch && yearMatch;
+            });
+            
+            // Apply sorting
+            switch (sortBy) {
+                case 'newest':
+                    filteredJournals.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                    break;
+                case 'oldest':
+                    filteredJournals.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+                    break;
+                case 'title':
+                    filteredJournals.sort((a, b) => a.title.localeCompare(b.title));
+                    break;
+                case 'year':
+                    filteredJournals.sort((a, b) => b.year - a.year);
+                    break;
+            }
+            
+            // Reset pagination
+            currentPage = 1;
+            // Update UI
+            updateResultsCount();
+            renderJournals();
+            renderPagination();
+        }
+        
+        // Update search suggestions
+        function updateSearchSuggestions(query) {
+            const suggestions = allJournals
+                .filter(journal => 
+                    journal.title.toLowerCase().includes(query.toLowerCase()) ||
+                    journal.authors.toLowerCase().includes(query.toLowerCase())
+                )
+                .slice(0, 3);
+            
+            searchSuggestions.innerHTML = '';
+            suggestions.forEach(journal => {
+                const suggestionItem = document.createElement('div');
+                suggestionItem.className = 'search-suggestion-item';
+                suggestionItem.innerHTML = `
+                    <strong>${journal.title}</strong> - ${journal.authors}
+                `;
+                
+                suggestionItem.addEventListener('click', function() {
+                    searchInput.value = journal.title;
+                    performSearch();
+                });
+                
+                searchSuggestions.appendChild(suggestionItem);
+            });
+        }
+        
+        // Perform search
+        function performSearch() {
+            const searchTerm = searchInput.value.toLowerCase();
+            
+            if (!searchTerm) {
+                applyFilters();
+                return;
+            }
+            
+            filteredJournals = allJournals.filter(journal => 
+                journal.title.toLowerCase().includes(searchTerm) ||
+                journal.authors.toLowerCase().includes(searchTerm) ||
+                (journal.abstract && journal.abstract.toLowerCase().includes(searchTerm)) ||
+                (journal.keywords && journal.keywords.toLowerCase().includes(searchTerm))
+            );
+            
+            // Reset pagination
+            currentPage = 1;
+            
+            // Update UI
+            updateResultsCount();
+            renderJournals();
+            renderPagination();
+            
+            // Hide search suggestions
+            searchSuggestions.classList.remove('active');
+        }
+        
+        // Apply advanced search
+        function applyAdvancedSearch() {
+            const title = document.getElementById('advanced-title').value.toLowerCase();
+            const authors = document.getElementById('advanced-authors').value.toLowerCase();
+            const abstract = document.getElementById('advanced-abstract').value.toLowerCase();
+            const keywords = document.getElementById('advanced-keywords').value.toLowerCase();
+            
+            filteredJournals = allJournals.filter(journal => {
+                const titleMatch = !title || journal.title.toLowerCase().includes(title);
+                const authorsMatch = !authors || journal.authors.toLowerCase().includes(authors);
+                const abstractMatch = !abstract || (journal.abstract && journal.abstract.toLowerCase().includes(abstract));
+                const keywordsMatch = !keywords || (journal.keywords && journal.keywords.toLowerCase().includes(keywords));
+                
+                return titleMatch && authorsMatch && abstractMatch && keywordsMatch;
+            });
+            
+            // Reset pagination
+            currentPage = 1;
+            
+            // Update UI
+            updateResultsCount();
+            renderJournals();
+            renderPagination();
+            
+            // Hide advanced search
+            advancedSearch.classList.remove('active');
+        }
+        
+        // Update results count
+        function updateResultsCount() {
+            resultsCount.textContent = filteredJournals.length;
+        }
+        
+        // Render journals
+        function renderJournals() {
+            // Clear container
+            jurnalContainer.innerHTML = '';
+            
+            if (filteredJournals.length === 0) {
+                const noResults = document.createElement('div');
+                noResults.className = 'bg-white rounded-xl shadow-lg p-8 text-center';
+                noResults.innerHTML = `
+                    <i class="bi bi-search text-4xl text-gray-400 mb-4"></i>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Tidak ada hasil ditemukan</h3>
+                    <p class="text-gray-600">Coba ubah kata kunci atau filter pencarian Anda</p>
+                `;
+                jurnalContainer.appendChild(noResults);
+                return;
+            }
+            
+            // Calculate pagination
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const journalsToRender = filteredJournals.slice(startIndex, endIndex);
+            
+            // Render journals
+            journalsToRender.forEach((journal, index) => {
+                const journalCard = createJournalCard(journal, index);
+                jurnalContainer.appendChild(journalCard);
+            });
+        }
+        
+        // Create journal card
+        // Create journal card
+function createJournalCard(journal, index) {
+    const article = document.createElement('article');
+    article.className = 'jurnal-item bg-white rounded-xl shadow-lg p-6 hover-grow transition-all duration-300 cursor-pointer';
+    article.setAttribute('data-aos', 'fade-up');
+    article.setAttribute('data-aos-delay', index * 100);
+    
+    // Tambahkan event listener untuk klik pada seluruh card
+    article.addEventListener('click', function() {
+        window.location.href = `journal-detail.html?id=${journal.id}&type=${journal.journal_type}`;
+    });
+    
+    const typeClass = journal.journal_type === 'spirit' ? 'spirit-badge' : 'josiati-badge';
+    const typeName = journal.journal_type === 'spirit' ? 'Spirit Journal' : 'Josiati Journal';
+    
+    article.innerHTML = `
+        <div class="flex items-start justify-between mb-4">
+            <div class="flex-1">
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">
+                    <a href="journal-detail.html?id=${journal.id}&type=${journal.journal_type}" class="hover:text-blue-600 transition">
+                        ${journal.title}
+                    </a>
+                </h3>
+                <div class="flex items-center text-sm text-gray-600 mb-3">
+                    <span class="mr-4"><i class="bi bi-person mr-1"></i>${journal.authors}</span>
+                    <span class="mr-4"><i class="bi bi-calendar3 mr-1"></i>${journal.year}</span>
+                    <span class="mr-4"><i class="bi bi-journal-text mr-1"></i>${typeName}</span>
+                </div>
+                <p class="text-gray-600 mb-4 line-clamp-3">
+                    ${journal.abstract || 'Tidak ada abstrak tersedia untuk jurnal ini.'}
+                </p>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4 text-sm text-gray-500">
+                        <span><i class="bi bi-quote mr-1"></i>${Math.floor(Math.random() * 50)} sitasi</span>
+                        <span><i class="bi bi-download mr-1"></i>${Math.floor(Math.random() * 300)} download</span>
+                        <span class="journal-type-badge ${typeClass}">${typeName}</span>
+                    </div>
+                    <div class="flex space-x-2">
+                        ${journal.file_path ? `
+                            <a href="${API_BASE_URL}${journal.file_path}" target="_blank" class="action-btn text-blue-500 hover:text-blue-600 transition bg-blue-50" onclick="event.stopPropagation()">
+                                <i class="bi bi-download"></i>
+                            </a>
+                        ` : ''}
+                        <button class="action-btn text-green-500 hover:text-green-600 transition bg-green-50" onclick="event.stopPropagation(); shareJournal(${journal.id}, '${journal.journal_type}')">
+                            <i class="bi bi-share"></i>
+                        </button>
+                        <button class="action-btn text-purple-500 hover:text-purple-600 transition bg-purple-50" onclick="event.stopPropagation(); bookmarkJournal(${journal.id}, '${journal.journal_type}')">
+                            <i class="bi bi-bookmark"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    return article;
+}
+
+        // Render pagination
+        function renderPagination() {
+            // Clear container
+            paginationContainer.innerHTML = '';
+            
+            // Calculate pagination
+            const totalPages = Math.ceil(filteredJournals.length / itemsPerPage);
+            
+            if (totalPages <= 1) {
+                return; // No pagination needed
+            }
+            
+            // Previous button
+            const prevButton = document.createElement('button');
+            prevButton.className = 'pagination-btn px-4 py-2 bg-white border border-gray-300 rounded-lg';
+            prevButton.innerHTML = '<i class="bi bi-chevron-left"></i>';
+            prevButton.disabled = currentPage === 1;
+            
+            prevButton.addEventListener('click', function() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderJournals();
+                    renderPagination();
+                    window.scrollTo({
+                        top: document.querySelector('#jurnal-container').offsetTop - 100,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+            
+            paginationContainer.appendChild(prevButton);
+            
+            // Page buttons
+            for (let i = 1; i <= Math.min(totalPages, 5); i++) {
+                const pageButton = document.createElement('button');
+                pageButton.className = `pagination-btn px-4 py-2 ${i === currentPage ? 'bg-blue-500 text-white rounded-lg active' : 'bg-white border border-gray-300 rounded-lg'}`;
+                pageButton.textContent = i;
+                
+                pageButton.addEventListener('click', function() {
+                    currentPage = i;
+                    renderJournals();
+                    renderPagination();
+                    window.scrollTo({
+                        top: document.querySelector('#jurnal-container').offsetTop - 100,
+                        behavior: 'smooth'
+                    });
+                });
+                
+                paginationContainer.appendChild(pageButton);
+            }
+            
+            // Next button
+            const nextButton = document.createElement('button');
+            nextButton.className = 'pagination-btn px-4 py-2 bg-white border border-gray-300 rounded-lg';
+            nextButton.innerHTML = '<i class="bi bi-chevron-right"></i>';
+            nextButton.disabled = currentPage === totalPages;
+            
+            nextButton.addEventListener('click', function() {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    renderJournals();
+                    renderPagination();
+                    window.scrollTo({
+                        top: document.querySelector('#jurnal-container').offsetTop - 100,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+            
+            paginationContainer.appendChild(nextButton);
+        }
+        
+        // Share journal
+        function shareJournal(id, type) {
+            const url = `${window.location.origin}/journal-detail.html?id=${id}&type=${type}`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Jurnal dari LPPM ITB Yadika',
+                    text: 'Lihat jurnal menarik dari repository LPPM ITB Yadika',
+                    url: url
+                }).catch(err => console.error('Error sharing:', err));
+            } else {
+                // Fallback: copy to clipboard
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('Link jurnal telah disalin ke clipboard!');
+                }).catch(err => console.error('Error copying to clipboard:', err));
+            }
+        }
+        
+        // Bookmark journal
+        function bookmarkJournal(id, type) {
+            // In a real application, this would save to a backend or local storage
+            alert('Jurnal telah ditambahkan ke bookmark!');
+        }
+        
+        // Show loading indicator
+        function showLoading() {
+            loadingIndicator.style.display = 'block';
+            errorMessage.classList.add('hidden');
+        }
+        
+        // Hide loading indicator
+        function hideLoading() {
+            loadingIndicator.style.display = 'none';
+        }
+        
+        // Show error message
+        function showError() {
+            errorMessage.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>

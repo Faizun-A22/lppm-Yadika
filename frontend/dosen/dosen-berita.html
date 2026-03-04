@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LPPM ITB Yadika - Pusat Informasi & Berita</title>
+    
+    <!-- CSS External Libraries -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        /* Custom Professional Styles */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .gradient-text { 
+            background: linear-gradient(135deg, #2563EB 0%, #7C3AED 100%); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            background-clip: text; 
+        }
+        
+        .nav-link { 
+            position: relative; 
+            font-weight: 500;
+        }
+        
+        .nav-link::after { 
+            content: ''; 
+            position: absolute; 
+            width: 0; 
+            height: 2px; 
+            bottom: -5px; 
+            left: 50%; 
+            background: linear-gradient(90deg, #2563EB, #7C3AED);
+            transition: all 0.3s ease; 
+        }
+        
+        .nav-link:hover::after,
+        .nav-link.active::after { 
+            width: 100%; 
+            left: 0; 
+        }
+
+        .nav-link.active {
+            color: #2563EB;
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            border: 3px solid rgba(37, 99, 235, 0.1);
+            border-radius: 50%;
+            border-top: 3px solid #2563EB;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Article Card */
+        .article-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            background: white;
+            border-radius: 1rem;
+            overflow: hidden;
+        }
+        
+        .article-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border-color: rgba(37, 99, 235, 0.1);
+        }
+
+        /* Category Badges */
+        .badge-news {
+            background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
+            color: #1E40AF;
+            border: 1px solid rgba(37, 99, 235, 0.2);
+        }
+        
+        .badge-announcement {
+            background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+            color: #92400E;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+        
+        .badge-event {
+            background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%);
+            color: #065F46;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        /* Featured Article */
+        .featured-article {
+            background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .featured-article::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0 0 L100 100 M100 0 L0 100" stroke="rgba(255,255,255,0.05)" stroke-width="1"/></svg>');
+            opacity: 0.1;
+        }
+
+        /* Category Button */
+        .category-btn {
+            transition: all 0.2s ease;
+            font-weight: 500;
+            border: 1px solid transparent;
+        }
+
+        .category-btn.active {
+            background: linear-gradient(135deg, #2563EB, #7C3AED);
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+        }
+
+        .category-btn:not(.active) {
+            background: white;
+            color: #4B5563;
+            border-color: #E5E7EB;
+        }
+
+        .category-btn:not(.active):hover {
+            background: #F3F4F6;
+            border-color: #D1D5DB;
+        }
+
+        /* Search Input */
+        .search-wrapper {
+            position: relative;
+        }
+
+        .search-wrapper i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9CA3AF;
+            font-size: 0.875rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.875rem 1rem 0.875rem 2.75rem;
+            border: 1px solid #E5E7EB;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+            background: white;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #2563EB;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        /* Stats Card */
+        .stat-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 1rem;
+            border: 1px solid #F3F4F6;
+            transition: all 0.2s ease;
+        }
+
+        .stat-card:hover {
+            border-color: #2563EB;
+            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.1);
+        }
+
+        /* Modal */
+        .modal-content {
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Read More Button */
+        .read-more-btn {
+            background: linear-gradient(135deg, #2563EB, #7C3AED);
+            color: white;
+            padding: 0.5rem 1.25rem;
+            border-radius: 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .read-more-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
+        }
+
+        /* Load More Button */
+        .load-more-btn {
+            background: white;
+            color: #4B5563;
+            padding: 0.75rem 2rem;
+            border-radius: 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border: 1px solid #E5E7EB;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .load-more-btn:hover {
+            background: #F9FAFB;
+            border-color: #2563EB;
+            color: #2563EB;
+            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans antialiased">
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-white/80 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+        <div class="text-center bg-white p-6 rounded-2xl shadow-xl">
+            <div class="loading-spinner mx-auto"></div>
+            <p class="mt-4 text-gray-600 font-medium">Memuat informasi terbaru...</p>
+        </div>
+    </div>
+
+           <!-- Header / Navigation Bar -->
+    <header class="fixed top-0 left-0 right-0 bg-white shadow-md z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <!-- Logo and Brand -->
+            <a href="dosen-dashboard.html" class="flex items-center space-x-3">
+                <img src="https://via.placeholder.com/40x40/3B82F6/ffffff?text=LPPM" alt="Logo LPPM ITB Yadika" class="h-10 w-10 rounded">
+                <div>
+                    <h1 class="text-xl font-bold gradient-text">Portal Dosen</h1>
+                    <p class="text-xs text-gray-500">LPPM ITB Yadika</p>
+                </div>
+            </a>
+            
+            <!-- Navigation Menu -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="dosen-dashboard.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-home mr-2"></i>Dashboard
+                </a>
+                <a href="dosen-berita.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-newspaper mr-2"></i>Berita
+                </a>
+                                <a href="dosen-penelitian-pengabdian.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-flask mr-2"></i>Penelitian & Pengabdian
+                </a>
+                <a href="dosen-repository.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-archive mr-2"></i>Repository
+                </a>
+                <a href="dosen-profil.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-user-circle mr-2"></i>Profil Saya
+                </a>
+            </div>
+            
+            <!-- User Info & Logout -->
+            <div class="flex items-center space-x-4">
+                <div class="hidden md:block text-right">
+                    <p class="text-sm font-semibold text-gray-700" id="userNameDisplay">Loading...</p>
+                    <p class="text-xs text-gray-500" id="userNidnDisplay">-</p>
+                </div>
+                <button onclick="handleLogout()" class="flex items-center space-x-2 p-2 rounded-lg text-red-600 hover:bg-red-50 transition">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span class="hidden sm:inline">Logout</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+
+    <!-- Main Content -->
+    <main class="pt-24 pb-12">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+            <!-- Header Section with Stats -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">Berita & Informasi</h2>
+                    <p class="text-gray-500 text-sm mt-2">Tetap terupdate dengan informasi terbaru dari LPPM ITB Yadika</p>
+                </div>
+                
+                <!-- Quick Stats -->
+                <div class="flex gap-3 mt-4 md:mt-0">
+                    <div class="stat-card">
+                        <span class="text-xs text-gray-500">Total Artikel</span>
+                        <p class="text-xl font-bold text-gray-900" id="totalArticles">12</p>
+                    </div>
+                    <div class="stat-card">
+                        <span class="text-xs text-gray-500">Pengumuman</span>
+                        <p class="text-xl font-bold text-orange-600" id="totalAnnouncements">5</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Featured Article -->
+            <div class="featured-article rounded-2xl shadow-xl mb-10" data-aos="fade-up">
+                <div class="md:flex relative z-10">
+                    <div class="md:w-2/5 p-8 flex items-center justify-center">
+                        <div class="w-32 h-32 bg-white/10 backdrop-blur rounded-2xl flex items-center justify-center">
+                            <i class="fas fa-star text-5xl text-yellow-400"></i>
+                        </div>
+                    </div>
+                    <div class="md:w-3/5 p-8 text-white">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="bg-red-500/20 backdrop-blur text-red-300 text-xs px-3 py-1 rounded-full font-medium border border-red-500/30">PENTING</span>
+                            <span class="text-gray-300 text-sm"><i class="far fa-clock mr-1"></i> 3 jam lalu</span>
+                        </div>
+                        <h3 class="text-2xl md:text-3xl font-bold mb-4 leading-tight">
+                            Pendaftaran Hibah Penelitian Internal Tahun 2024 Dibuka
+                        </h3>
+                        <p class="text-gray-300 text-sm mb-6 leading-relaxed">
+                            LPPM membuka pendaftaran hibah penelitian internal dengan dana hingga Rp 50 juta. 
+                            Pendaftaran dibuka 1 Desember 2023 - 31 Januari 2024. Kesempatan bagi dosen untuk 
+                            mendapatkan pendanaan penelitian kompetitif.
+                        </p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-300">
+                                <i class="far fa-user mr-1"></i> Tim LPPM
+                            </span>
+                            <button onclick="viewArticle(1)" class="bg-white text-blue-600 px-5 py-2.5 rounded-xl font-medium hover:shadow-xl transition-all hover:scale-105">
+                                Baca Selengkapnya
+                                <i class="fas fa-arrow-right ml-2 text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Categories & Search Row -->
+            <div class="flex flex-col lg:flex-row justify-between gap-4 mb-8">
+                <!-- Categories -->
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="filterCategory('all')" class="category-btn active px-5 py-2.5 rounded-xl text-sm font-medium transition-all" data-category="all">
+                        <i class="fas fa-newspaper mr-2"></i>Semua
+                    </button>
+                    <button onclick="filterCategory('berita')" class="category-btn px-5 py-2.5 rounded-xl text-sm font-medium transition-all" data-category="berita">
+                        <i class="fas fa-globe mr-2"></i>Berita
+                    </button>
+                    <button onclick="filterCategory('pengumuman')" class="category-btn px-5 py-2.5 rounded-xl text-sm font-medium transition-all" data-category="pengumuman">
+                        <i class="fas fa-bullhorn mr-2"></i>Pengumuman
+                    </button>
+                    <button onclick="filterCategory('kegiatan')" class="category-btn px-5 py-2.5 rounded-xl text-sm font-medium transition-all" data-category="kegiatan">
+                        <i class="fas fa-calendar-alt mr-2"></i>Kegiatan
+                    </button>
+                </div>
+
+                <!-- Search -->
+                <div class="search-wrapper lg:w-80">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Cari judul atau konten berita..." 
+                           class="search-input">
+                </div>
+            </div>
+
+            <!-- Articles Grid -->
+            <div id="articlesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Articles will be loaded here -->
+                <div class="col-span-3 text-center py-16">
+                    <div class="loading-spinner mx-auto"></div>
+                    <p class="mt-4 text-gray-500">Memuat artikel terbaru...</p>
+                </div>
+            </div>
+
+            <!-- Load More -->
+            <div class="text-center mt-10" id="loadMoreContainer">
+                <button onclick="loadMore()" class="load-more-btn">
+                    <i class="fas fa-sync-alt"></i>
+                    Muat Lainnya
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Article Modal -->
+    <div id="articleModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto modal-content">
+            <div class="sticky top-0 bg-white p-6 border-b flex justify-between items-center">
+                <h3 class="font-bold text-xl text-gray-900" id="modalTitle"></h3>
+                <button onclick="closeModal()" class="w-10 h-10 rounded-full hover:bg-gray-100 transition flex items-center justify-center">
+                    <i class="fas fa-times text-gray-500"></i>
+                </button>
+            </div>
+            <div class="p-6" id="modalContent">
+                <!-- Content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Initialize AOS
+        AOS.init({ 
+            duration: 800,
+            once: true,
+            easing: 'ease-out-cubic'
+        });
+
+        // Auth function
+        function handleLogout() {
+            localStorage.removeItem('user');
+            window.location.href = 'login.html';
+        }
+
+        // Mock Data
+        const articles = [
+            {
+                id: 1,
+                title: "Pendaftaran Hibah Penelitian Internal Tahun 2024",
+                category: "pengumuman",
+                category_name: "Pengumuman",
+                excerpt: "LPPM membuka pendaftaran hibah penelitian internal dengan dana hingga Rp 50 juta. Pendaftaran dibuka 1 Desember 2023 - 31 Januari 2024.",
+                content: `
+                    <div class="prose prose-sm max-w-none">
+                        <p class="text-gray-700 leading-relaxed mb-4">LPPM ITB Yadika dengan bangga mengumumkan pembukaan pendaftaran hibah penelitian internal tahun anggaran 2024. Program ini bertujuan untuk mendorong produktivitas penelitian dosen di lingkungan ITB Yadika.</p>
+                        
+                        <h4 class="font-bold text-gray-900 mb-3">Skema Pendanaan:</h4>
+                        <div class="bg-blue-50 rounded-xl p-4 mb-4">
+                            <ul class="space-y-2">
+                                <li class="flex items-start">
+                                    <span class="w-2 h-2 bg-blue-600 rounded-full mt-2 mr-3"></span>
+                                    <span><span class="font-semibold">Penelitian Dasar:</span> Rp 10-20 juta</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="w-2 h-2 bg-blue-600 rounded-full mt-2 mr-3"></span>
+                                    <span><span class="font-semibold">Penelitian Terapan:</span> Rp 20-35 juta</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="w-2 h-2 bg-blue-600 rounded-full mt-2 mr-3"></span>
+                                    <span><span class="font-semibold">Penelitian Pengembangan:</span> Rp 35-50 juta</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <h4 class="font-bold text-gray-900 mb-3">Jadwal Penting:</h4>
+                        <div class="bg-gray-50 rounded-xl p-4">
+                            <ul class="space-y-2">
+                                <li class="flex items-start">
+                                    <span class="w-2 h-2 bg-gray-600 rounded-full mt-2 mr-3"></span>
+                                    <span><span class="font-semibold">Pendaftaran:</span> 1 Desember 2023 - 31 Januari 2024</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="w-2 h-2 bg-gray-600 rounded-full mt-2 mr-3"></span>
+                                    <span><span class="font-semibold">Review Proposal:</span> 1-15 Februari 2024</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="w-2 h-2 bg-gray-600 rounded-full mt-2 mr-3"></span>
+                                    <span><span class="font-semibold">Pengumuman:</span> 20 Februari 2024</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <p class="text-gray-700 mt-4">Informasi lebih lanjut dapat menghubungi Sekretariat LPPM atau melalui email lppm@yadika.ac.id.</p>
+                    </div>
+                `,
+                date: "2024-11-20",
+                author: "Tim LPPM",
+                views: 245,
+                isImportant: true
+            },
+            {
+                id: 2,
+                title: "Workshop Penulisan Artikel Scopus untuk Dosen",
+                category: "kegiatan",
+                category_name: "Kegiatan",
+                excerpt: "Workshop penulisan artikel Scopus akan dilaksanakan pada 30 November 2023. Gratis untuk dosen ITB Yadika.",
+                content: `
+                    <div class="prose prose-sm max-w-none">
+                        <p class="text-gray-700 leading-relaxed mb-4">Dalam rangka meningkatkan publikasi internasional, LPPM ITB Yadika bekerja sama dengan Elsevier menyelenggarakan workshop penulisan artikel ilmiah untuk jurnal terindeks Scopus.</p>
+                        
+                        <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-5 rounded-xl mb-4">
+                            <h4 class="font-bold text-gray-900 mb-3">Detail Kegiatan:</h4>
+                            <div class="space-y-2">
+                                <p class="flex items-center"><i class="fas fa-calendar text-blue-600 w-6"></i> Kamis, 30 November 2023</p>
+                                <p class="flex items-center"><i class="fas fa-clock text-blue-600 w-6"></i> 09.00 - 16.00 WIB</p>
+                                <p class="flex items-center"><i class="fas fa-map-marker text-blue-600 w-6"></i> Ruang Seminar LPPM lt.3</p>
+                                <p class="flex items-center"><i class="fas fa-chalkboard-teacher text-blue-600 w-6"></i> Prof. Dr. Bambang Suharto (UI)</p>
+                            </div>
+                        </div>
+                        
+                        <p class="text-gray-700">Pendaftaran melalui bit.ly/workshopscopus2024</p>
+                    </div>
+                `,
+                date: "2024-11-15",
+                author: "Bidang Publikasi",
+                views: 178,
+                isImportant: false
+            },
+            // ... other articles
+        ];
+
+        // Update total stats
+        document.getElementById('totalArticles').textContent = articles.length;
+        document.getElementById('totalAnnouncements').textContent = articles.filter(a => a.category === 'pengumuman').length;
+
+        let currentPage = 1;
+        let currentCategory = 'all';
+        let searchQuery = '';
+        const itemsPerPage = 6;
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffDays = Math.floor((now - date) / (1000 * 60 * 60 * 24));
+            
+            if (diffDays === 0) return 'Hari ini';
+            if (diffDays === 1) return 'Kemarin';
+            if (diffDays < 7) return `${diffDays} hari lalu`;
+            return date.toLocaleDateString('id-ID', { 
+                day: 'numeric', 
+                month: 'short', 
+                year: 'numeric' 
+            });
+        }
+
+        function getCategoryBadge(category) {
+            const badges = {
+                'berita': 'badge-news',
+                'pengumuman': 'badge-announcement',
+                'kegiatan': 'badge-event'
+            };
+            return badges[category] || 'bg-gray-100 text-gray-700';
+        }
+
+        function getCategoryIcon(category) {
+            const icons = {
+                'berita': 'fa-globe',
+                'pengumuman': 'fa-bullhorn',
+                'kegiatan': 'fa-calendar-alt'
+            };
+            return icons[category] || 'fa-newspaper';
+        }
+
+        function filterCategory(category) {
+            currentCategory = category;
+            currentPage = 1;
+            
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                if (btn.dataset.category === category) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            
+            loadArticles(true);
+        }
+
+        function getFilteredArticles() {
+            let filtered = [...articles];
+            
+            if (currentCategory !== 'all') {
+                filtered = filtered.filter(a => a.category === currentCategory);
+            }
+            
+            if (searchQuery) {
+                filtered = filtered.filter(a => 
+                    a.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    a.excerpt.toLowerCase().includes(searchQuery.toLowerCase())
+                );
+            }
+            
+            return filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+        }
+
+        function loadArticles(reset = false) {
+            const container = document.getElementById('articlesContainer');
+            const filtered = getFilteredArticles();
+            
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pageArticles = filtered.slice(start, end);
+            
+            const hasMore = end < filtered.length;
+            document.getElementById('loadMoreContainer').style.display = hasMore ? 'block' : 'none';
+
+            if (pageArticles.length === 0 && currentPage === 1) {
+                container.innerHTML = `
+                    <div class="col-span-3 text-center py-16">
+                        <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-newspaper text-4xl text-gray-400"></i>
+                        </div>
+                        <p class="text-gray-500 font-medium">Tidak ada artikel ditemukan</p>
+                        <p class="text-gray-400 text-sm mt-1">Coba kata kunci atau kategori lain</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const articlesHTML = pageArticles.map(article => `
+                <div class="article-card cursor-pointer group" onclick="viewArticle(${article.id})">
+                    <div class="h-40 bg-gradient-to-br from-${article.category === 'berita' ? 'blue' : article.category === 'pengumuman' ? 'orange' : 'green'}-50 to-${article.category === 'berita' ? 'purple' : article.category === 'pengumuman' ? 'yellow' : 'teal'}-50 flex items-center justify-center relative">
+                        <i class="fas ${getCategoryIcon(article.category)} text-5xl text-${article.category === 'berita' ? 'blue' : article.category === 'pengumuman' ? 'orange' : 'green'}-300 group-hover:scale-110 transition-transform duration-300"></i>
+                        ${article.isImportant ? '<span class="absolute top-3 right-3 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-medium">Penting</span>' : ''}
+                    </div>
+                    <div class="p-5">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="px-3 py-1 rounded-full text-xs font-medium ${getCategoryBadge(article.category)}">
+                                ${article.category_name}
+                            </span>
+                            <span class="text-xs text-gray-400">
+                                <i class="far fa-eye mr-1"></i>${article.views}
+                            </span>
+                        </div>
+                        <h4 class="font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                            ${article.title}
+                        </h4>
+                        <p class="text-gray-500 text-xs mb-3 line-clamp-2 leading-relaxed">
+                            ${article.excerpt}
+                        </p>
+                        <div class="flex items-center justify-between pt-3 border-t border-gray-100">
+                            <span class="text-xs text-gray-400">
+                                <i class="far fa-user mr-1"></i>${article.author}
+                            </span>
+                            <span class="text-xs text-gray-400">
+                                <i class="far fa-calendar mr-1"></i>${formatDate(article.date)}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            if (reset) {
+                container.innerHTML = articlesHTML;
+            } else {
+                container.innerHTML += articlesHTML;
+            }
+        }
+
+        function loadMore() {
+            currentPage++;
+            loadArticles(false);
+        }
+
+        function viewArticle(id) {
+            const article = articles.find(a => a.id === id);
+            if (!article) return;
+            
+            document.getElementById('modalTitle').textContent = article.title;
+            document.getElementById('modalContent').innerHTML = `
+                <div class="space-y-5">
+                    <div class="flex items-center gap-2">
+                        <span class="px-3 py-1.5 rounded-xl text-xs font-medium ${getCategoryBadge(article.category)}">
+                            <i class="fas ${getCategoryIcon(article.category)} mr-1"></i>
+                            ${article.category_name}
+                        </span>
+                        ${article.isImportant ? '<span class="bg-red-100 text-red-700 text-xs px-3 py-1.5 rounded-xl font-medium">Penting</span>' : ''}
+                    </div>
+                    
+                    <div class="flex items-center gap-4 text-sm text-gray-500 border-b border-gray-100 pb-4">
+                        <span><i class="far fa-user mr-2"></i>${article.author}</span>
+                        <span><i class="far fa-calendar mr-2"></i>${new Date(article.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+                        <span><i class="far fa-eye mr-2"></i>${article.views} dilihat</span>
+                    </div>
+                    
+                    <div class="text-gray-700 leading-relaxed">
+                        ${article.content}
+                    </div>
+                    
+                    <div class="flex justify-end pt-4 border-t">
+                        <button onclick="closeModal()" class="px-5 py-2 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition font-medium">
+                            Tutup
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('articleModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('articleModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            searchQuery = e.target.value;
+            currentPage = 1;
+            loadArticles(true);
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadArticles(true);
+            
+            // Set user info
+            document.getElementById('userNameDisplay').textContent = 'Dr. Ahmad Fauzi, M.T.';
+            document.getElementById('userNidnDisplay').textContent = 'NIDN: 1234567890';
+        });
+    </script>
+</body>
+</html>

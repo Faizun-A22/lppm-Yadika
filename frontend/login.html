@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Jurnal - Login & Daftar</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            color: #555;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .form-group input:disabled, .form-group select:disabled {
+            background-color: #e9ecef;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .role-selector {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 5px;
+        }
+
+        .role-option {
+            flex: 1;
+            position: relative;
+        }
+
+        .role-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .role-option label {
+            display: block;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .role-option input[type="radio"]:checked + label {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .switch-link {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .switch-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .switch-link a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        .success-message, .error-message {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 500;
+            animation: slideDown 0.3s ease;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .role-indicator {
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            display: none;
+        }
+
+        .admin-indicator {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+
+        .dosen-indicator {
+            background: linear-gradient(135deg, #fd7e14 0%, #e83e8c 100%);
+            color: white;
+        }
+
+        .mahasiswa-indicator {
+            background: linear-gradient(135deg, #007bff 0%, #6f42c1 100%);
+            color: white;
+        }
+
+        .form-group.hidden {
+            display: none;
+        }
+
+        .form-group.show {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 8px;
+        }
+
+        .loading-small {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 2px solid #667eea;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 5px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        .select-loading {
+            position: relative;
+        }
+
+        .select-loading::after {
+            content: '';
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+            border: 2px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 2px solid #667eea;
+            animation: spin 1s linear infinite;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+                max-width: 100%;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+
+        .info-text {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Halaman Login -->
+        <div id="loginPage" class="page active">
+            <h2>Login Akun</h2>
+            <div id="loginMessage"></div>
+            
+            <form id="loginForm">
+                <div class="role-selector">
+                    <div class="role-option">
+                        <input type="radio" id="roleMahasiswa" name="userRole" value="mahasiswa" checked>
+                        <label for="roleMahasiswa">Mahasiswa</label>
+                    </div>
+                    <div class="role-option">
+                        <input type="radio" id="roleDosen" name="userRole" value="dosen">
+                        <label for="roleDosen">Dosen</label>
+                    </div>
+                    <div class="role-option">
+                        <input type="radio" id="roleAdmin" name="userRole" value="admin">
+                        <label for="roleAdmin">Admin</label>
+                    </div>
+                </div>
+                
+                <div id="adminIndicator" class="role-indicator admin-indicator">
+                    🔐 Mode Login Admin
+                </div>
+                
+                <div id="dosenIndicator" class="role-indicator dosen-indicator">
+                    👨‍🏫 Mode Login Dosen
+                </div>
+                
+                <div id="mahasiswaIndicator" class="role-indicator mahasiswa-indicator">
+                    🎓 Mode Login Mahasiswa
+                </div>
+
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" required placeholder="email@example.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" required placeholder="Minimal 6 karakter">
+                </div>
+
+                <button type="submit" class="btn" id="loginBtn">
+                    <span id="loginBtnText">Login</span>
+                </button>
+            </form>
+
+            <div class="switch-link">
+                Belum punya akun? <a href="#" onclick="switchToRegister()">Daftar sekarang</a>
+            </div>
+        </div>
+
+        <!-- Halaman Daftar (UPDATE dengan dropdown dinamis) -->
+        <div id="registerPage" class="page">
+            <h2>Daftar Akun Baru</h2>
+            <div id="registerMessage"></div>
+
+            <form id="registerForm">
+                <div class="role-selector">
+                    <div class="role-option">
+                        <input type="radio" id="registerRoleMahasiswa" name="registerUserRole" value="mahasiswa" checked>
+                        <label for="registerRoleMahasiswa">Mahasiswa</label>
+                    </div>
+                    <div class="role-option">
+                        <input type="radio" id="registerRoleDosen" name="registerUserRole" value="dosen">
+                        <label for="registerRoleDosen">Dosen</label>
+                    </div>
+                </div>
+                
+                <div id="registerMahasiswaIndicator" class="role-indicator mahasiswa-indicator" style="display: block;">
+                    🎓 Mendaftar sebagai Mahasiswa
+                </div>
+                
+                <div id="registerDosenIndicator" class="role-indicator dosen-indicator" style="display: none;">
+                    👨‍🏫 Mendaftar sebagai Dosen
+                </div>
+
+                <!-- Nama Lengkap -->
+                <div class="form-group">
+                    <label for="registerName">Nama Lengkap</label>
+                    <input type="text" id="registerName" required placeholder="John Doe">
+                </div>
+                
+                <!-- Email -->
+                <div class="form-group">
+                    <label for="registerEmail">Email</label>
+                    <input type="email" id="registerEmail" required placeholder="email@example.com">
+                </div>
+                
+                <!-- Field untuk Mahasiswa -->
+                <div id="mahasiswaFields">
+                    <!-- NIM (hanya untuk Mahasiswa) -->
+                    <div id="nimField" class="form-group show">
+                        <label for="registerNim">NIM</label>
+                        <input type="text" id="registerNim" required maxlength="15" placeholder="Contoh: 123456789012345">
+                        <div class="info-text">Hanya angka, maksimal 15 digit</div>
+                    </div>
+                </div>
+                
+                <!-- Field untuk Dosen -->
+                <div id="dosenFields" style="display: none;">
+                    <!-- NIDN (hanya untuk Dosen) -->
+                    <div id="nidnField" class="form-group">
+                        <label for="registerNidn">NIDN</label>
+                        <input type="text" id="registerNidn" maxlength="10" placeholder="Contoh: 1234567890">
+                        <div class="info-text">Hanya angka, maksimal 10 digit</div>
+                    </div>
+                </div>
+                
+                <!-- Field yang sama untuk kedua role - SEKARANG DROPDOWN DINAMIS -->
+                <div class="form-row">
+                    <!-- Fakultas - Dropdown dinamis dari database -->
+                    <div class="form-group">
+                        <label for="registerFakultas">Fakultas <span id="fakultasLoading" style="display: none;" class="loading-small"></span></label>
+                        <select id="registerFakultas" required>
+                            <option value="">Memuat data fakultas...</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Program Studi - Dropdown dinamis tergantung fakultas -->
+                    <div class="form-group">
+                        <label for="registerProdi">Program Studi <span id="prodiLoading" style="display: none;" class="loading-small"></span></label>
+                        <select id="registerProdi" required disabled>
+                            <option value="">Pilih Fakultas Terlebih Dahulu</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- No HP -->
+                <div class="form-group">
+                    <label for="registerNoHp">Nomor Handphone</label>
+                    <input type="tel" id="registerNoHp" required placeholder="Contoh: 081234567890">
+                    <div class="info-text">10-15 digit angka</div>
+                </div>
+                
+                <!-- Password -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="registerPassword">Password</label>
+                        <input type="password" id="registerPassword" required minlength="6" placeholder="Minimal 6 karakter">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="registerConfirmPassword">Konfirmasi Password</label>
+                        <input type="password" id="registerConfirmPassword" required minlength="6" placeholder="Ulangi password">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn" id="registerBtn">
+                    <span id="registerBtnText">Daftar</span>
+                </button>
+            </form>
+
+            <div class="switch-link">
+                Sudah punya akun? <a href="#" onclick="switchToLogin()">Login di sini</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== KONFIGURASI ====================
+        
+        const API_CONFIG = {
+            BASE_URL: 'http://localhost:3000' // Sesuaikan dengan URL backend Anda
+        };
+
+        // State untuk menyimpan data
+        let fakultasData = [];
+        let prodiData = [];
+        
+        // ==================== FUNGSI UTILITAS ====================
+        
+        /**
+         * Menampilkan pesan sukses atau error
+         */
+        function showMessage(elementId, message, isSuccess = false) {
+            const messageEl = document.getElementById(elementId);
+            messageEl.innerHTML = `<div class="${isSuccess ? 'success-message' : 'error-message'}">${message}</div>`;
+            
+            setTimeout(() => {
+                messageEl.innerHTML = '';
+            }, 5000);
+        }
+
+        /**
+         * Berpindah ke halaman pendaftaran
+         */
+        function switchToRegister() {
+            document.getElementById('loginPage').classList.remove('active');
+            document.getElementById('registerPage').classList.add('active');
+            clearMessages();
+            resetForms();
+            
+            // Load data fakultas saat halaman register ditampilkan
+            loadFakultas();
+        }
+
+        /**
+         * Berpindah ke halaman login
+         */
+        function switchToLogin() {
+            document.getElementById('registerPage').classList.remove('active');
+            document.getElementById('loginPage').classList.add('active');
+            clearMessages();
+            resetForms();
+        }
+
+        /**
+         * Membersihkan semua pesan
+         */
+        function clearMessages() {
+            document.getElementById('loginMessage').innerHTML = '';
+            document.getElementById('registerMessage').innerHTML = '';
+        }
+
+        /**
+         * Reset semua form ke kondisi awal
+         */
+        function resetForms() {
+            document.getElementById('loginForm').reset();
+            document.getElementById('registerForm').reset();
+            
+            // Reset role indicators login
+            document.getElementById('adminIndicator').style.display = 'none';
+            document.getElementById('dosenIndicator').style.display = 'none';
+            document.getElementById('mahasiswaIndicator').style.display = 'block';
+            
+            // Reset role indicators register
+            document.getElementById('registerMahasiswaIndicator').style.display = 'block';
+            document.getElementById('registerDosenIndicator').style.display = 'none';
+            
+            // Tampilkan field mahasiswa, sembunyikan field dosen
+            document.getElementById('mahasiswaFields').style.display = 'block';
+            document.getElementById('dosenFields').style.display = 'none';
+            
+            // Set required attributes
+            document.getElementById('registerNim').required = true;
+            document.getElementById('registerNidn').required = false;
+            
+            // Reset dropdown prodi
+            const prodiSelect = document.getElementById('registerProdi');
+            prodiSelect.innerHTML = '<option value="">Pilih Fakultas Terlebih Dahulu</option>';
+            prodiSelect.disabled = true;
+        }
+
+        /**
+         * Set loading state pada button
+         */
+        function setLoading(buttonId, isLoading, originalText) {
+            const btn = document.getElementById(buttonId);
+            const btnText = document.getElementById(buttonId + 'Text');
+            
+            if (isLoading) {
+                btn.disabled = true;
+                btnText.innerHTML = '<span class="loading-spinner"></span> Memproses...';
+            } else {
+                btn.disabled = false;
+                btnText.textContent = originalText;
+            }
+        }
+
+        // ==================== FUNGSI API FAKULTAS & PRODI ====================
+        
+        /**
+         * Memuat data fakultas dari database
+         */
+        async function loadFakultas() {
+            const fakultasSelect = document.getElementById('registerFakultas');
+            const loadingIndicator = document.getElementById('fakultasLoading');
+            
+            try {
+                // Tampilkan loading
+                loadingIndicator.style.display = 'inline-block';
+                fakultasSelect.innerHTML = '<option value="">Memuat data fakultas...</option>';
+                
+                const response = await fetch(`${API_CONFIG.BASE_URL}/api/fakultas`);
+                const result = await response.json();
+                
+                if (result.success && result.data && result.data.length > 0) {
+                    fakultasData = result.data;
+                    
+                    fakultasSelect.innerHTML = '<option value="">Pilih Fakultas</option>';
+                    
+                    result.data.forEach(fakultas => {
+                        const option = document.createElement('option');
+                        option.value = fakultas.id_fakultas;
+                        option.textContent = fakultas.nama_fakultas;
+                        fakultasSelect.appendChild(option);
+                    });
+                    
+                    console.log('Fakultas loaded:', result.data.length);
+                } else {
+                    fakultasSelect.innerHTML = '<option value="">Tidak ada data fakultas</option>';
+                    console.error('Gagal memuat fakultas:', result.message);
+                }
+            } catch (error) {
+                console.error('Error loading fakultas:', error);
+                fakultasSelect.innerHTML = '<option value="">Gagal memuat data</option>';
+                showMessage('registerMessage', 'Gagal memuat data fakultas. Periksa koneksi Anda.', false);
+            } finally {
+                loadingIndicator.style.display = 'none';
+            }
+        }
+
+        /**
+         * Memuat program studi berdasarkan fakultas yang dipilih
+         */
+        async function loadProdiByFakultas(fakultasId) {
+            const prodiSelect = document.getElementById('registerProdi');
+            const loadingIndicator = document.getElementById('prodiLoading');
+            
+            if (!fakultasId) {
+                prodiSelect.innerHTML = '<option value="">Pilih Fakultas Terlebih Dahulu</option>';
+                prodiSelect.disabled = true;
+                return;
+            }
+            
+            try {
+                // Tampilkan loading
+                loadingIndicator.style.display = 'inline-block';
+                prodiSelect.innerHTML = '<option value="">Memuat data program studi...</option>';
+                prodiSelect.disabled = true;
+                
+                const response = await fetch(`${API_CONFIG.BASE_URL}/api/prodi/by-fakultas/${fakultasId}`);
+                const result = await response.json();
+                
+                if (result.success && result.data && result.data.length > 0) {
+                    prodiData = result.data;
+                    
+                    prodiSelect.innerHTML = '<option value="">Pilih Program Studi</option>';
+                    
+                    result.data.forEach(prodi => {
+                        const option = document.createElement('option');
+                        option.value = prodi.id_prodi;
+                        
+                        // Tampilkan nama prodi dengan jenjang jika ada
+                        let displayText = prodi.nama_prodi;
+                        if (prodi.jenjang) {
+                            displayText += ` (${prodi.jenjang})`;
+                        }
+                        if (prodi.akreditasi) {
+                            displayText += ` - Akreditasi ${prodi.akreditasi}`;
+                        }
+                        
+                        option.textContent = displayText;
+                        prodiSelect.appendChild(option);
+                    });
+                    
+                    prodiSelect.disabled = false;
+                    console.log('Prodi loaded:', result.data.length);
+                } else {
+                    prodiSelect.innerHTML = '<option value="">Tidak ada program studi tersedia</option>';
+                    prodiSelect.disabled = true;
+                }
+            } catch (error) {
+                console.error('Error loading prodi:', error);
+                prodiSelect.innerHTML = '<option value="">Gagal memuat data</option>';
+                prodiSelect.disabled = true;
+                showMessage('registerMessage', 'Gagal memuat data program studi.', false);
+            } finally {
+                loadingIndicator.style.display = 'none';
+            }
+        }
+
+        // ==================== LOGIKA HALAMAN LOGIN ====================
+
+        // Event listener untuk perubahan role login
+        document.querySelectorAll('input[name="userRole"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                document.getElementById('adminIndicator').style.display = 'none';
+                document.getElementById('dosenIndicator').style.display = 'none';
+                document.getElementById('mahasiswaIndicator').style.display = 'none';
+                
+                if (this.value === 'admin') {
+                    document.getElementById('adminIndicator').style.display = 'block';
+                } else if (this.value === 'dosen') {
+                    document.getElementById('dosenIndicator').style.display = 'block';
+                } else {
+                    document.getElementById('mahasiswaIndicator').style.display = 'block';
+                }
+            });
+        });
+        
+        document.getElementById('mahasiswaIndicator').style.display = 'block';
+
+        // Event listener submit form login
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const role = document.querySelector('input[name="userRole"]:checked').value;
+            
+            if (!email || !password) {
+                showMessage('loginMessage', 'Email dan password harus diisi!');
+                return;
+            }
+            
+            let isAdmin = false;
+            let isDosen = false;
+            
+            if (role === 'admin') {
+                isAdmin = true;
+            } else if (role === 'dosen') {
+                isDosen = true;
+            }
+
+            setLoading('loginBtn', true, 'Login');
+
+            try {
+                const response = await fetch(`${API_CONFIG.BASE_URL}/api/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password, isAdmin, isDosen })
+                });
+                    
+                const data = await response.json();
+                console.log('LOGIN RESPONSE:', data);
+                
+                setLoading('loginBtn', false, 'Login');
+                
+                if (!response.ok) {
+                    showMessage('loginMessage', data.message || 'Login gagal! Periksa kembali email dan password Anda.');
+                    return;
+                }
+
+                localStorage.setItem('token', data.data.token);
+                localStorage.setItem('user', JSON.stringify(data.data.user));
+
+                showMessage('loginMessage', data.message, true);
+
+                setTimeout(() => {
+                    if (data.data.user.isAdmin) {
+                        window.location.href = 'admin/admin-dashboard.html';
+                    } else if (data.data.user.isDosen) {
+                        window.location.href = 'dosen/dosen-dashboard-dashboard.html';
+                    } else {
+                        window.location.href = 'mahasiswa/mahasiswa-dashboard.html';
+                    }
+                }, 1500);
+            } catch (error) {
+                console.error('Error:', error);
+                setLoading('loginBtn', false, 'Login');
+                showMessage('loginMessage', 'Terjadi kesalahan jaringan! Silakan coba lagi.');
+            }
+        });
+
+        // ==================== LOGIKA HALAMAN PENDAFTARAN ====================
+
+        // Event listener untuk perubahan role pendaftaran
+        document.querySelectorAll('input[name="registerUserRole"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const isMahasiswa = this.value === 'mahasiswa';
+                
+                document.getElementById('registerMahasiswaIndicator').style.display = isMahasiswa ? 'block' : 'none';
+                document.getElementById('registerDosenIndicator').style.display = isMahasiswa ? 'none' : 'block';
+                
+                const mahasiswaFields = document.getElementById('mahasiswaFields');
+                const dosenFields = document.getElementById('dosenFields');
+                
+                if (isMahasiswa) {
+                    mahasiswaFields.style.display = 'block';
+                    dosenFields.style.display = 'none';
+                    document.getElementById('registerNim').required = true;
+                    document.getElementById('registerNidn').required = false;
+                } else {
+                    mahasiswaFields.style.display = 'none';
+                    dosenFields.style.display = 'block';
+                    document.getElementById('registerNim').required = false;
+                    document.getElementById('registerNidn').required = true;
+                }
+            });
+        });
+
+        // Event listener untuk perubahan fakultas
+        document.getElementById('registerFakultas').addEventListener('change', function(e) {
+            const fakultasId = e.target.value;
+            loadProdiByFakultas(fakultasId);
+        });
+
+        // Event listener untuk submit form register (UPDATE)
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Ambil nilai dari form
+            const name = document.getElementById('registerName').value.trim();
+            const email = document.getElementById('registerEmail').value.trim();
+            const fakultas = document.getElementById('registerFakultas').value;
+            const prodi = document.getElementById('registerProdi').value; // Ini adalah id_prodi
+            const noHp = document.getElementById('registerNoHp').value.trim();
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('registerConfirmPassword').value;
+            const role = document.querySelector('input[name="registerUserRole"]:checked').value;
+            
+            // ==================== VALIDASI ====================
+            
+            // Validasi semua field terisi
+            if (!name || !email || !fakultas || !prodi || !noHp || !password || !confirmPassword) {
+                showMessage('registerMessage', 'Semua field harus diisi!');
+                return;
+            }
+            
+            // Validasi email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showMessage('registerMessage', 'Format email tidak valid!');
+                return;
+            }
+            
+            // Validasi no HP
+            const phoneRegex = /^[0-9]{10,15}$/;
+            if (!phoneRegex.test(noHp)) {
+                showMessage('registerMessage', 'Nomor HP harus 10-15 digit angka!');
+                return;
+            }
+            
+            // Validasi password
+            if (password !== confirmPassword) {
+                showMessage('registerMessage', 'Password dan konfirmasi password tidak cocok!');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showMessage('registerMessage', 'Password harus minimal 6 karakter!');
+                return;
+            }
+            
+            // Validasi NIM/NIDN berdasarkan role
+            if (role === 'mahasiswa') {
+                const nim = document.getElementById('registerNim').value.trim();
+                
+                if (!nim) {
+                    showMessage('registerMessage', 'NIM harus diisi untuk mahasiswa!');
+                    return;
+                }
+                
+                if (!/^\d+$/.test(nim)) {
+                    showMessage('registerMessage', 'NIM hanya boleh berisi angka!');
+                    return;
+                }
+                
+                if (nim.length > 15) {
+                    showMessage('registerMessage', 'NIM maksimal 15 digit!');
+                    return;
+                }
+                
+            } else if (role === 'dosen') {
+                const nidn = document.getElementById('registerNidn').value.trim();
+                
+                if (!nidn) {
+                    showMessage('registerMessage', 'NIDN harus diisi untuk dosen!');
+                    return;
+                }
+                
+                if (!/^\d+$/.test(nidn)) {
+                    showMessage('registerMessage', 'NIDN hanya boleh berisi angka!');
+                    return;
+                }
+                
+                if (nidn.length > 10) {
+                    showMessage('registerMessage', 'NIDN maksimal 10 digit!');
+                    return;
+                }
+            }
+
+            // ==================== SIAPKAN DATA ====================
+            
+            let registerData = {
+                name: name,
+                email: email,
+                password: password,
+                isDosen: role === 'dosen',
+                id_prodi: prodi,  // Kirim id_prodi, bukan nama prodi
+                no_hp: noHp
+            };
+
+            // Di bagian SIAPKAN DATA, ganti kode ini:
+            if (role === 'mahasiswa') {
+                registerData.nim = document.getElementById('registerNim').value.trim();
+            } else if (role === 'dosen') {
+                const nidn = document.getElementById('registerNidn').value.trim();
+                // HANYA kirim nidn, jangan kirim nim untuk dosen
+                registerData.nidn = nidn;  // ✅ Gunakan field nidn
+                // HAPUS baris registerData.nim = nidn;
+            }
+
+            console.log('Register data being sent:', registerData);
+            // ==================== KIRIM KE BACKEND ====================
+            
+            setLoading('registerBtn', true, 'Daftar');
+
+            try {
+                const response = await fetch(`${API_CONFIG.BASE_URL}/api/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(registerData)
+                });
+
+                const data = await response.json();
+                console.log('Register response:', data);
+                
+                setLoading('registerBtn', false, 'Daftar');
+
+                if (response.status === 201 && data.success) {
+                    // Tampilkan pesan sukses
+                    showMessage('registerMessage', data.message, true);
+
+                    // Reset form
+                    document.getElementById('registerForm').reset();
+                    
+                    // Kembali ke role mahasiswa sebagai default
+                    document.getElementById('registerRoleMahasiswa').checked = true;
+                    document.getElementById('mahasiswaFields').style.display = 'block';
+                    document.getElementById('dosenFields').style.display = 'none';
+                    document.getElementById('registerMahasiswaIndicator').style.display = 'block';
+                    document.getElementById('registerDosenIndicator').style.display = 'none';
+                    
+                    // Reset dropdown
+                    document.getElementById('registerProdi').innerHTML = '<option value="">Pilih Fakultas Terlebih Dahulu</option>';
+                    document.getElementById('registerProdi').disabled = true;
+
+                    // Alihkan ke halaman login setelah 2 detik
+                    setTimeout(() => {
+                        switchToLogin();
+                        document.getElementById('roleMahasiswa').checked = true;
+                        document.getElementById('mahasiswaIndicator').style.display = 'block';
+                        document.getElementById('dosenIndicator').style.display = 'none';
+                        document.getElementById('adminIndicator').style.display = 'none';
+                    }, 2000);
+                    
+                } else {
+                    // Jika gagal, tampilkan pesan error dari backend
+                    showMessage('registerMessage', data.message || 'Pendaftaran gagal! Silakan coba lagi.');
+                }
+            } catch (error) {
+                console.error('Network error:', error);
+                setLoading('registerBtn', false, 'Daftar');
+                showMessage('registerMessage', 'Terjadi kesalahan jaringan! Silakan cek koneksi Anda.');
+            }
+        });
+
+        // ==================== CEK TOKEN SAAT HALAMAN DIMUAT ====================
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem('token');
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            
+            if (token && user.id) {
+                // Jika sudah login, langsung alihkan ke dashboard yang sesuai
+                if (user.isAdmin) {
+                    window.location.href = 'admin/admin-dashboard.html';
+                } else if (user.isDosen) {
+                    window.location.href = 'dosen/dosen-dashboard.html';
+                } else {
+                    window.location.href = 'mahasiswa/mahasiswa-dashboard.html';
+                }
+            } else {
+                // Jika halaman register aktif, load fakultas
+                if (document.getElementById('registerPage').classList.contains('active')) {
+                    loadFakultas();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

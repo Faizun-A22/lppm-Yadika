@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Saya - Portal Dosen LPPM ITB Yadika</title>
+    
+    <!-- CSS External Libraries -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        /* Custom CSS Styles */
+        .gradient-text { 
+            background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            background-clip: text; 
+        }
+        
+        .nav-link { 
+            position: relative; 
+            transition: color 0.3s ease; 
+        }
+        
+        .nav-link::after { 
+            content: ''; 
+            position: absolute; 
+            width: 0; 
+            height: 2px; 
+            bottom: -5px; 
+            left: 50%; 
+            background-color: #3B82F6; 
+            transition: all 0.3s ease; 
+        }
+        
+        .nav-link:hover::after, 
+        .nav-link.active::after { 
+            width: 100%; 
+            left: 0; 
+        }
+        
+        .nav-link.active { 
+            color: #3B82F6; 
+            font-weight: 600; 
+        }
+
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3B82F6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .profile-pic-container {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .profile-pic-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            color: white;
+        }
+
+        .profile-pic-container:hover .profile-pic-overlay {
+            opacity: 1;
+        }
+
+        .stat-card {
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans antialiased">
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-white bg-opacity-90 z-50 flex items-center justify-center hidden">
+        <div class="text-center">
+            <div class="loading-spinner"></div>
+            <p class="mt-4 text-gray-600">Memuat data...</p>
+        </div>
+    </div>
+
+    <!-- Header / Navigation Bar -->
+    <header class="fixed top-0 left-0 right-0 bg-white shadow-md z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <!-- Logo and Brand -->
+            <a href="dosen-dashboard.html" class="flex items-center space-x-3">
+                <img src="https://via.placeholder.com/40x40/3B82F6/ffffff?text=LPPM" alt="Logo LPPM ITB Yadika" class="h-10 w-10 rounded">
+                <div>
+                    <h1 class="text-xl font-bold gradient-text">Portal Dosen</h1>
+                    <p class="text-xs text-gray-500">LPPM ITB Yadika</p>
+                </div>
+            </a>
+            
+            <!-- Navigation Menu -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="dosen-dashboard.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-home mr-2"></i>Dashboard
+                </a>
+                <a href="dosen-berita.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-newspaper mr-2"></i>Berita
+                </a>
+                                <a href="dosen-penelitian-pengabdian.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-flask mr-2"></i>Penelitian & Pengabdian
+                </a>
+                <a href="dosen-repository.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-archive mr-2"></i>Repository
+                </a>
+                <a href="dosen-profil.html" class="nav-link active text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-user-circle mr-2"></i>Profil Saya
+                </a>
+            </div>
+            
+            <!-- User Info & Logout -->
+            <div class="flex items-center space-x-4">
+                <div class="hidden md:block text-right">
+                    <p class="text-sm font-semibold text-gray-700" id="userNameDisplay">Loading...</p>
+                    <p class="text-xs text-gray-500" id="userNidnDisplay">-</p>
+                </div>
+                <button onclick="handleLogout()" class="flex items-center space-x-2 p-2 rounded-lg text-red-600 hover:bg-red-50 transition">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span class="hidden sm:inline">Logout</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-20">
+        <div class="container mx-auto px-6 py-8">
+            <!-- Header -->
+            <header class="mb-8" data-aos="fade-down">
+                <h2 class="text-3xl font-bold text-gray-800">Profil Saya</h2>
+                <p class="text-gray-600">Kelola informasi pribadi dan lihat riwayat kinerja Anda</p>
+            </header>
+
+            <!-- Statistics Cards -->
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8" data-aos="fade-up" data-aos-delay="50">
+                <div class="stat-card bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-4 text-white text-center">
+                    <i class="fas fa-flask text-2xl mb-2"></i>
+                    <p class="text-2xl font-bold" id="statPenelitian">12</p>
+                    <p class="text-xs">Penelitian</p>
+                </div>
+                <div class="stat-card bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg p-4 text-white text-center">
+                    <i class="fas fa-hands-helping text-2xl mb-2"></i>
+                    <p class="text-2xl font-bold" id="statPengabdian">8</p>
+                    <p class="text-xs">Pengabdian</p>
+                </div>
+                <div class="stat-card bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg p-4 text-white text-center">
+                    <i class="fas fa-book text-2xl mb-2"></i>
+                    <p class="text-2xl font-bold" id="statPublikasi">25</p>
+                    <p class="text-xs">Publikasi</p>
+                </div>
+                <div class="stat-card bg-gradient-to-br from-pink-500 to-pink-600 rounded-xl shadow-lg p-4 text-white text-center">
+                    <i class="fas fa-users text-2xl mb-2"></i>
+                    <p class="text-2xl font-bold" id="statMahasiswa">15</p>
+                    <p class="text-xs">Bimbingan</p>
+                </div>
+                <div class="stat-card bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl shadow-lg p-4 text-white text-center">
+                    <i class="fas fa-certificate text-2xl mb-2"></i>
+                    <p class="text-2xl font-bold" id="statHKI">4</p>
+                    <p class="text-xs">HKI</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Profile Card -->
+                <div class="lg:col-span-1" data-aos="fade-right">
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <!-- Profile Picture -->
+                        <div class="text-center mb-6">
+                            <div class="profile-pic-container inline-block">
+                                <img id="profilePicture" src="https://i.pravatar.cc/150?img=7" alt="Profile" class="w-28 h-28 rounded-full mx-auto border-4 border-purple-200">
+                                <div class="profile-pic-overlay" onclick="changeProfilePicture()">
+                                    <i class="fas fa-camera text-2xl"></i>
+                                </div>
+                            </div>
+                            <input type="file" id="profilePicInput" accept="image/*" class="hidden" onchange="uploadProfilePicture(this)">
+                            <h3 class="text-xl font-bold text-gray-800 mt-3" id="profileName">Dr. Ahmad Fauzi, M.T.</h3>
+                            <p class="text-sm text-purple-600" id="profilePosition">Lektor Kepala</p>
+                        </div>
+
+                        <!-- Quick Info -->
+                        <div class="bg-gray-50 rounded-lg p-4 mb-4">
+                            <h4 class="font-semibold text-gray-700 mb-3 flex items-center">
+                                <i class="fas fa-id-card mr-2 text-purple-500"></i>Informasi Akademik
+                            </h4>
+                            <div class="space-y-2 text-sm">
+                                <p class="flex items-center">
+                                    <i class="fas fa-id-card mr-2 text-gray-400 w-5"></i>
+                                    <span class="font-medium text-gray-600 w-24">NIDN:</span>
+                                    <span class="text-gray-800" id="profileNidn">1234567890</span>
+                                </p>
+                                <p class="flex items-center">
+                                    <i class="fas fa-graduation-cap mr-2 text-gray-400 w-5"></i>
+                                    <span class="font-medium text-gray-600 w-24">Program Studi:</span>
+                                    <span class="text-gray-800" id="profileProdi">Teknik Informatika</span>
+                                </p>
+                                <p class="flex items-center">
+                                    <i class="fas fa-trophy mr-2 text-gray-400 w-5"></i>
+                                    <span class="font-medium text-gray-600 w-24">Jabatan:</span>
+                                    <span class="text-gray-800" id="profileJabatan">Lektor Kepala</span>
+                                </p>
+                                <p class="flex items-center">
+                                    <i class="fas fa-clock mr-2 text-gray-400 w-5"></i>
+                                    <span class="font-medium text-gray-600 w-24">Masa Kerja:</span>
+                                    <span class="text-gray-800" id="profileMasaKerja">15 Tahun</span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Contact Info -->
+                        <div class="bg-gray-50 rounded-lg p-4 mb-4">
+                            <h4 class="font-semibold text-gray-700 mb-3 flex items-center">
+                                <i class="fas fa-address-card mr-2 text-purple-500"></i>Kontak
+                            </h4>
+                            <div class="space-y-2 text-sm">
+                                <p class="flex items-center">
+                                    <i class="fas fa-envelope mr-2 text-gray-400 w-5"></i>
+                                    <span class="font-medium text-gray-600 w-24">Email:</span>
+                                    <span class="text-gray-800" id="profileEmail">ahmad.fauzi@yadika.ac.id</span>
+                                </p>
+                                <p class="flex items-center">
+                                    <i class="fas fa-phone mr-2 text-gray-400 w-5"></i>
+                                    <span class="font-medium text-gray-600 w-24">Telepon:</span>
+                                    <span class="text-gray-800" id="profilePhone">0812-3456-7890</span>
+                                </p>
+                                <p class="flex items-center">
+                                    <i class="fas fa-map-marker-alt mr-2 text-gray-400 w-5"></i>
+                                    <span class="font-medium text-gray-600 w-24">Alamat:</span>
+                                    <span class="text-gray-800" id="profileAddress">Jl. Pendidikan No. 123, Bekasi</span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Social Media -->
+                        <div class="bg-gray-50 rounded-lg p-4 mb-4">
+                            <h4 class="font-semibold text-gray-700 mb-3 flex items-center">
+                                <i class="fas fa-share-alt mr-2 text-purple-500"></i>Sosial Media & ID
+                            </h4>
+                            <div class="space-y-2 text-sm">
+                                <p class="flex items-center">
+                                    <i class="fab fa-google-scholar mr-2 text-gray-400 w-5"></i>
+                                    <span class="font-medium text-gray-600 w-24">Scholar ID:</span>
+                                    <span class="text-gray-800">A1B2C3D4</span>
+                                </p>
+                                <p class="flex items-center">
+                                    <i class="fab fa-orcid mr-2 text-gray-400 w-5"></i>
+                                    <span class="font-medium text-gray-600 w-24">ORCID:</span>
+                                    <span class="text-gray-800">0000-0001-2345-6789</span>
+                                </p>
+                                <p class="flex items-center">
+                                    <i class="fas fa-link mr-2 text-gray-400 w-5"></i>
+                                    <span class="font-medium text-gray-600 w-24">Scopus ID:</span>
+                                    <span class="text-gray-800">57123456789</span>
+                                </p>
+                                <p class="flex items-center">
+                                    <i class="fas fa-link mr-2 text-gray-400 w-5"></i>
+                                    <span class="font-medium text-gray-600 w-24">Sinta ID:</span>
+                                    <span class="text-gray-800">123456</span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Account Actions -->
+                        <div class="space-y-2">
+                            <button onclick="changePassword()" class="w-full bg-purple-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors flex items-center justify-center">
+                                <i class="fas fa-key mr-2"></i>Ubah Password
+                            </button>
+                            <button onclick="exportData()" class="w-full bg-gray-100 text-gray-700 font-medium py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors flex items-center justify-center">
+                                <i class="fas fa-download mr-2"></i>Export Data Kinerja
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- Edit Profile Form -->
+                    <div class="bg-white rounded-xl shadow-lg p-6" data-aos="fade-left">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                            <i class="fas fa-user-edit mr-2 text-purple-500"></i>
+                            Edit Informasi Pribadi
+                        </h3>
+                        
+                        <form id="profileForm" onsubmit="event.preventDefault(); saveProfile();">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
+                                    <input type="text" id="fullName" value="Dr. Ahmad Fauzi, M.T." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">NIDN</label>
+                                    <input type="text" id="nidn" value="1234567890" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Program Studi</label>
+                                    <select id="prodi" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                                        <option value="Teknik Informatika" selected>Teknik Informatika</option>
+                                        <option value="Sistem Informasi">Sistem Informasi</option>
+                                        <option value="Teknik Elektro">Teknik Elektro</option>
+                                        <option value="Teknik Mesin">Teknik Mesin</option>
+                                        <option value="Manajemen">Manajemen</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Jabatan Akademik</label>
+                                    <select id="jabatan" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                                        <option value="Asisten Ahli">Asisten Ahli</option>
+                                        <option value="Lektor">Lektor</option>
+                                        <option value="Lektor Kepala" selected>Lektor Kepala</option>
+                                        <option value="Guru Besar">Guru Besar</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                    <input type="email" id="email" value="ahmad.fauzi@yadika.ac.id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">No. Telepon</label>
+                                    <input type="tel" id="phone" value="0812-3456-7890" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Tempat Lahir</label>
+                                    <input type="text" id="birthPlace" value="Jakarta" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Lahir</label>
+                                    <input type="date" id="birthDate" value="1975-05-15" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Jenis Kelamin</label>
+                                    <select id="gender" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                        <option value="L" selected>Laki-laki</option>
+                                        <option value="P">Perempuan</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Agama</label>
+                                    <select id="religion" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                        <option value="Islam" selected>Islam</option>
+                                        <option value="Kristen">Kristen</option>
+                                        <option value="Katolik">Katolik</option>
+                                        <option value="Hindu">Hindu</option>
+                                        <option value="Buddha">Buddha</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Alamat</label>
+                                    <textarea id="address" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg">Jl. Pendidikan No. 123, Bekasi</textarea>
+                                </div>
+                                
+                                <div class="md:col-span-2">
+                                    <h4 class="font-semibold text-gray-700 mb-3">ID Peneliti</h4>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Google Scholar ID</label>
+                                    <input type="text" id="scholarId" value="A1B2C3D4" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">ORCID</label>
+                                    <input type="text" id="orcid" value="0000-0001-2345-6789" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Scopus ID</label>
+                                    <input type="text" id="scopusId" value="57123456789" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Sinta ID</label>
+                                    <input type="text" id="sintaId" value="123456" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                </div>
+                                
+                                <div class="md:col-span-2">
+                                    <button type="submit" class="bg-gradient-to-r from-purple-500 to-pink-600 text-white font-bold py-2 px-6 rounded-lg hover:shadow-lg transition-all">
+                                        <i class="fas fa-save mr-2"></i>Simpan Perubahan
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Riwayat Pendidikan -->
+                    <div class="bg-white rounded-xl shadow-lg p-6" data-aos="fade-left">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl font-bold text-gray-800 flex items-center">
+                                <i class="fas fa-graduation-cap mr-2 text-purple-500"></i>
+                                Riwayat Pendidikan
+                            </h3>
+                            <button onclick="addEducation()" class="text-sm text-purple-600 hover:text-purple-800">
+                                <i class="fas fa-plus-circle mr-1"></i>Tambah
+                            </button>
+                        </div>
+                        
+                        <div class="space-y-4" id="educationList">
+                            <div class="border-l-4 border-purple-500 pl-4">
+                                <h4 class="font-semibold text-gray-800">S3 Teknik Informatika</h4>
+                                <p class="text-sm text-gray-600">Institut Teknologi Bandung • 2010-2015</p>
+                                <p class="text-xs text-gray-500">Disertasi: Pengembangan Metode Deep Learning untuk Analisis Sentimen</p>
+                            </div>
+                            <div class="border-l-4 border-blue-500 pl-4">
+                                <h4 class="font-semibold text-gray-800">S2 Teknik Informatika</h4>
+                                <p class="text-sm text-gray-600">Universitas Indonesia • 2005-2008</p>
+                                <p class="text-xs text-gray-500">Tesis: Sistem Rekomendasi Menggunakan Collaborative Filtering</p>
+                            </div>
+                            <div class="border-l-4 border-green-500 pl-4">
+                                <h4 class="font-semibold text-gray-800">S1 Teknik Informatika</h4>
+                                <p class="text-sm text-gray-600">ITB Yadika • 1998-2003</p>
+                                <p class="text-xs text-gray-500">Skripsi: Aplikasi E-Learning Berbasis Web</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Riwayat Jabatan -->
+                    <div class="bg-white rounded-xl shadow-lg p-6" data-aos="fade-left">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl font-bold text-gray-800 flex items-center">
+                                <i class="fas fa-briefcase mr-2 text-purple-500"></i>
+                                Riwayat Jabatan
+                            </h3>
+                            <button onclick="addPosition()" class="text-sm text-purple-600 hover:text-purple-800">
+                                <i class="fas fa-plus-circle mr-1"></i>Tambah
+                            </button>
+                        </div>
+                        
+                        <div class="space-y-4" id="positionList">
+                            <div class="border-l-4 border-purple-500 pl-4">
+                                <h4 class="font-semibold text-gray-800">Lektor Kepala</h4>
+                                <p class="text-sm text-gray-600">ITB Yadika • 2020-Sekarang</p>
+                                <p class="text-xs text-gray-500">Bidang Keahlian: Artificial Intelligence, Data Mining</p>
+                            </div>
+                            <div class="border-l-4 border-blue-500 pl-4">
+                                <h4 class="font-semibold text-gray-800">Lektor</h4>
+                                <p class="text-sm text-gray-600">ITB Yadika • 2015-2020</p>
+                            </div>
+                            <div class="border-l-4 border-green-500 pl-4">
+                                <h4 class="font-semibold text-gray-800">Asisten Ahli</h4>
+                                <p class="text-sm text-gray-600">ITB Yadika • 2008-2015</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Publikasi Terbaru -->
+                    <div class="bg-white rounded-xl shadow-lg p-6" data-aos="fade-left">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                            <i class="fas fa-book mr-2 text-purple-500"></i>
+                            Publikasi Terbaru
+                        </h3>
+                        
+                        <div class="space-y-3" id="recentPublications">
+                            <div class="p-3 hover:bg-gray-50 rounded-lg">
+                                <p class="font-medium text-gray-800">Deep Learning Approach for Sentiment Analysis in Indonesian Social Media</p>
+                                <p class="text-xs text-gray-500">IEEE Access, Vol. 12, 2024 (Scopus Q1)</p>
+                            </div>
+                            <div class="p-3 hover:bg-gray-50 rounded-lg">
+                                <p class="font-medium text-gray-800">Pengembangan Sistem IoT untuk Smart Farming pada Tanaman Hidroponik</p>
+                                <p class="text-xs text-gray-500">International Conference on Smart Agriculture, 2023</p>
+                            </div>
+                            <div class="p-3 hover:bg-gray-50 rounded-lg">
+                                <p class="font-medium text-gray-800">Analisis Perbandingan Algoritma Machine Learning untuk Prediksi Harga Saham</p>
+                                <p class="text-xs text-gray-500">Jurnal Teknologi Informasi, Vol. 15 No. 2, 2023 (Sinta 2)</p>
+                            </div>
+                        </div>
+                        
+                        <button class="mt-3 text-sm text-purple-600 hover:text-purple-800">
+                            Lihat Semua Publikasi <i class="fas fa-arrow-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Change Password Modal -->
+    <div id="passwordModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl max-w-md w-full p-6">
+            <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                <i class="fas fa-key mr-2 text-purple-500"></i>
+                Ubah Password
+            </h3>
+            
+            <form id="passwordForm" onsubmit="event.preventDefault(); updatePassword();">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Password Lama</label>
+                        <input type="password" id="oldPassword" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Password Baru</label>
+                        <input type="password" id="newPassword" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required>
+                        <p class="text-xs text-gray-500 mt-1">Minimal 8 karakter, kombinasi huruf dan angka</p>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Konfirmasi Password Baru</label>
+                        <input type="password" id="confirmPassword" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required>
+                    </div>
+                    
+                    <div class="flex justify-end space-x-3 mt-6">
+                        <button type="button" onclick="closePasswordModal()" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
+                            Batal
+                        </button>
+                        <button type="submit" class="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-lg hover:shadow-lg transition">
+                            Simpan
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <script>
+        // Initialize AOS
+        AOS.init({ duration: 800, once: true });
+
+        // Mock Auth Object
+        const auth = {
+            getUser: function() {
+                const userStr = localStorage.getItem('user');
+                return userStr ? JSON.parse(userStr) : null;
+            },
+            requireRole: function(role) {
+                const user = this.getUser();
+                if (!user || user.role !== role) {
+                    window.location.href = '../login.html';
+                    return false;
+                }
+                return true;
+            },
+            logout: function() {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = '../login.html';
+            }
+        };
+
+        // Utility Functions
+        function showLoading() {
+            document.getElementById('loadingOverlay').classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.add('hidden');
+        }
+
+        function showNotification(message, type = 'success') {
+            Swal.fire({
+                icon: type,
+                title: type === 'success' ? 'Berhasil' : 'Gagal',
+                text: message,
+                timer: 2000,
+                showConfirmButton: false
+            });
+        }
+
+        function handleLogout() {
+            auth.logout();
+        }
+
+        // Update User Info
+        function updateUserInfo() {
+            const user = auth.getUser();
+            if (user) {
+                document.getElementById('userNameDisplay').textContent = user.name || 'Dr. Ahmad Fauzi, M.T.';
+                document.getElementById('userNidnDisplay').textContent = user.nidn || '1234567890';
+                
+                document.getElementById('profileName').textContent = user.name || 'Dr. Ahmad Fauzi, M.T.';
+                document.getElementById('profileNidn').textContent = user.nidn || '1234567890';
+            }
+        }
+
+        // Change Profile Picture
+        window.changeProfilePicture = function() {
+            document.getElementById('profilePicInput').click();
+        };
+
+        window.uploadProfilePicture = function(input) {
+            const file = input.files[0];
+            if (file) {
+                if (file.size > 2 * 1024 * 1024) {
+                    showNotification('Ukuran file maksimal 2MB', 'error');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profilePicture').src = e.target.result;
+                    showNotification('Foto profil berhasil diperbarui');
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+
+        // Change Password
+        window.changePassword = function() {
+            document.getElementById('passwordModal').classList.remove('hidden');
+        };
+
+        window.closePasswordModal = function() {
+            document.getElementById('passwordModal').classList.add('hidden');
+            document.getElementById('passwordForm').reset();
+        };
+
+        window.updatePassword = function() {
+            const oldPass = document.getElementById('oldPassword').value;
+            const newPass = document.getElementById('newPassword').value;
+            const confirmPass = document.getElementById('confirmPassword').value;
+
+            if (!oldPass || !newPass || !confirmPass) {
+                showNotification('Semua field harus diisi', 'error');
+                return;
+            }
+
+            if (newPass.length < 8) {
+                showNotification('Password baru minimal 8 karakter', 'error');
+                return;
+            }
+
+            if (newPass !== confirmPass) {
+                showNotification('Konfirmasi password tidak cocok', 'error');
+                return;
+            }
+
+            showLoading();
+
+            setTimeout(() => {
+                hideLoading();
+                closePasswordModal();
+                showNotification('Password berhasil diperbarui');
+            }, 1500);
+        };
+
+        // Save Profile
+        window.saveProfile = function() {
+            showLoading();
+            
+            setTimeout(() => {
+                // Update displayed values
+                document.getElementById('profileName').textContent = document.getElementById('fullName').value;
+                document.getElementById('profileEmail').textContent = document.getElementById('email').value;
+                document.getElementById('profilePhone').textContent = document.getElementById('phone').value;
+                document.getElementById('profileAddress').textContent = document.getElementById('address').value;
+                document.getElementById('profileProdi').textContent = document.getElementById('prodi').value;
+                document.getElementById('profileJabatan').textContent = document.getElementById('jabatan').value;
+                
+                hideLoading();
+                showNotification('Profil berhasil diperbarui');
+            }, 1000);
+        };
+
+        // Export Data
+        window.exportData = function() {
+            const data = {
+                profile: {
+                    name: document.getElementById('fullName').value,
+                    nidn: document.getElementById('nidn').value,
+                    prodi: document.getElementById('prodi').value,
+                    jabatan: document.getElementById('jabatan').value,
+                    email: document.getElementById('email').value,
+                    phone: document.getElementById('phone').value
+                },
+                statistics: {
+                    penelitian: 12,
+                    pengabdian: 8,
+                    publikasi: 25,
+                    mahasiswa: 15,
+                    hki: 4
+                },
+                exportDate: new Date().toISOString()
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `kinerja-${data.profile.nidn}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+
+            showNotification('Data kinerja berhasil diexport');
+        };
+
+        // Add Education
+        window.addEducation = function() {
+            Swal.fire({
+                title: 'Tambah Riwayat Pendidikan',
+                html: `
+                    <input id="swal-degree" class="swal2-input" placeholder="Jenjang (S1/S2/S3)">
+                    <input id="swal-institution" class="swal2-input" placeholder="Institusi">
+                    <input id="swal-year" class="swal2-input" placeholder="Tahun (contoh: 2010-2015)">
+                    <textarea id="swal-thesis" class="swal2-input" placeholder="Judul Tesis/Disertasi"></textarea>
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'Simpan',
+                cancelButtonText: 'Batal',
+                preConfirm: () => {
+                    const degree = document.getElementById('swal-degree').value;
+                    const institution = document.getElementById('swal-institution').value;
+                    const year = document.getElementById('swal-year').value;
+                    const thesis = document.getElementById('swal-thesis').value;
+                    
+                    if (!degree || !institution || !year) {
+                        Swal.showValidationMessage('Semua field harus diisi');
+                        return false;
+                    }
+                    
+                    return { degree, institution, year, thesis };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const educationList = document.getElementById('educationList');
+                    const colors = ['purple', 'blue', 'green', 'orange'];
+                    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                    
+                    const newItem = document.createElement('div');
+                    newItem.className = `border-l-4 border-${randomColor}-500 pl-4`;
+                    newItem.innerHTML = `
+                        <h4 class="font-semibold text-gray-800">${result.value.degree} ${result.value.institution}</h4>
+                        <p class="text-sm text-gray-600">${result.value.institution} • ${result.value.year}</p>
+                        <p class="text-xs text-gray-500">${result.value.thesis}</p>
+                    `;
+                    
+                    educationList.appendChild(newItem);
+                    showNotification('Riwayat pendidikan berhasil ditambahkan');
+                }
+            });
+        };
+
+        // Add Position
+        window.addPosition = function() {
+            Swal.fire({
+                title: 'Tambah Riwayat Jabatan',
+                html: `
+                    <input id="swal-position" class="swal2-input" placeholder="Jabatan">
+                    <input id="swal-period" class="swal2-input" placeholder="Periode (contoh: 2020-Sekarang)">
+                    <textarea id="swal-desc" class="swal2-input" placeholder="Keterangan"></textarea>
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'Simpan',
+                cancelButtonText: 'Batal',
+                preConfirm: () => {
+                    const position = document.getElementById('swal-position').value;
+                    const period = document.getElementById('swal-period').value;
+                    const desc = document.getElementById('swal-desc').value;
+                    
+                    if (!position || !period) {
+                        Swal.showValidationMessage('Jabatan dan Periode harus diisi');
+                        return false;
+                    }
+                    
+                    return { position, period, desc };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const positionList = document.getElementById('positionList');
+                    const colors = ['purple', 'blue', 'green', 'orange'];
+                    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                    
+                    const newItem = document.createElement('div');
+                    newItem.className = `border-l-4 border-${randomColor}-500 pl-4`;
+                    newItem.innerHTML = `
+                        <h4 class="font-semibold text-gray-800">${result.value.position}</h4>
+                        <p class="text-sm text-gray-600">ITB Yadika • ${result.value.period}</p>
+                        ${result.value.desc ? `<p class="text-xs text-gray-500">${result.value.desc}</p>` : ''}
+                    `;
+                    
+                    positionList.appendChild(newItem);
+                    showNotification('Riwayat jabatan berhasil ditambahkan');
+                }
+            });
+        };
+
+        // Initialize Page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check authentication
+            if (!auth.requireRole('dosen')) return;
+            
+            // Set mock user in localStorage if not exists
+            if (!localStorage.getItem('user')) {
+                localStorage.setItem('user', JSON.stringify({
+                    name: 'Dr. Ahmad Fauzi, M.T.',
+                    nidn: '1234567890',
+                    role: 'dosen',
+                    email: 'ahmad.fauzi@yadika.ac.id'
+                }));
+            }
+            
+            // Update UI
+            updateUserInfo();
+            
+            // Hide loading
+            hideLoading();
+        });
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('passwordModal');
+            if (event.target === modal) {
+                closePasswordModal();
+            }
+        };
+    </script>
+</body>
+</html>

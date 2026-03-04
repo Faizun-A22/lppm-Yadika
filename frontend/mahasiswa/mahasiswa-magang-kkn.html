@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magang & KKN - Portal Mahasiswa LPPM ITB Yadika</title>
+    
+    <!-- CSS External Libraries -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        /* Custom CSS Styles */
+        .gradient-text { 
+            background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            background-clip: text; 
+        }
+        
+        .nav-link { 
+            position: relative; 
+            transition: color 0.3s ease; 
+        }
+        
+        .nav-link::after { 
+            content: ''; 
+            position: absolute; 
+            width: 0; 
+            height: 2px; 
+            bottom: -5px; 
+            left: 50%; 
+            background-color: #3B82F6; 
+            transition: all 0.3s ease; 
+        }
+        
+        .nav-link:hover::after, 
+        .nav-link.active::after { 
+            width: 100%; 
+            left: 0; 
+        }
+        
+        .nav-link.active { 
+            color: #3B82F6; 
+            font-weight: 600; 
+        }
+        
+        /* Loading Spinner */
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3B82F6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Card hover effects */
+        .choice-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .choice-card:hover {
+            transform: translateY(-10px) scale(1.02);
+        }
+        
+        .choice-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 50%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        .choice-card:hover::before {
+            opacity: 1;
+        }
+        
+        .choice-card.magang:hover {
+            box-shadow: 0 20px 40px -10px rgba(59, 130, 246, 0.5);
+        }
+        
+        .choice-card.kkn:hover {
+            box-shadow: 0 20px 40px -10px rgba(139, 92, 246, 0.5);
+        }
+        
+        .floating-icon {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .benefit-item {
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+        
+        .benefit-item:hover {
+            transform: translateX(5px);
+            border-left-color: currentColor;
+        }
+
+        /* Program Badge */
+        .program-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 10;
+        }
+
+        /* Status Indicator */
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+        }
+        .status-active { background-color: #10B981; box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2); }
+        .status-upcoming { background-color: #F59E0B; box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2); }
+        .status-closed { background-color: #EF4444; box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2); }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans antialiased">
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-white bg-opacity-90 z-50 flex items-center justify-center hidden">
+        <div class="text-center">
+            <div class="loading-spinner"></div>
+            <p class="mt-4 text-gray-600">Memuat data...</p>
+        </div>
+    </div>
+
+    <!-- Header / Navigation Bar -->
+    <header class="fixed top-0 left-0 right-0 bg-white shadow-md z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <!-- Logo and Brand -->
+            <a href="mahasiswa-dashboard.html" class="flex items-center space-x-3">
+                <img src="../images/logoyadika.png" alt="Logo LPPM ITB Yadika" class="h-10 w-10">
+                <div>
+                    <h1 class="text-xl font-bold gradient-text">Portal Mahasiswa</h1>
+                    <p class="text-xs text-gray-500">LPPM ITB Yadika</p>
+                </div>
+            </a>
+            
+            <!-- Navigation Menu -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="mahasiswa-dashboard.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-home mr-2"></i>Dashboard
+                </a>
+                <a href="mahasiswa-berita.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-newspaper mr-2"></i>Berita
+                </a>
+                <a href="mahasiswa-kegiatan.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-calendar-alt mr-2"></i>Kegiatan
+                </a>
+                <a href="mahasiswa-repository.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-book mr-2"></i>Repository
+                </a>
+                <a href="mahasiswa-magang-kkn.html" class="nav-link active text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-briefcase mr-2"></i>Magang & KKN
+                </a>
+                <a href="mahasiswa-profil.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-user-circle mr-2"></i>Profil Saya
+                </a>
+            </div>
+            
+            <!-- User Info & Logout -->
+            <div class="flex items-center space-x-4">
+                <div class="hidden md:block text-right">
+                    <p class="text-sm font-semibold text-gray-700" id="userNameDisplay">Loading...</p>
+                    <p class="text-xs text-gray-500" id="userNimDisplay">-</p>
+                </div>
+                <button onclick="handleLogout()" class="flex items-center space-x-2 p-2 rounded-lg text-red-600 hover:bg-red-50 transition">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span class="hidden sm:inline">Logout</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-20">
+        <div class="container mx-auto px-6 py-8">
+            <!-- Header Section -->
+            <header class="mb-10 text-center" data-aos="fade-down">
+                <h2 class="text-4xl font-bold text-gray-800 mb-3">Pilih Program Anda</h2>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">Wujudkan masa depanmu melalui pengalaman berharga dalam program magang atau pengabdian masyarakat</p>
+            </header>
+
+            <!-- User Status Info -->
+            <div class="mb-8 max-w-4xl mx-auto" data-aos="fade-up">
+                <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4 flex flex-col md:flex-row justify-between items-center">
+                    <div class="flex items-center space-x-3 mb-3 md:mb-0">
+                        <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white">
+                            <i class="fas fa-user-graduate text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Status Program Anda</p>
+                            <p class="font-semibold" id="userProgramStatus">Belum mengikuti program</p>
+                        </div>
+                    </div>
+                    <div class="flex space-x-3">
+                        <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm flex items-center">
+                            <span class="status-indicator status-active"></span>
+                            <span id="activeProgramCount">0 Program Aktif</span>
+                        </span>
+                        <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-sm flex items-center">
+                            <i class="fas fa-history mr-1"></i>
+                            <span id="historyProgramCount">0 Riwayat</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Two Main Choice Cards -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+                <!-- Magang Card -->
+                <div onclick="window.location.href='mahasiswa-magang.html'" 
+                     class="choice-card magang bg-white rounded-2xl shadow-xl overflow-hidden cursor-pointer group relative"
+                     data-aos="fade-right" data-aos-delay="100">
+                    
+                    <!-- Program Badge -->
+                    <div class="program-badge">
+                        <span class="px-3 py-1 bg-blue-500 text-white rounded-full text-xs font-semibold">
+                            <i class="fas fa-fire mr-1"></i>7 Program Tersedia
+                        </span>
+                    </div>
+                    
+                    <!-- Header with icon -->
+                    <div class="relative bg-gradient-to-br from-blue-500 to-blue-700 p-8">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-10 -mt-10"></div>
+                        <div class="absolute bottom-0 left-0 w-24 h-24 bg-white opacity-10 rounded-full -ml-8 -mb-8"></div>
+                        
+                        <div class="flex items-center justify-between relative z-10">
+                            <div>
+                                <span class="inline-block px-4 py-1 bg-white/20 rounded-full text-white text-sm font-semibold mb-3">
+                                    <i class="fas fa-rocket mr-2"></i>Karir Masa Depan
+                                </span>
+                                <h3 class="text-4xl font-bold text-white mb-2">Magang</h3>
+                                <p class="text-blue-100 text-lg">Program Magang Profesional</p>
+                            </div>
+                            <div class="floating-icon">
+                                <div class="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-briefcase text-white text-5xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Content -->
+                    <div class="p-8">
+                        <!-- Description -->
+                        <p class="text-gray-600 mb-6 text-lg leading-relaxed">
+                            Dapatkan pengalaman kerja nyata di perusahaan terkemuka. Kembangkan skill profesionalmu dan bangun jaringan karir sejak dini.
+                        </p>
+                        
+                        <!-- Benefits -->
+                        <div class="space-y-3 mb-8">
+                            <h4 class="font-semibold text-gray-800 text-lg mb-3">✨ Yang akan kamu dapatkan:</h4>
+                            
+                            <div class="benefit-item flex items-start space-x-3 text-gray-600 pl-3">
+                                <i class="fas fa-certificate text-blue-500 mt-1 text-xl"></i>
+                                <span><span class="font-medium">Sertifikat Magang</span> - Diakui industri</span>
+                            </div>
+                            
+                            <div class="benefit-item flex items-start space-x-3 text-gray-600 pl-3">
+                                <i class="fas fa-wallet text-blue-500 mt-1 text-xl"></i>
+                                <span><span class="font-medium">Insentif Bulanan</span> - Minimal UMR</span>
+                            </div>
+                            
+                            <div class="benefit-item flex items-start space-x-3 text-gray-600 pl-3">
+                                <i class="fas fa-network-wired text-blue-500 mt-1 text-xl"></i>
+                                <span><span class="font-medium">Networking</span> - Bertemu profesional</span>
+                            </div>
+                            
+                            <div class="benefit-item flex items-start space-x-3 text-gray-600 pl-3">
+                                <i class="fas fa-chart-line text-blue-500 mt-1 text-xl"></i>
+                                <span><span class="font-medium">Portofolio Proyek</span> - Pengalaman riil</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Stats -->
+                        <div class="grid grid-cols-3 gap-4 mb-6 pt-4 border-t border-gray-100">
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-blue-600">50+</div>
+                                <div class="text-xs text-gray-500">Mitra Perusahaan</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-blue-600">200+</div>
+                                <div class="text-xs text-gray-500">Mahasiswa</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-blue-600">90%</div>
+                                <div class="text-xs text-gray-500">Terserap Karir</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Quick Info -->
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">
+                                <i class="fas fa-building mr-1"></i>Multinasional
+                            </span>
+                            <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">
+                                <i class="fas fa-clock mr-1"></i>3-6 Bulan
+                            </span>
+                            <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">
+                                <i class="fas fa-language mr-1"></i>Bahasa Inggris
+                            </span>
+                        </div>
+                        
+                        <!-- CTA Button -->
+                        <div class="flex items-center justify-between bg-blue-50 rounded-xl p-3 group-hover:bg-blue-100 transition-all duration-300">
+                            <span class="text-blue-700 font-semibold">Lihat semua program magang</span>
+                            <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white transform group-hover:translate-x-2 transition-transform duration-300">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KKN Card -->
+                <div onclick="window.location.href='mahasiswa-kkn.html'" 
+                     class="choice-card kkn bg-white rounded-2xl shadow-xl overflow-hidden cursor-pointer group relative"
+                     data-aos="fade-left" data-aos-delay="200">
+                    
+                    <!-- Program Badge -->
+                    <div class="program-badge">
+                        <span class="px-3 py-1 bg-purple-500 text-white rounded-full text-xs font-semibold">
+                            <i class="fas fa-map-marker-alt mr-1"></i>5 Lokasi Tersedia
+                        </span>
+                    </div>
+                    
+                    <!-- Header with icon -->
+                    <div class="relative bg-gradient-to-br from-purple-500 to-purple-700 p-8">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-10 -mt-10"></div>
+                        <div class="absolute bottom-0 left-0 w-24 h-24 bg-white opacity-10 rounded-full -ml-8 -mb-8"></div>
+                        
+                        <div class="flex items-center justify-between relative z-10">
+                            <div>
+                                <span class="inline-block px-4 py-1 bg-white/20 rounded-full text-white text-sm font-semibold mb-3">
+                                    <i class="fas fa-heart mr-2"></i>Pengabdian Masyarakat
+                                </span>
+                                <h3 class="text-4xl font-bold text-white mb-2">KKN</h3>
+                                <p class="text-purple-100 text-lg">Kuliah Kerja Nyata</p>
+                            </div>
+                            <div class="floating-icon">
+                                <div class="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-hands-helping text-white text-5xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Content -->
+                    <div class="p-8">
+                        <!-- Description -->
+                        <p class="text-gray-600 mb-6 text-lg leading-relaxed">
+                            Berkontribusi langsung untuk masyarakat. Terapkan ilmu, kembangkan empati, dan rasakan pengalaman berharga di desa.
+                        </p>
+                        
+                        <!-- Benefits -->
+                        <div class="space-y-3 mb-8">
+                            <h4 class="font-semibold text-gray-800 text-lg mb-3">🌟 Pengalaman tak terlupakan:</h4>
+                            
+                            <div class="benefit-item flex items-start space-x-3 text-gray-600 pl-3">
+                                <i class="fas fa-home text-purple-500 mt-1 text-xl"></i>
+                                <span><span class="font-medium">Live-in Masyarakat</span> - 2 bulan di desa</span>
+                            </div>
+                            
+                            <div class="benefit-item flex items-start space-x-3 text-gray-600 pl-3">
+                                <i class="fas fa-lightbulb text-purple-500 mt-1 text-xl"></i>
+                                <span><span class="font-medium">Program Pemberdayaan</span> - Dampak nyata</span>
+                            </div>
+                            
+                            <div class="benefit-item flex items-start space-x-3 text-gray-600 pl-3">
+                                <i class="fas fa-users text-purple-500 mt-1 text-xl"></i>
+                                <span><span class="font-medium">Softskill</span> - Kerjasama tim, komunikasi</span>
+                            </div>
+                            
+                            <div class="benefit-item flex items-start space-x-3 text-gray-600 pl-3">
+                                <i class="fas fa-scroll text-purple-500 mt-1 text-xl"></i>
+                                <span><span class="font-medium">Konversi SKS</span> - Setara 20 SKS</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Stats -->
+                        <div class="grid grid-cols-3 gap-4 mb-6 pt-4 border-t border-gray-100">
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-purple-600">25+</div>
+                                <div class="text-xs text-gray-500">Desa Binaan</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-purple-600">500+</div>
+                                <div class="text-xs text-gray-500">Alumni KKN</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-purple-600">100+</div>
+                                <div class="text-xs text-gray-500">Program Kerja</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Quick Info -->
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">
+                                <i class="fas fa-tree mr-1"></i>Desa Wisata
+                            </span>
+                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">
+                                <i class="fas fa-clock mr-1"></i>2 Bulan
+                            </span>
+                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">
+                                <i class="fas fa-utensils mr-1"></i>Homestay
+                            </span>
+                        </div>
+                        
+                        <!-- CTA Button -->
+                        <div class="flex items-center justify-between bg-purple-50 rounded-xl p-3 group-hover:bg-purple-100 transition-all duration-300">
+                            <span class="text-purple-700 font-semibold">Lihat semua program KKN</span>
+                            <div class="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center text-white transform group-hover:translate-x-2 transition-transform duration-300">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Program Highlights -->
+            <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto" data-aos="fade-up" data-aos-delay="300">
+                <div class="bg-white rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition-shadow">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-calendar-check text-blue-600 text-2xl"></i>
+                    </div>
+                    <h4 class="font-bold text-gray-800 mb-2">Jadwal Terintegrasi</h4>
+                    <p class="text-sm text-gray-600">Program disesuaikan dengan kalender akademik</p>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition-shadow">
+                    <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-star text-purple-600 text-2xl"></i>
+                    </div>
+                    <h4 class="font-bold text-gray-800 mb-2">Pendampingan Profesional</h4>
+                    <p class="text-sm text-gray-600">Didampingi dosen dan mentor berpengalaman</p>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition-shadow">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-medal text-green-600 text-2xl"></i>
+                    </div>
+                    <h4 class="font-bold text-gray-800 mb-2">Rekognisi Nasional</h4>
+                    <p class="text-sm text-gray-600">Diakui Kemenristekdikti dan mitra industri</p>
+                </div>
+            </div>
+
+            <!-- Testimonials Section -->
+            <div class="mt-16" data-aos="fade-up" data-aos-delay="400">
+                <h3 class="text-2xl font-bold text-gray-800 text-center mb-8">Apa Kata Mereka?</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                    <!-- Testimonial 1 -->
+                    <div class="bg-white rounded-xl shadow-lg p-6 relative">
+                        <i class="fas fa-quote-left text-blue-200 text-4xl absolute top-4 left-4"></i>
+                        <div class="relative z-10">
+                            <p class="text-gray-600 mb-4 italic">"Magang di perusahaan tech membuat saya langsung dapat tawaran kerja sebelum lulus. Ilmu yang didapat sangat aplikatif!"</p>
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-bold">
+                                    AR
+                                </div>
+                                <div class="ml-3">
+                                    <p class="font-semibold">Ahmad Rizki</p>
+                                    <p class="text-xs text-gray-500">Alumni Magang 2023 - Kini di Gojek</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Testimonial 2 -->
+                    <div class="bg-white rounded-xl shadow-lg p-6 relative">
+                        <i class="fas fa-quote-left text-purple-200 text-4xl absolute top-4 left-4"></i>
+                        <div class="relative z-10">
+                            <p class="text-gray-600 mb-4 italic">"KKN mengajarkan saya banyak hal: kepemimpinan, empati, dan bagaimana memecahkan masalah nyata di masyarakat."</p>
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">
+                                    SN
+                                </div>
+                                <div class="ml-3">
+                                    <p class="font-semibold">Siti Nurhaliza</p>
+                                    <p class="text-xs text-gray-500">Alumni KKN 2023 - Ketua BEM</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Section -->
+            <div class="mt-16 bg-white rounded-xl shadow-lg p-8 max-w-4xl mx-auto" data-aos="fade-up">
+                <h3 class="text-2xl font-bold text-gray-800 mb-6 text-center">Pertanyaan Umum</h3>
+                <div class="space-y-4">
+                    <div class="border-b border-gray-200 pb-4">
+                        <button class="flex justify-between items-center w-full text-left" onclick="toggleFaq(this)">
+                            <span class="font-semibold text-gray-800">Apa syarat mengikuti magang?</span>
+                            <i class="fas fa-chevron-down text-gray-500"></i>
+                        </button>
+                        <div class="mt-2 text-gray-600 hidden">
+                            Minimal semester 6, IPK ≥ 3.0, dan lolos seleksi administrasi & wawancara.
+                        </div>
+                    </div>
+                    
+                    <div class="border-b border-gray-200 pb-4">
+                        <button class="flex justify-between items-center w-full text-left" onclick="toggleFaq(this)">
+                            <span class="font-semibold text-gray-800">Apakah KKN bisa dikonversi jadi SKS?</span>
+                            <i class="fas fa-chevron-down text-gray-500"></i>
+                        </button>
+                        <div class="mt-2 text-gray-600 hidden">
+                            Ya, KKN setara dengan 20 SKS dan dapat menggantikan beberapa mata kuliah pilihan.
+                        </div>
+                    </div>
+                    
+                    <div class="border-b border-gray-200 pb-4">
+                        <button class="flex justify-between items-center w-full text-left" onclick="toggleFaq(this)">
+                            <span class="font-semibold text-gray-800">Bagaimana cara mendaftar?</span>
+                            <i class="fas fa-chevron-down text-gray-500"></i>
+                        </button>
+                        <div class="mt-2 text-gray-600 hidden">
+                            Daftar melalui portal ini, lengkapi berkas, dan ikuti proses seleksi yang diumumkan.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Info Section -->
+            <div class="mt-16 text-center" data-aos="fade-up">
+                <div class="bg-white rounded-xl shadow-lg p-8 max-w-3xl mx-auto">
+                    <h4 class="text-xl font-bold text-gray-800 mb-4">Mengapa Memilih Program Ini?</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
+                        <div class="flex items-start space-x-3">
+                            <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-graduation-cap text-blue-600"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold">Terintegrasi Kurikulum</h5>
+                                <p class="text-sm text-gray-600">Diakui sebagai bagian dari mata kuliah</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-shield-alt text-purple-600"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold">Asuransi Peserta</h5>
+                                <p class="text-sm text-gray-600">Perlindungan selama program berlangsung</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-chart-bar text-green-600"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold">Monitoring & Evaluasi</h5>
+                                <p class="text-sm text-gray-600">Pendampingan dari dosen pembimbing</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-trophy text-yellow-600"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold">Sertifikat & Penghargaan</h5>
+                                <p class="text-sm text-gray-600">Program terbaik mendapatkan apresiasi</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Success/Error Notification -->
+    <div id="notification" class="fixed bottom-4 right-4 z-50 hidden">
+        <div class="bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center">
+            <i class="fas fa-check-circle mr-2"></i>
+            <span id="notificationMessage">Notifikasi</span>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="../js/auth.js"></script>
+    
+    <script>
+        // Initialize AOS
+        AOS.init({ 
+            duration: 800, 
+            once: true,
+            offset: 100
+        });
+
+        // State Management
+        let userPrograms = {
+            active: [],
+            history: []
+        };
+
+        // Function to show/hide loading
+        function showLoading() {
+            document.getElementById('loadingOverlay').classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.add('hidden');
+        }
+
+        // Show notification
+        function showNotification(message, isSuccess = true) {
+            const notification = document.getElementById('notification');
+            const messageEl = document.getElementById('notificationMessage');
+            
+            notification.className = `fixed bottom-4 right-4 z-50 ${isSuccess ? 'bg-green-500' : 'bg-red-500'} text-white px-6 py-3 rounded-lg shadow-lg flex items-center`;
+            messageEl.textContent = message;
+            
+            notification.classList.remove('hidden');
+            
+            setTimeout(() => {
+                notification.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Get user data
+        function getUser() {
+            return auth.getUser();
+        }
+
+        // Update user info in header
+        function updateUserInfo() {
+            const user = getUser();
+            if (user) {
+                document.getElementById('userNameDisplay').textContent = user.name || 'Mahasiswa';
+                document.getElementById('userNimDisplay').textContent = user.nim || '-';
+            }
+        }
+
+        // Logout function
+        window.handleLogout = function() {
+            auth.logout();
+        };
+
+        // Load user program data (simulated)
+        async function loadUserPrograms() {
+            try {
+                // Simulate API call
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // Sample data - in real app, this would come from API
+                userPrograms = {
+                    active: [
+                        { id: 1, name: 'Magang - PT Teknologi Nusantara', status: 'active' }
+                    ],
+                    history: [
+                        { id: 2, name: 'KKN Desa Wisata 2023', status: 'completed' }
+                    ]
+                };
+                
+                // Update UI
+                if (userPrograms.active.length > 0) {
+                    document.getElementById('userProgramStatus').innerHTML = `
+                        <span class="text-green-600">Sedang mengikuti: ${userPrograms.active[0].name}</span>
+                    `;
+                } else {
+                    document.getElementById('userProgramStatus').innerHTML = 'Belum mengikuti program';
+                }
+                
+                document.getElementById('activeProgramCount').innerHTML = `${userPrograms.active.length} Program Aktif`;
+                document.getElementById('historyProgramCount').innerHTML = `${userPrograms.history.length} Riwayat`;
+                
+            } catch (error) {
+                console.error('Error loading user programs:', error);
+            }
+        }
+
+        // Toggle FAQ
+        window.toggleFaq = function(button) {
+            const content = button.nextElementSibling;
+            const icon = button.querySelector('i');
+            
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.classList.remove('fa-chevron-down');
+                icon.classList.add('fa-chevron-up');
+            } else {
+                content.classList.add('hidden');
+                icon.classList.remove('fa-chevron-up');
+                icon.classList.add('fa-chevron-down');
+            }
+        };
+
+        // Check program eligibility
+        function checkEligibility(programType) {
+            const user = getUser();
+            
+            // Check if user meets requirements
+            const requirements = {
+                magang: { minSemester: 6, minIPK: 3.0 },
+                kkn: { minSemester: 4, minIPK: 2.75 }
+            };
+            
+            const req = programType === 'magang' ? requirements.magang : requirements.kkn;
+            
+            // In real app, check against actual user data
+            const isEligible = true; // Assume eligible for demo
+            
+            if (!isEligible) {
+                showNotification(`Maaf, Anda belum memenuhi syarat untuk program ${programType}`, false);
+                return false;
+            }
+            
+            return true;
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Check authentication first
+            if (!auth.requireRole('mahasiswa')) return;
+            
+            // Update user info in header
+            updateUserInfo();
+            
+            // Show loading
+            showLoading();
+            
+            try {
+                // Load user program data
+                await loadUserPrograms();
+            } catch (error) {
+                console.error('Error initializing page:', error);
+            } finally {
+                hideLoading();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Program KKN - Portal Mahasiswa LPPM ITB Yadika</title>
+    
+    <!-- CSS External Libraries -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        /* Custom CSS Styles */
+        .gradient-text { 
+            background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            background-clip: text; 
+        }
+        
+        .nav-link { 
+            position: relative; 
+            transition: color 0.3s ease; 
+        }
+        
+        .nav-link::after { 
+            content: ''; 
+            position: absolute; 
+            width: 0; 
+            height: 2px; 
+            bottom: -5px; 
+            left: 50%; 
+            background-color: #3B82F6; 
+            transition: all 0.3s ease; 
+        }
+        
+        .nav-link:hover::after, 
+        .nav-link.active::after { 
+            width: 100%; 
+            left: 0; 
+        }
+        
+        .nav-link.active { 
+            color: #3B82F6; 
+            font-weight: 600; 
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3B82F6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Tab styles */
+        .tab-button { 
+            transition: all 0.3s ease; 
+        }
+        
+        .tab-button.active { 
+            background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%); 
+            color: white; 
+        }
+        
+        /* Timeline styles */
+        .timeline-item {
+            position: relative;
+            padding-left: 30px;
+            margin-bottom: 20px;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: -20px;
+            width: 2px;
+            background: linear-gradient(to bottom, #8B5CF6, #3B82F6);
+        }
+        
+        .timeline-item:last-child::before {
+            display: none;
+        }
+        
+        .timeline-dot {
+            position: absolute;
+            left: -5px;
+            top: 0;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #8B5CF6;
+            border: 2px solid white;
+            box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.3);
+        }
+        
+        .timeline-item.completed .timeline-dot {
+            background: #10B981;
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.3);
+        }
+        
+        .timeline-item.active .timeline-dot {
+            background: #3B82F6;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+        }
+        
+        /* Status badges */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-badge.pending { background: #FEF3C7; color: #92400E; }
+        .status-badge.verified { background: #DBEAFE; color: #1E40AF; }
+        .status-badge.approved { background: #D1FAE5; color: #065F46; }
+        .status-badge.rejected { background: #FEE2E2; color: #991B1B; }
+        .status-badge.completed { background: #E0E7FF; color: #3730A3; }
+        
+        /* Card hover */
+        .process-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .process-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        /* File upload */
+        .file-upload-area {
+            border: 2px dashed #E5E7EB;
+            transition: all 0.3s ease;
+        }
+        
+        .file-upload-area:hover {
+            border-color: #8B5CF6;
+            background: #F5F3FF;
+        }
+        
+        /* Stepper */
+        .stepper-item {
+            position: relative;
+            flex: 1;
+            text-align: center;
+        }
+        
+        .stepper-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 60%;
+            width: 80%;
+            height: 2px;
+            background: #E5E7EB;
+            z-index: 0;
+        }
+        
+        .stepper-item.active .stepper-number {
+            background: linear-gradient(135deg, #3B82F6, #8B5CF6);
+            color: white;
+            border-color: transparent;
+        }
+        
+        .stepper-item.completed .stepper-number {
+            background: #10B981;
+            color: white;
+            border-color: transparent;
+        }
+        
+        .stepper-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid #E5E7EB;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin: 0 auto 10px;
+            position: relative;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans antialiased">
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-white bg-opacity-90 z-50 flex items-center justify-center hidden">
+        <div class="text-center">
+            <div class="loading-spinner"></div>
+            <p class="mt-4 text-gray-600">Memuat data...</p>
+        </div>
+    </div>
+
+    <!-- Header / Navigation Bar -->
+    <header class="fixed top-0 left-0 right-0 bg-white shadow-md z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <!-- Logo and Brand -->
+            <a href="mahasiswa-dashboard.html" class="flex items-center space-x-3">
+                <img src="../images/logoyadika.png" alt="Logo LPPM ITB Yadika" class="h-10 w-10">
+                <div>
+                    <h1 class="text-xl font-bold gradient-text">Portal Mahasiswa</h1>
+                    <p class="text-xs text-gray-500">LPPM ITB Yadika</p>
+                </div>
+            </a>
+            
+            <!-- Navigation Menu -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="mahasiswa-dashboard.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-home mr-2"></i>Dashboard
+                </a>
+                <a href="mahasiswa-berita.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-newspaper mr-2"></i>Berita
+                </a>
+                <a href="mahasiswa-kegiatan.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-calendar-alt mr-2"></i>Kegiatan
+                </a>
+                <a href="mahasiswa-repository.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-book mr-2"></i>Repository
+                </a>
+                <a href="mahasiswa-magang-kkn.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-briefcase mr-2"></i>Magang & KKN
+                </a>
+                <a href="mahasiswa-profil.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-user-circle mr-2"></i>Profil Saya
+                </a>
+            </div>
+            
+            <!-- User Info & Logout -->
+            <div class="flex items-center space-x-4">
+                <div class="hidden md:block text-right">
+                    <p class="text-sm font-semibold text-gray-700" id="userNameDisplay">Loading...</p>
+                    <p class="text-xs text-gray-500" id="userNimDisplay">-</p>
+                </div>
+                <button onclick="handleLogout()" class="flex items-center space-x-2 p-2 rounded-lg text-red-600 hover:bg-red-50 transition">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span class="hidden sm:inline">Logout</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-20">
+        <div class="container mx-auto px-6 py-8">
+            <!-- Header Section -->
+            <header class="mb-8" data-aos="fade-down">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+                    <div>
+                        <h2 class="text-3xl font-bold text-gray-800">Program KKN</h2>
+                        <p class="text-gray-600">Kelola seluruh proses KKN Anda dalam satu tempat</p>
+                    </div>
+                    <div class="mt-4 md:mt-0">
+                        <div class="bg-white rounded-lg shadow px-4 py-2">
+                            <span class="text-sm text-gray-600">Status Keseluruhan:</span>
+                            <span class="ml-2 status-badge" id="overallStatus">Memuat...</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Tab Navigation -->
+            <div class="bg-white rounded-xl shadow-lg p-2 mb-6" data-aos="fade-up">
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="showSection('proses')" class="tab-button flex-1 py-3 px-4 rounded-lg text-center font-medium text-gray-700 hover:bg-gray-100 transition-all active" id="tabProses">
+                        <i class="fas fa-clock mr-2"></i>Proses Saya
+                    </button>
+                    <button onclick="showSection('pendaftaran')" class="tab-button flex-1 py-3 px-4 rounded-lg text-center font-medium text-gray-700 hover:bg-gray-100 transition-all" id="tabPendaftaran">
+                        <i class="fas fa-file-signature mr-2"></i>Pendaftaran
+                    </button>
+                    <button onclick="showSection('proposal')" class="tab-button flex-1 py-3 px-4 rounded-lg text-center font-medium text-gray-700 hover:bg-gray-100 transition-all" id="tabProposal">
+                        <i class="fas fa-file-alt mr-2"></i>Pengajuan Proposal
+                    </button>
+                    <button onclick="showSection('luaran')" class="tab-button flex-1 py-3 px-4 rounded-lg text-center font-medium text-gray-700 hover:bg-gray-100 transition-all" id="tabLuaran">
+                        <i class="fas fa-tasks mr-2"></i>Luaran Wajib
+                    </button>
+                </div>
+            </div>
+
+            <!-- Section: Proses Saya (Status Tracker) -->
+            <div id="sectionProses" class="section-content">
+                <!-- Status Overview Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    <div class="bg-white rounded-xl shadow p-4" data-aos="fade-up" data-aos-delay="100">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-file-signature text-blue-600 text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm text-gray-600">Pendaftaran</p>
+                                <p class="text-lg font-bold text-gray-800" id="statusPendaftaran">Memuat...</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow p-4" data-aos="fade-up" data-aos-delay="200">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-file-alt text-purple-600 text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm text-gray-600">Proposal</p>
+                                <p class="text-lg font-bold text-gray-800" id="statusProposal">Memuat...</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow p-4" data-aos="fade-up" data-aos-delay="300">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm text-gray-600">Verifikasi</p>
+                                <p class="text-lg font-bold text-gray-800" id="statusVerifikasi">Memuat...</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow p-4" data-aos="fade-up" data-aos-delay="400">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-tasks text-yellow-600 text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm text-gray-600">Luaran</p>
+                                <p class="text-lg font-bold text-gray-800" id="statusLuaran">Memuat...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timeline Progress -->
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-6" data-aos="fade-up">
+                    <h3 class="text-lg font-bold text-gray-800 mb-6">Progress Tahapan KKN</h3>
+                    
+                    <!-- Stepper -->
+                    <div class="flex mb-8">
+                        <div class="stepper-item" id="step1">
+                            <div class="stepper-number">1</div>
+                            <div class="text-sm font-medium">Pendaftaran</div>
+                            <div class="text-xs text-gray-500" id="step1Status">-</div>
+                        </div>
+                        <div class="stepper-item" id="step2">
+                            <div class="stepper-number">2</div>
+                            <div class="text-sm font-medium">Proposal</div>
+                            <div class="text-xs text-gray-500" id="step2Status">-</div>
+                        </div>
+                        <div class="stepper-item" id="step3">
+                            <div class="stepper-number">3</div>
+                            <div class="text-sm font-medium">Pelaksanaan</div>
+                            <div class="text-xs text-gray-500" id="step3Status">-</div>
+                        </div>
+                        <div class="stepper-item" id="step4">
+                            <div class="stepper-number">4</div>
+                            <div class="text-sm font-medium">Luaran</div>
+                            <div class="text-xs text-gray-500" id="step4Status">-</div>
+                        </div>
+                    </div>
+
+                    <!-- Timeline Details -->
+                    <div id="timelineDetails" class="space-y-4">
+                        <!-- Timeline items will be loaded here -->
+                        <div class="text-center text-gray-500 py-4">
+                            <i class="fas fa-spinner fa-spin mr-2"></i>Memuat timeline...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Daftar Pengajuan -->
+                <div class="bg-white rounded-xl shadow-lg p-6" data-aos="fade-up">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Riwayat Pengajuan</h3>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jenis</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Keterangan</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200" id="riwayatTable">
+                                <tr>
+                                    <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                                        <i class="fas fa-spinner fa-spin mr-2"></i>Memuat data...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section: Pendaftaran KKN -->
+            <div id="sectionPendaftaran" class="section-content hidden">
+                <div class="bg-white rounded-xl shadow-lg p-6" data-aos="fade-up">
+                    <h3 class="text-xl font-bold text-gray-800 mb-6">Formulir Pendaftaran KKN</h3>
+                    
+                    <form id="kknForm" class="space-y-6">
+                        <!-- Data Diri -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap</label>
+                                <input type="text" id="namaLengkap" readonly class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">NIM</label>
+                                <input type="text" id="nim" readonly class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Program Studi</label>
+                                <select id="programStudi" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                                    <option value="">Pilih Program Studi</option>
+                                    <option value="sistem_informasi">Sistem Informasi</option>
+                                    <option value="manajemen">Manajemen</option>
+                                    <option value="akuntansi">Akuntansi</option>
+                                    <option value="teknik_informatika">Teknik Informatika</option>
+                                    <option value="teknik_mesin">Teknik Mesin</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Nomor HP</label>
+                                <input type="tel" id="noHp" placeholder="08xxxxxxxxxx" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                            </div>
+                        </div>
+                        
+                        <!-- Semester -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Semester</label>
+                            <select id="semester" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                                <option value="">Pilih Semester</option>
+                                <option value="6">Semester 6</option>
+                                <option value="7">Semester 7</option>
+                                <option value="8">Semester 8</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Pilihan Desa -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-3">Pilih Desa Penempatan</label>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="villageContainer">
+                                <!-- Villages will be loaded here -->
+                                <div class="text-center text-gray-500 py-4 col-span-2">
+                                    <i class="fas fa-spinner fa-spin mr-2"></i>Memuat data desa...
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Ukuran Jaket -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-3">Ukuran Jaket</label>
+                            <div class="flex flex-wrap gap-4">
+                                <label class="flex items-center">
+                                    <input type="radio" name="jacketSize" value="S" class="mr-2"> S
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="jacketSize" value="M" class="mr-2"> M
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="jacketSize" value="L" class="mr-2"> L
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="jacketSize" value="XL" class="mr-2"> XL
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="jacketSize" value="XXL" class="mr-2"> XXL
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- Upload Dokumen -->
+                        <div class="space-y-4">
+                            <h4 class="font-semibold text-gray-800">Upload Dokumen Persyaratan</h4>
+                            
+                            <div class="file-upload-area p-4 rounded-lg">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Bukti KRS</label>
+                                <input type="file" id="krsFile" accept=".pdf,.jpg,.png" class="w-full">
+                                <p class="text-xs text-gray-500 mt-1">Format: PDF/JPG/PNG, Maks 2MB</p>
+                            </div>
+                            
+                            <div class="file-upload-area p-4 rounded-lg">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">KHS (Semester 1-5)</label>
+                                <input type="file" id="khsFile" accept=".pdf,.jpg,.png" class="w-full">
+                                <p class="text-xs text-gray-500 mt-1">Format: PDF/JPG/PNG, Maks 2MB</p>
+                            </div>
+                            
+                            <div class="file-upload-area p-4 rounded-lg">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Bukti Pembayaran</label>
+                                <input type="file" id="paymentFile" accept=".pdf,.jpg,.png" class="w-full">
+                                <p class="text-xs text-gray-500 mt-1">Format: PDF/JPG/PNG, Maks 2MB</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Checkbox Persetujuan -->
+                        <div class="flex items-center">
+                            <input type="checkbox" id="agreeTerms" class="mr-2">
+                            <label for="agreeTerms" class="text-sm text-gray-600">
+                                Saya menyatakan bahwa data yang diisi adalah benar dan siap mengikuti program KKN
+                            </label>
+                        </div>
+                        
+                        <!-- Tombol Submit -->
+                        <div class="flex justify-end space-x-3">
+                            <button type="button" onclick="cancelRegistration()" class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
+                                Batal
+                            </button>
+                            <button type="submit" class="px-6 py-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-lg hover:shadow-lg transition">
+                                Daftar KKN
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Section: Pengajuan Proposal -->
+            <div id="sectionProposal" class="section-content hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Form Proposal -->
+                    <div class="lg:col-span-2">
+                        <div class="bg-white rounded-xl shadow-lg p-6" data-aos="fade-up">
+                            <h3 class="text-xl font-bold text-gray-800 mb-6">Form Pengajuan Proposal KKN</h3>
+                            
+                            <form id="proposalForm" class="space-y-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Desa Penempatan</label>
+                                    <select id="proposalVillage" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                                        <option value="">Pilih Desa</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Judul Program Kerja</label>
+                                    <input type="text" id="programJudul" placeholder="Contoh: Digitalisasi UMKM Desa" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Deskripsi Program Kerja</label>
+                                    <textarea id="programDeskripsi" rows="5" placeholder="Jelaskan secara detail program kerja yang akan dilaksanakan..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"></textarea>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Estimasi Biaya (Rp)</label>
+                                        <input type="number" id="programBiaya" placeholder="1000000" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Durasi (Minggu)</label>
+                                        <input type="number" id="programDurasi" placeholder="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Upload File Proposal (PDF)</label>
+                                    <div class="file-upload-area p-4 rounded-lg">
+                                        <input type="file" id="proposalFile" accept=".pdf" class="w-full">
+                                        <p class="text-xs text-gray-500 mt-1">Format PDF, Maks 5MB. Proposal harus sudah ditandatangani DPL.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex justify-end space-x-3">
+                                    <button type="button" onclick="saveDraft()" class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
+                                        Simpan Draft
+                                    </button>
+                                    <button type="submit" class="px-6 py-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-lg hover:shadow-lg transition">
+                                        Ajukan Proposal
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- Status & Riwayat Proposal -->
+                    <div class="lg:col-span-1">
+                        <div class="bg-white rounded-xl shadow-lg p-6" data-aos="fade-up" data-aos-delay="200">
+                            <h3 class="text-lg font-bold text-gray-800 mb-4">Status Proposal</h3>
+                            
+                            <div id="proposalStatus" class="mb-6 p-4 bg-purple-50 rounded-lg">
+                                <div class="text-center text-gray-500 py-4">
+                                    <i class="fas fa-spinner fa-spin mr-2"></i>Memuat status...
+                                </div>
+                            </div>
+                            
+                            <h4 class="font-semibold text-gray-800 mb-3">Riwayat Review</h4>
+                            <div id="reviewHistory" class="space-y-3">
+                                <div class="text-center text-gray-500 py-4">
+                                    <i class="fas fa-spinner fa-spin mr-2"></i>Memuat riwayat...
+                                </div>
+                            </div>
+                            
+                            <hr class="my-4">
+                            
+                            <div class="flex space-x-2" id="proposalActions">
+                                <button class="flex-1 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm" onclick="downloadProposal()">
+                                    <i class="fas fa-download mr-1"></i> Download
+                                </button>
+                                <button class="flex-1 px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition text-sm" onclick="editProposal()">
+                                    <i class="fas fa-edit mr-1"></i> Edit
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section: Luaran Wajib -->
+            <div id="sectionLuaran" class="section-content hidden">
+                <div class="bg-white rounded-xl shadow-lg p-6" data-aos="fade-up">
+                    <h3 class="text-xl font-bold text-gray-800 mb-6">Input Luaran Wajib KKN</h3>
+                    
+                    <form id="luaranForm" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Nama Desa</label>
+                                <input type="text" id="luaranDesa" readonly class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Judul Kegiatan</label>
+                                <input type="text" id="luaranJudul" placeholder="Masukkan judul kegiatan KKN" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <h4 class="font-semibold text-gray-800">Link Google Drive Luaran</h4>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Link Video Cinematik</label>
+                                <input type="url" id="linkVideo" placeholder="https://drive.google.com/..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Link Poster Kegiatan</label>
+                                <input type="url" id="linkPoster" placeholder="https://drive.google.com/..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Link Foto Kegiatan</label>
+                                <input type="url" id="linkFoto" placeholder="https://drive.google.com/..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Upload MOU (PDF)</label>
+                            <div class="file-upload-area p-4 rounded-lg">
+                                <input type="file" id="mouFile" accept=".pdf" class="w-full">
+                                <p class="text-xs text-gray-500 mt-1">Format PDF, Maks 5MB</p>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Keterangan Tambahan</label>
+                            <textarea id="luaranKeterangan" rows="3" placeholder="Tambahkan keterangan lain jika diperlukan" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"></textarea>
+                        </div>
+                        
+                        <div class="flex justify-end space-x-3">
+                            <button type="button" onclick="cancelLuaran()" class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
+                                Batal
+                            </button>
+                            <button type="submit" class="px-6 py-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-lg hover:shadow-lg transition">
+                                Simpan Luaran
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Daftar Luaran yang sudah diupload -->
+                <div class="mt-6 bg-white rounded-xl shadow-lg p-6" data-aos="fade-up">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Riwayat Upload Luaran</h3>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Jenis Luaran</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tanggal Upload</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="luaranTable" class="divide-y divide-gray-200">
+                                <tr>
+                                    <td colspan="4" class="px-6 py-4 text-center text-gray-500">
+                                        <i class="fas fa-spinner fa-spin mr-2"></i>Memuat data...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="../js/auth.js"></script>
+    
+    <script>
+        // Initialize AOS
+        AOS.init({ duration: 800, once: true });
+        
+        // State Management
+        let currentUser = null;
+        let kknData = null;
+        let villages = [];
+        
+        // Function to show/hide loading
+        function showLoading() {
+            document.getElementById('loadingOverlay').classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.add('hidden');
+        }
+
+        // Show notification
+        function showNotification(message, isSuccess = true) {
+            Swal.fire({
+                icon: isSuccess ? 'success' : 'error',
+                title: isSuccess ? 'Berhasil' : 'Gagal',
+                text: message,
+                timer: 2000,
+                showConfirmButton: false
+            });
+        }
+
+        // Get user data
+        function getUser() {
+            return auth.getUser();
+        }
+
+        // Update user info in header
+        function updateUserInfo() {
+            const user = getUser();
+            if (user) {
+                document.getElementById('userNameDisplay').textContent = user.name || 'Mahasiswa';
+                document.getElementById('userNimDisplay').textContent = user.nim || '-';
+                
+                // Update form fields
+                document.getElementById('namaLengkap').value = user.name || '';
+                document.getElementById('nim').value = user.nim || '';
+            }
+        }
+
+        // Logout function
+        window.handleLogout = function() {
+            auth.logout();
+        };
+        
+        // Fungsi untuk navigasi antar section
+        function showSection(section) {
+            // Hide all sections
+            document.querySelectorAll('.section-content').forEach(el => {
+                el.classList.add('hidden');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab-button').forEach(el => {
+                el.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(`section${section.charAt(0).toUpperCase() + section.slice(1)}`).classList.remove('hidden');
+            
+            // Add active class to clicked tab
+            document.getElementById(`tab${section.charAt(0).toUpperCase() + section.slice(1)}`).classList.add('active');
+        }
+        
+        // Load villages data
+        async function loadVillages() {
+            try {
+                // Simulate API call
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                villages = [
+                    { id: 1, name: 'Desa Sukamaju', quota: 20, registered: 12, status: 'available' },
+                    { id: 2, name: 'Desa Cipaku', quota: 20, registered: 15, status: 'available' },
+                    { id: 3, name: 'Desa Mekarjaya', quota: 20, registered: 20, status: 'full' },
+                    { id: 4, name: 'Desa Kertajaya', quota: 20, registered: 8, status: 'available' }
+                ];
+                
+                const container = document.getElementById('villageContainer');
+                container.innerHTML = villages.map(village => `
+                    <div class="flex items-center p-3 border rounded-lg hover:bg-purple-50 ${village.status === 'full' ? 'opacity-50' : ''}">
+                        <input type="radio" name="village" value="${village.id}" id="village${village.id}" class="mr-3" ${village.status === 'full' ? 'disabled' : ''}>
+                        <label for="village${village.id}" class="flex-1 cursor-pointer">
+                            <span class="font-medium">${village.name}</span>
+                            <span class="text-sm text-gray-500 ml-2">(Kuota: ${village.registered}/${village.quota})</span>
+                            ${village.status === 'full' ? '<span class="ml-2 text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">Penuh</span>' : ''}
+                        </label>
+                    </div>
+                `).join('');
+                
+                // Update proposal village dropdown
+                const proposalVillage = document.getElementById('proposalVillage');
+                proposalVillage.innerHTML = '<option value="">Pilih Desa</option>' + 
+                    villages.filter(v => v.status !== 'full').map(v => 
+                        `<option value="${v.id}">${v.name}</option>`
+                    ).join('');
+                    
+            } catch (error) {
+                console.error('Error loading villages:', error);
+            }
+        }
+        
+        // Load KKN data
+        async function loadKKNData() {
+            try {
+                // Simulate API call
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                kknData = {
+                    hasRegistration: true,
+                    registration: {
+                        status: 'approved',
+                        date: '2024-06-10',
+                        village: 'Desa Sukamaju'
+                    },
+                    proposal: {
+                        status: 'pending',
+                        date: '2024-06-15',
+                        title: 'Digitalisasi UMKM Desa Sukamaju'
+                    },
+                    verification: {
+                        status: 'verified',
+                        date: '2024-06-12'
+                    },
+                    outputs: [
+                        { type: 'Video Cinematik', date: '2024-07-20', status: 'approved' },
+                        { type: 'Poster Kegiatan', date: '2024-07-20', status: 'pending' }
+                    ]
+                };
+                
+                updateStatusUI();
+                
+            } catch (error) {
+                console.error('Error loading KKN data:', error);
+            }
+        }
+        
+        // Update status UI
+        function updateStatusUI() {
+            if (!kknData) return;
+            
+            // Update status cards
+            document.getElementById('statusPendaftaran').textContent = 
+                kknData.registration?.status === 'approved' ? 'Disetujui' : 
+                kknData.registration?.status === 'pending' ? 'Menunggu' : 'Belum Daftar';
+                
+            document.getElementById('statusProposal').textContent = 
+                kknData.proposal?.status === 'approved' ? 'Disetujui' :
+                kknData.proposal?.status === 'pending' ? 'Dalam Review' : 'Belum Upload';
+                
+            document.getElementById('statusVerifikasi').textContent = 
+                kknData.verification?.status === 'verified' ? 'Terverifikasi' : 'Belum';
+                
+            document.getElementById('statusLuaran').textContent = 
+                kknData.outputs?.length > 0 ? kknData.outputs.length + ' Upload' : 'Belum Input';
+            
+            // Update overall status
+            const overallStatus = document.getElementById('overallStatus');
+            if (kknData.registration?.status === 'approved' && kknData.proposal?.status === 'pending') {
+                overallStatus.textContent = 'Dalam Proses';
+                overallStatus.className = 'ml-2 status-badge pending';
+            } else if (kknData.registration?.status === 'approved' && kknData.proposal?.status === 'approved') {
+                overallStatus.textContent = 'Aktif';
+                overallStatus.className = 'ml-2 status-badge approved';
+            } else {
+                overallStatus.textContent = 'Belum Mulai';
+                overallStatus.className = 'ml-2 status-badge pending';
+            }
+            
+            // Update stepper
+            updateStepper();
+            
+            // Update timeline
+            updateTimeline();
+            
+            // Update riwayat table
+            updateRiwayatTable();
+            
+            // Update proposal status
+            updateProposalStatus();
+            
+            // Update luaran table
+            updateLuaranTable();
+        }
+        
+        // Update stepper
+        function updateStepper() {
+            const steps = {
+                1: { element: document.getElementById('step1'), status: kknData.registration?.status },
+                2: { element: document.getElementById('step2'), status: kknData.proposal?.status },
+                3: { element: document.getElementById('step3'), status: kknData.verification?.status },
+                4: { element: document.getElementById('step4'), status: kknData.outputs?.length > 0 ? 'completed' : 'pending' }
+            };
+            
+            for (let i = 1; i <= 4; i++) {
+                const step = steps[i];
+                step.element.classList.remove('active', 'completed');
+                
+                if (step.status === 'approved' || step.status === 'verified' || (i === 4 && step.status === 'completed')) {
+                    step.element.classList.add('completed');
+                    document.getElementById(`step${i}Status`).textContent = 'Selesai';
+                } else if (step.status === 'pending' || (i === 3 && step.status === 'verified')) {
+                    step.element.classList.add('active');
+                    document.getElementById(`step${i}Status`).textContent = 'Dalam Proses';
+                } else {
+                    document.getElementById(`step${i}Status`).textContent = 'Belum Dimulai';
+                }
+            }
+        }
+        
+        // Update timeline
+        function updateTimeline() {
+            const timeline = document.getElementById('timelineDetails');
+            
+            const items = [
+                {
+                    title: 'Pendaftaran KKN',
+                    status: kknData.registration?.status,
+                    description: kknData.registration?.status === 'approved' ? 
+                        'Pendaftaran telah diverifikasi dan disetujui' : 
+                        kknData.registration?.status === 'pending' ? 
+                        'Pendaftaran sedang dalam proses verifikasi' : 
+                        'Belum melakukan pendaftaran',
+                    date: kknData.registration?.date || '-'
+                },
+                {
+                    title: 'Pengajuan Proposal',
+                    status: kknData.proposal?.status,
+                    description: kknData.proposal?.status === 'approved' ? 
+                        'Proposal telah disetujui' : 
+                        kknData.proposal?.status === 'pending' ? 
+                        'Proposal sedang direview oleh DPL' : 
+                        'Belum mengajukan proposal',
+                    date: kknData.proposal?.date || '-'
+                },
+                {
+                    title: 'Pelaksanaan KKN',
+                    status: kknData.registration?.status === 'approved' && kknData.proposal?.status === 'approved' ? 'active' : 'pending',
+                    description: 'Menunggu persetujuan proposal dan jadwal pelaksanaan',
+                    date: '-'
+                },
+                {
+                    title: 'Input Luaran',
+                    status: kknData.outputs?.length > 0 ? 'completed' : 'pending',
+                    description: kknData.outputs?.length > 0 ? 
+                        'Luaran telah diupload' : 
+                        'Upload luaran setelah pelaksanaan',
+                    date: '-'
+                }
+            ];
+            
+            timeline.innerHTML = items.map((item, index) => {
+                const statusClass = item.status === 'approved' || item.status === 'completed' ? 'completed' : 
+                                   item.status === 'pending' || item.status === 'active' ? 'active' : '';
+                
+                return `
+                    <div class="timeline-item ${statusClass}">
+                        <div class="timeline-dot"></div>
+                        <div class="ml-4">
+                            <div class="flex items-center">
+                                <h4 class="font-semibold text-gray-800">${item.title}</h4>
+                                <span class="ml-3 text-xs ${
+                                    item.status === 'approved' ? 'bg-green-100 text-green-800' :
+                                    item.status === 'pending' ? 'bg-blue-100 text-blue-800' :
+                                    'bg-gray-100 text-gray-800'
+                                } px-2 py-1 rounded-full">
+                                    ${item.status === 'approved' ? 'Selesai' :
+                                      item.status === 'pending' ? 'Dalam Proses' :
+                                      item.status === 'active' ? 'Aktif' : 'Menunggu'}
+                                </span>
+                            </div>
+                            <p class="text-sm text-gray-600">${item.description}</p>
+                            ${item.date !== '-' ? `<p class="text-xs text-gray-400 mt-1">${item.date}</p>` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Update riwayat table
+        function updateRiwayatTable() {
+            const table = document.getElementById('riwayatTable');
+            
+            const rows = [];
+            
+            if (kknData.registration) {
+                rows.push({
+                    type: 'Pendaftaran',
+                    icon: 'fa-file-signature',
+                    color: 'blue',
+                    date: kknData.registration.date,
+                    status: kknData.registration.status,
+                    description: kknData.registration.village,
+                    action: 'pendaftaran'
+                });
+            }
+            
+            if (kknData.proposal) {
+                rows.push({
+                    type: 'Proposal',
+                    icon: 'fa-file-alt',
+                    color: 'purple',
+                    date: kknData.proposal.date,
+                    status: kknData.proposal.status,
+                    description: kknData.proposal.title,
+                    action: 'proposal'
+                });
+            }
+            
+            if (rows.length === 0) {
+                table.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">Belum ada riwayat pengajuan</td></tr>';
+                return;
+            }
+            
+            table.innerHTML = rows.map(row => `
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <i class="fas ${row.icon} text-${row.color}-500 mr-2"></i>
+                            <span class="text-sm text-gray-900">${row.type}</span>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${row.date}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="status-badge ${
+                            row.status === 'approved' ? 'approved' :
+                            row.status === 'pending' ? 'pending' : 'rejected'
+                        }">${
+                            row.status === 'approved' ? 'Disetujui' :
+                            row.status === 'pending' ? 'Diproses' : 'Ditolak'
+                        }</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${row.description}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                        <button class="text-blue-600 hover:text-blue-800 mr-2" onclick="viewDetail('${row.type}')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        ${row.type === 'Proposal' && row.status === 'pending' ? `
+                            <button class="text-green-600 hover:text-green-800" onclick="editProposal()">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        ` : ''}
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        // Update proposal status
+        function updateProposalStatus() {
+            const container = document.getElementById('proposalStatus');
+            const reviewContainer = document.getElementById('reviewHistory');
+            
+            if (kknData.proposal) {
+                container.innerHTML = `
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-sm font-medium text-gray-600">Status:</span>
+                        <span class="status-badge ${kknData.proposal.status}">${
+                            kknData.proposal.status === 'approved' ? 'Disetujui' :
+                            kknData.proposal.status === 'pending' ? 'Dalam Review' : 'Ditolak'
+                        }</span>
+                    </div>
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-sm font-medium text-gray-600">Tanggal Pengajuan:</span>
+                        <span class="text-sm">${kknData.proposal.date}</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-gray-600">Judul:</span>
+                        <span class="text-sm">${kknData.proposal.title}</span>
+                    </div>
+                `;
+                
+                reviewContainer.innerHTML = `
+                    <div class="p-3 bg-gray-50 rounded-lg">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-sm font-medium">Dosen Pembimbing</span>
+                            <span class="text-xs text-gray-500">2 jam lalu</span>
+                        </div>
+                        <p class="text-sm text-gray-600">Proposal sedang direview, mohon tunggu konfirmasi lebih lanjut.</p>
+                    </div>
+                    <div class="p-3 bg-gray-50 rounded-lg">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-sm font-medium">Admin LPPM</span>
+                            <span class="text-xs text-gray-500">1 hari lalu</span>
+                        </div>
+                        <p class="text-sm text-gray-600">Berkas pendaftaran telah diverifikasi, silakan ajukan proposal.</p>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = '<p class="text-center text-gray-500 py-4">Belum mengajukan proposal</p>';
+                reviewContainer.innerHTML = '<p class="text-center text-gray-500 py-4">Belum ada riwayat review</p>';
+            }
+        }
+        
+        // Update luaran table
+        function updateLuaranTable() {
+            const table = document.getElementById('luaranTable');
+            
+            if (kknData.outputs && kknData.outputs.length > 0) {
+                table.innerHTML = kknData.outputs.map(output => `
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap">${output.type}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">${output.date}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="status-badge ${
+                                output.status === 'approved' ? 'approved' :
+                                output.status === 'pending' ? 'pending' : 'rejected'
+                            }">${
+                                output.status === 'approved' ? 'Terverifikasi' :
+                                output.status === 'pending' ? 'Dalam Review' : 'Ditolak'
+                            }</span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <button class="text-blue-600 hover:text-blue-800"><i class="fas fa-eye"></i></button>
+                        </td>
+                    </tr>
+                `).join('');
+            } else {
+                table.innerHTML = '<tr><td colspan="4" class="px-6 py-4 text-center text-gray-500">Belum ada luaran yang diupload</td></tr>';
+            }
+        }
+        
+        // Handle form submissions
+        document.getElementById('kknForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            Swal.fire({
+                title: 'Konfirmasi Pendaftaran',
+                text: 'Apakah Anda yakin ingin mendaftar KKN?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#8B5CF6',
+                cancelButtonColor: '#6B7280',
+                confirmButtonText: 'Ya, Daftar!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    showLoading();
+                    
+                    // Simulate API call
+                    setTimeout(() => {
+                        hideLoading();
+                        Swal.fire({
+                            title: 'Berhasil!',
+                            text: 'Pendaftaran KKN Anda telah diterima',
+                            icon: 'success',
+                            confirmButtonColor: '#8B5CF6'
+                        }).then(() => {
+                            // Refresh data
+                            loadKKNData().then(() => {
+                                showSection('proses');
+                            });
+                        });
+                    }, 1500);
+                }
+            });
+        });
+        
+        document.getElementById('proposalForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            Swal.fire({
+                title: 'Ajukan Proposal',
+                text: 'Proposal akan direview oleh DPL. Lanjutkan?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#8B5CF6',
+                confirmButtonText: 'Ya, Ajukan'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    showLoading();
+                    
+                    setTimeout(() => {
+                        hideLoading();
+                        Swal.fire({
+                            title: 'Berhasil!',
+                            text: 'Proposal berhasil diajukan',
+                            icon: 'success',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                    }, 1500);
+                }
+            });
+        });
+        
+        document.getElementById('luaranForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            Swal.fire({
+                title: 'Simpan Luaran',
+                text: 'Pastikan semua data sudah benar',
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#8B5CF6',
+                confirmButtonText: 'Simpan'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    showLoading();
+                    
+                    setTimeout(() => {
+                        hideLoading();
+                        Swal.fire({
+                            title: 'Tersimpan!',
+                            text: 'Data luaran berhasil disimpan',
+                            icon: 'success',
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                    }, 1500);
+                }
+            });
+        });
+        
+        // Fungsi-fungsi tambahan
+        function viewDetail(type) {
+            Swal.fire({
+                title: `Detail ${type}`,
+                html: `
+                    <div class="text-left">
+                        <p><strong>ID Pengajuan:</strong> KKN-2024-001</p>
+                        <p><strong>Tanggal:</strong> 10 Juni 2024</p>
+                        <p><strong>Status:</strong> Disetujui</p>
+                        <p><strong>Keterangan:</strong> Desa Sukamaju</p>
+                    </div>
+                `,
+                icon: 'info',
+                confirmButtonColor: '#8B5CF6'
+            });
+        }
+        
+        function editProposal() {
+            showSection('proposal');
+            
+            document.getElementById('sectionProposal').scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+        
+        function downloadProposal() {
+            Swal.fire({
+                title: 'Download Proposal',
+                text: 'File proposal akan diunduh',
+                icon: 'success',
+                timer: 1500,
+                showConfirmButton: false
+            });
+        }
+        
+        function saveDraft() {
+            Swal.fire({
+                title: 'Draft Tersimpan',
+                text: 'Proposal telah disimpan sebagai draft',
+                icon: 'success',
+                timer: 1500,
+                showConfirmButton: false
+            });
+        }
+        
+        function cancelRegistration() {
+            Swal.fire({
+                title: 'Batal',
+                text: 'Pendaftaran dibatalkan',
+                icon: 'info',
+                timer: 1500,
+                showConfirmButton: false
+            });
+        }
+        
+        function cancelLuaran() {
+            Swal.fire({
+                title: 'Batal',
+                text: 'Input luaran dibatalkan',
+                icon: 'info',
+                timer: 1500,
+                showConfirmButton: false
+            });
+        }
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Check authentication first
+            if (!auth.requireRole('mahasiswa')) return;
+            
+            showLoading();
+            
+            try {
+                // Update user info
+                updateUserInfo();
+                
+                // Load data
+                await Promise.all([
+                    loadVillages(),
+                    loadKKNData()
+                ]);
+                
+            } catch (error) {
+                console.error('Error initializing page:', error);
+                showNotification('Gagal memuat data', false);
+            } finally {
+                hideLoading();
+            }
+        });
+    </script>
+</body>
+</html>

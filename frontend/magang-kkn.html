@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magang & KKN - LPPM ITB Yadika Pasuruan</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#1E40AF',
+                        'secondary': '#6B21A8',
+                        'accent': '#BE185D',
+                        'dark': '#111827',
+                        'light': '#F9FAFB',
+                    },
+                    animation: {
+                        'float-slow': 'float 6s ease-in-out infinite',
+                        'float-medium': 'float 4s ease-in-out infinite',
+                        'float-fast': 'float 3s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'gradient': 'gradient 8s ease infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        gradient: {
+                            '0%, 100%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' },
+                        },
+                    },
+                    backgroundImage: {
+                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        .gradient-text {
+            background: linear-gradient(135deg, #1E40AF 0%, #6B21A8 50%, #BE185D 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            background-size: 200% auto;
+            animation: gradient 3s ease infinite;
+        }
+        
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.4;
+            z-index: -1;
+        }
+        
+        .blob-1 {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, #1E40AF, #6B21A8);
+            top: -100px;
+            right: -100px;
+            animation: float-slow 15s ease-in-out infinite;
+        }
+        
+        .blob-2 {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, #BE185D, #1E40AF);
+            bottom: -50px;
+            left: -50px;
+            animation: float-medium 12s ease-in-out infinite;
+        }
+        
+        .hero-gradient {
+            background: linear-gradient(135deg, #1E40AF 0%, #6B21A8 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-gradient::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,165.3C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+            background-size: cover;
+        }
+        
+        .footer-gradient {
+            background: linear-gradient(135deg, #1F2937 0%, #111827 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .footer-gradient::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        }
+        
+        .card-gradient {
+            background: linear-gradient(to bottom right, #ffffff, #f3f4f6);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card-gradient::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #1E40AF, #6B21A8, #BE185D);
+        }
+        
+        .hover-glow {
+            transition: all 0.3s ease;
+        }
+        
+        .hover-glow:hover {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transform: translateY(-5px);
+        }
+        
+        .hover-grow {
+            transition: all 0.3s ease;
+        }
+        
+        .hover-grow:hover {
+            transform: scale(1.05);
+        }
+        
+        .card-3d {
+            transform-style: preserve-3d;
+            transition: transform 0.3s ease;
+        }
+        
+        .card-3d:hover {
+            transform: rotateY(5deg) rotateX(-5deg);
+        }
+        
+        .floating-element {
+            position: absolute;
+            z-index: 0;
+        }
+        
+        .custom-shape-divider-bottom-1690903031 {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            line-height: 0;
+        }
+        
+        .custom-shape-divider-bottom-1690903031 svg {
+            position: relative;
+            display: block;
+            width: calc(100% + 1.3px);
+            height: 60px;
+        }
+        
+        .custom-shape-divider-bottom-1690903031 .shape-fill {
+            fill: #F9FAFB;
+        }
+        
+        .smooth-scroll {
+            scroll-behavior: smooth;
+        }
+        
+        .backdrop-blur-md {
+            backdrop-filter: blur(12px);
+        }
+        
+        .tab-btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .tab-btn.active {
+            background-color: white;
+            color: #1E40AF;
+        }
+        
+        .tab-btn:not(.active) {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        .tab-btn:not(.active):hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .step-number {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            margin: 0 auto 16px;
+        }
+        
+        .testimonial-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+        }
+        
+        .partner-logo {
+            height: 60px;
+            object-fit: contain;
+            filter: grayscale(100%);
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+        
+        .partner-logo:hover {
+            filter: grayscale(0%);
+            opacity: 1;
+        }
+        
+        .location-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .location-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="font-sans bg-gray-50 smooth-scroll">
+    <!-- Floating Background Elements -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    
+    <!-- Navigasi Utama -->
+    <nav class="bg-white/90 backdrop-blur-md shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <!-- Logo Kampus -->
+                <div class="flex items-center space-x-2">
+                    <img src="images/logoyadika.png" alt="Logo ITB Yadika" class="h-12 w-12 object-contain rounded-lg">
+                    <div>
+                        <span class="text-xl font-bold gradient-text">LPPM ITB Yadika</span>
+                        <p class="text-xs text-gray-600">Lembaga Penelitian & Pengabdian Masyarakat</p>
+                    </div>
+                </div>
+                
+                <!-- Menu Desktop -->
+                <div class="hidden lg:flex items-center space-x-6">
+                    <a href="index.html" class="text-gray-700 hover:text-blue-600 transition font-medium group relative">
+                        Dashboard
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    <a href="berita.html" class="text-gray-700 hover:text-blue-600 transition font-medium group relative">
+                        Berita & Kegiatan
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    <a href="magang-kkn.html" class="text-blue-600 hover:text-blue-700 transition font-medium group relative">
+                        Magang & KKN
+                        <span class="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600"></span>
+                    </a>
+                    <a href="repository.html" class="text-gray-700 hover:text-blue-600 transition font-medium group relative">
+                        Repository
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    <a href="login.html" class="relative inline-flex items-center px-6 py-2 overflow-hidden text-white bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg group hover:shadow-lg transition-all duration-300">
+                        <span class="absolute right-0 w-8 h-32 -mt-12 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 rotate-12 group-hover:-translate-x-40 ease"></span>
+                        <i class="bi bi-box-arrow-in-right mr-2"></i>
+                        <span class="relative">Login</span>
+                    </a>
+                </div>
+                
+                <!-- Menu Mobile Button -->
+                <button id="menu-mobile-button" class="lg:hidden text-gray-700 focus:outline-none">
+                    <i class="bi bi-list text-3xl"></i>
+                </button>
+            </div>
+            
+            <!-- Menu Mobile -->
+            <div id="menu-mobile" class="hidden lg:hidden mt-4 pb-4 space-y-2">
+                <a href="index.html" class="block py-3 px-4 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition">Dashboard</a>
+                <a href="berita.html" class="block py-3 px-4 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition">Berita & Kegiatan</a>
+                <a href="magang-kkn.html" class="block py-3 px-4 rounded-lg text-blue-600 bg-blue-50 font-medium transition">Magang & KKN</a>
+                <a href="repository.html" class="block py-3 px-4 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition">Repository</a>
+                <a href="login.html" class="block mt-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-3 rounded-lg font-medium hover:shadow-lg transition text-center">
+                    <i class="bi bi-box-arrow-in-right mr-2"></i>Login
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative hero-gradient text-white py-16 md:py-20 overflow-hidden">
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="text-center" data-aos="fade-up" data-aos-duration="800">
+                <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight">
+                    Magang & <span class="gradient-text">KKN</span>
+                </h1>
+                <p class="text-lg md:text-xl mb-8 text-blue-100 max-w-3xl mx-auto">
+                    Program pengembangan kompetensi mahasiswa melalui pengalaman praktis di dunia industri dan pengabdian kepada masyarakat
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                    <button class="tab-btn active" data-tab="magang">
+                        <i class="bi bi-briefcase mr-2"></i>Program Magang
+                    </button>
+                    <button class="tab-btn" data-tab="kkn">
+                        <i class="bi bi-people mr-2"></i>Program KKN
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Wave Shape Divider -->
+        <div class="custom-shape-divider-bottom-1690903031">
+            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="shape-fill"></path>
+            </svg>
+        </div>
+    </section>
+
+    <!-- Program Magang Section -->
+    <section id="magang" class="tab-content py-16 bg-white relative overflow-hidden">
+        <div class="container mx-auto px-4">
+            <div class="grid lg:grid-cols-2 gap-12 items-center mb-16">
+                <div data-aos="fade-right">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-6">Program <span class="gradient-text">Magang</span></h2>
+                    <p class="text-lg text-gray-600 mb-6">
+                        Program magang dirancang untuk memberikan pengalaman praktis kepada mahasiswa dalam lingkungan kerja nyata, menghubungkan teori akademik dengan aplikasi industri.
+                    </p>
+                    
+                    <div class="space-y-4 mb-8">
+                        <div class="flex items-start">
+                            <div class="bg-blue-100 p-2 rounded-lg mr-4 flex-shrink-0">
+                                <i class="bi bi-check-lg text-blue-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">Durasi Fleksibel</h4>
+                                <p class="text-gray-600">Program magang dapat diikuti selama 2-6 bulan sesuai kebutuhan mahasiswa dan mitra industri.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="bg-blue-100 p-2 rounded-lg mr-4 flex-shrink-0">
+                                <i class="bi bi-check-lg text-blue-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">100+ Mitra Industri</h4>
+                                <p class="text-gray-600">Kerjasama dengan berbagai perusahaan ternama dari berbagai sektor industri.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="bg-blue-100 p-2 rounded-lg mr-4 flex-shrink-0">
+                                <i class="bi bi-check-lg text-blue-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">Pembimbing Profesional</h4>
+                                <p class="text-gray-600">Setiap mahasiswa didampingi oleh pembimbing dari kampus dan industri.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                        <a href="#" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg font-medium hover:shadow-lg transition-all duration-300">
+                            <i class="bi bi-download mr-2"></i> Panduan Magang
+                        </a>
+                        <a href="#" class="inline-flex items-center px-6 py-3 border border-blue-500 text-blue-500 rounded-lg font-medium hover:bg-blue-50 transition">
+                            <i class="bi bi-building mr-2"></i> Daftar Mitra
+                        </a>
+                    </div>
+                </div>
+                <div data-aos="fade-left">
+                    <img src="https://picsum.photos/seed/magang/600/400.jpg" alt="Magang" class="w-full rounded-xl shadow-xl">
+                </div>
+            </div>
+
+            <!-- Persyaratan Magang -->
+            <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-8 mb-12" data-aos="fade-up">
+                <h3 class="text-2xl font-bold text-gray-800 mb-6">Persyaratan <span class="gradient-text">Magang</span></h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="font-semibold text-gray-700 mb-3">Persyaratan Akademik</h4>
+                        <ul class="space-y-2">
+                            <li class="flex items-center">
+                                <i class="bi bi-check-circle-fill text-blue-500 mr-2"></i>
+                                <span class="text-gray-600">Mahasiswa aktif minimal semester 4</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="bi bi-check-circle-fill text-blue-500 mr-2"></i>
+                                <span class="text-gray-600">IPK minimal 2.75</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="bi bi-check-circle-fill text-blue-500 mr-2"></i>
+                                <span class="text-gray-600">Telah menyelesaikan minimal 60 SKS</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="bi bi-check-circle-fill text-blue-500 mr-2"></i>
+                                <span class="text-gray-600">Surat rekomendasi dari dosen pembimbing</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-gray-700 mb-3">Dokumen yang Diperlukan</h4>
+                        <ul class="space-y-2">
+                            <li class="flex items-center">
+                                <i class="bi bi-file-earmark-text text-purple-500 mr-2"></i>
+                                <span class="text-gray-600">Proposal magang</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="bi bi-file-earmark-text text-purple-500 mr-2"></i>
+                                <span class="text-gray-600">CV terbaru</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="bi bi-file-earmark-text text-purple-500 mr-2"></i>
+                                <span class="text-gray-600">Transkrip nilai</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="bi bi-file-earmark-text text-purple-500 mr-2"></i>
+                                <span class="text-gray-600">Surat keterangan aktif kuliah</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mitra Magang -->
+            <div data-aos="fade-up">
+                <h3 class="text-2xl font-bold text-gray-800 mb-8 text-center">Mitra <span class="gradient-text">Magang</span></h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                    <div class="bg-white p-4 rounded-lg shadow-md flex items-center justify-center hover-grow transition-all duration-300">
+                        <img src="https://picsum.photos/seed/bulog/150/80.jpg" alt="Bulog" class="partner-logo">
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-md flex items-center justify-center hover-grow transition-all duration-300">
+                        <img src="https://picsum.photos/seed/bumn/150/80.jpg" alt="BUMN" class="partner-logo">
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-md flex items-center justify-center hover-grow transition-all duration-300">
+                        <img src="https://picsum.photos/seed/intel/150/80.jpg" alt="Intel" class="partner-logo">
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-md flex items-center justify-center hover-grow transition-all duration-300">
+                        <img src="https://picsum.photos/seed/mayora/150/80.jpg" alt="Mayora" class="partner-logo">
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-md flex items-center justify-center hover-grow transition-all duration-300">
+                        <img src="https://picsum.photos/seed/tesla/150/80.jpg" alt="Tesla" class="partner-logo">
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-md flex items-center justify-center hover-grow transition-all duration-300">
+                        <img src="https://picsum.photos/seed/telkom/150/80.jpg" alt="Telkom" class="partner-logo">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Program KKN Section -->
+    <section id="kkn" class="tab-content py-16 bg-gray-50 relative overflow-hidden hidden">
+        <div class="container mx-auto px-4">
+            <div class="grid lg:grid-cols-2 gap-12 items-center mb-16">
+                <div data-aos="fade-right" class="order-2 lg:order-1">
+                    <img src="https://picsum.photos/seed/kkn/600/400.jpg" alt="KKN" class="w-full rounded-xl shadow-xl">
+                </div>
+                <div data-aos="fade-left" class="order-1 lg:order-2">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-6">Program <span class="gradient-text">KKN</span></h2>
+                    <p class="text-lg text-gray-600 mb-6">
+                        Kuliah Kerja Nyata (KKN) merupakan bentuk kegiatan pengabdian kepada masyarakat oleh mahasiswa dengan pendekatan lintas keilmuan dan sektoral.
+                    </p>
+                    
+                    <div class="space-y-4 mb-8">
+                        <div class="flex items-start">
+                            <div class="bg-purple-100 p-2 rounded-lg mr-4 flex-shrink-0">
+                                <i class="bi bi-check-lg text-purple-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">Pengabdian Masyarakat</h4>
+                                <p class="text-gray-600">Menerapkan ilmu pengetahuan untuk membantu memecahkan masalah masyarakat.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="bg-purple-100 p-2 rounded-lg mr-4 flex-shrink-0">
+                                <i class="bi bi-check-lg text-purple-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">Pengembangan Soft Skills</h4>
+                                <p class="text-gray-600">Membentuk karakter dan kepribadian mahasiswa melalui pengalaman langsung.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="bg-purple-100 p-2 rounded-lg mr-4 flex-shrink-0">
+                                <i class="bi bi-check-lg text-purple-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">Jaringan Luas</h4>
+                                <p class="text-gray-600">KKN dilaksanakan di berbagai desa di wilayah Pasuruan dan sekitarnya.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                        <a href="#" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg font-medium hover:shadow-lg transition-all duration-300">
+                            <i class="bi bi-download mr-2"></i> Panduan KKN
+                        </a>
+                        <a href="#" class="inline-flex items-center px-6 py-3 border border-purple-500 text-purple-500 rounded-lg font-medium hover:bg-purple-50 transition">
+                            <i class="bi bi-map mr-2"></i> Lokasi KKN
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Persyaratan KKN -->
+            <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-8 mb-12" data-aos="fade-up">
+                <h3 class="text-2xl font-bold text-gray-800 mb-6">Persyaratan <span class="gradient-text">KKN</span></h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="font-semibold text-gray-700 mb-3">Persyaratan Akademik</h4>
+                        <ul class="space-y-2">
+                            <li class="flex items-center">
+                                <i class="bi bi-check-circle-fill text-purple-500 mr-2"></i>
+                                <span class="text-gray-600">Mahasiswa aktif minimal semester 4</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="bi bi-check-circle-fill text-purple-500 mr-2"></i>
+                                <span class="text-gray-600">IPK minimal 2.75</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="bi bi-check-circle-fill text-purple-500 mr-2"></i>
+                                <span class="text-gray-600">Telah menyelesaikan minimal 60 SKS</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="bi bi-check-circle-fill text-purple-500 mr-2"></i>
+                                <span class="text-gray-600">Mengikuti pembekalan KKN</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-gray-700 mb-3">Kegiatan Wajib</h4>
+                        <ul class="space-y-2">
+                            <li class="flex items-center">
+                                <i class="bi bi-calendar-check text-pink-500 mr-2"></i>
+                                <span class="text-gray-600">Pelaksanaan KKN 6-8 minggu</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="bi bi-calendar-check text-pink-500 mr-2"></i>
+                                <span class="text-gray-600">Penyusunan laporan akhir</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="bi bi-calendar-check text-pink-500 mr-2"></i>
+                                <span class="text-gray-600">Presentasi hasil KKN</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="bi bi-calendar-check text-pink-500 mr-2"></i>
+                                <span class="text-gray-600">Dokumentasi kegiatan</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lokasi KKN -->
+            <div data-aos="fade-up">
+                <h3 class="text-2xl font-bold text-gray-800 mb-8 text-center">Lokasi <span class="gradient-text">KKN</span></h3>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="location-card">
+                        <div class="text-purple-500 text-3xl mb-4">
+                            <i class="bi bi-geo-alt-fill"></i>
+                        </div>
+                        <h4 class="text-xl font-semibold mb-3 text-gray-800">Bangil</h4>
+                        <p class="text-gray-600 mb-4">5 desa di Kecamatan Bangil menjadi lokasi KKN reguler.</p>
+                        <div class="text-sm text-gray-500">
+                            <i class="bi bi-people-fill mr-1"></i> 150 mahasiswa
+                        </div>
+                    </div>
+                    <div class="location-card">
+                        <div class="text-purple-500 text-3xl mb-4">
+                            <i class="bi bi-geo-alt-fill"></i>
+                        </div>
+                        <h4 class="text-xl font-semibold mb-3 text-gray-800">Pandaan</h4>
+                        <p class="text-gray-600 mb-4">3 desa di Kecamatan Pandaan untuk KKN tematik UMKM.</p>
+                        <div class="text-sm text-gray-500">
+                            <i class="bi bi-people-fill mr-1"></i> 90 mahasiswa
+                        </div>
+                    </div>
+                    <div class="location-card">
+                        <div class="text-purple-500 text-3xl mb-4">
+                            <i class="bi bi-geo-alt-fill"></i>
+                        </div>
+                        <h4 class="text-xl font-semibold mb-3 text-gray-800">Sukorejo</h4>
+                        <p class="text-gray-600 mb-4">4 desa di Kecamatan Sukorejo untuk KKN tematik pendidikan.</p>
+                        <div class="text-sm text-gray-500">
+                            <i class="bi bi-people-fill mr-1"></i> 120 mahasiswa
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Alur Pendaftaran Section -->
+    <section class="py-16 bg-white relative overflow-hidden">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Alur <span class="gradient-text">Pendaftaran</span></h2>
+                <div class="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto mb-6 rounded-full"></div>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">Ikuti langkah-langkah berikut untuk mendaftar program magang atau KKN</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="text-center" data-aos="fade-up" data-aos-delay="100">
+                    <div class="step-number bg-gradient-to-r from-blue-500 to-purple-500">
+                        1
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-gray-800">Pengajuan</h3>
+                    <p class="text-gray-600">Ajukan proposal magang atau daftar KKN melalui sistem online</p>
+                </div>
+                
+                <div class="text-center" data-aos="fade-up" data-aos-delay="200">
+                    <div class="step-number bg-gradient-to-r from-purple-500 to-pink-500">
+                        2
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-gray-800">Seleksi</h3>
+                    <p class="text-gray-600">Proses seleksi administrasi dan wawancara oleh tim LPPM</p>
+                </div>
+                
+                <div class="text-center" data-aos="fade-up" data-aos-delay="300">
+                    <div class="step-number bg-gradient-to-r from-pink-500 to-blue-500">
+                        3
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-gray-800">Penempatan</h3>
+                    <p class="text-gray-600">Penempatan di mitra industri atau lokasi KKN yang tersedia</p>
+                </div>
+                
+                <div class="text-center" data-aos="fade-up" data-aos-delay="400">
+                    <div class="step-number bg-gradient-to-r from-blue-500 to-green-500">
+                        4
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-gray-800">Pelaksanaan</h3>
+                    <p class="text-gray-600">Melaksanakan magang atau KKN sesuai jadwal yang ditentukan</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimoni Section -->
+    <section class="py-16 bg-gray-50 relative overflow-hidden">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Testimoni <span class="gradient-text">Peserta</span></h2>
+                <div class="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto mb-6 rounded-full"></div>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="testimonial-card" data-aos="fade-up">
+                    <div class="flex items-center mb-4">
+                        <img src="https://picsum.photos/seed/person1/50/50.jpg" class="w-12 h-12 rounded-full mr-4" alt="Testimoni">
+                        <div>
+                            <h4 class="font-semibold text-gray-800">Sarah Putri</h4>
+                            <p class="text-sm text-gray-500">Magang - PT. Telkom Indonesia</p>
+                        </div>
+                    </div>
+                    <div class="text-yellow-400 mb-3">
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                    </div>
+                    <p class="text-gray-600 italic">"Pengalaman magang yang sangat berharga! Saya belajar banyak tentang industri telekomunikasi dan bisa menerapkan ilmu yang dipelajari di kampus."</p>
+                </div>
+                
+                <div class="testimonial-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="flex items-center mb-4">
+                        <img src="https://picsum.photos/seed/person2/50/50.jpg" class="w-12 h-12 rounded-full mr-4" alt="Testimoni">
+                        <div>
+                            <h4 class="font-semibold text-gray-800">Rizky Pratama</h4>
+                            <p class="text-sm text-gray-500">KKN - Desa Sukorejo</p>
+                        </div>
+                    </div>
+                    <div class="text-yellow-400 mb-3">
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                    </div>
+                    <p class="text-gray-600 italic">"KKN memberikan saya pengalaman berharga dalam mengabdikan diri kepada masyarakat. Saya belajar tentang kehidupan nyata dan pentingnya kebersamaan."</p>
+                </div>
+                
+                <div class="testimonial-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="flex items-center mb-4">
+                        <img src="https://picsum.photos/seed/person3/50/50.jpg" class="w-12 h-12 rounded-full mr-4" alt="Testimoni">
+                        <div>
+                            <h4 class="font-semibold text-gray-800">Maya Sari</h4>
+                            <p class="text-sm text-gray-500">Magang - Intel Indonesia</p>
+                        </div>
+                    </div>
+                    <div class="text-yellow-400 mb-3">
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-half"></i>
+                    </div>
+                    <p class="text-gray-600 italic">"Magang di Intel memberikan saya wawasan tentang industri teknologi global. Lingkungan kerja yang mendukung dan mentor yang sangat baik."</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer-gradient text-white py-12 relative overflow-hidden">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div data-aos="fade-up">
+                    <div class="flex items-center space-x-2 mb-4">
+                        <img src="images/logoyadika.png" alt="Logo ITB Yadika" class="h-10 w-10 object-contain rounded-lg">
+                        <span class="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">LPPM ITB Yadika</span>
+                    </div>
+                    <p class="text-gray-400 mb-4">Lembaga Penelitian dan Pengabdian Masyarakat ITB Yadika Pasuruan.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white text-xl transition">
+                            <i class="bi bi-facebook"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white text-xl transition">
+                            <i class="bi bi-instagram"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white text-xl transition">
+                            <i class="bi bi-twitter-x"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white text-xl transition">
+                            <i class="bi bi-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div data-aos="fade-up" data-aos-delay="100">
+                    <h3 class="text-xl font-semibold mb-4">Menu Utama</h3>
+                    <ul class="space-y-2">
+                        <li><a href="index.html" class="text-gray-400 hover:text-white transition flex items-center">
+                            <i class="bi bi-chevron-right mr-2 text-xs"></i>Dashboard</a></li>
+                        <li><a href="berita.html" class="text-gray-400 hover:text-white transition flex items-center">
+                            <i class="bi bi-chevron-right mr-2 text-xs"></i>Berita & Kegiatan</a></li>
+                        <li><a href="magang-kkn.html" class="text-gray-400 hover:text-white transition flex items-center">
+                            <i class="bi bi-chevron-right mr-2 text-xs"></i>Magang & KKN</a></li>
+                        <li><a href="repository.html" class="text-gray-400 hover:text-white transition flex items-center">
+                            <i class="bi bi-chevron-right mr-2 text-xs"></i>Repository</a></li>
+                        <li><a href="login.html" class="text-gray-400 hover:text-white transition flex items-center">
+                            <i class="bi bi-chevron-right mr-2 text-xs"></i>Login</a></li>
+                    </ul>
+                </div>
+                
+                <div data-aos="fade-up" data-aos-delay="200">
+                    <h3 class="text-xl font-semibold mb-4">Layanan</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition flex items-center">
+                            <i class="bi bi-chevron-right mr-2 text-xs"></i>Penelitian</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition flex items-center">
+                            <i class="bi bi-chevron-right mr-2 text-xs"></i>Pengabdian</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition flex items-center">
+                            <i class="bi bi-chevron-right mr-2 text-xs"></i>Kerjasama</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition flex items-center">
+                            <i class="bi bi-chevron-right mr-2 text-xs"></i>Publikasi</a></li>
+                    </ul>
+                </div>
+                
+                <div data-aos="fade-up" data-aos-delay="300">
+                    <h3 class="text-xl font-semibold mb-4">Kontak</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-center">
+                            <i class="bi bi-geo-alt mr-2"></i>
+                            JL. Salem No. 03, Bangil
+                        </li>
+                        <li class="flex items-center">
+                            <i class="bi bi-telephone mr-2"></i>
+                            +62 896 2992 7242
+                        </li>
+                        <li class="flex items-center">
+                            <i class="bi bi-envelope mr-2"></i>
+                            lppm@itbyadika.ac.id
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-12 pt-8 text-center text-gray-400" data-aos="fade-up">
+                <p>&copy; 2023 LPPM ITB Yadika Pasuruan. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="back-to-top" class="fixed bottom-8 right-8 bg-gradient-to-r from-blue-500 to-purple-500 text-white p-4 rounded-full shadow-lg opacity-0 invisible transition-all duration-300 hover:shadow-xl hover:scale-110">
+        <i class="bi bi-arrow-up"></i>
+    </button>
+
+    <!-- JavaScript -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            once: true,
+            disable: 'mobile'
+        });
+        
+        // Mobile Menu Toggle
+        document.getElementById('menu-mobile-button').addEventListener('click', function() {
+            const menu = document.getElementById('menu-mobile');
+            menu.classList.toggle('hidden');
+        });
+        
+        // Back to Top Button
+        const backToTopButton = document.getElementById('back-to-top');
+        
+        window.addEventListener('scroll', function() {
+            if (window.pageYOffset > 300) {
+                backToTopButton.classList.remove('opacity-0', 'invisible');
+                backToTopButton.classList.add('opacity-100', 'visible');
+            } else {
+                backToTopButton.classList.add('opacity-0', 'invisible');
+                backToTopButton.classList.remove('opacity-100', 'visible');
+            }
+        });
+        
+        backToTopButton.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        
+        // Tab functionality
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Remove active class from all buttons
+                tabBtns.forEach(b => b.classList.remove('active'));
+                
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                // Hide all tab contents
+                tabContents.forEach(content => content.classList.add('hidden'));
+                
+                // Show the selected tab content
+                const tabId = this.getAttribute('data-tab');
+                document.getElementById(tabId).classList.remove('hidden');
+            });
+        });
+    </script>
+</body>
+</html>

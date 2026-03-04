@@ -1,0 +1,570 @@
+-- =========================================
+-- EXTENSION
+-- =========================================
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+
+-- =========================================
+-- ENUM
+-- =========================================
+CREATE TYPE user_role AS ENUM ('admin','dosen','mahasiswa');
+CREATE TYPE status_akun AS ENUM ('aktif','nonaktif');
+
+CREATE TYPE status_submission AS ENUM (
+    'draft','submit','review','diterima','ditolak','revisi'
+);
+
+CREATE TYPE status_publish AS ENUM ('draft','publish');
+CREATE TYPE rekomendasi_review AS ENUM ('diterima','revisi','ditolak');
+
+-- =========================================
+-- USERS
+-- =========================================
+CREATE TABLE users (
+    id_user UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    nama_lengkap VARCHAR(150) NOT NULL,
+    email VARCHAR(150) UNIQUE NOT NULL,
+    password TEXT NOT NULL,
+    role user_role NOT NULL,
+    nidn VARCHAR(30),
+    nim VARCHAR(30),
+    prodi VARCHAR(100),
+    no_hp VARCHAR(20),
+    foto_profil TEXT,
+    status status_akun DEFAULT 'aktif',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- =========================================
+-- JENIS JURNAL
+-- =========================================
+CREATE TABLE jenis_jurnal (
+    id_jenis_jurnal UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    nama_jurnal VARCHAR(100) NOT NULL,
+    deskripsi TEXT,
+    issn VARCHAR(50),
+    tahun_terbit INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- =========================================
+-- JURNAL
+-- =========================================
+CREATE TABLE jurnal (
+    id_jurnal UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id_jenis_jurnal UUID REFERENCES jenis_jurnal(id_jenis_jurnal) ON DELETE CASCADE,
+    judul VARCHAR(255) NOT NULL,
+    abstrak TEXT,
+    file_pdf TEXT NOT NULL,
+    penulis_utama UUID REFERENCES users(id_user) ON DELETE SET NULL,
+    status status_submission DEFAULT 'draft',
+    tanggal_submit TIMESTAMP,
+    tanggal_publish TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- =========================================
+-- JURNAL PENULIS
+-- =========================================
+CREATE TABLE jurnal_penulis (
+    id_penulis UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id_jurnal UUID REFERENCES jurnal(id_jurnal) ON DELETE CASCADE,
+    id_user UUID REFERENCES users(id_user) ON DELETE CASCADE,
+    peran VARCHAR(50)
+);
+
+-- =========================================
+-- PENELITIAN
+-- =========================================
+CREATE TABLE penelitian (
+    id_penelitian UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    judul VARCHAR(255) NOT NULL,
+    skema_penelitian VARCHAR(150),
+    sumber_dana VARCHAR(150),
+    tahun INT,
+    ketua_peneliti UUID REFERENCES users(id_user) ON DELETE SET NULL,
+    file_proposal TEXT,
+    file_laporan TEXT,
+    status status_submission DEFAULT 'draft',
+    tanggal_pengajuan TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- =========================================
+-- ANGGOTA PENELITIAN
+-- =========================================
+CREATE TABLE anggota_penelitian (
+    id_anggota UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id_penelitian UUID REFERENCES penelitian(id_penelitian) ON DELETE CASCADE,
+    id_user UUID REFERENCES users(id_user) ON DELETE CASCADE,
+    peran VARCHAR(100)
+);
+
+-- =========================================
+-- PENGABDIAN
+-- =========================================
+CREATE TABLE pengabdian (
+    id_pengabdian UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    judul VARCHAR(255) NOT NULL,
+    lokasi VARCHAR(255),
+    ketua_pengabdian UUID REFERENCES users(id_user) ON DELETE SET NULL,
+    tahun INT,
+    file_proposal TEXT,
+    file_laporan TEXT,
+    status status_submission DEFAULT 'draft',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- =========================================
+-- ANGGOTA PENGABDIAN
+-- =========================================
+CREATE TABLE anggota_pengabdian (
+    id_anggota UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id_pengabdian UUID REFERENCES pengabdian(id_pengabdian) ON DELETE CASCADE,
+    id_user UUID REFERENCES users(id_user) ON DELETE CASCADE,
+    peran VARCHAR(100)
+);
+
+-- =========================================
+-- BERITA
+-- =========================================
+CREATE TABLE berita (
+    id_berita UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    judul VARCHAR(255) NOT NULL,
+    isi_berita TEXT NOT NULL,
+    gambar_thumbnail TEXT,
+    id_admin UUID REFERENCES users(id_user) ON DELETE SET NULL,
+    status status_publish DEFAULT 'draft',
+    tanggal_publish TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- =========================================
+-- REVIEW JURNAL
+-- =========================================
+CREATE TABLE review_jurnal (
+    id_review UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id_jurnal UUID REFERENCES jurnal(id_jurnal) ON DELETE CASCADE,
+    reviewer UUID REFERENCES users(id_user) ON DELETE SET NULL,
+    catatan TEXT,
+    rekomendasi rekomendasi_review,
+    tanggal_review TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- =========================================
+-- LOG AKTIVITAS
+-- =========================================
+CREATE TABLE log_aktivitas (
+    id_log UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id_user UUID REFERENCES users(id_user) ON DELETE SET NULL,
+    aktivitas TEXT,
+    waktu TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- =========================================
+-- TRIGGER AUTO UPDATE updated_at
+-- =========================================
+CREATE OR REPLACE FUNCTION update_timestamp()
+RETURNS TRIGGER AS $$
+BEGIN
+   NEW.updated_at = CURRENT_TIMESTAMP;
+   RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_users_timestamp
+BEFORE UPDATE ON users
+FOR EACH ROW EXECUTE FUNCTION update_timestamp();
+
+CREATE TRIGGER update_jurnal_timestamp
+BEFORE UPDATE ON jurnal
+FOR EACH ROW EXECUTE FUNCTION update_timestamp();
+
+CREATE TRIGGER update_penelitian_timestamp
+BEFORE UPDATE ON penelitian
+FOR EACH ROW EXECUTE FUNCTION update_timestamp();
+
+CREATE TRIGGER update_pengabdian_timestamp
+BEFORE UPDATE ON pengabdian
+FOR EACH ROW EXECUTE FUNCTION update_timestamp();
+
+CREATE TRIGGER update_berita_timestamp
+BEFORE UPDATE ON berita
+FOR EACH ROW EXECUTE FUNCTION update_timestamp();
+
+-- =========================================
+-- AUTO SET tanggal_submit JURNAL
+-- =========================================
+CREATE OR REPLACE FUNCTION set_tanggal_submit()
+RETURNS TRIGGER AS $$
+BEGIN
+   IF NEW.status = 'submit' THEN
+      NEW.tanggal_submit = CURRENT_TIMESTAMP;
+   END IF;
+   RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER jurnal_submit_trigger
+BEFORE UPDATE ON jurnal
+FOR EACH ROW
+WHEN (OLD.status IS DISTINCT FROM NEW.status)
+EXECUTE FUNCTION set_tanggal_submit();
+
+-- =========================================
+-- AUTO SET tanggal_publish BERITA
+-- =========================================
+CREATE OR REPLACE FUNCTION set_publish_date()
+RETURNS TRIGGER AS $$
+BEGIN
+   IF NEW.status = 'publish' THEN
+      NEW.tanggal_publish = CURRENT_TIMESTAMP;
+   END IF;
+   RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER berita_publish_trigger
+BEFORE UPDATE ON berita
+FOR EACH ROW
+WHEN (OLD.status IS DISTINCT FROM NEW.status)
+EXECUTE FUNCTION set_publish_date();
+
+-- =========================================
+-- VIEW DASHBOARD STATISTIK
+-- =========================================
+CREATE VIEW dashboard_statistik AS
+SELECT
+    (SELECT COUNT(*) FROM jurnal) AS total_jurnal,
+    (SELECT COUNT(*) FROM penelitian) AS total_penelitian,
+    (SELECT COUNT(*) FROM pengabdian) AS total_pengabdian,
+    (SELECT COUNT(*) FROM berita WHERE status = 'publish') AS total_berita_publish;
+
+-- =========================================
+-- INDEXING (PERFORMA)
+-- =========================================
+CREATE INDEX idx_jurnal_status ON jurnal(status);
+CREATE INDEX idx_penelitian_status ON penelitian(status);
+CREATE INDEX idx_berita_status ON berita(status);
+
+-- =========================================
+-- ENUM untuk Magang
+-- =========================================
+CREATE TYPE status_magang AS ENUM (
+    'belum_daftar',
+    'pendaftaran_diproses',
+    'pendaftaran_diterima',
+    'pendaftaran_ditolak',
+    'data_perusahaan_diproses',
+    'data_perusahaan_diterima',
+    'data_perusahaan_ditolak',
+    'sedang_magang',
+    'selesai_magang',
+    'luaran_diproses',
+    'luaran_diterima',
+    'luaran_ditolak'
+);
+
+CREATE TYPE status_dokumen AS ENUM (
+    'pending',
+    'verified',
+    'rejected'
+);
+
+ALTER ROLE postgres SET search_path TO public;
+
+CREATE TABLE public.magang (
+    id_magang UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    nim VARCHAR(30) NOT NULL,
+    status_magang status_magang DEFAULT 'belum_daftar',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_magang_user
+        FOREIGN KEY (nim)
+        REFERENCES public.users(nim)
+        ON DELETE CASCADE
+);
+
+CREATE TABLE public.pendaftaran_magang (
+    id_pendaftaran UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id_magang UUID NOT NULL,
+    program_studi VARCHAR(100) NOT NULL,
+    semester INTEGER NOT NULL,
+    no_hp VARCHAR(20) NOT NULL,
+    domisili TEXT NOT NULL,
+    file_krs TEXT NOT NULL,
+    file_khs TEXT NOT NULL,
+    file_bukti_pembayaran TEXT NOT NULL,
+    status status_dokumen DEFAULT 'pending',
+    keterangan_revisi TEXT,
+    tanggal_submit TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    diverifikasi_oleh VARCHAR(30),
+    tanggal_verifikasi TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_pendaftaran_magang
+        FOREIGN KEY (id_magang)
+        REFERENCES public.magang(id_magang)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_verifikator
+        FOREIGN KEY (diverifikasi_oleh)
+        REFERENCES public.users(nim)
+        ON DELETE SET NULL
+);
+
+CREATE TABLE public.perusahaan_magang (
+    id_perusahaan UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id_magang UUID NOT NULL,
+    nama_perusahaan VARCHAR(255) NOT NULL,
+    bidang_perusahaan VARCHAR(100) NOT NULL,
+    posisi_magang VARCHAR(100) NOT NULL,
+    durasi_magang INTEGER NOT NULL,
+    tanggal_mulai DATE NOT NULL,
+    tanggal_selesai DATE NOT NULL,
+    alamat_perusahaan TEXT NOT NULL,
+    nama_pembimbing_lapangan VARCHAR(150) NOT NULL,
+    kontak_pembimbing VARCHAR(20) NOT NULL,
+    email_pembimbing VARCHAR(150),
+    jabatan_pembimbing VARCHAR(100),
+    file_surat_keterangan TEXT NOT NULL,
+    file_struktur_organisasi TEXT,
+    status status_dokumen DEFAULT 'pending',
+    keterangan_revisi TEXT,
+    tanggal_submit TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    diverifikasi_oleh VARCHAR(30),
+    tanggal_verifikasi TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_perusahaan_magang
+        FOREIGN KEY (id_magang)
+        REFERENCES public.magang(id_magang)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_perusahaan_verifikator
+        FOREIGN KEY (diverifikasi_oleh)
+        REFERENCES public.users(nim)
+        ON DELETE SET NULL
+);
+
+CREATE TABLE public.luaran_magang (
+    id_luaran UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id_magang UUID NOT NULL,
+    judul_proyek VARCHAR(255) NOT NULL,
+    deskripsi_pekerjaan TEXT NOT NULL,
+    link_poster_presentasi TEXT NOT NULL,
+    link_laporan TEXT NOT NULL,
+    link_foto_kegiatan TEXT NOT NULL,
+    file_mou TEXT NOT NULL,
+    file_sertifikat TEXT NOT NULL,
+    file_logbook TEXT,
+    keterangan_tambahan TEXT,
+    status status_dokumen DEFAULT 'pending',
+    keterangan_revisi TEXT,
+    tanggal_submit TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    diverifikasi_oleh VARCHAR(30),
+    tanggal_verifikasi TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_luaran_magang
+        FOREIGN KEY (id_magang)
+        REFERENCES public.magang(id_magang)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_luaran_verifikator
+        FOREIGN KEY (diverifikasi_oleh)
+        REFERENCES public.users(nim)
+        ON DELETE SET NULL
+);
+
+CREATE TABLE public.riwayat_magang (
+    id_riwayat UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id_magang UUID NOT NULL,
+    tipe_riwayat VARCHAR(50) NOT NULL,
+    deskripsi TEXT NOT NULL,
+    status_lama VARCHAR(50),
+    status_baru VARCHAR(50),
+    keterangan TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_riwayat_magang
+        FOREIGN KEY (id_magang)
+        REFERENCES public.magang(id_magang)
+        ON DELETE CASCADE
+);
+
+-- =========================================
+-- TRIGGER FUNCTIONS (YANG DIPERBAIKI)
+-- =========================================
+
+-- Hapus trigger dan function yang lama
+DROP TRIGGER IF EXISTS trigger_create_magang ON users;
+DROP FUNCTION IF EXISTS create_magang_for_new_user();
+
+-- Buat function baru dengan benar (gunakan nim)
+CREATE OR REPLACE FUNCTION create_magang_for_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Hanya untuk mahasiswa dan nim tidak null
+    IF NEW.role = 'mahasiswa' AND NEW.nim IS NOT NULL THEN
+        -- Insert ke tabel magang menggunakan nim
+        INSERT INTO magang (nim, status_magang) 
+        VALUES (NEW.nim, 'belum_daftar');
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Buat trigger baru
+CREATE TRIGGER trigger_create_magang
+AFTER INSERT ON users
+FOR EACH ROW
+WHEN (NEW.role = 'mahasiswa')
+EXECUTE FUNCTION create_magang_for_new_user();
+
+-- Function untuk create riwayat magang
+CREATE OR REPLACE FUNCTION create_riwayat_magang()
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO riwayat_magang (
+        id_magang, 
+        tipe_riwayat, 
+        deskripsi,
+        status_lama,
+        status_baru
+    ) VALUES (
+        NEW.id_magang,
+        'status_update',
+        'Status magang berubah dari ' || COALESCE(OLD.status_magang::text, 'null') || ' menjadi ' || NEW.status_magang::text,
+        OLD.status_magang::text,
+        NEW.status_magang::text
+    );
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_riwayat_magang
+AFTER UPDATE ON magang
+FOR EACH ROW
+WHEN (OLD.status_magang IS DISTINCT FROM NEW.status_magang)
+EXECUTE FUNCTION create_riwayat_magang();
+
+-- =========================================
+-- TRIGGER UPDATE TIMESTAMP untuk Magang
+-- =========================================
+CREATE OR REPLACE FUNCTION update_timestamp()
+RETURNS TRIGGER AS $$
+BEGIN
+   NEW.updated_at = CURRENT_TIMESTAMP;
+   RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_magang_timestamp
+BEFORE UPDATE ON magang
+FOR EACH ROW EXECUTE FUNCTION update_timestamp();
+
+CREATE TRIGGER update_pendaftaran_magang_timestamp
+BEFORE UPDATE ON pendaftaran_magang
+FOR EACH ROW EXECUTE FUNCTION update_timestamp();
+
+CREATE TRIGGER update_perusahaan_magang_timestamp
+BEFORE UPDATE ON perusahaan_magang
+FOR EACH ROW EXECUTE FUNCTION update_timestamp();
+
+CREATE TRIGGER update_luaran_magang_timestamp
+BEFORE UPDATE ON luaran_magang
+FOR EACH ROW EXECUTE FUNCTION update_timestamp();
+
+-- =========================================
+-- INDEXING untuk Magang
+-- =========================================
+CREATE INDEX idx_magang_nim 
+ON public.magang(nim);
+
+CREATE INDEX idx_pendaftaran_magang_status 
+ON public.pendaftaran_magang(status);
+
+CREATE INDEX idx_perusahaan_magang_status 
+ON public.perusahaan_magang(status);
+
+CREATE INDEX idx_luaran_magang_status 
+ON public.luaran_magang(status);
+
+CREATE INDEX idx_magang_status 
+ON public.magang(status_magang);
+
+-- =========================================
+-- TAMBAHKAN UNIQUE CONSTRAINT pada nim (jika belum ada)
+-- =========================================
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 
+        FROM pg_constraint 
+        WHERE conname = 'users_nim_unique'
+    ) THEN
+        ALTER TABLE users ADD CONSTRAINT users_nim_unique UNIQUE (nim);
+    END IF;
+END $$;
+
+-- =========================================
+-- BACKFILL: Buat data magang untuk mahasiswa yang sudah ada
+-- =========================================
+INSERT INTO magang (nim, status_magang)
+SELECT u.nim, 'belum_daftar'
+FROM users u
+WHERE u.role = 'mahasiswa'
+AND u.nim IS NOT NULL
+AND NOT EXISTS (
+    SELECT 1 FROM magang m WHERE m.nim = u.nim
+);
+
+-- =========================================
+-- CEK HASIL PERBAIKAN
+-- =========================================
+-- Lihat data users
+SELECT 
+    nim,
+    nama_lengkap,
+    email,
+    role::text as role,
+    created_at
+FROM users
+ORDER BY created_at DESC
+LIMIT 10;
+
+-- Lihat data magang
+SELECT 
+    m.id_magang,
+    m.nim,
+    m.status_magang::text as status_magang,
+    m.created_at as magang_created,
+    u.nama_lengkap,
+    u.email
+FROM magang m
+LEFT JOIN users u ON m.nim = u.nim
+ORDER BY m.created_at DESC
+LIMIT 10;
+
+-- Cek mahasiswa yang belum punya data magang
+SELECT 
+    u.nim,
+    u.nama_lengkap,
+    u.email
+FROM users u
+WHERE u.role = 'mahasiswa'
+AND u.nim IS NOT NULL
+AND NOT EXISTS (
+    SELECT 1 FROM magang m WHERE m.nim = u.nim
+);
+
+-- =========================================
+-- VERIFIKASI TRIGGER
+-- =========================================
+SELECT 
+    trigger_name,
+    event_manipulation,
+    action_statement
+FROM information_schema.triggers
+WHERE event_object_table = 'users';

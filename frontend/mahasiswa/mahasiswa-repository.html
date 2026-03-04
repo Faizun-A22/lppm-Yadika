@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repository Karya Ilmiah - Portal Mahasiswa LPPM ITB Yadika</title>
+    
+    <!-- CSS External Libraries -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        /* Custom CSS Styles */
+        .gradient-text { 
+            background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            background-clip: text; 
+        }
+        
+        .nav-link { 
+            position: relative; 
+            transition: color 0.3s ease; 
+        }
+        
+        .nav-link::after { 
+            content: ''; 
+            position: absolute; 
+            width: 0; 
+            height: 2px; 
+            bottom: -5px; 
+            left: 50%; 
+            background-color: #3B82F6; 
+            transition: all 0.3s ease; 
+        }
+        
+        .nav-link:hover::after, 
+        .nav-link.active::after { 
+            width: 100%; 
+            left: 0; 
+        }
+        
+        .nav-link.active { 
+            color: #3B82F6; 
+            font-weight: 600; 
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3B82F6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Category Badge Colors */
+        .badge-skripsi { background: #DBEAFE; color: #1E40AF; }
+        .badge-jurnal { background: #DCFCE7; color: #166534; }
+        .badge-laporan { background: #FEF3C7; color: #92400E; }
+        .badge-prosiding { background: #F3E8FF; color: #6B21A8; }
+        .badge-tesis { background: #FCE7F3; color: #9D174D; }
+
+        /* Border Left Colors */
+        .border-skripsi { border-left-color: #3B82F6; }
+        .border-jurnal { border-left-color: #10B981; }
+        .border-laporan { border-left-color: #F59E0B; }
+        .border-prosiding { border-left-color: #8B5CF6; }
+        .border-tesis { border-left-color: #EC4899; }
+
+        /* Hover Effects */
+        .repository-item {
+            transition: all 0.3s ease;
+        }
+        .repository-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        /* File Type Icons */
+        .file-pdf { color: #EF4444; }
+        .file-doc { color: #3B82F6; }
+        .file-ppt { color: #F59E0B; }
+        .file-zip { color: #8B5CF6; }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans antialiased">
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-white bg-opacity-90 z-50 flex items-center justify-center hidden">
+        <div class="text-center">
+            <div class="loading-spinner"></div>
+            <p class="mt-4 text-gray-600">Memuat data...</p>
+        </div>
+    </div>
+
+    <!-- Header / Navigation Bar -->
+    <header class="fixed top-0 left-0 right-0 bg-white shadow-md z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <!-- Logo and Brand -->
+            <a href="mahasiswa-dashboard.html" class="flex items-center space-x-3">
+                <img src="../images/logoyadika.png" alt="Logo LPPM ITB Yadika" class="h-10 w-10">
+                <div>
+                    <h1 class="text-xl font-bold gradient-text">Portal Mahasiswa</h1>
+                    <p class="text-xs text-gray-500">LPPM ITB Yadika</p>
+                </div>
+            </a>
+            
+            <!-- Navigation Menu -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="mahasiswa-dashboard.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-home mr-2"></i>Dashboard
+                </a>
+                <a href="mahasiswa-berita.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-newspaper mr-2"></i>Berita
+                </a>
+                <a href="mahasiswa-kegiatan.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-calendar-alt mr-2"></i>Kegiatan
+                </a>
+                <a href="mahasiswa-repository.html" class="nav-link active text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-book mr-2"></i>Repository
+                </a>
+                <a href="mahasiswa-magang-kkn.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-briefcase mr-2"></i>Magang & KKN
+                </a>
+                <a href="mahasiswa-profil.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-user-circle mr-2"></i>Profil Saya
+                </a>
+            </div>
+            
+            <!-- User Info & Logout -->
+            <div class="flex items-center space-x-4">
+                <div class="hidden md:block text-right">
+                    <p class="text-sm font-semibold text-gray-700" id="userNameDisplay">Loading...</p>
+                    <p class="text-xs text-gray-500" id="userNimDisplay">-</p>
+                </div>
+                <button onclick="handleLogout()" class="flex items-center space-x-2 p-2 rounded-lg text-red-600 hover:bg-red-50 transition">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span class="hidden sm:inline">Logout</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="pt-20">
+        <div class="container mx-auto px-6 py-8">
+            <!-- Page Header -->
+            <header class="mb-8" data-aos="fade-down">
+                <h2 class="text-3xl font-bold text-gray-800">Repository Karya Ilmiah</h2>
+                <p class="text-gray-600">Jelajahi, pelajari, dan dapatkan inspirasi dari karya ilmiah mahasiswa.</p>
+            </header>
+
+            <!-- Statistics Cards -->
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8" data-aos="fade-up" data-aos-delay="50">
+                <div class="bg-white rounded-lg shadow p-4 text-center">
+                    <p class="text-2xl font-bold text-blue-600" id="totalDocs">0</p>
+                    <p class="text-xs text-gray-500">Total Dokumen</p>
+                </div>
+                <div class="bg-white rounded-lg shadow p-4 text-center">
+                    <p class="text-2xl font-bold text-green-600" id="totalSkripsi">0</p>
+                    <p class="text-xs text-gray-500">Skripsi</p>
+                </div>
+                <div class="bg-white rounded-lg shadow p-4 text-center">
+                    <p class="text-2xl font-bold text-yellow-600" id="totalJurnal">0</p>
+                    <p class="text-xs text-gray-500">Jurnal</p>
+                </div>
+                <div class="bg-white rounded-lg shadow p-4 text-center">
+                    <p class="text-2xl font-bold text-purple-600" id="totalLaporan">0</p>
+                    <p class="text-xs text-gray-500">Laporan</p>
+                </div>
+                <div class="bg-white rounded-lg shadow p-4 text-center">
+                    <p class="text-2xl font-bold text-pink-600" id="totalProsiding">0</p>
+                    <p class="text-xs text-gray-500">Prosiding</p>
+                </div>
+            </div>
+
+            <!-- Search and Filter Bar -->
+            <div class="bg-white rounded-xl shadow-lg p-6 mb-6" data-aos="fade-up">
+                <form id="searchForm" onsubmit="event.preventDefault(); searchDocuments();">
+                    <div class="flex flex-col md:flex-row gap-4">
+                        <!-- Search Input -->
+                        <div class="relative flex-1">
+                            <input type="text" id="searchInput" placeholder="Cari berdasarkan judul, penulis, atau kata kunci..." 
+                                   class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <i class="fas fa-search absolute left-3 top-3.5 text-gray-400"></i>
+                        </div>
+                        
+                        <!-- Category Filter -->
+                        <select id="categoryFilter" class="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <option value="all">Semua Kategori</option>
+                            <option value="skripsi">Skripsi</option>
+                            <option value="jurnal">Jurnal</option>
+                            <option value="laporan">Laporan Penelitian</option>
+                            <option value="prosiding">Prosiding</option>
+                            <option value="tesis">Tesis</option>
+                        </select>
+                        
+                        <!-- Year Filter -->
+                        <select id="yearFilter" class="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <option value="all">Semua Tahun</option>
+                            <option value="2024">2024</option>
+                            <option value="2023">2023</option>
+                            <option value="2022">2022</option>
+                            <option value="2021">2021</option>
+                            <option value="2020">2020</option>
+                        </select>
+                        
+                        <!-- Search Button -->
+                        <button type="submit" class="bg-blue-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center">
+                            <i class="fas fa-search mr-2"></i>Cari
+                        </button>
+                        
+                        <!-- Reset Button -->
+                        <button type="button" onclick="resetFilters()" class="bg-gray-200 text-gray-700 font-bold py-3 px-6 rounded-lg hover:bg-gray-300 transition-colors">
+                            <i class="fas fa-redo-alt mr-2"></i>Reset
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Active Filters -->
+                <div id="activeFilters" class="mt-3 flex flex-wrap gap-2 hidden">
+                    <span class="text-sm text-gray-500 mr-2">Filter aktif:</span>
+                </div>
+            </div>
+
+            <!-- Sort Options -->
+            <div class="flex justify-between items-center mb-4" data-aos="fade-up">
+                <p class="text-sm text-gray-500" id="resultCount">Menampilkan 0 dokumen</p>
+                <div class="flex items-center space-x-2">
+                    <label class="text-sm text-gray-600">Urutkan:</label>
+                    <select id="sortSelect" onchange="sortDocuments()" class="text-sm border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500">
+                        <option value="terbaru">Terbaru</option>
+                        <option value="terlama">Terlama</option>
+                        <option value="judul-asc">Judul A-Z</option>
+                        <option value="judul-desc">Judul Z-A</option>
+                        <option value="penulis-asc">Penulis A-Z</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Results List -->
+            <div id="resultsContainer" class="space-y-4" data-aos="fade-up" data-aos-delay="100">
+                <!-- Repository items will be loaded here dynamically -->
+                <div class="text-center py-12">
+                    <div class="loading-spinner"></div>
+                    <p class="mt-4 text-gray-600">Memuat repository...</p>
+                </div>
+            </div>
+
+            <!-- Load More Button -->
+            <div class="text-center mt-8" id="loadMoreContainer">
+                <button onclick="loadMoreDocuments()" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                    <i class="fas fa-sync-alt mr-2"></i>Muat Lebih Banyak
+                </button>
+            </div>
+
+            <!-- Popular Tags -->
+            <div class="mt-12 bg-white rounded-xl shadow-lg p-6" data-aos="fade-up">
+                <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-tags mr-2 text-blue-500"></i>
+                    Topik Populer
+                </h3>
+                <div class="flex flex-wrap gap-2" id="popularTags">
+                    <!-- Tags will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Document Preview Modal -->
+    <div id="previewModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+            <div class="p-6 border-b flex justify-between items-center">
+                <h3 class="text-xl font-bold text-gray-800" id="modalTitle"></h3>
+                <button onclick="closePreview()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto max-h-[calc(90vh-120px)]" id="modalContent">
+                <!-- Modal content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Success/Error Notification -->
+    <div id="notification" class="fixed bottom-4 right-4 z-50 hidden">
+        <div class="bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center">
+            <i class="fas fa-check-circle mr-2"></i>
+            <span id="notificationMessage">Dokumen berhasil diunduh!</span>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="../js/auth.js"></script>
+    
+    <script>
+        // Initialize AOS
+        AOS.init({ duration: 800, once: true });
+
+        // State Management
+        let currentPage = 1;
+        let isLoading = false;
+        let hasMore = true;
+        let allDocuments = [];
+        let filteredDocuments = [];
+        let currentFilters = {
+            search: '',
+            category: 'all',
+            year: 'all',
+            sort: 'terbaru'
+        };
+
+        // Sample Repository Data
+        const sampleDocuments = [
+            {
+                id: 1,
+                judul: "Penerapan Sistem Pakar untuk Diagnosa Awal Penyakit Tanaman Padi Menggunakan Metode Certainty Factor",
+                penulis: "Budi Santoso",
+                nim: "201810101",
+                tahun: 2023,
+                kategori: "skripsi",
+                abstrak: "Penelitian ini bertujuan untuk mengembangkan sistem pakar yang dapat mendiagnosa penyakit pada tanaman padi berdasarkan gejala yang diamati. Metode Certainty Factor digunakan untuk mengukur tingkat keyakinan diagnosa. Hasil pengujian menunjukkan akurasi sistem mencapai 85%.",
+                kata_kunci: ["sistem pakar", "certainty factor", "tanaman padi", "diagnosa penyakit"],
+                file_type: "pdf",
+                file_size: "2.4 MB",
+                downloads: 156,
+                views: 342,
+                pembimbing: "Dr. Ahmad Yani, M.Kom",
+                abstrak_inggris: "This research aims to develop an expert system that can diagnose diseases in rice plants based on observed symptoms. The Certainty Factor method is used to measure the confidence level of diagnosis. Test results show system accuracy reaches 85%."
+            },
+            {
+                id: 2,
+                judul: "Analisis Sentimen Masyarakat Terhadap Kebijakan Pemerintah Menggunakan Naive Bayes Classifier",
+                penulis: "Siti Nurhaliza",
+                nim: "201810102",
+                tahun: 2023,
+                kategori: "jurnal",
+                abstrak: "Penelitian ini menganalisis sentimen masyarakat terhadap kebijakan pemerintah melalui media sosial Twitter. Menggunakan metode Naive Bayes Classifier, penelitian ini mengklasifikasikan tweet ke dalam sentimen positif, negatif, atau netral. Hasil menunjukkan akurasi 82% dalam klasifikasi sentimen.",
+                kata_kunci: ["analisis sentimen", "naive bayes", "twitter", "kebijakan pemerintah"],
+                file_type: "pdf",
+                file_size: "1.8 MB",
+                downloads: 89,
+                views: 215,
+                publisher: "Jurnal Teknologi Informasi",
+                volume: "Vol. 12 No. 2"
+            },
+            {
+                id: 3,
+                judul: "Rancang Bangun Aplikasi E-Commerce Berbasis Web pada UMKM 'Kerajinan Tangan Jaya'",
+                penulis: "Ahmad Fadli",
+                nim: "201910203",
+                tahun: 2022,
+                kategori: "skripsi",
+                abstrak: "Penelitian ini mengembangkan aplikasi e-commerce untuk UMKM Kerajinan Tangan Jaya guna memperluas pasar dan meningkatkan penjualan. Aplikasi dibangun menggunakan framework Laravel dengan metode waterfall. Hasil implementasi menunjukkan peningkatan penjualan sebesar 40%.",
+                kata_kunci: ["e-commerce", "laravel", "umkm", "waterfall"],
+                file_type: "pdf",
+                file_size: "3.1 MB",
+                downloads: 203,
+                views: 456,
+                pembimbing: "Rina Marlina, M.T"
+            },
+            {
+                id: 4,
+                judul: "Pengaruh Penggunaan Media Sosial Terhadap Prestasi Belajar Mahasiswa",
+                penulis: "Dewi Lestari",
+                nim: "201810104",
+                tahun: 2022,
+                kategori: "jurnal",
+                abstrak: "Penelitian ini mengkaji pengaruh intensitas penggunaan media sosial terhadap prestasi belajar mahasiswa. Menggunakan metode kuantitatif dengan sampel 100 mahasiswa, hasil menunjukkan korelasi negatif signifikan antara waktu penggunaan media sosial dengan IPK mahasiswa.",
+                kata_kunci: ["media sosial", "prestasi belajar", "mahasiswa", "pendidikan"],
+                file_type: "pdf",
+                file_size: "1.2 MB",
+                downloads: 167,
+                views: 298,
+                publisher: "Jurnal Pendidikan",
+                volume: "Vol. 8 No. 1"
+            },
+            {
+                id: 5,
+                judul: "Optimasi Rute Pengiriman Logistik Menggunakan Algoritma Genetika",
+                penulis: "Rizki Pratama",
+                nim: "201910205",
+                tahun: 2023,
+                kategori: "laporan",
+                abstrak: "Laporan penelitian ini membahas optimasi rute pengiriman logistik menggunakan algoritma genetika. Studi kasus dilakukan pada perusahaan logistik di Jakarta. Hasil menunjukkan penghematan jarak tempuh sebesar 25% dan penghematan bahan bakar 20%.",
+                kata_kunci: ["optimasi rute", "algoritma genetika", "logistik", "vehicle routing problem"],
+                file_type: "pdf",
+                file_size: "2.7 MB",
+                downloads: 78,
+                views: 156,
+                sponsor: "PT Logistik Indonesia"
+            },
+            {
+                id: 6,
+                judul: "Pengembangan Media Pembelajaran Interaktif Berbasis Augmented Reality",
+                penulis: "Maya Sari",
+                nim: "202010306",
+                tahun: 2023,
+                kategori: "prosiding",
+                abstrak: "Makalah ini dipresentasikan dalam konferensi internasional tentang pengembangan media pembelajaran interaktif menggunakan teknologi Augmented Reality. Media dikembangkan untuk mata pelajaran IPA tingkat SMP dan diuji coba pada 50 siswa dengan hasil positif.",
+                kata_kunci: ["augmented reality", "media pembelajaran", "interaktif", "pendidikan"],
+                file_type: "pdf",
+                file_size: "4.2 MB",
+                downloads: 45,
+                views: 112,
+                konferensi: "International Conference on Educational Technology 2023"
+            },
+            {
+                id: 7,
+                judul: "Sistem Deteksi Plagiarisme Dokumen Menggunakan Algoritma Rabin-Karp",
+                penulis: "Hendra Wijaya",
+                nim: "201810107",
+                tahun: 2021,
+                kategori: "skripsi",
+                abstrak: "Penelitian ini mengembangkan sistem deteksi plagiarisme dokumen menggunakan algoritma Rabin-Karp. Sistem mampu mendeteksi kemiripan dokumen dengan cepat dan akurat, dengan tingkat akurasi 92% pada pengujian 100 dokumen.",
+                kata_kunci: ["plagiarisme", "rabin-karp", "string matching", "deteksi kemiripan"],
+                file_type: "pdf",
+                file_size: "2.9 MB",
+                downloads: 234,
+                views: 512,
+                pembimbing: "Dr. Budi Hartono, M.Kom"
+            },
+            {
+                id: 8,
+                judul: "Analisis Kinerja Algoritma Machine Learning untuk Prediksi Harga Saham",
+                penulis: "Fajar Nugroho",
+                nim: "201910208",
+                tahun: 2022,
+                kategori: "tesis",
+                abstrak: "Tesis ini membandingkan kinerja berbagai algoritma machine learning (Random Forest, SVM, Neural Network) dalam memprediksi harga saham. Data saham LQ45 selama 5 tahun digunakan sebagai dataset. Random Forest menunjukkan performa terbaik dengan MAPE 3.2%.",
+                kata_kunci: ["machine learning", "prediksi saham", "random forest", "neural network"],
+                file_type: "pdf",
+                file_size: "3.8 MB",
+                downloads: 312,
+                views: 678,
+                pembimbing: "Prof. Dr. Ir. Bambang Suharto, M.Sc"
+            }
+        ];
+
+        // Function to show/hide loading
+        function showLoading() {
+            document.getElementById('loadingOverlay').classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.add('hidden');
+        }
+
+        // Show notification
+        function showNotification(message, isSuccess = true) {
+            const notification = document.getElementById('notification');
+            const messageEl = document.getElementById('notificationMessage');
+            
+            notification.className = `fixed bottom-4 right-4 z-50 ${isSuccess ? 'bg-green-500' : 'bg-red-500'} text-white px-6 py-3 rounded-lg shadow-lg flex items-center`;
+            messageEl.textContent = message;
+            
+            notification.classList.remove('hidden');
+            
+            setTimeout(() => {
+                notification.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Get user data
+        function getUser() {
+            return auth.getUser();
+        }
+
+        // Update user info in header
+        function updateUserInfo() {
+            const user = getUser();
+            if (user) {
+                document.getElementById('userNameDisplay').textContent = user.name || 'Mahasiswa';
+                document.getElementById('userNimDisplay').textContent = user.nim || '-';
+            }
+        }
+
+        // Logout function
+        window.handleLogout = function() {
+            auth.logout();
+        };
+
+        // Get badge class based on category
+        function getBadgeClass(kategori) {
+            switch(kategori.toLowerCase()) {
+                case 'skripsi': return 'badge-skripsi';
+                case 'jurnal': return 'badge-jurnal';
+                case 'laporan': return 'badge-laporan';
+                case 'prosiding': return 'badge-prosiding';
+                case 'tesis': return 'badge-tesis';
+                default: return 'bg-gray-100 text-gray-800';
+            }
+        }
+
+        // Get border color based on category
+        function getBorderClass(kategori) {
+            switch(kategori.toLowerCase()) {
+                case 'skripsi': return 'border-skripsi';
+                case 'jurnal': return 'border-jurnal';
+                case 'laporan': return 'border-laporan';
+                case 'prosiding': return 'border-prosiding';
+                case 'tesis': return 'border-tesis';
+                default: return 'border-gray-500';
+            }
+        }
+
+        // Format number with thousand separator
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+
+        // Update statistics
+        function updateStats() {
+            document.getElementById('totalDocs').textContent = formatNumber(allDocuments.length);
+            document.getElementById('totalSkripsi').textContent = formatNumber(allDocuments.filter(d => d.kategori === 'skripsi').length);
+            document.getElementById('totalJurnal').textContent = formatNumber(allDocuments.filter(d => d.kategori === 'jurnal').length);
+            document.getElementById('totalLaporan').textContent = formatNumber(allDocuments.filter(d => d.kategori === 'laporan').length);
+            document.getElementById('totalProsiding').textContent = formatNumber(allDocuments.filter(d => d.kategori === 'prosiding').length);
+        }
+
+        // Generate popular tags
+        function generatePopularTags() {
+            const tagCount = new Map();
+            
+            allDocuments.forEach(doc => {
+                doc.kata_kunci.forEach(keyword => {
+                    tagCount.set(keyword, (tagCount.get(keyword) || 0) + 1);
+                });
+            });
+            
+            const sortedTags = Array.from(tagCount.entries())
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 10);
+            
+            const tagsContainer = document.getElementById('popularTags');
+            tagsContainer.innerHTML = sortedTags.map(([tag, count]) => `
+                <button onclick="searchByTag('${tag}')" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full text-sm text-gray-700 transition-colors">
+                    #${tag} (${count})
+                </button>
+            `).join('');
+        }
+
+        // Search by tag
+        window.searchByTag = function(tag) {
+            document.getElementById('searchInput').value = tag;
+            searchDocuments();
+        };
+
+        // Filter and sort documents
+        function filterDocuments() {
+            let filtered = [...allDocuments];
+            
+            // Apply search filter
+            if (currentFilters.search) {
+                const searchTerm = currentFilters.search.toLowerCase();
+                filtered = filtered.filter(doc => 
+                    doc.judul.toLowerCase().includes(searchTerm) ||
+                    doc.penulis.toLowerCase().includes(searchTerm) ||
+                    doc.kata_kunci.some(k => k.toLowerCase().includes(searchTerm)) ||
+                    doc.abstrak.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            // Apply category filter
+            if (currentFilters.category !== 'all') {
+                filtered = filtered.filter(doc => doc.kategori === currentFilters.category);
+            }
+            
+            // Apply year filter
+            if (currentFilters.year !== 'all') {
+                filtered = filtered.filter(doc => doc.tahun.toString() === currentFilters.year);
+            }
+            
+            // Apply sorting
+            filtered.sort((a, b) => {
+                switch(currentFilters.sort) {
+                    case 'terbaru':
+                        return b.tahun - a.tahun;
+                    case 'terlama':
+                        return a.tahun - b.tahun;
+                    case 'judul-asc':
+                        return a.judul.localeCompare(b.judul);
+                    case 'judul-desc':
+                        return b.judul.localeCompare(a.judul);
+                    case 'penulis-asc':
+                        return a.penulis.localeCompare(b.penulis);
+                    default:
+                        return b.tahun - a.tahun;
+                }
+            });
+            
+            filteredDocuments = filtered;
+            
+            // Update result count
+            document.getElementById('resultCount').textContent = `Menampilkan ${filtered.length} dokumen`;
+            
+            // Update active filters display
+            updateActiveFilters();
+            
+            return filtered;
+        }
+
+        // Update active filters display
+        function updateActiveFilters() {
+            const container = document.getElementById('activeFilters');
+            const filters = [];
+            
+            if (currentFilters.search) {
+                filters.push(`<span class="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">
+                    <i class="fas fa-search mr-1"></i>${currentFilters.search}
+                    <button onclick="removeFilter('search')" class="ml-1 hover:text-blue-600">&times;</button>
+                </span>`);
+            }
+            
+            if (currentFilters.category !== 'all') {
+                filters.push(`<span class="inline-flex items-center px-2 py-1 bg-green-100 text-green-800 rounded text-xs">
+                    <i class="fas fa-folder mr-1"></i>${currentFilters.category}
+                    <button onclick="removeFilter('category')" class="ml-1 hover:text-green-600">&times;</button>
+                </span>`);
+            }
+            
+            if (currentFilters.year !== 'all') {
+                filters.push(`<span class="inline-flex items-center px-2 py-1 bg-purple-100 text-purple-800 rounded text-xs">
+                    <i class="fas fa-calendar mr-1"></i>${currentFilters.year}
+                    <button onclick="removeFilter('year')" class="ml-1 hover:text-purple-600">&times;</button>
+                </span>`);
+            }
+            
+            if (filters.length > 0) {
+                container.innerHTML = '<span class="text-sm text-gray-500 mr-2">Filter aktif:</span>' + filters.join(' ');
+                container.classList.remove('hidden');
+            } else {
+                container.classList.add('hidden');
+            }
+        }
+
+        // Remove specific filter
+        window.removeFilter = function(filterType) {
+            if (filterType === 'search') {
+                document.getElementById('searchInput').value = '';
+                currentFilters.search = '';
+            } else if (filterType === 'category') {
+                document.getElementById('categoryFilter').value = 'all';
+                currentFilters.category = 'all';
+            } else if (filterType === 'year') {
+                document.getElementById('yearFilter').value = 'all';
+                currentFilters.year = 'all';
+            }
+            
+            searchDocuments();
+        };
+
+        // Search documents
+        window.searchDocuments = function() {
+            currentFilters.search = document.getElementById('searchInput').value;
+            currentFilters.category = document.getElementById('categoryFilter').value;
+            currentFilters.year = document.getElementById('yearFilter').value;
+            
+            currentPage = 1;
+            renderDocuments(true);
+        };
+
+        // Reset filters
+        window.resetFilters = function() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('categoryFilter').value = 'all';
+            document.getElementById('yearFilter').value = 'all';
+            document.getElementById('sortSelect').value = 'terbaru';
+            
+            currentFilters = {
+                search: '',
+                category: 'all',
+                year: 'all',
+                sort: 'terbaru'
+            };
+            
+            currentPage = 1;
+            renderDocuments(true);
+        };
+
+        // Sort documents
+        window.sortDocuments = function() {
+            currentFilters.sort = document.getElementById('sortSelect').value;
+            renderDocuments(true);
+        };
+
+        // Render document card
+        function renderDocumentCard(doc) {
+            const badgeClass = getBadgeClass(doc.kategori);
+            const borderClass = getBorderClass(doc.kategori);
+            
+            return `
+                <div class="bg-white p-6 rounded-xl shadow-md repository-item border-l-4 ${borderClass}" data-aos="fade-up">
+                    <div class="flex flex-col md:flex-row justify-between items-start gap-4">
+                        <div class="flex-1">
+                            <div class="flex items-start">
+                                <i class="fas fa-file-pdf text-3xl file-pdf mr-3"></i>
+                                <div>
+                                    <h3 class="text-lg font-bold text-gray-800 hover:text-blue-600 cursor-pointer" onclick="previewDocument(${doc.id})">
+                                        ${doc.judul}
+                                    </h3>
+                                    
+                                    <div class="mt-2 flex flex-wrap items-center gap-2 text-sm text-gray-600">
+                                        <span><i class="fas fa-user mr-1"></i> ${doc.penulis}</span>
+                                        <span><i class="fas fa-calendar mr-1"></i> ${doc.tahun}</span>
+                                        <span class="px-2 py-1 rounded text-xs font-semibold ${badgeClass}">
+                                            ${doc.kategori.charAt(0).toUpperCase() + doc.kategori.slice(1)}
+                                        </span>
+                                        <span><i class="fas fa-file mr-1"></i> ${doc.file_type.toUpperCase()}</span>
+                                        <span><i class="fas fa-weight mr-1"></i> ${doc.file_size}</span>
+                                    </div>
+                                    
+                                    <div class="mt-2 flex items-center space-x-4 text-xs text-gray-400">
+                                        <span><i class="fas fa-download mr-1"></i> ${formatNumber(doc.downloads)} downloads</span>
+                                        <span><i class="fas fa-eye mr-1"></i> ${formatNumber(doc.views)} views</span>
+                                    </div>
+                                    
+                                    <div class="mt-3 flex flex-wrap gap-1">
+                                        ${doc.kata_kunci.map(k => `
+                                            <span class="px-2 py-1 bg-gray-100 rounded text-xs text-gray-600 hover:bg-gray-200 cursor-pointer" onclick="searchByTag('${k}')">
+                                                #${k}
+                                            </span>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-col space-y-2 w-full md:w-auto">
+                            <button onclick="previewDocument(${doc.id})" class="bg-blue-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-600 transition-colors text-sm w-full md:w-auto">
+                                <i class="fas fa-eye mr-2"></i>Preview
+                            </button>
+                            <button onclick="downloadDocument(${doc.id})" class="bg-green-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-green-600 transition-colors text-sm w-full md:w-auto">
+                                <i class="fas fa-download mr-2"></i>Download
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-3 text-sm text-gray-600 line-clamp-2">
+                        ${doc.abstrak}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render documents
+        async function renderDocuments(reset = false) {
+            if (isLoading) return;
+            
+            isLoading = true;
+            
+            if (reset) {
+                currentPage = 1;
+                document.getElementById('resultsContainer').innerHTML = '';
+            }
+
+            try {
+                // Filter and sort documents
+                const filtered = filterDocuments();
+                
+                // Pagination
+                const itemsPerPage = 5;
+                const start = (currentPage - 1) * itemsPerPage;
+                const end = start + itemsPerPage;
+                const pageDocs = filtered.slice(start, end);
+                
+                hasMore = end < filtered.length;
+
+                if (pageDocs.length === 0 && currentPage === 1) {
+                    document.getElementById('resultsContainer').innerHTML = `
+                        <div class="text-center py-12 bg-white rounded-lg shadow">
+                            <i class="fas fa-search text-6xl text-gray-300 mb-4"></i>
+                            <p class="text-gray-500">Tidak ada dokumen yang ditemukan</p>
+                            <button onclick="resetFilters()" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg">
+                                Reset Filter
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    const docsHTML = pageDocs.map(doc => renderDocumentCard(doc)).join('');
+                    
+                    if (reset) {
+                        document.getElementById('resultsContainer').innerHTML = docsHTML;
+                    } else {
+                        document.getElementById('resultsContainer').innerHTML += docsHTML;
+                    }
+                }
+
+                // Show/hide load more button
+                document.getElementById('loadMoreContainer').style.display = hasMore ? 'block' : 'none';
+                
+            } catch (error) {
+                console.error('Error rendering documents:', error);
+            } finally {
+                isLoading = false;
+                hideLoading();
+            }
+        }
+
+        // Load more documents
+        window.loadMoreDocuments = function() {
+            currentPage++;
+            renderDocuments(false);
+        };
+
+        // Preview document
+        window.previewDocument = function(id) {
+            const doc = allDocuments.find(d => d.id === id);
+            if (!doc) return;
+            
+            const modal = document.getElementById('previewModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalContent = document.getElementById('modalContent');
+            
+            modalTitle.textContent = doc.judul;
+            
+            modalContent.innerHTML = `
+                <div class="space-y-6">
+                    <!-- Document Info -->
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <p class="text-xs text-gray-500">Penulis</p>
+                            <p class="font-semibold">${doc.penulis}</p>
+                        </div>
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <p class="text-xs text-gray-500">Tahun</p>
+                            <p class="font-semibold">${doc.tahun}</p>
+                        </div>
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <p class="text-xs text-gray-500">Kategori</p>
+                            <p class="font-semibold">${doc.kategori}</p>
+                        </div>
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <p class="text-xs text-gray-500">File</p>
+                            <p class="font-semibold">${doc.file_type.toUpperCase()} - ${doc.file_size}</p>
+                        </div>
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <p class="text-xs text-gray-500">Downloads</p>
+                            <p class="font-semibold">${formatNumber(doc.downloads)}</p>
+                        </div>
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <p class="text-xs text-gray-500">Views</p>
+                            <p class="font-semibold">${formatNumber(doc.views)}</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Abstract -->
+                    <div>
+                        <h4 class="font-semibold text-gray-800 mb-2">Abstrak</h4>
+                        <p class="text-gray-600">${doc.abstrak}</p>
+                    </div>
+                    
+                    <!-- Abstract English (if available) -->
+                    ${doc.abstrak_inggris ? `
+                    <div>
+                        <h4 class="font-semibold text-gray-800 mb-2">Abstract</h4>
+                        <p class="text-gray-600">${doc.abstrak_inggris}</p>
+                    </div>
+                    ` : ''}
+                    
+                    <!-- Keywords -->
+                    <div>
+                        <h4 class="font-semibold text-gray-800 mb-2">Kata Kunci</h4>
+                        <div class="flex flex-wrap gap-2">
+                            ${doc.kata_kunci.map(k => `
+                                <span class="px-3 py-1 bg-gray-100 rounded-full text-sm text-gray-700">#${k}</span>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <!-- Additional Info -->
+                    <div class="border-t pt-4">
+                        ${doc.pembimbing ? `
+                        <p class="text-sm text-gray-600">
+                            <span class="font-semibold">Pembimbing:</span> ${doc.pembimbing}
+                        </p>
+                        ` : ''}
+                        ${doc.publisher ? `
+                        <p class="text-sm text-gray-600 mt-1">
+                            <span class="font-semibold">Publisher:</span> ${doc.publisher} ${doc.volume ? '- ' + doc.volume : ''}
+                        </p>
+                        ` : ''}
+                        ${doc.konferensi ? `
+                        <p class="text-sm text-gray-600 mt-1">
+                            <span class="font-semibold">Konferensi:</span> ${doc.konferensi}
+                        </p>
+                        ` : ''}
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="flex justify-end space-x-3 pt-4 border-t">
+                        <button onclick="downloadDocument(${doc.id})" class="bg-green-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-green-600 transition-colors">
+                            <i class="fas fa-download mr-2"></i>Download PDF
+                        </button>
+                        <button onclick="closePreview()" class="bg-gray-200 text-gray-700 font-bold py-2 px-6 rounded-lg hover:bg-gray-300 transition-colors">
+                            <i class="fas fa-times mr-2"></i>Tutup
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            modal.classList.remove('hidden');
+        };
+
+        // Close preview modal
+        window.closePreview = function() {
+            document.getElementById('previewModal').classList.add('hidden');
+        };
+
+        // Download document
+        window.downloadDocument = function(id) {
+            const doc = allDocuments.find(d => d.id === id);
+            if (!doc) return;
+            
+            // Simulate download
+            showNotification(`Mengunduh "${doc.judul.substring(0, 30)}..."`);
+            
+            // In real app, you would trigger actual download
+            // window.location.href = `/api/repository/download/${id}`;
+        };
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('previewModal');
+            if (event.target === modal) {
+                closePreview();
+            }
+        };
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check authentication first
+            if (!auth.requireRole('mahasiswa')) return;
+            
+            // Update user info in header
+            updateUserInfo();
+            
+            // Set initial data
+            allDocuments = sampleDocuments;
+            
+            // Update statistics
+            updateStats();
+            
+            // Generate popular tags
+            generatePopularTags();
+            
+            // Load documents
+            showLoading();
+            renderDocuments(true);
+        });
+    </script>
+</body>
+</html>

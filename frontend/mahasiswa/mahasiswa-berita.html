@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Berita & Pengumuman - Portal Mahasiswa LPPM ITB Yadika</title>
+    
+    <!-- CSS External Libraries -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        /* Custom CSS Styles */
+        .gradient-text { 
+            background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            background-clip: text; 
+        }
+        
+        .nav-link { 
+            position: relative; 
+            transition: color 0.3s ease; 
+        }
+        
+        .nav-link::after { 
+            content: ''; 
+            position: absolute; 
+            width: 0; 
+            height: 2px; 
+            bottom: -5px; 
+            left: 50%; 
+            background-color: #3B82F6; 
+            transition: all 0.3s ease; 
+        }
+        
+        .nav-link:hover::after, 
+        .nav-link.active::after { 
+            width: 100%; 
+            left: 0; 
+        }
+        
+        .nav-link.active { 
+            color: #3B82F6; 
+            font-weight: 600; 
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3B82F6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Category Badge Colors */
+        .badge-pengumuman { background-color: #f3e8ff; color: #6b21a8; }
+        .badge-berita { background-color: #dcfce7; color: #166534; }
+        .badge-kegiatan { background-color: #dbeafe; color: #1e40af; }
+        .badge-prestasi { background-color: #fff1f2; color: #9d174d; }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans antialiased">
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-white bg-opacity-90 z-50 flex items-center justify-center hidden">
+        <div class="text-center">
+            <div class="loading-spinner"></div>
+            <p class="mt-4 text-gray-600">Memuat data...</p>
+        </div>
+    </div>
+
+    <!-- Header / Navigation Bar -->
+    <header class="fixed top-0 left-0 right-0 bg-white shadow-md z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <!-- Logo and Brand -->
+            <a href="mahasiswa-dashboard.html" class="flex items-center space-x-3">
+                <img src="../images/logoyadika.png" alt="Logo LPPM ITB Yadika" class="h-10 w-10">
+                <div>
+                    <h1 class="text-xl font-bold gradient-text">Portal Mahasiswa</h1>
+                    <p class="text-xs text-gray-500">LPPM ITB Yadika</p>
+                </div>
+            </a>
+            
+            <!-- Navigation Menu -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="mahasiswa-dashboard.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-home mr-2"></i>Dashboard
+                </a>
+                <a href="mahasiswa-berita.html" class="nav-link active text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-newspaper mr-2"></i>Berita
+                </a>
+                <a href="mahasiswa-kegiatan.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-calendar-alt mr-2"></i>Kegiatan
+                </a>
+                <a href="mahasiswa-repository.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-book mr-2"></i>Repository
+                </a>
+                <a href="mahasiswa-magang-kkn.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-briefcase mr-2"></i>Magang & KKN
+                </a>
+                <a href="mahasiswa-profil.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-user-circle mr-2"></i>Profil Saya
+                </a>
+            </div>
+            
+            <!-- User Info & Logout -->
+            <div class="flex items-center space-x-4">
+                <div class="hidden md:block text-right">
+                    <p class="text-sm font-semibold text-gray-700" id="userNameDisplay">Loading...</p>
+                    <p class="text-xs text-gray-500" id="userNimDisplay">-</p>
+                </div>
+                <button onclick="handleLogout()" class="flex items-center space-x-2 p-2 rounded-lg text-red-600 hover:bg-red-50 transition">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span class="hidden sm:inline">Logout</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="pt-20">
+        <div class="container mx-auto px-6 py-8">
+            <!-- Page Header -->
+            <header class="mb-8" data-aos="fade-down">
+                <h2 class="text-3xl font-bold text-gray-800">Berita & Pengumuman</h2>
+                <p class="text-gray-600">Dapatkan informasi terkini dari LPPM ITB Yadika.</p>
+            </header>
+
+            <!-- Filter & Search Section -->
+            <div class="mb-8 flex flex-col md:flex-row justify-between items-center gap-4" data-aos="fade-up">
+                <!-- Category Filter -->
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="filterBerita('semua')" class="filter-btn active px-4 py-2 rounded-full text-sm font-medium transition-all" data-filter="semua" style="background: #3B82F6; color: white;">
+                        Semua
+                    </button>
+                    <button onclick="filterBerita('pengumuman')" class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition-all" data-filter="pengumuman">
+                        Pengumuman
+                    </button>
+                    <button onclick="filterBerita('berita')" class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition-all" data-filter="berita">
+                        Berita
+                    </button>
+                    <button onclick="filterBerita('kegiatan')" class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition-all" data-filter="kegiatan">
+                        Kegiatan
+                    </button>
+                    <button onclick="filterBerita('prestasi')" class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition-all" data-filter="prestasi">
+                        Prestasi
+                    </button>
+                </div>
+
+                <!-- Search Bar -->
+                <div class="relative w-full md:w-64">
+                    <input type="text" id="searchInput" placeholder="Cari berita..." class="w-full px-4 py-2 pl-10 pr-4 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500">
+                    <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                </div>
+            </div>
+
+            <!-- News List Container -->
+            <div id="newsContainer" class="space-y-6">
+                <!-- News items will be loaded here dynamically -->
+                <div class="text-center py-12">
+                    <div class="loading-spinner"></div>
+                    <p class="mt-4 text-gray-600">Memuat berita...</p>
+                </div>
+            </div>
+
+            <!-- Load More Button -->
+            <div class="text-center mt-8" id="loadMoreContainer">
+                <button onclick="loadMoreNews()" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                    <i class="fas fa-sync-alt mr-2"></i>Muat Lebih Banyak
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="../js/auth.js"></script>
+    
+    <script>
+        // Initialize AOS
+        AOS.init({ duration: 800, once: true });
+
+        // State Management
+        let currentFilter = 'semua';
+        let currentPage = 1;
+        let isLoading = false;
+        let hasMore = true;
+        let allNews = []; // Store all news data
+
+        // Sample Data (In real application, this would come from API)
+        const sampleNews = [
+            {
+                id: 1,
+                judul: "Pembukaan Pendaftaran Magang Batch 5",
+                kategori: "pengumuman",
+                tanggal: "15 Nov 2023",
+                penulis: "Admin LPPM",
+                konten: "Kami dengan gembira mengumumkan pembukaan pendaftaran untuk program magang batch 5. Peluang emas ini terbuka bagi seluruh mahasiswa ITB Yadika yang ingin mendapatkan pengalaman kerja profesional. Pendaftaran dibuka mulai 1 Desember 2023 hingga 15 Desember 2023. Persyaratan lengkap dapat dilihat di website resmi LPPM.",
+                gambar: "https://images.unsplash.com/photo-1521791136064-7986c2920216?ixlib=rb-4.0.3&auto=format&fit=crop&w=1169&q=80",
+                icon: "fa-bullhorn",
+                warna_badge: "badge-pengumuman"
+            },
+            {
+                id: 2,
+                judul: "Hasil Penelitian Mahasiswa Dipresentasikan di Konferensi Internasional",
+                kategori: "prestasi",
+                tanggal: "10 Nov 2023",
+                penulis: "Tim Humas",
+                konten: "Prestasi membanggakan diraih oleh tim mahasiswa Teknik Informatika hasil bimbingan LPPM. Karya penelitian mereka tentang penerapan IoT di pertanian berhasil dipresentasikan di Konferensi Internasional Teknologi Pertanian di Singapura. Tim yang terdiri dari 3 mahasiswa ini berhasil menarik perhatian para peneliti internasional.",
+                gambar: "https://images.unsplash.com/photo-1543286386-713bdd548da4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80",
+                icon: "fa-trophy",
+                warna_badge: "badge-prestasi"
+            },
+            {
+                id: 3,
+                judul: "Sukses! Program KKN Tematik 'Desa Cerdas' Telah Usai",
+                kategori: "kegiatan",
+                tanggal: "5 Nov 2023",
+                penulis: "Panitia KKN",
+                konten: "Program KKN Tematik yang berfokus pada pemberdayaan masyarakat desa melalui edukasi teknologi telah resmi ditutup. Selama 30 hari, mahasiswa berhasil memberikan pelatihan digital marketing kepada 50 UMKM, mengajar komputer di 3 SD, dan membuat sistem informasi desa. Masyarakat setempat sangat mengapresiasi program ini.",
+                gambar: "https://images.unsplash.com/photo-1559028006-448665bd7c7f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80",
+                icon: "fa-users",
+                warna_badge: "badge-kegiatan"
+            },
+            {
+                id: 4,
+                judul: "Workshop Penulisan Artikel Ilmiah untuk Jurnal Internasional",
+                kategori: "berita",
+                tanggal: "1 Nov 2023",
+                penulis: "Tim LPPM",
+                konten: "LPPM ITB Yadika akan menyelenggarakan workshop penulisan artikel ilmiah untuk jurnal internasional. Workshop ini akan menghadirkan narasumber dari jurnal terindeks Scopus. Kegiatan akan dilaksanakan pada 20-22 November 2023 secara hybrid.",
+                gambar: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80",
+                icon: "fa-pen",
+                warna_badge: "badge-berita"
+            },
+            {
+                id: 5,
+                judul: "Pengumuman Hasil Seleksi Program Kreativitas Mahasiswa",
+                kategori: "pengumuman",
+                tanggal: "28 Okt 2023",
+                penulis: "Admin LPPM",
+                konten: "Hasil seleksi Program Kreativitas Mahasiswa (PKM) tahun 2023 telah diumumkan. Selamat kepada 15 tim yang lolos pendanaan. Pengambilan surat keputusan dapat dilakukan di kantor LPPM mulai tanggal 1 November 2023.",
+                gambar: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80",
+                icon: "fa-file-alt",
+                warna_badge: "badge-pengumuman"
+            }
+        ];
+
+        // Function to show/hide loading
+        function showLoading() {
+            document.getElementById('loadingOverlay').classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.add('hidden');
+        }
+
+        // Get user data
+        function getUser() {
+            return auth.getUser();
+        }
+
+        // Update user info in header
+        function updateUserInfo() {
+            const user = getUser();
+            if (user) {
+                document.getElementById('userNameDisplay').textContent = user.name || 'Mahasiswa';
+                // You can add more user info if available
+                document.getElementById('userNimDisplay').textContent = user.nim || '-';
+            }
+        }
+
+        // Logout function
+        window.handleLogout = function() {
+            auth.logout();
+        };
+
+        // Format date
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString('id-ID', options);
+        }
+
+        // Get badge class based on category
+        function getBadgeClass(kategori) {
+            switch(kategori.toLowerCase()) {
+                case 'pengumuman': return 'badge-pengumuman';
+                case 'berita': return 'badge-berita';
+                case 'kegiatan': return 'badge-kegiatan';
+                case 'prestasi': return 'badge-prestasi';
+                default: return 'bg-gray-100 text-gray-800';
+            }
+        }
+
+        // Get icon based on category
+        function getIcon(kategori) {
+            switch(kategori.toLowerCase()) {
+                case 'pengumuman': return 'fa-bullhorn';
+                case 'berita': return 'fa-newspaper';
+                case 'kegiatan': return 'fa-calendar';
+                case 'prestasi': return 'fa-trophy';
+                default: return 'fa-file-alt';
+            }
+        }
+
+        // Render news item
+        function renderNewsItem(item) {
+            const badgeClass = getBadgeClass(item.kategori);
+            const icon = item.icon || getIcon(item.kategori);
+            
+            return `
+                <article class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300" data-aos="fade-up" data-category="${item.kategori}">
+                    <div class="md:flex">
+                        <div class="md:shrink-0">
+                            <img class="h-48 w-full object-cover md:h-full md:w-48" 
+                                 src="${item.gambar || 'https://via.placeholder.com/300x200?text=LPPM+ITB+Yadika'}" 
+                                 alt="${item.judul}"
+                                 onerror="this.src='https://via.placeholder.com/300x200?text=LPPM+ITB+Yadika'">
+                        </div>
+                        <div class="p-8 flex-1">
+                            <div class="flex items-center space-x-3 text-sm text-gray-500 mb-2">
+                                <span class="px-2 py-1 rounded-full text-xs font-semibold ${badgeClass}">
+                                    <i class="fas ${icon} mr-1"></i>${item.kategori}
+                                </span>
+                                <span><i class="far fa-calendar mr-1"></i>${item.tanggal}</span>
+                                <span><i class="far fa-user mr-1"></i>${item.penulis}</span>
+                            </div>
+                            <a href="#" onclick="showNewsDetail(${item.id})" class="block mt-1 text-2xl leading-tight font-bold text-gray-900 hover:underline">
+                                ${item.judul}
+                            </a>
+                            <p class="mt-2 text-gray-600 line-clamp-3">${item.konten.substring(0, 150)}...</p>
+                            <div class="mt-4 flex items-center justify-between">
+                                <a href="#" onclick="showNewsDetail(${item.id})" class="inline-block text-sm font-medium text-purple-600 hover:text-purple-800">
+                                    Baca Selengkapnya <i class="fas fa-arrow-right ml-1"></i>
+                                </a>
+                                <button onclick="shareNews(${item.id})" class="text-gray-400 hover:text-blue-600">
+                                    <i class="fas fa-share-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            `;
+        }
+
+        // Load news from API (simulated with sample data)
+        async function loadNews(reset = false) {
+            if (isLoading) return;
+            
+            isLoading = true;
+            
+            if (reset) {
+                currentPage = 1;
+                hasMore = true;
+                document.getElementById('newsContainer').innerHTML = '';
+            }
+
+            try {
+                // Simulate API call
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // Filter news based on category
+                let filteredNews = sampleNews;
+                if (currentFilter !== 'semua') {
+                    filteredNews = sampleNews.filter(item => item.kategori === currentFilter);
+                }
+
+                // Pagination
+                const itemsPerPage = 3;
+                const start = (currentPage - 1) * itemsPerPage;
+                const end = start + itemsPerPage;
+                const pageNews = filteredNews.slice(start, end);
+                
+                hasMore = end < filteredNews.length;
+
+                if (pageNews.length === 0 && currentPage === 1) {
+                    document.getElementById('newsContainer').innerHTML = `
+                        <div class="text-center py-12 bg-white rounded-lg shadow">
+                            <i class="fas fa-newspaper text-6xl text-gray-300 mb-4"></i>
+                            <p class="text-gray-500">Tidak ada berita untuk ditampilkan</p>
+                        </div>
+                    `;
+                } else {
+                    const newsHTML = pageNews.map(item => renderNewsItem(item)).join('');
+                    
+                    if (reset) {
+                        document.getElementById('newsContainer').innerHTML = newsHTML;
+                    } else {
+                        document.getElementById('newsContainer').innerHTML += newsHTML;
+                    }
+                }
+
+                // Show/hide load more button
+                document.getElementById('loadMoreContainer').style.display = hasMore ? 'block' : 'none';
+                
+            } catch (error) {
+                console.error('Error loading news:', error);
+                document.getElementById('newsContainer').innerHTML = `
+                    <div class="text-center py-12 bg-white rounded-lg shadow">
+                        <i class="fas fa-exclamation-circle text-6xl text-red-300 mb-4"></i>
+                        <p class="text-red-500">Gagal memuat berita. Silakan coba lagi.</p>
+                        <button onclick="loadNews(true)" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg">
+                            <i class="fas fa-sync-alt mr-2"></i>Muat Ulang
+                        </button>
+                    </div>
+                `;
+            } finally {
+                isLoading = false;
+                hideLoading();
+            }
+        }
+
+        // Filter news by category
+        window.filterBerita = function(kategori) {
+            currentFilter = kategori;
+            currentPage = 1;
+            
+            // Update active filter button
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-blue-600', 'text-white');
+                btn.classList.add('bg-gray-200', 'text-gray-700');
+                
+                if (btn.dataset.filter === kategori) {
+                    btn.classList.add('active', 'bg-blue-600', 'text-white');
+                    btn.classList.remove('bg-gray-200', 'text-gray-700');
+                }
+            });
+            
+            showLoading();
+            loadNews(true);
+        };
+
+        // Load more news
+        window.loadMoreNews = function() {
+            currentPage++;
+            showLoading();
+            loadNews(false);
+        };
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            
+            // Simple client-side search (in real app, this would be server-side)
+            const newsItems = document.querySelectorAll('article');
+            newsItems.forEach(item => {
+                const title = item.querySelector('h4')?.textContent.toLowerCase() || '';
+                const content = item.querySelector('p')?.textContent.toLowerCase() || '';
+                
+                if (title.includes(searchTerm) || content.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
+        // Show news detail (modal or new page)
+        window.showNewsDetail = function(id) {
+            const news = sampleNews.find(item => item.id === id);
+            if (news) {
+                // You can implement modal or redirect to detail page
+                alert(`Detail berita: ${news.judul}\n\n${news.konten}`);
+                // In real app: window.location.href = `berita-detail.html?id=${id}`;
+            }
+        };
+
+        // Share news
+        window.shareNews = function(id) {
+            const news = sampleNews.find(item => item.id === id);
+            if (news && navigator.share) {
+                navigator.share({
+                    title: news.judul,
+                    text: news.konten.substring(0, 100),
+                    url: window.location.href
+                }).catch(console.error);
+            } else {
+                alert('Link berita telah disalin!');
+                // Copy to clipboard
+                navigator.clipboard?.writeText(window.location.href);
+            }
+        };
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check authentication first
+            if (!auth.requireRole('mahasiswa')) return;
+            
+            // Update user info in header
+            updateUserInfo();
+            
+            // Load news
+            showLoading();
+            loadNews(true);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repository - Portal Dosen LPPM ITB Yadika</title>
+    
+    <!-- CSS External Libraries -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        /* Custom CSS Styles */
+        .gradient-text { 
+            background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            background-clip: text; 
+        }
+        
+        .nav-link { 
+            position: relative; 
+            transition: color 0.3s ease; 
+        }
+        
+        .nav-link::after { 
+            content: ''; 
+            position: absolute; 
+            width: 0; 
+            height: 2px; 
+            bottom: -5px; 
+            left: 50%; 
+            background-color: #3B82F6; 
+            transition: all 0.3s ease; 
+        }
+        
+        .nav-link:hover::after, 
+        .nav-link.active::after { 
+            width: 100%; 
+            left: 0; 
+        }
+        
+        .nav-link.active { 
+            color: #3B82F6; 
+            font-weight: 600; 
+        }
+
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3B82F6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .badge-jurnal { background: #DBEAFE; color: #1E40AF; }
+        .badge-prosiding { background: #FEF3C7; color: #92400E; }
+        .badge-buku { background: #DCFCE7; color: #166534; }
+        .badge-hki { background: #F3E8FF; color: #6B21A8; }
+        .badge-laporan { background: #FEE2E2; color: #991B1B; }
+
+        .repo-item {
+            transition: all 0.3s ease;
+        }
+        .repo-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .file-pdf { color: #EF4444; }
+        .file-doc { color: #3B82F6; }
+        .file-ppt { color: #F59E0B; }
+        .file-zip { color: #8B5CF6; }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans antialiased">
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-white bg-opacity-90 z-50 flex items-center justify-center hidden">
+        <div class="text-center">
+            <div class="loading-spinner"></div>
+            <p class="mt-4 text-gray-600">Memuat data...</p>
+        </div>
+    </div>
+
+    <!-- Header / Navigation Bar -->
+    <header class="fixed top-0 left-0 right-0 bg-white shadow-md z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <!-- Logo and Brand -->
+            <a href="dosen-dashboard.html" class="flex items-center space-x-3">
+                <img src="https://via.placeholder.com/40x40/3B82F6/ffffff?text=LPPM" alt="Logo LPPM ITB Yadika" class="h-10 w-10 rounded">
+                <div>
+                    <h1 class="text-xl font-bold gradient-text">Portal Dosen</h1>
+                    <p class="text-xs text-gray-500">LPPM ITB Yadika</p>
+                </div>
+            </a>
+            
+            <!-- Navigation Menu -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="dosen-dashboard.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-home mr-2"></i>Dashboard
+                </a>
+                <a href="dosen-berita.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-newspaper mr-2"></i>Berita
+                </a>
+                <a href="dosen-penelitian-pengabdian.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-flask mr-2"></i>Penelitian & Pengabdian
+                </a>
+                <a href="dosen-repository.html" class="nav-link active text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-archive mr-2"></i>Repository
+                </a>
+                <a href="dosen-profil.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-user-circle mr-2"></i>Profil Saya
+                </a>
+            </div>
+            
+            <!-- User Info & Logout -->
+            <div class="flex items-center space-x-4">
+                <div class="hidden md:block text-right">
+                    <p class="text-sm font-semibold text-gray-700" id="userNameDisplay">Loading...</p>
+                    <p class="text-xs text-gray-500" id="userNidnDisplay">-</p>
+                </div>
+                <button onclick="handleLogout()" class="flex items-center space-x-2 p-2 rounded-lg text-red-600 hover:bg-red-50 transition">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span class="hidden sm:inline">Logout</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="pt-20">
+        <div class="container mx-auto px-6 py-8">
+            <!-- Page Header -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8" data-aos="fade-down">
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-800">Repository Karya Ilmiah</h2>
+                    <p class="text-gray-600">Kelola dan bagikan karya ilmiah, publikasi, dan HKI</p>
+                </div>
+                
+                <!-- Upload Button -->
+                <button onclick="openUploadModal()" class="mt-4 md:mt-0 bg-gradient-to-r from-purple-500 to-pink-600 text-white font-bold py-3 px-6 rounded-lg hover:shadow-xl transition-all">
+                    <i class="fas fa-cloud-upload-alt mr-2"></i>Upload Karya
+                </button>
+            </div>
+
+            <!-- Statistics Cards -->
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8" data-aos="fade-up" data-aos-delay="50">
+                <div class="bg-white rounded-lg shadow p-4 text-center">
+                    <p class="text-2xl font-bold text-blue-600" id="totalJurnal">0</p>
+                    <p class="text-xs text-gray-500">Jurnal</p>
+                </div>
+                <div class="bg-white rounded-lg shadow p-4 text-center">
+                    <p class="text-2xl font-bold text-yellow-600" id="totalProsiding">0</p>
+                    <p class="text-xs text-gray-500">Prosiding</p>
+                </div>
+                <div class="bg-white rounded-lg shadow p-4 text-center">
+                    <p class="text-2xl font-bold text-green-600" id="totalBuku">0</p>
+                    <p class="text-xs text-gray-500">Buku</p>
+                </div>
+                <div class="bg-white rounded-lg shadow p-4 text-center">
+                    <p class="text-2xl font-bold text-purple-600" id="totalHKI">0</p>
+                    <p class="text-xs text-gray-500">HKI</p>
+                </div>
+                <div class="bg-white rounded-lg shadow p-4 text-center">
+                    <p class="text-2xl font-bold text-red-600" id="totalLaporan">0</p>
+                    <p class="text-xs text-gray-500">Laporan</p>
+                </div>
+            </div>
+
+            <!-- Search and Filter Bar -->
+            <div class="bg-white rounded-xl shadow-lg p-6 mb-6" data-aos="fade-up">
+                <div class="flex flex-col md:flex-row gap-4">
+                    <!-- Search Input -->
+                    <div class="relative flex-1">
+                        <input type="text" id="searchInput" placeholder="Cari judul, penulis, atau kata kunci..." 
+                               class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                        <i class="fas fa-search absolute left-3 top-3.5 text-gray-400"></i>
+                    </div>
+                    
+                    <!-- Type Filter -->
+                    <select id="typeFilter" class="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                        <option value="all">Semua Tipe</option>
+                        <option value="jurnal">Jurnal</option>
+                        <option value="prosiding">Prosiding</option>
+                        <option value="buku">Buku</option>
+                        <option value="hki">HKI</option>
+                        <option value="laporan">Laporan</option>
+                    </select>
+                    
+                    <!-- Year Filter -->
+                    <select id="yearFilter" class="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                        <option value="all">Semua Tahun</option>
+                        <option value="2024">2024</option>
+                        <option value="2023">2023</option>
+                        <option value="2022">2022</option>
+                        <option value="2021">2021</option>
+                        <option value="2020">2020</option>
+                    </select>
+                    
+                    <!-- Search Button -->
+                    <button onclick="searchRepository()" class="bg-purple-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-purple-700 transition-colors">
+                        <i class="fas fa-filter mr-2"></i>Filter
+                    </button>
+                    
+                    <!-- Reset Button -->
+                    <button onclick="resetFilters()" class="bg-gray-200 text-gray-700 font-bold py-3 px-6 rounded-lg hover:bg-gray-300 transition-colors">
+                        <i class="fas fa-redo-alt mr-2"></i>Reset
+                    </button>
+                </div>
+            </div>
+
+            <!-- Repository Tabs -->
+            <div class="mb-6 border-b border-gray-200" data-aos="fade-up">
+                <ul class="flex flex-wrap -mb-px text-sm font-medium text-center">
+                    <li class="mr-2">
+                        <button onclick="switchTab('all')" class="tab-link active inline-block p-4 text-purple-600 border-b-2 border-purple-600 rounded-t-lg">
+                            Semua
+                        </button>
+                    </li>
+                    <li class="mr-2">
+                        <button onclick="switchTab('jurnal')" class="tab-link inline-block p-4 border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300">
+                            Jurnal
+                        </button>
+                    </li>
+                    <li class="mr-2">
+                        <button onclick="switchTab('prosiding')" class="tab-link inline-block p-4 border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300">
+                            Prosiding
+                        </button>
+                    </li>
+                    <li class="mr-2">
+                        <button onclick="switchTab('buku')" class="tab-link inline-block p-4 border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300">
+                            Buku
+                        </button>
+                    </li>
+                    <li class="mr-2">
+                        <button onclick="switchTab('hki')" class="tab-link inline-block p-4 border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300">
+                            HKI
+                        </button>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Sort Options -->
+            <div class="flex justify-between items-center mb-4" data-aos="fade-up">
+                <p class="text-sm text-gray-500" id="resultCount">Menampilkan 0 dokumen</p>
+                <div class="flex items-center space-x-2">
+                    <label class="text-sm text-gray-600">Urutkan:</label>
+                    <select id="sortSelect" onchange="sortRepository()" class="text-sm border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500">
+                        <option value="terbaru">Terbaru</option>
+                        <option value="terlama">Terlama</option>
+                        <option value="judul-asc">Judul A-Z</option>
+                        <option value="judul-desc">Judul Z-A</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Repository List -->
+            <div id="repositoryContainer" class="space-y-4" data-aos="fade-up">
+                <!-- Repository items will be loaded here -->
+                <div class="text-center py-12">
+                    <div class="loading-spinner"></div>
+                    <p class="mt-4 text-gray-600">Memuat repository...</p>
+                </div>
+            </div>
+
+            <!-- Load More Button -->
+            <div class="text-center mt-8" id="loadMoreContainer">
+                <button onclick="loadMoreItems()" class="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                    <i class="fas fa-sync-alt mr-2"></i>Muat Lebih Banyak
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Upload Modal -->
+    <div id="uploadModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6 border-b sticky top-0 bg-white flex justify-between items-center">
+                <h3 class="text-xl font-bold text-gray-800">Upload Karya Baru</h3>
+                <button onclick="closeUploadModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+            
+            <div class="p-6">
+                <form id="uploadForm" onsubmit="event.preventDefault(); saveRepository();">
+                    <div class="space-y-4">
+                        <!-- Title -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-heading mr-2 text-purple-500"></i>Judul Karya
+                            </label>
+                            <input type="text" id="repoTitle" required 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                                   placeholder="Masukkan judul karya">
+                        </div>
+                        
+                        <!-- Type and Year -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-tag mr-2 text-purple-500"></i>Tipe Karya
+                                </label>
+                                <select id="repoType" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                                    <option value="jurnal">Jurnal</option>
+                                    <option value="prosiding">Prosiding</option>
+                                    <option value="buku">Buku</option>
+                                    <option value="hki">HKI</option>
+                                    <option value="laporan">Laporan Penelitian</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-calendar mr-2 text-purple-500"></i>Tahun
+                                </label>
+                                <select id="repoYear" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                                    <option value="2024">2024</option>
+                                    <option value="2023">2023</option>
+                                    <option value="2022">2022</option>
+                                    <option value="2021">2021</option>
+                                    <option value="2020">2020</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Authors -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-users mr-2 text-purple-500"></i>Penulis
+                            </label>
+                            <input type="text" id="repoAuthors" required 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                                   placeholder="Nama penulis (pisahkan dengan koma)">
+                        </div>
+                        
+                        <!-- Abstract -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-align-left mr-2 text-purple-500"></i>Abstrak
+                            </label>
+                            <textarea id="repoAbstract" rows="4" required
+                                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                                      placeholder="Tulis abstrak karya..."></textarea>
+                        </div>
+                        
+                        <!-- Keywords -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-tags mr-2 text-purple-500"></i>Kata Kunci
+                            </label>
+                            <input type="text" id="repoKeywords" required 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                                   placeholder="Kata kunci (pisahkan dengan koma)">
+                        </div>
+                        
+                        <!-- File Upload -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-file-pdf mr-2 text-purple-500"></i>File
+                            </label>
+                            <div class="flex items-center space-x-4">
+                                <button type="button" onclick="document.getElementById('repoFile').click()" 
+                                        class="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200">
+                                    <i class="fas fa-upload mr-2"></i>Pilih File
+                                </button>
+                                <span id="repoFileName" class="text-sm text-gray-500">Tidak ada file dipilih</span>
+                            </div>
+                            <input type="file" id="repoFile" accept=".pdf,.doc,.docx" class="hidden" onchange="updateFileName(this)">
+                            <p class="text-xs text-gray-500 mt-1">Format: PDF, DOC, DOCX. Maksimal 10MB</p>
+                        </div>
+                        
+                        <!-- Additional Info (conditional based on type) -->
+                        <div id="additionalFields">
+                            <!-- Will be filled dynamically -->
+                        </div>
+                        
+                        <!-- Visibility -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-globe mr-2 text-purple-500"></i>Visibilitas
+                            </label>
+                            <div class="space-x-4">
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="visibility" value="public" checked class="text-purple-600">
+                                    <span class="ml-2 text-gray-700">Publik</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="visibility" value="internal" class="text-purple-600">
+                                    <span class="ml-2 text-gray-700">Internal Kampus</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="visibility" value="private" class="text-purple-600">
+                                    <span class="ml-2 text-gray-700">Private</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="flex justify-end space-x-3 pt-4 border-t">
+                            <button type="button" onclick="closeUploadModal()" 
+                                    class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
+                                Batal
+                            </button>
+                            <button type="submit" 
+                                    class="px-6 py-2 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-lg hover:shadow-lg transition">
+                                Upload
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Modal -->
+    <div id="viewModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6 border-b sticky top-0 bg-white flex justify-between items-center">
+                <h3 class="text-xl font-bold text-gray-800" id="viewModalTitle"></h3>
+                <button onclick="closeViewModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+            
+            <div class="p-6" id="viewModalContent">
+                <!-- Content will be loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <script>
+        // Initialize AOS
+        AOS.init({ duration: 800, once: true });
+
+        // Mock Auth Object
+        const auth = {
+            getUser: function() {
+                const userStr = localStorage.getItem('user');
+                return userStr ? JSON.parse(userStr) : null;
+            },
+            requireRole: function(role) {
+                const user = this.getUser();
+                if (!user || user.role !== role) {
+                    window.location.href = '../login.html';
+                    return false;
+                }
+                return true;
+            },
+            logout: function() {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = '../login.html';
+            }
+        };
+
+        // Mock Repository Data
+        let repositoryData = [
+            {
+                id: 1,
+                judul: 'Deep Learning Approach for Sentiment Analysis in Indonesian Social Media',
+                penulis: ['Dr. Ahmad Fauzi, M.T.', 'Prof. Bambang Suharto', 'Dr. Ratna Dewi'],
+                tahun: 2024,
+                tipe: 'jurnal',
+                abstrak: 'Penelitian ini mengembangkan model deep learning untuk analisis sentimen pada media sosial berbahasa Indonesia. Menggunakan arsitektur LSTM dan attention mechanism, model mencapai akurasi 92% pada dataset tweet berbahasa Indonesia.',
+                kata_kunci: ['deep learning', 'sentiment analysis', 'LSTM', 'social media'],
+                file_type: 'pdf',
+                file_size: '2.4 MB',
+                downloads: 156,
+                views: 342,
+                publisher: 'IEEE Access',
+                volume: 'Vol. 12',
+                terindeks: 'Scopus Q1',
+                visibility: 'public',
+                doi: '10.1109/ACCESS.2024.12345'
+            },
+            {
+                id: 2,
+                judul: 'Pengembangan Sistem IoT untuk Smart Farming pada Tanaman Hidroponik',
+                penulis: ['Dr. Ahmad Fauzi, M.T.', 'Ir. Hendra Kurniawan'],
+                tahun: 2023,
+                tipe: 'prosiding',
+                abstrak: 'Makalah ini dipresentasikan dalam konferensi internasional tentang pengembangan sistem IoT untuk monitoring tanaman hidroponik. Sistem menggunakan sensor suhu, kelembaban, dan pH yang terintegrasi dengan platform cloud.',
+                kata_kunci: ['IoT', 'smart farming', 'hidroponik', 'monitoring'],
+                file_type: 'pdf',
+                file_size: '1.8 MB',
+                downloads: 89,
+                views: 215,
+                konferensi: 'International Conference on Smart Agriculture 2023',
+                lokasi: 'Bali, Indonesia',
+                visibility: 'public'
+            },
+            {
+                id: 3,
+                judul: 'Metodologi Penelitian: Teori dan Praktik',
+                penulis: ['Dr. Ahmad Fauzi, M.T.', 'Prof. Bambang Suharto'],
+                tahun: 2023,
+                tipe: 'buku',
+                abstrak: 'Buku ini membahas secara komprehensif tentang metodologi penelitian, mulai dari perumusan masalah, studi literatur, pengumpulan data, analisis, hingga penulisan laporan penelitian. Dilengkapi dengan contoh-contoh praktis dan studi kasus.',
+                kata_kunci: ['metodologi penelitian', 'metode ilmiah', 'analisis data'],
+                file_type: 'pdf',
+                file_size: '5.2 MB',
+                downloads: 234,
+                views: 512,
+                isbn: '978-602-1234-56-7',
+                penerbit: 'ITB Yadika Press',
+                visibility: 'public'
+            },
+            {
+                id: 4,
+                judul: 'Sistem Deteksi Dini Penyakit Tanaman Padi Berbasis Citra Digital',
+                penulis: ['Dr. Ahmad Fauzi, M.T.'],
+                tahun: 2023,
+                tipe: 'hki',
+                abstrak: 'Hak Cipta atas program komputer sistem deteksi dini penyakit tanaman padi menggunakan metode convolutional neural network. Sistem mampu mengidentifikasi 5 jenis penyakit dengan akurasi 95%.',
+                kata_kunci: ['CNN', 'deteksi penyakit', 'tanaman padi', 'image processing'],
+                file_type: 'pdf',
+                file_size: '1.2 MB',
+                downloads: 45,
+                views: 112,
+                nomor_hki: 'EC00202312345',
+                tanggal_terbit: '15 Juni 2023',
+                visibility: 'public'
+            },
+            {
+                id: 5,
+                judul: 'Laporan Penelitian: Pengembangan E-Learning Adaptif Berbasis AI',
+                penulis: ['Dr. Ahmad Fauzi, M.T.', 'Dr. Ratna Dewi', 'Ir. Hendra Kurniawan'],
+                tahun: 2022,
+                tipe: 'laporan',
+                abstrak: 'Laporan akhir penelitian tentang pengembangan sistem e-learning adaptif yang dapat menyesuaikan materi pembelajaran berdasarkan kemampuan dan preferensi mahasiswa menggunakan algoritma machine learning.',
+                kata_kunci: ['e-learning', 'adaptive learning', 'AI', 'pendidikan'],
+                file_type: 'pdf',
+                file_size: '3.5 MB',
+                downloads: 67,
+                views: 156,
+                sponsor: 'Hibah DRPM 2022',
+                visibility: 'internal'
+            }
+        ];
+
+        let currentPage = 1;
+        let isLoading = false;
+        let hasMore = true;
+        let currentTab = 'all';
+        let currentFilters = {
+            search: '',
+            type: 'all',
+            year: 'all',
+            sort: 'terbaru'
+        };
+
+        // Utility Functions
+        function showLoading() {
+            document.getElementById('loadingOverlay').classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.add('hidden');
+        }
+
+        function showNotification(message, type = 'success') {
+            Swal.fire({
+                icon: type,
+                title: type === 'success' ? 'Berhasil' : 'Gagal',
+                text: message,
+                timer: 2000,
+                showConfirmButton: false
+            });
+        }
+
+        function handleLogout() {
+            auth.logout();
+        }
+
+        // Update User Info
+        function updateUserInfo() {
+            const user = auth.getUser();
+            if (user) {
+                document.getElementById('userNameDisplay').textContent = user.name || 'Dr. Ahmad Fauzi, M.T.';
+                document.getElementById('userNidnDisplay').textContent = user.nidn || '1234567890';
+            }
+        }
+
+        // Update Statistics
+        function updateStats() {
+            document.getElementById('totalJurnal').textContent = repositoryData.filter(r => r.tipe === 'jurnal').length;
+            document.getElementById('totalProsiding').textContent = repositoryData.filter(r => r.tipe === 'prosiding').length;
+            document.getElementById('totalBuku').textContent = repositoryData.filter(r => r.tipe === 'buku').length;
+            document.getElementById('totalHKI').textContent = repositoryData.filter(r => r.tipe === 'hki').length;
+            document.getElementById('totalLaporan').textContent = repositoryData.filter(r => r.tipe === 'laporan').length;
+        }
+
+        // Get Badge Class
+        function getBadgeClass(tipe) {
+            switch(tipe) {
+                case 'jurnal': return 'badge-jurnal';
+                case 'prosiding': return 'badge-prosiding';
+                case 'buku': return 'badge-buku';
+                case 'hki': return 'badge-hki';
+                case 'laporan': return 'badge-laporan';
+                default: return 'bg-gray-100 text-gray-800';
+            }
+        }
+
+        // Get Icon Class
+        function getIconClass(tipe) {
+            switch(tipe) {
+                case 'jurnal': return 'fa-book-open';
+                case 'prosiding': return 'fa-file-alt';
+                case 'buku': return 'fa-book';
+                case 'hki': return 'fa-copyright';
+                case 'laporan': return 'fa-file-pdf';
+                default: return 'fa-file';
+            }
+        }
+
+        // Switch Tab
+        window.switchTab = function(tab) {
+            currentTab = tab;
+            
+            // Update active tab
+            document.querySelectorAll('.tab-link').forEach(link => {
+                link.classList.remove('active', 'text-purple-600', 'border-purple-600');
+                link.classList.add('border-transparent');
+            });
+            
+            event.target.classList.add('active', 'text-purple-600', 'border-purple-600');
+            
+            // Reset filters except search
+            currentFilters.type = tab === 'all' ? 'all' : tab;
+            if (tab !== 'all') {
+                document.getElementById('typeFilter').value = tab;
+            } else {
+                document.getElementById('typeFilter').value = 'all';
+            }
+            
+            showLoading();
+            renderRepository(true);
+        };
+
+        // Filter and Sort Repository
+        function filterRepository() {
+            let filtered = [...repositoryData];
+            
+            // Apply tab filter
+            if (currentTab !== 'all') {
+                filtered = filtered.filter(item => item.tipe === currentTab);
+            }
+            
+            // Apply search filter
+            if (currentFilters.search) {
+                const searchTerm = currentFilters.search.toLowerCase();
+                filtered = filtered.filter(item => 
+                    item.judul.toLowerCase().includes(searchTerm) ||
+                    item.penulis.some(p => p.toLowerCase().includes(searchTerm)) ||
+                    item.kata_kunci.some(k => k.toLowerCase().includes(searchTerm))
+                );
+            }
+            
+            // Apply type filter
+            if (currentFilters.type !== 'all') {
+                filtered = filtered.filter(item => item.tipe === currentFilters.type);
+            }
+            
+            // Apply year filter
+            if (currentFilters.year !== 'all') {
+                filtered = filtered.filter(item => item.tahun.toString() === currentFilters.year);
+            }
+            
+            // Apply sorting
+            filtered.sort((a, b) => {
+                switch(currentFilters.sort) {
+                    case 'terbaru':
+                        return b.tahun - a.tahun;
+                    case 'terlama':
+                        return a.tahun - b.tahun;
+                    case 'judul-asc':
+                        return a.judul.localeCompare(b.judul);
+                    case 'judul-desc':
+                        return b.judul.localeCompare(a.judul);
+                    default:
+                        return b.tahun - a.tahun;
+                }
+            });
+            
+            return filtered;
+        }
+
+        // Render Repository Items
+        function renderRepository(reset = false) {
+            if (isLoading) return;
+            
+            isLoading = true;
+            
+            if (reset) {
+                currentPage = 1;
+                document.getElementById('repositoryContainer').innerHTML = '';
+            }
+
+            setTimeout(() => {
+                const filtered = filterRepository();
+                
+                // Update result count
+                document.getElementById('resultCount').textContent = `Menampilkan ${filtered.length} dokumen`;
+                
+                // Pagination
+                const itemsPerPage = 5;
+                const start = (currentPage - 1) * itemsPerPage;
+                const end = start + itemsPerPage;
+                const pageItems = filtered.slice(start, end);
+                
+                hasMore = end < filtered.length;
+
+                if (pageItems.length === 0 && currentPage === 1) {
+                    document.getElementById('repositoryContainer').innerHTML = `
+                        <div class="text-center py-12 bg-white rounded-lg shadow">
+                            <i class="fas fa-archive text-6xl text-gray-300 mb-4"></i>
+                            <p class="text-gray-500">Tidak ada karya dalam repository</p>
+                            <button onclick="openUploadModal()" class="mt-4 px-4 py-2 bg-purple-600 text-white rounded-lg">
+                                <i class="fas fa-cloud-upload-alt mr-2"></i>Upload Karya
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    const itemsHTML = pageItems.map(item => {
+                        const badgeClass = getBadgeClass(item.tipe);
+                        const iconClass = getIconClass(item.tipe);
+                        const authors = item.penulis.join(', ');
+                        
+                        return `
+                            <div class="repo-item bg-white p-6 rounded-xl shadow-lg">
+                                <div class="flex flex-col md:flex-row justify-between">
+                                    <div class="flex-1">
+                                        <div class="flex items-start">
+                                            <i class="fas ${iconClass} text-3xl text-purple-500 mr-3"></i>
+                                            <div>
+                                                <h3 class="text-lg font-bold text-gray-800 hover:text-purple-600 cursor-pointer" onclick="viewRepository(${item.id})">
+                                                    ${item.judul}
+                                                </h3>
+                                                
+                                                <div class="mt-2 flex flex-wrap items-center gap-2 text-sm text-gray-600">
+                                                    <span><i class="fas fa-user mr-1"></i> ${authors}</span>
+                                                    <span><i class="fas fa-calendar mr-1"></i> ${item.tahun}</span>
+                                                    <span class="px-2 py-1 rounded text-xs font-semibold ${badgeClass}">
+                                                        ${item.tipe.charAt(0).toUpperCase() + item.tipe.slice(1)}
+                                                    </span>
+                                                    <span class="text-xs text-gray-400">
+                                                        <i class="fas fa-download mr-1"></i>${item.downloads}
+                                                    </span>
+                                                </div>
+                                                
+                                                <p class="mt-2 text-sm text-gray-600 line-clamp-2">${item.abstrak.substring(0, 150)}...</p>
+                                                
+                                                <div class="mt-3 flex flex-wrap gap-1">
+                                                    ${item.kata_kunci.slice(0, 3).map(k => `
+                                                        <span class="px-2 py-1 bg-gray-100 rounded text-xs text-gray-600">#${k}</span>
+                                                    `).join('')}
+                                                    ${item.kata_kunci.length > 3 ? `<span class="text-xs text-gray-400">+${item.kata_kunci.length - 3}</span>` : ''}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex md:flex-col space-x-2 md:space-x-0 md:space-y-2 mt-4 md:mt-0">
+                                        <button onclick="viewRepository(${item.id})" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 text-sm">
+                                            <i class="fas fa-eye mr-1"></i>Lihat
+                                        </button>
+                                        <button onclick="downloadRepository(${item.id})" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 text-sm">
+                                            <i class="fas fa-download mr-1"></i>Download
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                    
+                    if (reset) {
+                        document.getElementById('repositoryContainer').innerHTML = itemsHTML;
+                    } else {
+                        document.getElementById('repositoryContainer').innerHTML += itemsHTML;
+                    }
+                }
+
+                // Update load more button
+                document.getElementById('loadMoreContainer').style.display = hasMore ? 'block' : 'none';
+                
+                isLoading = false;
+                hideLoading();
+            }, 500);
+        }
+
+        // Search Repository
+        window.searchRepository = function() {
+            currentFilters.search = document.getElementById('searchInput').value;
+            currentFilters.type = document.getElementById('typeFilter').value;
+            currentFilters.year = document.getElementById('yearFilter').value;
+            
+            showLoading();
+            renderRepository(true);
+        };
+
+        // Reset Filters
+        window.resetFilters = function() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('typeFilter').value = 'all';
+            document.getElementById('yearFilter').value = 'all';
+            document.getElementById('sortSelect').value = 'terbaru';
+            
+            currentFilters = {
+                search: '',
+                type: 'all',
+                year: 'all',
+                sort: 'terbaru'
+            };
+            currentTab = 'all';
+            
+            // Update tab
+            document.querySelectorAll('.tab-link').forEach(link => {
+                link.classList.remove('active', 'text-purple-600', 'border-purple-600');
+                link.classList.add('border-transparent');
+            });
+            document.querySelector('.tab-link').classList.add('active', 'text-purple-600', 'border-purple-600');
+            
+            showLoading();
+            renderRepository(true);
+        };
+
+        // Sort Repository
+        window.sortRepository = function() {
+            currentFilters.sort = document.getElementById('sortSelect').value;
+            showLoading();
+            renderRepository(true);
+        };
+
+        // Load More
+        window.loadMoreItems = function() {
+            currentPage++;
+            renderRepository(false);
+        };
+
+        // Open Upload Modal
+        window.openUploadModal = function() {
+            document.getElementById('uploadModal').classList.remove('hidden');
+            updateAdditionalFields();
+        };
+
+        // Close Upload Modal
+        window.closeUploadModal = function() {
+            document.getElementById('uploadModal').classList.add('hidden');
+            document.getElementById('uploadForm').reset();
+            document.getElementById('repoFileName').textContent = 'Tidak ada file dipilih';
+        };
+
+        // Update File Name
+        window.updateFileName = function(input) {
+            const fileName = input.files[0] ? input.files[0].name : 'Tidak ada file dipilih';
+            document.getElementById('repoFileName').textContent = fileName;
+        };
+
+        // Update Additional Fields based on Type
+        function updateAdditionalFields() {
+            const type = document.getElementById('repoType').value;
+            const container = document.getElementById('additionalFields');
+            
+            let fields = '';
+            
+            switch(type) {
+                case 'jurnal':
+                    fields = `
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-building mr-2 text-purple-500"></i>Nama Jurnal
+                                </label>
+                                <input type="text" id="jurnalNama" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-hashtag mr-2 text-purple-500"></i>Volume/Edisi
+                                </label>
+                                <input type="text" id="jurnalVolume" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-trophy mr-2 text-purple-500"></i>Indeks
+                                </label>
+                                <select id="jurnalIndeks" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                    <option value="scopus-q1">Scopus Q1</option>
+                                    <option value="scopus-q2">Scopus Q2</option>
+                                    <option value="scopus-q3">Scopus Q3</option>
+                                    <option value="scopus-q4">Scopus Q4</option>
+                                    <option value="sinta-1">Sinta 1</option>
+                                    <option value="sinta-2">Sinta 2</option>
+                                    <option value="sinta-3">Sinta 3</option>
+                                    <option value="lainnya">Lainnya</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-link mr-2 text-purple-500"></i>DOI
+                                </label>
+                                <input type="text" id="jurnalDoi" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                            </div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'prosiding':
+                    fields = `
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-calendar-alt mr-2 text-purple-500"></i>Nama Konferensi
+                                </label>
+                                <input type="text" id="prosidingNama" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-map-marker-alt mr-2 text-purple-500"></i>Lokasi
+                                </label>
+                                <input type="text" id="prosidingLokasi" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-globe mr-2 text-purple-500"></i>Penyelenggara
+                                </label>
+                                <input type="text" id="prosidingPenyelenggara" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-link mr-2 text-purple-500"></i>URL Prosiding
+                                </label>
+                                <input type="url" id="prosidingUrl" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                            </div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'buku':
+                    fields = `
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-barcode mr-2 text-purple-500"></i>ISBN
+                                </label>
+                                <input type="text" id="bukuIsbn" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-building mr-2 text-purple-500"></i>Penerbit
+                                </label>
+                                <input type="text" id="bukuPenerbit" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-book-open mr-2 text-purple-500"></i>Jumlah Halaman
+                                </label>
+                                <input type="number" id="bukuHalaman" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-tag mr-2 text-purple-500"></i>Edisi
+                                </label>
+                                <input type="text" id="bukuEdisi" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                            </div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'hki':
+                    fields = `
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-hashtag mr-2 text-purple-500"></i>Nomor HKI
+                                </label>
+                                <input type="text" id="hkiNomor" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-calendar-check mr-2 text-purple-500"></i>Tanggal Terbit
+                                </label>
+                                <input type="date" id="hkiTanggal" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-tag mr-2 text-purple-500"></i>Jenis HKI
+                                </label>
+                                <select id="hkiJenis" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                    <option value="paten">Paten</option>
+                                    <option value="hak-cipta">Hak Cipta</option>
+                                    <option value="desain-industri">Desain Industri</option>
+                                    <option value="merek">Merek</option>
+                                </select>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'laporan':
+                    fields = `
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-building mr-2 text-purple-500"></i>Sponsor
+                                </label>
+                                <input type="text" id="laporanSponsor" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-tag mr-2 text-purple-500"></i>Kontrak
+                                </label>
+                                <input type="text" id="laporanKontrak" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-clock mr-2 text-purple-500"></i>Periode
+                                </label>
+                                <input type="text" id="laporanPeriode" class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="Contoh: Tahun ke-1">
+                            </div>
+                        </div>
+                    `;
+                    break;
+            }
+            
+            container.innerHTML = fields;
+        }
+
+        // Listen for type change
+        document.getElementById('repoType')?.addEventListener('change', updateAdditionalFields);
+
+        // Save Repository
+        window.saveRepository = function() {
+            const title = document.getElementById('repoTitle').value;
+            const type = document.getElementById('repoType').value;
+            const year = document.getElementById('repoYear').value;
+            const authors = document.getElementById('repoAuthors').value.split(',').map(a => a.trim());
+            const abstract = document.getElementById('repoAbstract').value;
+            const keywords = document.getElementById('repoKeywords').value.split(',').map(k => k.trim());
+            const visibility = document.querySelector('input[name="visibility"]:checked').value;
+            
+            // Get additional fields based on type
+            let additionalData = {};
+            
+            switch(type) {
+                case 'jurnal':
+                    additionalData = {
+                        publisher: document.getElementById('jurnalNama')?.value,
+                        volume: document.getElementById('jurnalVolume')?.value,
+                        terindeks: document.getElementById('jurnalIndeks')?.value,
+                        doi: document.getElementById('jurnalDoi')?.value
+                    };
+                    break;
+                    
+                case 'prosiding':
+                    additionalData = {
+                        konferensi: document.getElementById('prosidingNama')?.value,
+                        lokasi: document.getElementById('prosidingLokasi')?.value,
+                        penyelenggara: document.getElementById('prosidingPenyelenggara')?.value,
+                        url: document.getElementById('prosidingUrl')?.value
+                    };
+                    break;
+                    
+                case 'buku':
+                    additionalData = {
+                        isbn: document.getElementById('bukuIsbn')?.value,
+                        penerbit: document.getElementById('bukuPenerbit')?.value,
+                        halaman: document.getElementById('bukuHalaman')?.value,
+                        edisi: document.getElementById('bukuEdisi')?.value
+                    };
+                    break;
+                    
+                case 'hki':
+                    additionalData = {
+                        nomor_hki: document.getElementById('hkiNomor')?.value,
+                        tanggal_terbit: document.getElementById('hkiTanggal')?.value,
+                        jenis_hki: document.getElementById('hkiJenis')?.value
+                    };
+                    break;
+                    
+                case 'laporan':
+                    additionalData = {
+                        sponsor: document.getElementById('laporanSponsor')?.value,
+                        kontrak: document.getElementById('laporanKontrak')?.value,
+                        periode: document.getElementById('laporanPeriode')?.value
+                    };
+                    break;
+            }
+            
+            const user = auth.getUser();
+            
+            // Create new repository entry
+            const newRepo = {
+                id: repositoryData.length + 1,
+                judul: title,
+                penulis: authors,
+                tahun: parseInt(year),
+                tipe: type,
+                abstrak: abstract,
+                kata_kunci: keywords,
+                file_type: 'pdf',
+                file_size: '2.4 MB',
+                downloads: 0,
+                views: 0,
+                visibility: visibility,
+                ...additionalData
+            };
+            
+            repositoryData.push(newRepo);
+            
+            closeUploadModal();
+            updateStats();
+            showLoading();
+            renderRepository(true);
+            showNotification('Karya berhasil diupload');
+        };
+
+        // View Repository
+        window.viewRepository = function(id) {
+            const item = repositoryData.find(r => r.id === id);
+            if (!item) return;
+            
+            // Increment views
+            item.views++;
+            
+            const modal = document.getElementById('viewModal');
+            document.getElementById('viewModalTitle').textContent = item.judul;
+            
+            const badgeClass = getBadgeClass(item.tipe);
+            const authors = item.penulis.join(', ');
+            
+            // Build additional info HTML
+            let additionalInfo = '';
+            
+            switch(item.tipe) {
+                case 'jurnal':
+                    additionalInfo = `
+                        <div class="grid grid-cols-2 gap-3 mt-4">
+                            <div class="bg-gray-50 p-3 rounded-lg">
+                                <p class="text-xs text-gray-500">Jurnal</p>
+                                <p class="font-semibold">${item.publisher || '-'}</p>
+                            </div>
+                            <div class="bg-gray-50 p-3 rounded-lg">
+                                <p class="text-xs text-gray-500">Volume</p>
+                                <p class="font-semibold">${item.volume || '-'}</p>
+                            </div>
+                            <div class="bg-gray-50 p-3 rounded-lg">
+                                <p class="text-xs text-gray-500">Indeks</p>
+                                <p class="font-semibold">${item.terindeks || '-'}</p>
+                            </div>
+                            <div class="bg-gray-50 p-3 rounded-lg">
+                                <p class="text-xs text-gray-500">DOI</p>
+                                <p class="font-semibold text-blue-600">${item.doi || '-'}</p>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'prosiding':
+                    additionalInfo = `
+                        <div class="grid grid-cols-2 gap-3 mt-4">
+                            <div class="bg-gray-50 p-3 rounded-lg">
+                                <p class="text-xs text-gray-500">Konferensi</p>
+                                <p class="font-semibold">${item.konferensi || '-'}</p>
+                            </div>
+                            <div class="bg-gray-50 p-3 rounded-lg">
+                                <p class="text-xs text-gray-500">Lokasi</p>
+                                <p class="font-semibold">${item.lokasi || '-'}</p>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'buku':
+                    additionalInfo = `
+                        <div class="grid grid-cols-2 gap-3 mt-4">
+                            <div class="bg-gray-50 p-3 rounded-lg">
+                                <p class="text-xs text-gray-500">ISBN</p>
+                                <p class="font-semibold">${item.isbn || '-'}</p>
+                            </div>
+                            <div class="bg-gray-50 p-3 rounded-lg">
+                                <p class="text-xs text-gray-500">Penerbit</p>
+                                <p class="font-semibold">${item.penerbit || '-'}</p>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'hki':
+                    additionalInfo = `
+                        <div class="grid grid-cols-2 gap-3 mt-4">
+                            <div class="bg-gray-50 p-3 rounded-lg">
+                                <p class="text-xs text-gray-500">Nomor HKI</p>
+                                <p class="font-semibold">${item.nomor_hki || '-'}</p>
+                            </div>
+                            <div class="bg-gray-50 p-3 rounded-lg">
+                                <p class="text-xs text-gray-500">Tanggal Terbit</p>
+                                <p class="font-semibold">${item.tanggal_terbit || '-'}</p>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'laporan':
+                    additionalInfo = `
+                        <div class="grid grid-cols-2 gap-3 mt-4">
+                            <div class="bg-gray-50 p-3 rounded-lg">
+                                <p class="text-xs text-gray-500">Sponsor</p>
+                                <p class="font-semibold">${item.sponsor || '-'}</p>
+                            </div>
+                            <div class="bg-gray-50 p-3 rounded-lg">
+                                <p class="text-xs text-gray-500">Kontrak</p>
+                                <p class="font-semibold">${item.kontrak || '-'}</p>
+                            </div>
+                        </div>
+                    `;
+                    break;
+            }
+            
+            document.getElementById('viewModalContent').innerHTML = `
+                <div class="space-y-4">
+                    <!-- Basic Info -->
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span class="px-2 py-1 rounded text-xs font-semibold ${badgeClass}">
+                            ${item.tipe.charAt(0).toUpperCase() + item.tipe.slice(1)}
+                        </span>
+                        <span class="text-sm text-gray-500">
+                            <i class="fas fa-calendar mr-1"></i>${item.tahun}
+                        </span>
+                        <span class="text-sm text-gray-500">
+                            <i class="fas fa-eye mr-1"></i>${item.views} dilihat
+                        </span>
+                        <span class="text-sm text-gray-500">
+                            <i class="fas fa-download mr-1"></i>${item.downloads} download
+                        </span>
+                    </div>
+                    
+                    <!-- Authors -->
+                    <div>
+                        <h4 class="font-semibold text-gray-700">Penulis</h4>
+                        <p class="text-gray-600">${authors}</p>
+                    </div>
+                    
+                    <!-- Abstract -->
+                    <div>
+                        <h4 class="font-semibold text-gray-700">Abstrak</h4>
+                        <p class="text-gray-600">${item.abstrak}</p>
+                    </div>
+                    
+                    <!-- Keywords -->
+                    <div>
+                        <h4 class="font-semibold text-gray-700">Kata Kunci</h4>
+                        <div class="flex flex-wrap gap-2 mt-1">
+                            ${item.kata_kunci.map(k => `
+                                <span class="px-3 py-1 bg-gray-100 rounded-full text-sm text-gray-700">#${k}</span>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <!-- Additional Info -->
+                    ${additionalInfo}
+                    
+                    <!-- Visibility -->
+                    <div>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs ${item.visibility === 'public' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}">
+                            <i class="fas ${item.visibility === 'public' ? 'fa-globe' : 'fa-lock'} mr-1"></i>
+                            ${item.visibility === 'public' ? 'Publik' : item.visibility === 'internal' ? 'Internal' : 'Private'}
+                        </span>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="flex justify-end space-x-3 pt-4 border-t">
+                        <button onclick="downloadRepository(${item.id})" class="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600">
+                            <i class="fas fa-download mr-2"></i>Download
+                        </button>
+                        <button onclick="editRepository(${item.id})" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600">
+                            <i class="fas fa-edit mr-2"></i>Edit
+                        </button>
+                        <button onclick="closeViewModal()" class="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-300">
+                            Tutup
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            modal.classList.remove('hidden');
+        };
+
+        // Close View Modal
+        window.closeViewModal = function() {
+            document.getElementById('viewModal').classList.add('hidden');
+        };
+
+        // Download Repository
+        window.downloadRepository = function(id) {
+            const item = repositoryData.find(r => r.id === id);
+            if (!item) return;
+            
+            item.downloads++;
+            showNotification(`Mengunduh "${item.judul.substring(0, 30)}..."`);
+        };
+
+        // Edit Repository
+        window.editRepository = function(id) {
+            const item = repositoryData.find(r => r.id === id);
+            if (!item) return;
+            
+            // Close view modal
+            closeViewModal();
+            
+            // Open upload modal with data
+            openUploadModal();
+            
+            // Fill form with existing data
+            document.getElementById('repoTitle').value = item.judul;
+            document.getElementById('repoType').value = item.tipe;
+            document.getElementById('repoYear').value = item.tahun;
+            document.getElementById('repoAuthors').value = item.penulis.join(', ');
+            document.getElementById('repoAbstract').value = item.abstrak;
+            document.getElementById('repoKeywords').value = item.kata_kunci.join(', ');
+            
+            // Set visibility
+            if (item.visibility === 'public') {
+                document.querySelector('input[value="public"]').checked = true;
+            } else if (item.visibility === 'internal') {
+                document.querySelector('input[value="internal"]').checked = true;
+            } else {
+                document.querySelector('input[value="private"]').checked = true;
+            }
+            
+            // Update additional fields based on type
+            updateAdditionalFields();
+            
+            // Fill additional fields after a short delay (for DOM to update)
+            setTimeout(() => {
+                switch(item.tipe) {
+                    case 'jurnal':
+                        if (document.getElementById('jurnalNama')) document.getElementById('jurnalNama').value = item.publisher || '';
+                        if (document.getElementById('jurnalVolume')) document.getElementById('jurnalVolume').value = item.volume || '';
+                        if (document.getElementById('jurnalIndeks')) document.getElementById('jurnalIndeks').value = item.terindeks || '';
+                        if (document.getElementById('jurnalDoi')) document.getElementById('jurnalDoi').value = item.doi || '';
+                        break;
+                        
+                    case 'prosiding':
+                        if (document.getElementById('prosidingNama')) document.getElementById('prosidingNama').value = item.konferensi || '';
+                        if (document.getElementById('prosidingLokasi')) document.getElementById('prosidingLokasi').value = item.lokasi || '';
+                        break;
+                        
+                    case 'buku':
+                        if (document.getElementById('bukuIsbn')) document.getElementById('bukuIsbn').value = item.isbn || '';
+                        if (document.getElementById('bukuPenerbit')) document.getElementById('bukuPenerbit').value = item.penerbit || '';
+                        break;
+                        
+                    case 'hki':
+                        if (document.getElementById('hkiNomor')) document.getElementById('hkiNomor').value = item.nomor_hki || '';
+                        if (document.getElementById('hkiTanggal')) document.getElementById('hkiTanggal').value = item.tanggal_terbit || '';
+                        break;
+                        
+                    case 'laporan':
+                        if (document.getElementById('laporanSponsor')) document.getElementById('laporanSponsor').value = item.sponsor || '';
+                        if (document.getElementById('laporanKontrak')) document.getElementById('laporanKontrak').value = item.kontrak || '';
+                        break;
+                }
+            }, 100);
+        };
+
+        // Initialize Page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check authentication
+            if (!auth.requireRole('dosen')) return;
+            
+            // Set mock user in localStorage if not exists
+            if (!localStorage.getItem('user')) {
+                localStorage.setItem('user', JSON.stringify({
+                    name: 'Dr. Ahmad Fauzi, M.T.',
+                    nidn: '1234567890',
+                    role: 'dosen',
+                    email: 'ahmad.fauzi@yadika.ac.id'
+                }));
+            }
+            
+            // Update UI
+            updateUserInfo();
+            updateStats();
+            
+            // Load repository
+            showLoading();
+            renderRepository(true);
+        });
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const uploadModal = document.getElementById('uploadModal');
+            const viewModal = document.getElementById('viewModal');
+            
+            if (event.target === uploadModal) {
+                closeUploadModal();
+            }
+            if (event.target === viewModal) {
+                closeViewModal();
+            }
+        };
+    </script>
+</body>
+</html>
