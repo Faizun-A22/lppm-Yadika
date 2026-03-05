@@ -1,0 +1,693 @@
+[ERROR] 2026-03-05T08:08:26.135Z - Error getting dashboard stats: TypeError: pool.connect is not a function
+    at RepositoryService.getDashboardStats (C:\LPPM\backend\services\admin\repositoryService.js:17:35)
+    at getDashboardStats (C:\LPPM\backend\controllers\admin\repositoryController.js:12:51)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:08:26.371Z - Error getting documents: TypeError: pool.connect is not a function
+    at RepositoryService.getAllDocuments (C:\LPPM\backend\services\admin\repositoryService.js:106:35)
+    at getAllDocuments (C:\LPPM\backend\controllers\admin\repositoryController.js:40:52)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:08:26.382Z - Error getting category counts: TypeError: pool.connect is not a function
+    at RepositoryService.getCategoryCounts (C:\LPPM\backend\services\admin\repositoryService.js:485:35)
+    at getCategoryCounts (C:\LPPM\backend\controllers\admin\repositoryController.js:230:52)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:08:26.858Z - Error getting category counts: TypeError: pool.connect is not a function
+    at RepositoryService.getCategoryCounts (C:\LPPM\backend\services\admin\repositoryService.js:485:35)
+    at getCategoryCounts (C:\LPPM\backend\controllers\admin\repositoryController.js:230:52)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:08:26.886Z - Error getting documents: TypeError: pool.connect is not a function
+    at RepositoryService.getAllDocuments (C:\LPPM\backend\services\admin\repositoryService.js:106:35)
+    at getAllDocuments (C:\LPPM\backend\controllers\admin\repositoryController.js:40:52)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:08:26.906Z - Error getting dashboard stats: TypeError: pool.connect is not a function
+    at RepositoryService.getDashboardStats (C:\LPPM\backend\services\admin\repositoryService.js:17:35)
+    at getDashboardStats (C:\LPPM\backend\controllers\admin\repositoryController.js:12:51)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:08:27.703Z - Error getting dashboard stats: TypeError: pool.connect is not a function
+    at RepositoryService.getDashboardStats (C:\LPPM\backend\services\admin\repositoryService.js:17:35)
+    at getDashboardStats (C:\LPPM\backend\controllers\admin\repositoryController.js:12:51)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:08:27.720Z - Error getting documents: TypeError: pool.connect is not a function
+    at RepositoryService.getAllDocuments (C:\LPPM\backend\services\admin\repositoryService.js:106:35)
+    at getAllDocuments (C:\LPPM\backend\controllers\admin\repositoryController.js:40:52)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:08:27.755Z - Error getting category counts: TypeError: pool.connect is not a function
+    at RepositoryService.getCategoryCounts (C:\LPPM\backend\services\admin\repositoryService.js:485:35)
+    at getCategoryCounts (C:\LPPM\backend\controllers\admin\repositoryController.js:230:52)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:08:28.484Z - Error getting dashboard stats: TypeError: pool.connect is not a function
+    at RepositoryService.getDashboardStats (C:\LPPM\backend\services\admin\repositoryService.js:17:35)
+    at getDashboardStats (C:\LPPM\backend\controllers\admin\repositoryController.js:12:51)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:08:28.500Z - Error getting category counts: TypeError: pool.connect is not a function
+    at RepositoryService.getCategoryCounts (C:\LPPM\backend\services\admin\repositoryService.js:485:35)
+    at getCategoryCounts (C:\LPPM\backend\controllers\admin\repositoryController.js:230:52)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:08:28.508Z - Error getting documents: TypeError: pool.connect is not a function
+    at RepositoryService.getAllDocuments (C:\LPPM\backend\services\admin\repositoryService.js:106:35)
+    at getAllDocuments (C:\LPPM\backend\controllers\admin\repositoryController.js:40:52)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:08:29.331Z - Error getting dashboard stats: TypeError: pool.connect is not a function
+    at RepositoryService.getDashboardStats (C:\LPPM\backend\services\admin\repositoryService.js:17:35)
+    at getDashboardStats (C:\LPPM\backend\controllers\admin\repositoryController.js:12:51)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:08:29.353Z - Error getting documents: TypeError: pool.connect is not a function
+    at RepositoryService.getAllDocuments (C:\LPPM\backend\services\admin\repositoryService.js:106:35)
+    at getAllDocuments (C:\LPPM\backend\controllers\admin\repositoryController.js:40:52)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:08:29.377Z - Error getting category counts: TypeError: pool.connect is not a function
+    at RepositoryService.getCategoryCounts (C:\LPPM\backend\services\admin\repositoryService.js:485:35)
+    at getCategoryCounts (C:\LPPM\backend\controllers\admin\repositoryController.js:230:52)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:08:30.218Z - Error getting dashboard stats: TypeError: pool.connect is not a function
+    at RepositoryService.getDashboardStats (C:\LPPM\backend\services\admin\repositoryService.js:17:35)
+    at getDashboardStats (C:\LPPM\backend\controllers\admin\repositoryController.js:12:51)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:08:30.235Z - Error getting category counts: TypeError: pool.connect is not a function
+    at RepositoryService.getCategoryCounts (C:\LPPM\backend\services\admin\repositoryService.js:485:35)
+    at getCategoryCounts (C:\LPPM\backend\controllers\admin\repositoryController.js:230:52)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:08:30.249Z - Error getting documents: TypeError: pool.connect is not a function
+    at RepositoryService.getAllDocuments (C:\LPPM\backend\services\admin\repositoryService.js:106:35)
+    at getAllDocuments (C:\LPPM\backend\controllers\admin\repositoryController.js:40:52)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:08:31.173Z - Error getting category counts: TypeError: pool.connect is not a function
+    at RepositoryService.getCategoryCounts (C:\LPPM\backend\services\admin\repositoryService.js:485:35)
+    at getCategoryCounts (C:\LPPM\backend\controllers\admin\repositoryController.js:230:52)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:08:31.189Z - Error getting dashboard stats: TypeError: pool.connect is not a function
+    at RepositoryService.getDashboardStats (C:\LPPM\backend\services\admin\repositoryService.js:17:35)
+    at getDashboardStats (C:\LPPM\backend\controllers\admin\repositoryController.js:12:51)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:08:31.195Z - Error getting documents: TypeError: pool.connect is not a function
+    at RepositoryService.getAllDocuments (C:\LPPM\backend\services\admin\repositoryService.js:106:35)
+    at getAllDocuments (C:\LPPM\backend\controllers\admin\repositoryController.js:40:52)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:08:32.115Z - Error getting dashboard stats: TypeError: pool.connect is not a function
+    at RepositoryService.getDashboardStats (C:\LPPM\backend\services\admin\repositoryService.js:17:35)
+    at getDashboardStats (C:\LPPM\backend\controllers\admin\repositoryController.js:12:51)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:08:32.136Z - Error getting documents: TypeError: pool.connect is not a function
+    at RepositoryService.getAllDocuments (C:\LPPM\backend\services\admin\repositoryService.js:106:35)
+    at getAllDocuments (C:\LPPM\backend\controllers\admin\repositoryController.js:40:52)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:08:32.150Z - Error getting category counts: TypeError: pool.connect is not a function
+    at RepositoryService.getCategoryCounts (C:\LPPM\backend\services\admin\repositoryService.js:485:35)
+    at getCategoryCounts (C:\LPPM\backend\controllers\admin\repositoryController.js:230:52)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:08:33.004Z - Error getting documents: TypeError: pool.connect is not a function
+    at RepositoryService.getAllDocuments (C:\LPPM\backend\services\admin\repositoryService.js:106:35)
+    at getAllDocuments (C:\LPPM\backend\controllers\admin\repositoryController.js:40:52)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:08:33.020Z - Error getting category counts: TypeError: pool.connect is not a function
+    at RepositoryService.getCategoryCounts (C:\LPPM\backend\services\admin\repositoryService.js:485:35)
+    at getCategoryCounts (C:\LPPM\backend\controllers\admin\repositoryController.js:230:52)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:08:33.032Z - Error getting dashboard stats: TypeError: pool.connect is not a function
+    at RepositoryService.getDashboardStats (C:\LPPM\backend\services\admin\repositoryService.js:17:35)
+    at getDashboardStats (C:\LPPM\backend\controllers\admin\repositoryController.js:12:51)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:08:33.937Z - Error getting dashboard stats: TypeError: pool.connect is not a function
+    at RepositoryService.getDashboardStats (C:\LPPM\backend\services\admin\repositoryService.js:17:35)
+    at getDashboardStats (C:\LPPM\backend\controllers\admin\repositoryController.js:12:51)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:08:33.977Z - Error getting category counts: TypeError: pool.connect is not a function
+    at RepositoryService.getCategoryCounts (C:\LPPM\backend\services\admin\repositoryService.js:485:35)
+    at getCategoryCounts (C:\LPPM\backend\controllers\admin\repositoryController.js:230:52)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:08:34.005Z - Error getting documents: TypeError: pool.connect is not a function
+    at RepositoryService.getAllDocuments (C:\LPPM\backend\services\admin\repositoryService.js:106:35)
+    at getAllDocuments (C:\LPPM\backend\controllers\admin\repositoryController.js:40:52)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:08:35.022Z - Error getting dashboard stats: TypeError: pool.connect is not a function
+    at RepositoryService.getDashboardStats (C:\LPPM\backend\services\admin\repositoryService.js:17:35)
+    at getDashboardStats (C:\LPPM\backend\controllers\admin\repositoryController.js:12:51)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:08:35.040Z - Error getting documents: TypeError: pool.connect is not a function
+    at RepositoryService.getAllDocuments (C:\LPPM\backend\services\admin\repositoryService.js:106:35)
+    at getAllDocuments (C:\LPPM\backend\controllers\admin\repositoryController.js:40:52)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:08:35.048Z - Error getting category counts: TypeError: pool.connect is not a function
+    at RepositoryService.getCategoryCounts (C:\LPPM\backend\services\admin\repositoryService.js:485:35)
+    at getCategoryCounts (C:\LPPM\backend\controllers\admin\repositoryController.js:230:52)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:08:35.925Z - Error getting dashboard stats: TypeError: pool.connect is not a function
+    at RepositoryService.getDashboardStats (C:\LPPM\backend\services\admin\repositoryService.js:17:35)
+    at getDashboardStats (C:\LPPM\backend\controllers\admin\repositoryController.js:12:51)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:08:35.939Z - Error getting category counts: TypeError: pool.connect is not a function
+    at RepositoryService.getCategoryCounts (C:\LPPM\backend\services\admin\repositoryService.js:485:35)
+    at getCategoryCounts (C:\LPPM\backend\controllers\admin\repositoryController.js:230:52)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:08:35.949Z - Error getting documents: TypeError: pool.connect is not a function
+    at RepositoryService.getAllDocuments (C:\LPPM\backend\services\admin\repositoryService.js:106:35)
+    at getAllDocuments (C:\LPPM\backend\controllers\admin\repositoryController.js:40:52)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:08:36.774Z - Error getting dashboard stats: TypeError: pool.connect is not a function
+    at RepositoryService.getDashboardStats (C:\LPPM\backend\services\admin\repositoryService.js:17:35)
+    at getDashboardStats (C:\LPPM\backend\controllers\admin\repositoryController.js:12:51)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:08:36.790Z - Error getting category counts: TypeError: pool.connect is not a function
+    at RepositoryService.getCategoryCounts (C:\LPPM\backend\services\admin\repositoryService.js:485:35)
+    at getCategoryCounts (C:\LPPM\backend\controllers\admin\repositoryController.js:230:52)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:08:36.804Z - Error getting documents: TypeError: pool.connect is not a function
+    at RepositoryService.getAllDocuments (C:\LPPM\backend\services\admin\repositoryService.js:106:35)
+    at getAllDocuments (C:\LPPM\backend\controllers\admin\repositoryController.js:40:52)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:08:37.679Z - Error getting dashboard stats: TypeError: pool.connect is not a function
+    at RepositoryService.getDashboardStats (C:\LPPM\backend\services\admin\repositoryService.js:17:35)
+    at getDashboardStats (C:\LPPM\backend\controllers\admin\repositoryController.js:12:51)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:08:37.694Z - Error getting documents: TypeError: pool.connect is not a function
+    at RepositoryService.getAllDocuments (C:\LPPM\backend\services\admin\repositoryService.js:106:35)
+    at getAllDocuments (C:\LPPM\backend\controllers\admin\repositoryController.js:40:52)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:08:37.703Z - Error getting category counts: TypeError: pool.connect is not a function
+    at RepositoryService.getCategoryCounts (C:\LPPM\backend\services\admin\repositoryService.js:485:35)
+    at getCategoryCounts (C:\LPPM\backend\controllers\admin\repositoryController.js:230:52)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:08:38.517Z - Error getting dashboard stats: TypeError: pool.connect is not a function
+    at RepositoryService.getDashboardStats (C:\LPPM\backend\services\admin\repositoryService.js:17:35)
+    at getDashboardStats (C:\LPPM\backend\controllers\admin\repositoryController.js:12:51)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:08:38.528Z - Error getting category counts: TypeError: pool.connect is not a function
+    at RepositoryService.getCategoryCounts (C:\LPPM\backend\services\admin\repositoryService.js:485:35)
+    at getCategoryCounts (C:\LPPM\backend\controllers\admin\repositoryController.js:230:52)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:08:38.543Z - Error getting documents: TypeError: pool.connect is not a function
+    at RepositoryService.getAllDocuments (C:\LPPM\backend\services\admin\repositoryService.js:106:35)
+    at getAllDocuments (C:\LPPM\backend\controllers\admin\repositoryController.js:40:52)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:12:06.195Z - Error getting dashboard stats: TypeError: pool.connect is not a function
+    at RepositoryService.getDashboardStats (C:\LPPM\backend\services\admin\repositoryService.js:17:35)
+    at getDashboardStats (C:\LPPM\backend\controllers\admin\repositoryController.js:12:51)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:12:06.242Z - Error getting category counts: TypeError: pool.connect is not a function
+    at RepositoryService.getCategoryCounts (C:\LPPM\backend\services\admin\repositoryService.js:485:35)
+    at getCategoryCounts (C:\LPPM\backend\controllers\admin\repositoryController.js:230:52)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:12:06.254Z - Error getting documents: TypeError: pool.connect is not a function
+    at RepositoryService.getAllDocuments (C:\LPPM\backend\services\admin\repositoryService.js:106:35)
+    at getAllDocuments (C:\LPPM\backend\controllers\admin\repositoryController.js:40:52)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:12:07.110Z - Error getting dashboard stats: TypeError: pool.connect is not a function
+    at RepositoryService.getDashboardStats (C:\LPPM\backend\services\admin\repositoryService.js:17:35)
+    at getDashboardStats (C:\LPPM\backend\controllers\admin\repositoryController.js:12:51)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:12:07.142Z - Error getting documents: TypeError: pool.connect is not a function
+    at RepositoryService.getAllDocuments (C:\LPPM\backend\services\admin\repositoryService.js:106:35)
+    at getAllDocuments (C:\LPPM\backend\controllers\admin\repositoryController.js:40:52)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:12:07.157Z - Error getting category counts: TypeError: pool.connect is not a function
+    at RepositoryService.getCategoryCounts (C:\LPPM\backend\services\admin\repositoryService.js:485:35)
+    at getCategoryCounts (C:\LPPM\backend\controllers\admin\repositoryController.js:230:52)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:12:08.114Z - Error getting dashboard stats: TypeError: pool.connect is not a function
+    at RepositoryService.getDashboardStats (C:\LPPM\backend\services\admin\repositoryService.js:17:35)
+    at getDashboardStats (C:\LPPM\backend\controllers\admin\repositoryController.js:12:51)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:12:08.163Z - Error getting documents: TypeError: pool.connect is not a function
+    at RepositoryService.getAllDocuments (C:\LPPM\backend\services\admin\repositoryService.js:106:35)
+    at getAllDocuments (C:\LPPM\backend\controllers\admin\repositoryController.js:40:52)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:12:08.180Z - Error getting category counts: TypeError: pool.connect is not a function
+    at RepositoryService.getCategoryCounts (C:\LPPM\backend\services\admin\repositoryService.js:485:35)
+    at getCategoryCounts (C:\LPPM\backend\controllers\admin\repositoryController.js:230:52)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:12:09.188Z - Error getting category counts: TypeError: pool.connect is not a function
+    at RepositoryService.getCategoryCounts (C:\LPPM\backend\services\admin\repositoryService.js:485:35)
+    at getCategoryCounts (C:\LPPM\backend\controllers\admin\repositoryController.js:230:52)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:12:09.222Z - Error getting dashboard stats: TypeError: pool.connect is not a function
+    at RepositoryService.getDashboardStats (C:\LPPM\backend\services\admin\repositoryService.js:17:35)
+    at getDashboardStats (C:\LPPM\backend\controllers\admin\repositoryController.js:12:51)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:12:09.242Z - Error getting documents: TypeError: pool.connect is not a function
+    at RepositoryService.getAllDocuments (C:\LPPM\backend\services\admin\repositoryService.js:106:35)
+    at getAllDocuments (C:\LPPM\backend\controllers\admin\repositoryController.js:40:52)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:12:10.122Z - Error getting documents: TypeError: pool.connect is not a function
+    at RepositoryService.getAllDocuments (C:\LPPM\backend\services\admin\repositoryService.js:106:35)
+    at getAllDocuments (C:\LPPM\backend\controllers\admin\repositoryController.js:40:52)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:12:10.145Z - Error getting category counts: TypeError: pool.connect is not a function
+    at RepositoryService.getCategoryCounts (C:\LPPM\backend\services\admin\repositoryService.js:485:35)
+    at getCategoryCounts (C:\LPPM\backend\controllers\admin\repositoryController.js:230:52)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:12:10.156Z - Error getting dashboard stats: TypeError: pool.connect is not a function
+    at RepositoryService.getDashboardStats (C:\LPPM\backend\services\admin\repositoryService.js:17:35)
+    at getDashboardStats (C:\LPPM\backend\controllers\admin\repositoryController.js:12:51)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:12:11.039Z - Error getting documents: TypeError: pool.connect is not a function
+    at RepositoryService.getAllDocuments (C:\LPPM\backend\services\admin\repositoryService.js:106:35)
+    at getAllDocuments (C:\LPPM\backend\controllers\admin\repositoryController.js:40:52)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:12:11.058Z - Error getting category counts: TypeError: pool.connect is not a function
+    at RepositoryService.getCategoryCounts (C:\LPPM\backend\services\admin\repositoryService.js:485:35)
+    at getCategoryCounts (C:\LPPM\backend\controllers\admin\repositoryController.js:230:52)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9
+[ERROR] 2026-03-05T08:12:11.075Z - Error getting dashboard stats: TypeError: pool.connect is not a function
+    at RepositoryService.getDashboardStats (C:\LPPM\backend\services\admin\repositoryService.js:17:35)
+    at getDashboardStats (C:\LPPM\backend\controllers\admin\repositoryController.js:12:51)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\LPPM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\LPPM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\LPPM\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\LPPM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\LPPM\backend\node_modules\express\lib\router\index.js:280:10)
+    at C:\LPPM\backend\middleware\auth.js:77:9

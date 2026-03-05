@@ -1,0 +1,2171 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelola Penelitian & Pengabdian - LPPM ITB Yadika</title>
+    
+    <!-- CSS External Libraries -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        /* Custom CSS Styles */
+        .gradient-text { 
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            background-clip: text; 
+        }
+        
+        .nav-link { 
+            position: relative; 
+            transition: color 0.3s ease; 
+        }
+        
+        .nav-link::after { 
+            content: ''; 
+            position: absolute; 
+            width: 0; 
+            height: 2px; 
+            bottom: -5px; 
+            left: 50%; 
+            background-color: #1e40af; 
+            transition: all 0.3s ease; 
+        }
+        
+        .nav-link:hover::after, 
+        .nav-link.active::after { 
+            width: 100%; 
+            left: 0; 
+        }
+        
+        .nav-link.active { 
+            color: #1e40af; 
+            font-weight: 600; 
+        }
+
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #1e40af;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Status Badges */
+        .badge-draft { background: #fef3c7; color: #92400e; }
+        .badge-submitted { background: #dbeafe; color: #1e40af; }
+        .badge-review { background: #fef3c7; color: #92400e; }
+        .badge-review_content { background: #fef3c7; color: #92400e; }
+        .badge-revision { background: #fff7ed; color: #9a3412; }
+        .badge-approved { background: #d1fae5; color: #065f46; }
+        .badge-rejected { background: #fee2e2; color: #991b1b; }
+        .badge-completed { background: #e0e7ff; color: #3730a3; }
+
+        /* Card Hover */
+        .submission-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+        .submission-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .submission-card.penelitian { border-left-color: #3b82f6; }
+        .submission-card.pengabdian { border-left-color: #10b981; }
+
+        /* Timeline Status */
+        .timeline-container {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+            position: relative;
+        }
+        
+        .timeline-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .timeline-step:before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: -50%;
+            width: 100%;
+            height: 2px;
+            background: #e5e7eb;
+            z-index: -1;
+        }
+        
+        .timeline-step:first-child:before {
+            display: none;
+        }
+        
+        .timeline-step.active .timeline-dot {
+            background: #3b82f6;
+            border: 3px solid #bfdbfe;
+        }
+        
+        .timeline-step.completed .timeline-dot {
+            background: #10b981;
+        }
+        
+        .timeline-step.rejected .timeline-dot {
+            background: #ef4444;
+        }
+        
+        .timeline-dot {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e5e7eb;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+        
+        .timeline-label {
+            font-size: 12px;
+            color: #6b7280;
+        }
+        
+        .timeline-date {
+            font-size: 10px;
+            color: #9ca3af;
+        }
+
+        /* Form Styles */
+        .form-section {
+            background: #f9fafb;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            border: 1px solid #e5e7eb;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        /* File Upload */
+        .file-upload-area {
+            border: 2px dashed #d1d5db;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            text-align: center;
+            background: #f9fafb;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .file-upload-area:hover {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        /* Section Tabs */
+        .section-tabs { 
+            border-bottom: 1px solid #e5e7eb; 
+            margin-bottom: 2rem; 
+        }
+        .section-tab { 
+            padding: 0.75rem 1.5rem; 
+            font-weight: 600; 
+            color: #6b7280; 
+            cursor: pointer; 
+            border-bottom: 3px solid transparent; 
+            transition: all 0.3s ease; 
+        }
+        .section-tab:hover { 
+            color: #3B82F6; 
+        }
+        .section-tab.active { 
+            color: #3B82F6; 
+            border-bottom-color: #3B82F6; 
+        }
+        
+        /* Content Sections */
+        .content-section { 
+            display: none; 
+        }
+        .content-section.active { 
+            display: block; 
+        }
+
+        /* Stat Cards */
+        .stat-card {
+            transition: all 0.3s ease;
+            border: none;
+            border-radius: 16px;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Table Styles */
+        .table th { 
+            font-weight: 600; 
+            text-transform: uppercase; 
+            font-size: 0.75rem; 
+            letter-spacing: 0.05em; 
+        }
+        .table td { 
+            vertical-align: middle; 
+        }
+
+        /* Search Box */
+        .search-box { 
+            position: relative; 
+        }
+        .search-box input { 
+            padding-left: 40px; 
+            border-radius: 30px; 
+            border: 1px solid #e5e7eb; 
+        }
+        .search-box i { 
+            position: absolute; 
+            left: 15px; 
+            top: 12px; 
+            color: #9ca3af; 
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans antialiased">
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay hidden">
+        <div class="text-center">
+            <div class="loading-spinner"></div>
+            <p class="mt-4 text-gray-600">Memuat data...</p>
+        </div>
+    </div>
+
+    <!-- Top Navigation Bar -->
+    <header class="fixed top-0 left-0 right-0 bg-white shadow-md z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <!-- Logo and Brand -->
+            <a href="admin-dashboard.html" class="flex items-center space-x-3">
+                <img src="images/logoyadika.png" alt="Logo" class="h-10 w-10">
+                <div>
+                    <h1 class="text-xl font-bold gradient-text">LPPM Admin</h1>
+                    <p class="text-xs text-gray-500">ITB Yadika</p>
+                </div>
+            </a>
+
+            <!-- Navigation Links -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="admin-dashboard.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+                </a>
+                <a href="manage-kegiatan.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-calendar-alt mr-2"></i>Kegiatan & Berita
+                </a>
+                <a href="manage-repository.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-book mr-2"></i>Repository
+                </a>
+                <a href="#" class="nav-link active text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-flask mr-2"></i>Penelitian & Pengabdian
+                </a>
+                <a href="manage-magang-kkn.html" class="nav-link text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-briefcase mr-2"></i>Magang & KKN
+                </a>
+            </div>
+
+            <!-- User Profile / Notifications -->
+            <div class="flex items-center space-x-4">
+                <!-- Notification Bell -->
+                <div class="relative">
+                    <button onclick="toggleNotifications()" class="text-gray-600 hover:text-blue-600 relative">
+                        <i class="fas fa-bell text-xl"></i>
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center" id="notificationBadge">5</span>
+                    </button>
+                    <!-- Notification Dropdown -->
+                    <div id="notificationDropdown" class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl hidden z-50">
+                        <div class="p-4 border-b">
+                            <h4 class="font-semibold">Notifikasi</h4>
+                        </div>
+                        <div class="max-h-96 overflow-y-auto" id="notificationList">
+                            <div class="p-3 hover:bg-gray-50 border-b">
+                                <p class="text-sm font-medium">Pengajuan Baru</p>
+                                <p class="text-xs text-gray-500">Dr. Ahmad Fauzi mengajukan penelitian</p>
+                                <p class="text-xs text-gray-400 mt-1">5 menit lalu</p>
+                            </div>
+                            <div class="p-3 hover:bg-gray-50 border-b">
+                                <p class="text-sm font-medium">Menunggu Review</p>
+                                <p class="text-xs text-gray-500">3 pengajuan perlu direview</p>
+                                <p class="text-xs text-gray-400 mt-1">1 jam lalu</p>
+                            </div>
+                            <div class="p-3 hover:bg-gray-50">
+                                <p class="text-sm font-medium">Laporan Diupload</p>
+                                <p class="text-xs text-gray-500">Dr. Ratna Dewi upload laporan akhir</p>
+                                <p class="text-xs text-gray-400 mt-1">2 jam lalu</p>
+                            </div>
+                        </div>
+                        <div class="p-3 border-t text-center">
+                            <button onclick="markAllAsRead()" class="text-sm text-blue-600 hover:text-blue-800">
+                                Tandai semua telah dibaca
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Menu -->
+                <div class="relative">
+                    <button onclick="toggleUserMenu()" class="flex items-center space-x-2 focus:outline-none">
+                        <img src="https://ui-avatars.com/api/?name=Admin+LPPM&background=3B82F6&color=fff" alt="Profile" class="h-8 w-8 rounded-full">
+                        <span class="text-sm text-gray-600 hidden sm:block" id="userName">Admin LPPM</span>
+                        <i class="fas fa-chevron-down text-xs text-gray-500"></i>
+                    </button>
+                    <!-- User Dropdown -->
+                    <div id="userDropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl hidden z-50">
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-user mr-2"></i> Profil
+                        </a>
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-cog mr-2"></i> Pengaturan
+                        </a>
+                        <hr class="my-1">
+                        <button onclick="handleLogout()" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                            <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-20">
+        <div class="container mx-auto px-6 py-8">
+            <!-- Page Header -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8" data-aos="fade-down">
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-800">Kelola Penelitian & Pengabdian</h2>
+                    <p class="text-gray-600">Manajemen pengajuan penelitian dan pengabdian dosen</p>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="mt-4 md:mt-0 flex flex-wrap gap-3">
+                    <button onclick="openAddSkemaModal()" class="bg-gradient-to-r from-purple-500 to-purple-700 text-white font-semibold py-3 px-6 rounded-lg hover:shadow-lg transition-all">
+                        <i class="fas fa-plus-circle mr-2"></i>Tambah Skema
+                    </button>
+                    <button onclick="exportData()" class="bg-gradient-to-r from-green-500 to-green-700 text-white font-semibold py-3 px-6 rounded-lg hover:shadow-lg transition-all">
+                        <i class="fas fa-download mr-2"></i>Export Data
+                    </button>
+                </div>
+            </div>
+
+            <!-- Section Tabs -->
+            <div class="section-tabs flex overflow-x-auto" data-aos="fade-up">
+                <div class="section-tab active" onclick="showSection('semua-section', event)">Semua Pengajuan</div>
+                <div class="section-tab" onclick="showSection('penelitian-section', event)">Penelitian</div>
+                <div class="section-tab" onclick="showSection('pengabdian-section', event)">Pengabdian</div>
+                <div class="section-tab" onclick="showSection('review-section', event)">Need Review</div>
+                <div class="section-tab" onclick="showSection('statistik-section', event)">Statistik</div>
+                <div class="section-tab" onclick="showSection('skema-section', event)">Skema & Pendanaan</div>
+            </div>
+
+            <!-- Semua Pengajuan Section -->
+            <section id="semua-section" class="content-section active" data-aos="fade-up">
+                <!-- Filter Section -->
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div class="relative">
+                            <input type="text" id="searchSemua" placeholder="Cari judul/dosen/NIDN..." 
+                                   class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                        </div>
+                        
+                        <select id="filterStatusSemua" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <option value="">Semua Status</option>
+                            <option value="draft">Draft</option>
+                            <option value="submitted">Terkirim</option>
+                            <option value="review">Review Admin</option>
+                            <option value="review_content">Review Substansi</option>
+                            <option value="revision">Perlu Revisi</option>
+                            <option value="approved">Disetujui</option>
+                            <option value="rejected">Ditolak</option>
+                            <option value="completed">Selesai</option>
+                        </select>
+
+                        <select id="filterTahunSemua" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <option value="">Semua Tahun</option>
+                            <option value="2024">2024</option>
+                            <option value="2023">2023</option>
+                            <option value="2022">2022</option>
+                        </select>
+                        
+                        <button onclick="filterAllSubmissions()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-filter mr-2"></i>Filter
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Submissions Table -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50 text-gray-700">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">No</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Jenis</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Judul</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Pengusul</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Skema</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Tahun</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Dana</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Status</th>
+                                    <th class="px-4 py-3 text-center text-xs font-medium uppercase">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="semuaTableBody" class="divide-y divide-gray-200">
+                                <!-- Data will be loaded here -->
+                                <tr>
+                                    <td colspan="9" class="text-center py-8 text-gray-500">
+                                        <i class="fas fa-spinner fa-spin mr-2"></i> Memuat data...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+                        <div class="text-sm text-gray-500" id="semuaPaginationInfo"></div>
+                        <div class="flex space-x-2">
+                            <button onclick="changePage('semua', 'prev')" class="px-3 py-1 border rounded-lg hover:bg-gray-50">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <span id="semuaCurrentPage" class="px-3 py-1">1</span>
+                            <button onclick="changePage('semua', 'next')" class="px-3 py-1 border rounded-lg hover:bg-gray-50">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Penelitian Section -->
+            <section id="penelitian-section" class="content-section" data-aos="fade-up">
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="p-4 border-b border-gray-200">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="relative">
+                                <input type="text" id="searchPenelitian" placeholder="Cari judul/dosen..." 
+                                       class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                            </div>
+                            
+                            <select id="filterStatusPenelitian" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option value="">Semua Status</option>
+                                <option value="draft">Draft</option>
+                                <option value="submitted">Terkirim</option>
+                                <option value="review">Review Admin</option>
+                                <option value="review_content">Review Substansi</option>
+                                <option value="revision">Perlu Revisi</option>
+                                <option value="approved">Disetujui</option>
+                                <option value="rejected">Ditolak</option>
+                                <option value="completed">Selesai</option>
+                            </select>
+
+                            <select id="filterSkemaPenelitian" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option value="">Semua Skema</option>
+                                <option value="penelitian_dasar">Penelitian Dasar</option>
+                                <option value="penelitian_terapan">Penelitian Terapan</option>
+                                <option value="penelitian_pengembangan">Penelitian Pengembangan</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50 text-gray-700">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">No</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Judul</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Pengusul</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Skema</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Dana</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Status</th>
+                                    <th class="px-4 py-3 text-center text-xs font-medium uppercase">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="penelitianTableBody" class="divide-y divide-gray-200">
+                                <!-- Data will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Pengabdian Section -->
+            <section id="pengabdian-section" class="content-section" data-aos="fade-up">
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="p-4 border-b border-gray-200">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="relative">
+                                <input type="text" id="searchPengabdian" placeholder="Cari judul/dosen..." 
+                                       class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                            </div>
+                            
+                            <select id="filterStatusPengabdian" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option value="">Semua Status</option>
+                                <option value="draft">Draft</option>
+                                <option value="submitted">Terkirim</option>
+                                <option value="review">Review Admin</option>
+                                <option value="review_content">Review Substansi</option>
+                                <option value="revision">Perlu Revisi</option>
+                                <option value="approved">Disetujui</option>
+                                <option value="rejected">Ditolak</option>
+                                <option value="completed">Selesai</option>
+                            </select>
+
+                            <select id="filterSkemaPengabdian" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option value="">Semua Skema</option>
+                                <option value="pengabdian_masyarakat">Pengabdian Masyarakat</option>
+                                <option value="penerapan_ipteks">Penerapan Ipteks</option>
+                                <option value="pemberdayaan_mitra">Pemberdayaan Mitra</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50 text-gray-700">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">No</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Judul</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Pengusul</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Skema</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Dana</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Status</th>
+                                    <th class="px-4 py-3 text-center text-xs font-medium uppercase">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pengabdianTableBody" class="divide-y divide-gray-200">
+                                <!-- Data will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Need Review Section -->
+            <section id="review-section" class="content-section" data-aos="fade-up">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <!-- Review Admin Card -->
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold">Review Administrasi</h3>
+                            <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm" id="countReviewAdmin">3</span>
+                        </div>
+                        <div class="space-y-3" id="reviewAdminList">
+                            <!-- Review items will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Review Substansi Card -->
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold">Review Substansi</h3>
+                            <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm" id="countReviewSubstansi">5</span>
+                        </div>
+                        <div class="space-y-3" id="reviewSubstansiList">
+                            <!-- Review items will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Need Revision Card -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold">Menunggu Revisi dari Dosen</h3>
+                        <span class="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm" id="countRevision">2</span>
+                    </div>
+                    <div class="space-y-3" id="revisionList">
+                        <!-- Revision items will be loaded here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Statistik Section -->
+            <section id="statistik-section" class="content-section" data-aos="fade-up">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                    <!-- Total Pengajuan Card -->
+                    <div class="stat-card bg-gradient-to-br from-blue-500 to-blue-600 text-white p-6 rounded-xl shadow-lg">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="text-sm opacity-90">Total Pengajuan</p>
+                                <h3 class="text-3xl font-bold" id="totalPengajuanStats">24</h3>
+                            </div>
+                            <i class="fas fa-file-alt text-4xl opacity-50"></i>
+                        </div>
+                        <div class="mt-4 flex justify-between text-sm">
+                            <span><i class="fas fa-flask"></i> <span id="totalPenelitianStats">15</span> Penelitian</span>
+                            <span><i class="fas fa-hands-helping"></i> <span id="totalPengabdianStats">9</span> Pengabdian</span>
+                        </div>
+                    </div>
+
+                    <!-- Dalam Review Card -->
+                    <div class="stat-card bg-gradient-to-br from-yellow-500 to-yellow-600 text-white p-6 rounded-xl shadow-lg">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="text-sm opacity-90">Dalam Review</p>
+                                <h3 class="text-3xl font-bold" id="totalReviewStats">8</h3>
+                            </div>
+                            <i class="fas fa-clock text-4xl opacity-50"></i>
+                        </div>
+                        <div class="mt-4 flex justify-between text-sm">
+                            <span><i class="fas fa-check-circle"></i> <span id="reviewAdminStats">3</span> Admin</span>
+                            <span><i class="fas fa-search"></i> <span id="reviewSubstansiStats">5</span> Substansi</span>
+                        </div>
+                    </div>
+
+                    <!-- Total Dana Card -->
+                    <div class="stat-card bg-gradient-to-br from-green-500 to-green-600 text-white p-6 rounded-xl shadow-lg">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="text-sm opacity-90">Total Dana</p>
+                                <h3 class="text-3xl font-bold" id="totalDanaStats">Rp 4.3 M</h3>
+                            </div>
+                            <i class="fas fa-coins text-4xl opacity-50"></i>
+                        </div>
+                        <div class="mt-4 flex justify-between text-sm">
+                            <span><i class="fas fa-flask"></i> <span id="danaPenelitianStats">Rp 3.2 M</span></span>
+                            <span><i class="fas fa-hands-helping"></i> <span id="danaPengabdianStats">Rp 1.1 M</span></span>
+                        </div>
+                    </div>
+
+                    <!-- Luaran Card -->
+                    <div class="stat-card bg-gradient-to-br from-purple-500 to-purple-600 text-white p-6 rounded-xl shadow-lg">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="text-sm opacity-90">Total Luaran</p>
+                                <h3 class="text-3xl font-bold" id="totalLuaranStats">45</h3>
+                            </div>
+                            <i class="fas fa-file-alt text-4xl opacity-50"></i>
+                        </div>
+                        <div class="mt-4 flex justify-between text-sm">
+                            <span><i class="fas fa-book"></i> <span id="publikasiStats">28</span> Publikasi</span>
+                            <span><i class="fas fa-copyright"></i> <span id="hakiStats">17</span> HKI</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                     <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h4 class="text-lg font-semibold mb-4">Status Pengajuan</h4>
+                        <div class="relative" style="height: 300px;">
+                            <canvas id="statusChart"></canvas>
+                        </div>
+                    </div>
+
+                      <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h4 class="text-lg font-semibold mb-4">Pengajuan per Fakultas</h4>
+                        <div class="relative" style="height: 300px;">
+                            <canvas id="fakultasChart"></canvas>
+                        </div>
+                    </div>
+
+                <!-- Tabel Ringkasan per Dosen -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h4 class="text-lg font-semibold mb-4">Ringkasan per Dosen</h4>
+                    <div class="overflow-x-auto"></div>
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-sm font-semibold">No</th>
+                                    <th class="px-4 py-3 text-left text-sm font-semibold">Nama Dosen</th>
+                                    <th class="px-4 py-3 text-left text-sm font-semibold">NIDN</th>
+                                    <th class="px-4 py-3 text-left text-sm font-semibold">Fakultas</th>
+                                    <th class="px-4 py-3 text-left text-sm font-semibold">Penelitian</th>
+                                    <th class="px-4 py-3 text-left text-sm font-semibold">Pengabdian</th>
+                                    <th class="px-4 py-3 text-left text-sm font-semibold">Total Dana</th>
+                                    <th class="px-4 py-3 text-left text-sm font-semibold">Publikasi</th>
+                                    <th class="px-4 py-3 text-left text-sm font-semibold">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dosenSummaryBody" class="divide-y divide-gray-200">
+                                <!-- Data will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Skema & Pendanaan Section -->
+            <section id="skema-section" class="content-section" data-aos="fade-up">
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                        <h3 class="text-lg font-semibold">Daftar Skema Penelitian & Pengabdian</h3>
+                        <button onclick="openAddSkemaModal()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                            <i class="fas fa-plus mr-2"></i>Tambah Skema
+                        </button>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50 text-gray-700">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">No</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Kode</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Nama Skema</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Jenis</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Min Dana</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Max Dana</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Durasi (bln)</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Status</th>
+                                    <th class="px-4 py-3 text-center text-xs font-medium uppercase">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="skemaTableBody" class="divide-y divide-gray-200">
+                                <!-- Data will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Modal Detail Pengajuan -->
+    <div id="detailModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6 border-b sticky top-0 bg-white flex justify-between items-center">
+                <h3 class="text-xl font-bold text-gray-800" id="detailModalTitle">Detail Pengajuan</h3>
+                <button onclick="closeDetailModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+            
+            <div class="p-6" id="detailModalContent">
+                <!-- Content will be loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Review -->
+    <div id="reviewModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl max-w-2xl w-full">
+            <div class="p-6 border-b sticky top-0 bg-white flex justify-between items-center">
+                <h3 class="text-xl font-bold text-gray-800" id="reviewModalTitle">Review Pengajuan</h3>
+                <button onclick="closeReviewModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+            
+            <div class="p-6">
+                <form id="reviewForm" onsubmit="event.preventDefault(); submitReview();">
+                    <input type="hidden" id="reviewSubmissionId">
+                    <input type="hidden" id="reviewType">
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Status Review</label>
+                            <select id="reviewStatus" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required>
+                                <option value="">Pilih Status</option>
+                                <option value="approved">Setujui</option>
+                                <option value="revision">Perlu Revisi</option>
+                                <option value="rejected">Tolak</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Catatan Review</label>
+                            <textarea id="reviewNotes" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="Berikan catatan review..."></textarea>
+                        </div>
+
+                        <div class="border-t pt-4">
+                            <h4 class="font-semibold text-gray-700 mb-3">Upload Dokumen Hasil Review</h4>
+                            <div class="file-upload-area" onclick="document.getElementById('fileReview').click()">
+                                <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-2"></i>
+                                <p class="text-sm text-gray-600" id="reviewFileName">Upload file hasil review (PDF)</p>
+                            </div>
+                            <input type="file" id="fileReview" accept=".pdf" class="hidden" onchange="updateFileName(this, 'reviewFileName')">
+                        </div>
+
+                        <div class="flex justify-end space-x-3 pt-4 border-t">
+                            <button type="button" onclick="closeReviewModal()" 
+                                    class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                                Batal
+                            </button>
+                            <button type="submit" 
+                                    class="px-6 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:shadow-lg">
+                                Simpan Review
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Tambah Skema -->
+    <div id="skemaModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl max-w-2xl w-full">
+            <div class="p-6 border-b sticky top-0 bg-white flex justify-between items-center">
+                <h3 class="text-xl font-bold text-gray-800">Tambah Skema Baru</h3>
+                <button onclick="closeSkemaModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+            
+            <div class="p-6">
+                <form id="skemaForm" onsubmit="event.preventDefault(); saveSkema();">
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Kode Skema</label>
+                                <input type="text" id="skemaKode" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Jenis</label>
+                                <select id="skemaJenis" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required>
+                                    <option value="">Pilih Jenis</option>
+                                    <option value="penelitian">Penelitian</option>
+                                    <option value="pengabdian">Pengabdian</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Nama Skema</label>
+                            <input type="text" id="skemaNama" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Minimal Dana (Rp)</label>
+                                <input type="number" id="skemaMinDana" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Maksimal Dana (Rp)</label>
+                                <input type="number" id="skemaMaxDana" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Durasi Minimal (bulan)</label>
+                                <input type="number" id="skemaDurasiMin" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Durasi Maksimal (bulan)</label>
+                                <input type="number" id="skemaDurasiMax" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Deskripsi</label>
+                            <textarea id="skemaDeskripsi" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"></textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Persyaratan</label>
+                            <textarea id="skemaPersyaratan" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="Pisahkan dengan koma"></textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Luaran Wajib</label>
+                            <textarea id="skemaLuaran" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="Pisahkan dengan koma"></textarea>
+                        </div>
+
+                        <div class="flex items-center">
+                            <input type="checkbox" id="skemaStatus" class="rounded text-blue-600" checked>
+                            <label for="skemaStatus" class="ml-2 text-sm text-gray-700">Aktif</label>
+                        </div>
+
+                        <div class="flex justify-end space-x-3 pt-4 border-t">
+                            <button type="button" onclick="closeSkemaModal()" 
+                                    class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                                Batal
+                            </button>
+                            <button type="submit" 
+                                    class="px-6 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:shadow-lg">
+                                Simpan Skema
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Konfirmasi Logout -->
+    <div id="confirmLogoutModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50 flex items-center justify-center">
+        <div class="relative bg-white rounded-lg shadow-xl w-11/12 md:w-1/3">
+            <div class="p-6">
+                <div class="text-center">
+                    <i class="fas fa-exclamation-triangle text-yellow-500 text-5xl mb-4"></i>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Konfirmasi Logout</h3>
+                    <p class="text-gray-600 mb-6">Apakah Anda yakin ingin logout?</p>
+                    <div class="flex justify-center space-x-3">
+                        <button onclick="closeLogoutModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
+                            Batal
+                        </button>
+                        <button onclick="performLogout()" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+                            Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <script>
+        // Initialize AOS
+        AOS.init({ duration: 800, once: true });
+
+        // Chart instances
+        let statusChart, fakultasChart;
+
+        // Section Navigation
+        function showSection(sectionId, event) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Update tab active state
+            document.querySelectorAll('.section-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Add active class to clicked tab
+            if (event && event.target) {
+                event.target.classList.add('active');
+            }
+            
+            // Load section data if needed
+            switch(sectionId) {
+                case 'semua-section':
+                    if (document.getElementById('semuaTableBody').children.length <= 1) {
+                        loadAllSubmissions();
+                    }
+                    break;
+                case 'penelitian-section':
+                    if (document.getElementById('penelitianTableBody').children.length <= 1) {
+                        loadPenelitianData();
+                    }
+                    break;
+                case 'pengabdian-section':
+                    if (document.getElementById('pengabdianTableBody').children.length <= 1) {
+                        loadPengabdianData();
+                    }
+                    break;
+                case 'review-section':
+                    if (document.getElementById('reviewAdminList').children.length === 0) {
+                        loadReviewData();
+                    }
+                    break;
+                case 'statistik-section':
+                    if (!statusChart || !fakultasChart) {
+                        loadStatistikData();
+                    } else {
+                        updateStatistikNumbers();
+                    }
+                    break;
+                case 'skema-section':
+                    if (document.getElementById('skemaTableBody').children.length <= 1) {
+                        loadSkemaData();
+                    }
+                    break;
+            }
+        }
+
+        // Loading functions
+        function showLoading() {
+            document.getElementById('loadingOverlay').classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.add('hidden');
+        }
+
+        // Notification functions
+        function showNotification(message, type = 'success') {
+            Swal.fire({
+                icon: type,
+                title: type === 'success' ? 'Berhasil' : type === 'error' ? 'Gagal' : 'Informasi',
+                text: message,
+                timer: 2000,
+                showConfirmButton: false
+            });
+        }
+
+        function showConfirmation(message, callback) {
+            Swal.fire({
+                title: 'Konfirmasi',
+                text: message,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Ya',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    callback();
+                }
+            });
+        }
+
+        // Toggle functions
+        function toggleNotifications() {
+            const dropdown = document.getElementById('notificationDropdown');
+            dropdown.classList.toggle('hidden');
+        }
+
+        function toggleUserMenu() {
+            const dropdown = document.getElementById('userDropdown');
+            dropdown.classList.toggle('hidden');
+        }
+
+        function markAllAsRead() {
+            document.getElementById('notificationBadge').textContent = '0';
+            showNotification('Semua notifikasi telah dibaca');
+        }
+
+        // Logout functions
+        function handleLogout() {
+            document.getElementById('confirmLogoutModal').classList.remove('hidden');
+        }
+
+        function closeLogoutModal() {
+            document.getElementById('confirmLogoutModal').classList.add('hidden');
+        }
+
+        function performLogout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = 'login.html';
+        }
+
+        // Format functions
+        function formatCurrency(amount) {
+            if (!amount) return '-';
+            return 'Rp ' + new Intl.NumberFormat('id-ID').format(amount);
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            return new Date(dateString).toLocaleDateString('id-ID', options);
+        }
+
+        function getStatusBadge(status) {
+            const badges = {
+                'draft': { class: 'badge-draft', text: 'Draft' },
+                'submitted': { class: 'badge-submitted', text: 'Terkirim' },
+                'review': { class: 'badge-review', text: 'Review Admin' },
+                'review_content': { class: 'badge-review_content', text: 'Review Substansi' },
+                'revision': { class: 'badge-revision', text: 'Perlu Revisi' },
+                'approved': { class: 'badge-approved', text: 'Disetujui' },
+                'rejected': { class: 'badge-rejected', text: 'Ditolak' },
+                'completed': { class: 'badge-completed', text: 'Selesai' }
+            };
+            return badges[status] || badges.submitted;
+        }
+
+        // Mock Data
+        const submissions = [
+            {
+                id: 1,
+                jenis: 'penelitian',
+                judul: 'Pengembangan Sistem Deteksi Dini Penyakit Tanaman Padi Berbasis AI',
+                pengusul: 'Dr. Ahmad Fauzi, M.T.',
+                nidn: '1234567890',
+                fakultas: 'Teknik',
+                skema: 'penelitian_terapan',
+                tahun: 2024,
+                dana: 150000000,
+                status: 'review',
+                tanggalPengajuan: '2024-01-15'
+            },
+            {
+                id: 2,
+                jenis: 'penelitian',
+                judul: 'Analisis Big Data untuk Prediksi Kebijakan Publik',
+                pengusul: 'Dr. Ahmad Fauzi, M.T.',
+                nidn: '1234567890',
+                fakultas: 'Teknik',
+                skema: 'penelitian_dasar',
+                tahun: 2024,
+                dana: 85000000,
+                status: 'revision',
+                tanggalPengajuan: '2024-02-01'
+            },
+            {
+                id: 3,
+                jenis: 'pengabdian',
+                judul: 'Pelatihan Digital Marketing untuk UMKM Bekasi',
+                pengusul: 'Dr. Ratna Dewi, M.Si',
+                nidn: '1234567891',
+                fakultas: 'Ekonomi',
+                skema: 'pengabdian_masyarakat',
+                tahun: 2024,
+                dana: 75000000,
+                status: 'approved',
+                tanggalPengajuan: '2024-02-15'
+            },
+            {
+                id: 4,
+                jenis: 'penelitian',
+                judul: 'Rancang Bangun Sistem IoT untuk Smart Farming',
+                pengusul: 'Prof. Bambang Suharto',
+                nidn: '1234567892',
+                fakultas: 'Teknik',
+                skema: 'penelitian_pengembangan',
+                tahun: 2023,
+                dana: 120000000,
+                status: 'completed',
+                tanggalPengajuan: '2023-03-10'
+            }
+        ];
+
+        const skemaData = [
+            {
+                id: 1,
+                kode: 'PD-001',
+                nama: 'Penelitian Dasar',
+                jenis: 'penelitian',
+                minDana: 50000000,
+                maxDana: 100000000,
+                durasiMin: 6,
+                durasiMax: 12,
+                status: 'aktif'
+            },
+            {
+                id: 2,
+                kode: 'PT-002',
+                nama: 'Penelitian Terapan',
+                jenis: 'penelitian',
+                minDana: 75000000,
+                maxDana: 150000000,
+                durasiMin: 8,
+                durasiMax: 12,
+                status: 'aktif'
+            },
+            {
+                id: 3,
+                kode: 'PM-003',
+                nama: 'Pengabdian Masyarakat',
+                jenis: 'pengabdian',
+                minDana: 40000000,
+                maxDana: 80000000,
+                durasiMin: 4,
+                durasiMax: 8,
+                status: 'aktif'
+            }
+        ];
+
+        const dosenSummary = [
+            {
+                no: 1,
+                nama: 'Dr. Ahmad Fauzi, M.T.',
+                nidn: '1234567890',
+                fakultas: 'Teknik Informatika',
+                penelitian: 3,
+                pengabdian: 1,
+                totalDana: 355000000,
+                publikasi: 4,
+                haki: 2
+            },
+            {
+                no: 2,
+                nama: 'Dr. Ratna Dewi, M.Si',
+                nidn: '1234567891',
+                fakultas: 'Manajemen',
+                penelitian: 1,
+                pengabdian: 2,
+                totalDana: 165000000,
+                publikasi: 2,
+                haki: 1
+            },
+            {
+                no: 3,
+                nama: 'Prof. Bambang Suharto',
+                nidn: '1234567892',
+                fakultas: 'Teknik Elektro',
+                penelitian: 4,
+                pengabdian: 1,
+                totalDana: 520000000,
+                publikasi: 8,
+                haki: 3
+            }
+        ];
+
+        // Load All Submissions
+        function loadAllSubmissions() {
+            const tbody = document.getElementById('semuaTableBody');
+            
+            let html = '';
+            submissions.forEach((item, index) => {
+                const badge = getStatusBadge(item.status);
+                html += `
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-4 py-3">${index + 1}</td>
+                        <td class="px-4 py-3">
+                            <span class="px-2 py-1 rounded text-xs font-semibold ${item.jenis === 'penelitian' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}">
+                                ${item.jenis === 'penelitian' ? 'Penelitian' : 'Pengabdian'}
+                            </span>
+                        </td>
+                        <td class="px-4 py-3">${item.judul}</td>
+                        <td class="px-4 py-3">
+                            <div class="font-medium">${item.pengusul}</div>
+                            <div class="text-xs text-gray-500">${item.nidn}</div>
+                        </td>
+                        <td class="px-4 py-3">${item.skema.replace(/_/g, ' ')}</td>
+                        <td class="px-4 py-3">${item.tahun}</td>
+                        <td class="px-4 py-3">${formatCurrency(item.dana)}</td>
+                        <td class="px-4 py-3">
+                            <span class="px-2 py-1 rounded text-xs font-semibold ${badge.class}">${badge.text}</span>
+                        </td>
+                        <td class="px-4 py-3 text-center">
+                            <button onclick="viewDetail(${item.id})" class="text-blue-600 hover:text-blue-900 mr-2" title="Detail">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button onclick="openReviewModal(${item.id})" class="text-green-600 hover:text-green-900 mr-2" title="Review">
+                                <i class="fas fa-check-circle"></i>
+                            </button>
+                            <button onclick="downloadProposal(${item.id})" class="text-purple-600 hover:text-purple-900 mr-2" title="Download Proposal">
+                                <i class="fas fa-download"></i>
+                            </button>
+                            <button onclick="deleteSubmission(${item.id})" class="text-red-600 hover:text-red-900" title="Hapus">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tbody.innerHTML = html;
+            document.getElementById('semuaPaginationInfo').innerHTML = 'Menampilkan 1-4 dari 4 data';
+        }
+
+        // Load Penelitian Data
+        function loadPenelitianData() {
+            const tbody = document.getElementById('penelitianTableBody');
+            const penelitian = submissions.filter(s => s.jenis === 'penelitian');
+            
+            let html = '';
+            penelitian.forEach((item, index) => {
+                const badge = getStatusBadge(item.status);
+                html += `
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-4 py-3">${index + 1}</td>
+                        <td class="px-4 py-3">${item.judul}</td>
+                        <td class="px-4 py-3">${item.pengusul}</td>
+                        <td class="px-4 py-3">${item.skema.replace(/_/g, ' ')}</td>
+                        <td class="px-4 py-3">${formatCurrency(item.dana)}</td>
+                        <td class="px-4 py-3">
+                            <span class="px-2 py-1 rounded text-xs font-semibold ${badge.class}">${badge.text}</span>
+                        </td>
+                        <td class="px-4 py-3 text-center">
+                            <button onclick="viewDetail(${item.id})" class="text-blue-600 hover:text-blue-900 mr-2">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button onclick="openReviewModal(${item.id})" class="text-green-600 hover:text-green-900">
+                                <i class="fas fa-check-circle"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tbody.innerHTML = html || '<tr><td colspan="7" class="text-center py-4">Tidak ada data penelitian</td></tr>';
+        }
+
+        // Load Pengabdian Data
+        function loadPengabdianData() {
+            const tbody = document.getElementById('pengabdianTableBody');
+            const pengabdian = submissions.filter(s => s.jenis === 'pengabdian');
+            
+            let html = '';
+            pengabdian.forEach((item, index) => {
+                const badge = getStatusBadge(item.status);
+                html += `
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-4 py-3">${index + 1}</td>
+                        <td class="px-4 py-3">${item.judul}</td>
+                        <td class="px-4 py-3">${item.pengusul}</td>
+                        <td class="px-4 py-3">${item.skema.replace(/_/g, ' ')}</td>
+                        <td class="px-4 py-3">${formatCurrency(item.dana)}</td>
+                        <td class="px-4 py-3">
+                            <span class="px-2 py-1 rounded text-xs font-semibold ${badge.class}">${badge.text}</span>
+                        </td>
+                        <td class="px-4 py-3 text-center">
+                            <button onclick="viewDetail(${item.id})" class="text-blue-600 hover:text-blue-900 mr-2">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button onclick="openReviewModal(${item.id})" class="text-green-600 hover:text-green-900">
+                                <i class="fas fa-check-circle"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tbody.innerHTML = html || '<tr><td colspan="7" class="text-center py-4">Tidak ada data pengabdian</td></tr>';
+        }
+
+        // Load Review Data
+        function loadReviewData() {
+            // Review Admin List
+            const reviewAdmin = document.getElementById('reviewAdminList');
+            reviewAdmin.innerHTML = `
+                <div class="p-3 border rounded-lg hover:bg-gray-50">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="font-medium">Dr. Ahmad Fauzi, M.T.</p>
+                            <p class="text-sm text-gray-600">Pengembangan Sistem Deteksi Dini...</p>
+                            <p class="text-xs text-gray-500">Pengajuan: 15 Jan 2024</p>
+                        </div>
+                        <button onclick="openReviewModal(1)" class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700">
+                            Review
+                        </button>
+                    </div>
+                </div>
+                <div class="p-3 border rounded-lg hover:bg-gray-50">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="font-medium">Dr. Ratna Dewi, M.Si</p>
+                            <p class="text-sm text-gray-600">Pelatihan Digital Marketing untuk UMKM...</p>
+                            <p class="text-xs text-gray-500">Pengajuan: 15 Feb 2024</p>
+                        </div>
+                        <button onclick="openReviewModal(3)" class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700">
+                            Review
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            // Review Substansi List
+            const reviewSubstansi = document.getElementById('reviewSubstansiList');
+            reviewSubstansi.innerHTML = `
+                <div class="p-3 border rounded-lg hover:bg-gray-50">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="font-medium">Prof. Bambang Suharto</p>
+                            <p class="text-sm text-gray-600">Rancang Bangun Sistem IoT untuk Smart Farming</p>
+                            <p class="text-xs text-gray-500">Selesai review admin: 15 Mar 2023</p>
+                        </div>
+                        <button onclick="openReviewModal(4, 'substansi')" class="bg-purple-600 text-white px-3 py-1 rounded text-sm hover:bg-purple-700">
+                            Review
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            // Revision List
+            const revisionList = document.getElementById('revisionList');
+            revisionList.innerHTML = `
+                <div class="p-3 border rounded-lg hover:bg-gray-50">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="font-medium">Dr. Ahmad Fauzi, M.T.</p>
+                            <p class="text-sm text-gray-600">Analisis Big Data untuk Prediksi Kebijakan Publik</p>
+                            <p class="text-xs text-orange-600">Revisi diminta: 10 Feb 2024</p>
+                        </div>
+                        <span class="bg-orange-100 text-orange-800 px-2 py-1 rounded text-xs">Menunggu 7 hari</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Load Statistik Data
+function loadStatistikData() {
+    showLoading();
+    
+    try {
+        // Update statistik numbers
+        document.getElementById('totalPengajuanStats').textContent = '24';
+        document.getElementById('totalPenelitianStats').textContent = '15';
+        document.getElementById('totalPengabdianStats').textContent = '9';
+        document.getElementById('totalReviewStats').textContent = '8';
+        document.getElementById('reviewAdminStats').textContent = '3';
+        document.getElementById('reviewSubstansiStats').textContent = '5';
+        document.getElementById('totalDanaStats').textContent = 'Rp 4.3 M';
+        document.getElementById('danaPenelitianStats').textContent = 'Rp 3.2 M';
+        document.getElementById('danaPengabdianStats').textContent = 'Rp 1.1 M';
+        document.getElementById('totalLuaranStats').textContent = '45';
+        document.getElementById('publikasiStats').textContent = '28';
+        document.getElementById('hakiStats').textContent = '17';
+
+        // Update charts with setTimeout to ensure DOM is ready
+        setTimeout(() => {
+            updateCharts();
+        }, 100);
+
+        // Load dosen summary
+        loadDosenSummary();
+    } catch (error) {
+        console.error('Error loading statistics:', error);
+    } finally {
+        hideLoading();
+    }
+}
+
+// Update Charts - Perbaikan
+function updateCharts() {
+    // Destroy existing charts
+    if (statusChart) {
+        statusChart.destroy();
+        statusChart = null;
+    }
+    if (fakultasChart) {
+        fakultasChart.destroy();
+        fakultasChart = null;
+    }
+    
+    // Get canvas elements
+    const statusCanvas = document.getElementById('statusChart');
+    const fakultasCanvas = document.getElementById('fakultasChart');
+    
+    if (!statusCanvas || !fakultasCanvas) return;
+    
+    // Set canvas dimensions
+    statusCanvas.style.width = '100%';
+    statusCanvas.style.height = '300px';
+    fakultasCanvas.style.width = '100%';
+    fakultasCanvas.style.height = '300px';
+    
+    // Buat chart baru dengan maintainAspectRatio: false
+    statusChart = new Chart(statusCanvas, {
+        type: 'doughnut',
+        data: {
+            labels: ['Draft', 'Review Admin', 'Review Substansi', 'Revisi', 'Disetujui', 'Selesai'],
+            datasets: [{
+                data: [3, 3, 5, 2, 8, 3],
+                backgroundColor: ['#6b7280', '#f59e0b', '#f59e0b', '#ef4444', '#10b981', '#8b5cf6'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false, // Penting: allow chart to fill container
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        boxWidth: 12,
+                        padding: 15
+                    }
+                }
+            },
+            layout: {
+                padding: {
+                    top: 10,
+                    bottom: 10
+                }
+            }
+        }
+    });
+
+    fakultasChart = new Chart(fakultasCanvas, {
+        type: 'bar',
+        data: {
+            labels: ['Teknik', 'Ekonomi', 'Hukum', 'FISIP', 'Kedokteran'],
+            datasets: [
+                {
+                    label: 'Penelitian',
+                    data: [8, 3, 2, 1, 1],
+                    backgroundColor: '#3b82f6',
+                    borderRadius: 6
+                },
+                {
+                    label: 'Pengabdian',
+                    data: [4, 3, 1, 1, 0],
+                    backgroundColor: '#10b981',
+                    borderRadius: 6
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false, // Penting: allow chart to fill container
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        boxWidth: 12,
+                        padding: 15
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 2,
+                        callback: function(value) {
+                            return value;
+                        }
+                    },
+                    grid: {
+                        display: true,
+                        color: 'rgba(0,0,0,0.05)'
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
+            },
+            layout: {
+                padding: {
+                    top: 10,
+                    bottom: 10
+                }
+            }
+        }
+    });
+}
+
+// Panggil updateCharts saat window resize
+window.addEventListener('resize', function() {
+    if (document.getElementById('statistik-section').classList.contains('active')) {
+        updateCharts();
+    }
+});
+        // Update Statistik Numbers only
+        function updateStatistikNumbers() {
+            document.getElementById('totalPengajuanStats').textContent = '24';
+            document.getElementById('totalPenelitianStats').textContent = '15';
+            document.getElementById('totalPengabdianStats').textContent = '9';
+            document.getElementById('totalReviewStats').textContent = '8';
+            document.getElementById('reviewAdminStats').textContent = '3';
+            document.getElementById('reviewSubstansiStats').textContent = '5';
+            document.getElementById('totalDanaStats').textContent = 'Rp 4.3 M';
+            document.getElementById('danaPenelitianStats').textContent = 'Rp 3.2 M';
+            document.getElementById('danaPengabdianStats').textContent = 'Rp 1.1 M';
+            document.getElementById('totalLuaranStats').textContent = '45';
+            document.getElementById('publikasiStats').textContent = '28';
+            document.getElementById('hakiStats').textContent = '17';
+        }
+
+        // Update Charts
+        function updateCharts() {
+            const ctxStatus = document.getElementById('statusChart').getContext('2d');
+            const ctxFakultas = document.getElementById('fakultasChart').getContext('2d');
+            
+            // Hancurkan chart yang sudah ada sebelum membuat baru
+            if (statusChart) {
+                statusChart.destroy();
+            }
+            if (fakultasChart) {
+                fakultasChart.destroy();
+            }
+            
+            // Buat chart baru
+            statusChart = new Chart(ctxStatus, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Draft', 'Review Admin', 'Review Substansi', 'Revisi', 'Disetujui', 'Selesai'],
+                    datasets: [{
+                        data: [3, 3, 5, 2, 8, 3],
+                        backgroundColor: ['#6b7280', '#f59e0b', '#f59e0b', '#ef4444', '#10b981', '#8b5cf6'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            fakultasChart = new Chart(ctxFakultas, {
+                type: 'bar',
+                data: {
+                    labels: ['Teknik', 'Ekonomi', 'Hukum', 'FISIP', 'Kedokteran'],
+                    datasets: [
+                        {
+                            label: 'Penelitian',
+                            data: [8, 3, 2, 1, 1],
+                            backgroundColor: '#3b82f6'
+                        },
+                        {
+                            label: 'Pengabdian',
+                            data: [4, 3, 1, 1, 0],
+                            backgroundColor: '#10b981'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 2
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Load Dosen Summary
+        function loadDosenSummary() {
+            const tbody = document.getElementById('dosenSummaryBody');
+            
+            let html = '';
+            dosenSummary.forEach(item => {
+                html += `
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-4 py-3">${item.no}</td>
+                        <td class="px-4 py-3 font-medium">${item.nama}</td>
+                        <td class="px-4 py-3">${item.nidn}</td>
+                        <td class="px-4 py-3">${item.fakultas}</td>
+                        <td class="px-4 py-3">${item.penelitian}</td>
+                        <td class="px-4 py-3">${item.pengabdian}</td>
+                        <td class="px-4 py-3">${formatCurrency(item.totalDana)}</td>
+                        <td class="px-4 py-3">${item.publikasi}</td>
+                        <td class="px-4 py-3 text-center">
+                            <button onclick="viewDosenDetail('${item.nidn}')" class="text-blue-600 hover:text-blue-900">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tbody.innerHTML = html;
+        }
+
+        // Load Skema Data
+        function loadSkemaData() {
+            const tbody = document.getElementById('skemaTableBody');
+            
+            let html = '';
+            skemaData.forEach((item, index) => {
+                html += `
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-4 py-3">${index + 1}</td>
+                        <td class="px-4 py-3">${item.kode}</td>
+                        <td class="px-4 py-3 font-medium">${item.nama}</td>
+                        <td class="px-4 py-3">
+                            <span class="px-2 py-1 rounded text-xs font-semibold ${item.jenis === 'penelitian' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}">
+                                ${item.jenis === 'penelitian' ? 'Penelitian' : 'Pengabdian'}
+                            </span>
+                        </td>
+                        <td class="px-4 py-3">${formatCurrency(item.minDana)}</td>
+                        <td class="px-4 py-3">${formatCurrency(item.maxDana)}</td>
+                        <td class="px-4 py-3">${item.durasiMin} - ${item.durasiMax}</td>
+                        <td class="px-4 py-3">
+                            <span class="px-2 py-1 rounded text-xs font-semibold bg-green-100 text-green-800">${item.status}</span>
+                        </td>
+                        <td class="px-4 py-3 text-center">
+                            <button onclick="editSkema(${item.id})" class="text-green-600 hover:text-green-900 mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="deleteSkema(${item.id})" class="text-red-600 hover:text-red-900">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tbody.innerHTML = html;
+        }
+
+        // Modal functions
+        function viewDetail(id) {
+            const submission = submissions.find(s => s.id === id);
+            if (!submission) return;
+
+            const badge = getStatusBadge(submission.status);
+            
+            document.getElementById('detailModalTitle').textContent = 'Detail Pengajuan';
+            document.getElementById('detailModalContent').innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex justify-between items-start">
+                        <span class="px-3 py-1 rounded-full text-xs font-semibold ${badge.class}">${badge.text}</span>
+                        <span class="text-sm text-gray-500">ID: #${submission.id}</span>
+                    </div>
+
+                    <div>
+                        <h4 class="font-semibold text-gray-700">Informasi Pengajuan</h4>
+                        <div class="grid grid-cols-2 gap-4 mt-2">
+                            <div>
+                                <p class="text-sm text-gray-500">Jenis</p>
+                                <p class="font-medium">${submission.jenis === 'penelitian' ? 'Penelitian' : 'Pengabdian'}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">Skema</p>
+                                <p class="font-medium">${submission.skema.replace(/_/g, ' ')}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">Tahun</p>
+                                <p class="font-medium">${submission.tahun}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">Dana</p>
+                                <p class="font-medium text-green-600">${formatCurrency(submission.dana)}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="font-semibold text-gray-700">Judul</h4>
+                        <p class="text-gray-600 mt-1">${submission.judul}</p>
+                    </div>
+
+                    <div>
+                        <h4 class="font-semibold text-gray-700">Pengusul</h4>
+                        <p class="text-gray-600 mt-1">${submission.pengusul}</p>
+                        <p class="text-sm text-gray-500">NIDN: ${submission.nidn}</p>
+                    </div>
+
+                    <div>
+                        <h4 class="font-semibold text-gray-700">Tanggal Pengajuan</h4>
+                        <p class="text-gray-600">${formatDate(submission.tanggalPengajuan)}</p>
+                    </div>
+
+                    <div class="border-t pt-4">
+                        <h4 class="font-semibold text-gray-700 mb-3">Dokumen</h4>
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                                <span><i class="fas fa-file-pdf text-red-500 mr-2"></i>Proposal.pdf</span>
+                                <button onclick="downloadFile('proposal_${submission.id}.pdf')" class="text-blue-600 hover:text-blue-800">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                            <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                                <span><i class="fas fa-file-pdf text-red-500 mr-2"></i>CV_Tim.pdf</span>
+                                <button onclick="downloadFile('cv_${submission.id}.pdf')" class="text-blue-600 hover:text-blue-800">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end space-x-3 pt-4 border-t">
+                        <button onclick="openReviewModal(${submission.id})" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+                            <i class="fas fa-check-circle mr-2"></i>Review
+                        </button>
+                        <button onclick="closeDetailModal()" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300">
+                            Tutup
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('detailModal').classList.remove('hidden');
+        }
+
+        function closeDetailModal() {
+            document.getElementById('detailModal').classList.add('hidden');
+        }
+
+        function openReviewModal(id, type = 'admin') {
+            document.getElementById('reviewSubmissionId').value = id;
+            document.getElementById('reviewType').value = type;
+            document.getElementById('reviewModalTitle').textContent = type === 'admin' ? 'Review Administrasi' : 'Review Substansi';
+            document.getElementById('reviewForm').reset();
+            document.getElementById('reviewModal').classList.remove('hidden');
+        }
+
+        function closeReviewModal() {
+            document.getElementById('reviewModal').classList.add('hidden');
+        }
+
+        function submitReview() {
+            const id = document.getElementById('reviewSubmissionId').value;
+            const status = document.getElementById('reviewStatus').value;
+            const notes = document.getElementById('reviewNotes').value;
+
+            if (!status) {
+                showNotification('Pilih status review terlebih dahulu', 'error');
+                return;
+            }
+
+            showNotification('Review berhasil disimpan', 'success');
+            closeReviewModal();
+        }
+
+        function openAddSkemaModal() {
+            document.getElementById('skemaForm').reset();
+            document.getElementById('skemaModal').classList.remove('hidden');
+        }
+
+        function closeSkemaModal() {
+            document.getElementById('skemaModal').classList.add('hidden');
+        }
+
+        function saveSkema() {
+            showNotification('Skema berhasil ditambahkan', 'success');
+            closeSkemaModal();
+            loadSkemaData();
+        }
+
+        function editSkema(id) {
+            showNotification('Fitur edit dalam pengembangan', 'info');
+        }
+
+        function deleteSkema(id) {
+            showConfirmation('Apakah Anda yakin ingin menghapus skema ini?', () => {
+                showNotification('Skema berhasil dihapus', 'success');
+            });
+        }
+
+        // Other functions
+        function exportData() {
+            showNotification('Data sedang diekspor', 'success');
+        }
+
+        function downloadProposal(id) {
+            showNotification('Mengunduh proposal...', 'success');
+        }
+
+        function downloadFile(filename) {
+            showNotification(`Mengunduh file: ${filename}`, 'success');
+        }
+
+        function deleteSubmission(id) {
+            showConfirmation('Apakah Anda yakin ingin menghapus pengajuan ini?', () => {
+                showNotification('Pengajuan berhasil dihapus', 'success');
+            });
+        }
+
+        function viewDosenDetail(nidn) {
+            showNotification('Melihat detail dosen', 'info');
+        }
+
+        function changePage(section, direction) {
+            showNotification('Fitur pagination dalam pengembangan', 'info');
+        }
+
+        function updateFileName(input, elementId) {
+            const fileName = input.files[0] ? input.files[0].name : 'Tidak ada file dipilih';
+            document.getElementById(elementId).textContent = fileName;
+        }
+
+        // Filter functions
+        function filterAllSubmissions() {
+            const searchTerm = document.getElementById('searchSemua').value.toLowerCase();
+            const statusFilter = document.getElementById('filterStatusSemua').value;
+            const tahunFilter = document.getElementById('filterTahunSemua').value;
+            
+            let filtered = submissions;
+            
+            if (searchTerm) {
+                filtered = filtered.filter(s => 
+                    s.judul.toLowerCase().includes(searchTerm) || 
+                    s.pengusul.toLowerCase().includes(searchTerm) ||
+                    s.nidn.includes(searchTerm)
+                );
+            }
+            
+            if (statusFilter) {
+                filtered = filtered.filter(s => s.status === statusFilter);
+            }
+            
+            if (tahunFilter) {
+                filtered = filtered.filter(s => s.tahun.toString() === tahunFilter);
+            }
+            
+            const tbody = document.getElementById('semuaTableBody');
+            
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" class="text-center py-8 text-gray-500">Tidak ada data ditemukan</td></tr>';
+                return;
+            }
+            
+            let html = '';
+            filtered.forEach((item, index) => {
+                const badge = getStatusBadge(item.status);
+                html += `
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-4 py-3">${index + 1}</td>
+                        <td class="px-4 py-3">
+                            <span class="px-2 py-1 rounded text-xs font-semibold ${item.jenis === 'penelitian' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}">
+                                ${item.jenis === 'penelitian' ? 'Penelitian' : 'Pengabdian'}
+                            </span>
+                        </td>
+                        <td class="px-4 py-3">${item.judul}</td>
+                        <td class="px-4 py-3">
+                            <div class="font-medium">${item.pengusul}</div>
+                            <div class="text-xs text-gray-500">${item.nidn}</div>
+                        </td>
+                        <td class="px-4 py-3">${item.skema.replace(/_/g, ' ')}</td>
+                        <td class="px-4 py-3">${item.tahun}</td>
+                        <td class="px-4 py-3">${formatCurrency(item.dana)}</td>
+                        <td class="px-4 py-3">
+                            <span class="px-2 py-1 rounded text-xs font-semibold ${badge.class}">${badge.text}</span>
+                        </td>
+                        <td class="px-4 py-3 text-center">
+                            <button onclick="viewDetail(${item.id})" class="text-blue-600 hover:text-blue-900 mr-2">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button onclick="openReviewModal(${item.id})" class="text-green-600 hover:text-green-900 mr-2">
+                                <i class="fas fa-check-circle"></i>
+                            </button>
+                            <button onclick="downloadProposal(${item.id})" class="text-purple-600 hover:text-purple-900 mr-2">
+                                <i class="fas fa-download"></i>
+                            </button>
+                            <button onclick="deleteSubmission(${item.id})" class="text-red-600 hover:text-red-900">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tbody.innerHTML = html;
+            document.getElementById('semuaPaginationInfo').innerHTML = `Menampilkan 1-${filtered.length} dari ${filtered.length} data`;
+        }
+
+        function filterPenelitian() {
+            const searchTerm = document.getElementById('searchPenelitian').value.toLowerCase();
+            const statusFilter = document.getElementById('filterStatusPenelitian').value;
+            const skemaFilter = document.getElementById('filterSkemaPenelitian').value;
+            
+            let filtered = submissions.filter(s => s.jenis === 'penelitian');
+            
+            if (searchTerm) {
+                filtered = filtered.filter(s => 
+                    s.judul.toLowerCase().includes(searchTerm) || 
+                    s.pengusul.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            if (statusFilter) {
+                filtered = filtered.filter(s => s.status === statusFilter);
+            }
+            
+            if (skemaFilter) {
+                filtered = filtered.filter(s => s.skema === skemaFilter);
+            }
+            
+            const tbody = document.getElementById('penelitianTableBody');
+            
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4">Tidak ada data penelitian</td></tr>';
+                return;
+            }
+            
+            let html = '';
+            filtered.forEach((item, index) => {
+                const badge = getStatusBadge(item.status);
+                html += `
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-4 py-3">${index + 1}</td>
+                        <td class="px-4 py-3">${item.judul}</td>
+                        <td class="px-4 py-3">${item.pengusul}</td>
+                        <td class="px-4 py-3">${item.skema.replace(/_/g, ' ')}</td>
+                        <td class="px-4 py-3">${formatCurrency(item.dana)}</td>
+                        <td class="px-4 py-3">
+                            <span class="px-2 py-1 rounded text-xs font-semibold ${badge.class}">${badge.text}</span>
+                        </td>
+                        <td class="px-4 py-3 text-center">
+                            <button onclick="viewDetail(${item.id})" class="text-blue-600 hover:text-blue-900 mr-2">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button onclick="openReviewModal(${item.id})" class="text-green-600 hover:text-green-900">
+                                <i class="fas fa-check-circle"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tbody.innerHTML = html;
+        }
+
+        function filterPengabdian() {
+            const searchTerm = document.getElementById('searchPengabdian').value.toLowerCase();
+            const statusFilter = document.getElementById('filterStatusPengabdian').value;
+            const skemaFilter = document.getElementById('filterSkemaPengabdian').value;
+            
+            let filtered = submissions.filter(s => s.jenis === 'pengabdian');
+            
+            if (searchTerm) {
+                filtered = filtered.filter(s => 
+                    s.judul.toLowerCase().includes(searchTerm) || 
+                    s.pengusul.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            if (statusFilter) {
+                filtered = filtered.filter(s => s.status === statusFilter);
+            }
+            
+            if (skemaFilter) {
+                filtered = filtered.filter(s => s.skema === skemaFilter);
+            }
+            
+            const tbody = document.getElementById('pengabdianTableBody');
+            
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4">Tidak ada data pengabdian</td></tr>';
+                return;
+            }
+            
+            let html = '';
+            filtered.forEach((item, index) => {
+                const badge = getStatusBadge(item.status);
+                html += `
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-4 py-3">${index + 1}</td>
+                        <td class="px-4 py-3">${item.judul}</td>
+                        <td class="px-4 py-3">${item.pengusul}</td>
+                        <td class="px-4 py-3">${item.skema.replace(/_/g, ' ')}</td>
+                        <td class="px-4 py-3">${formatCurrency(item.dana)}</td>
+                        <td class="px-4 py-3">
+                            <span class="px-2 py-1 rounded text-xs font-semibold ${badge.class}">${badge.text}</span>
+                        </td>
+                        <td class="px-4 py-3 text-center">
+                            <button onclick="viewDetail(${item.id})" class="text-blue-600 hover:text-blue-900 mr-2">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button onclick="openReviewModal(${item.id})" class="text-green-600 hover:text-green-900">
+                                <i class="fas fa-check-circle"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tbody.innerHTML = html;
+        }
+
+        // Debounce function
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Initialize Page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load initial data
+            loadAllSubmissions();
+            loadPenelitianData();
+            loadPengabdianData();
+            loadReviewData();
+            loadStatistikData();
+            loadSkemaData();
+
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!event.target.closest('.relative')) {
+                    document.getElementById('notificationDropdown').classList.add('hidden');
+                    document.getElementById('userDropdown').classList.add('hidden');
+                }
+            });
+
+            // Debounce search inputs
+            const searchInputs = [
+                { id: 'searchSemua', handler: filterAllSubmissions },
+                { id: 'searchPenelitian', handler: filterPenelitian },
+                { id: 'searchPengabdian', handler: filterPengabdian }
+            ];
+            
+            searchInputs.forEach(item => {
+                const input = document.getElementById(item.id);
+                if (input) {
+                    input.addEventListener('input', debounce(item.handler, 500));
+                }
+            });
+
+            // Filter change listeners
+            document.getElementById('filterStatusSemua')?.addEventListener('change', function() {
+                filterAllSubmissions();
+            });
+            document.getElementById('filterTahunSemua')?.addEventListener('change', function() {
+                filterAllSubmissions();
+            });
+            document.getElementById('filterStatusPenelitian')?.addEventListener('change', function() {
+                filterPenelitian();
+            });
+            document.getElementById('filterSkemaPenelitian')?.addEventListener('change', function() {
+                filterPenelitian();
+            });
+            document.getElementById('filterStatusPengabdian')?.addEventListener('change', function() {
+                filterPengabdian();
+            });
+            document.getElementById('filterSkemaPengabdian')?.addEventListener('change', function() {
+                filterPengabdian();
+            });
+        });
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            const detailModal = document.getElementById('detailModal');
+            const reviewModal = document.getElementById('reviewModal');
+            const skemaModal = document.getElementById('skemaModal');
+            const logoutModal = document.getElementById('confirmLogoutModal');
+            
+            if (event.target === detailModal) {
+                closeDetailModal();
+            }
+            if (event.target === reviewModal) {
+                closeReviewModal();
+            }
+            if (event.target === skemaModal) {
+                closeSkemaModal();
+            }
+            if (event.target === logoutModal) {
+                closeLogoutModal();
+            }
+        };
+    </script>
+</body>
+</html>

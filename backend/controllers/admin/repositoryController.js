@@ -65,43 +65,45 @@ class RepositoryController {
         }
     }
 
-    // Di createDocument
-async createDocument(req, res) {
-    try {
-        // Check validation errors
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json(formatError('Validasi gagal', errors.array()));
+    /**
+     * Create new document
+     */
+    async createDocument(req, res) {
+        try {
+            // Check validation errors
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return res.status(400).json(formatError('Validasi gagal', errors.array()));
+            }
+
+            // Check if file is uploaded
+            if (!req.file) {
+                return res.status(400).json(formatError('File dokumen harus diupload'));
+            }
+
+            const documentData = {
+                judul: req.body.judul,
+                kategori: req.body.kategori,
+                tahun: req.body.tahun,
+                penulis: req.body.penulis,
+                abstrak: req.body.abstrak || null,
+                doi: req.body.doi || null,
+                link: req.body.link || null,
+                keywords: req.body.keywords || null,
+                file: req.file,
+                created_by: req.user.id_user // Sesuaikan dengan struktur user dari auth
+            };
+
+            const newDocument = await repositoryService.createDocument(documentData);
+            
+            return res.status(201).json(
+                formatResponse('success', 'Dokumen berhasil diupload', newDocument)
+            );
+        } catch (error) {
+            logger.error('Error creating document:', error);
+            return res.status(500).json(formatError('Gagal mengupload dokumen'));
         }
-
-        // Check if file is uploaded
-        if (!req.file) {
-            return res.status(400).json(formatError('File dokumen harus diupload'));
-        }
-
-        const documentData = {
-            judul: req.body.judul,
-            kategori: req.body.kategori,
-            tahun: req.body.tahun,
-            penulis: req.body.penulis,
-            abstrak: req.body.abstrak || null,
-            doi: req.body.doi || null,
-            link: req.body.link || null,
-            keywords: req.body.keywords || null,
-            file: req.file, // Ini sudah berisi file info dari multer
-            created_by: req.user.id_user
-        };
-
-        const newDocument = await repositoryService.createDocument(documentData);
-        
-        return res.status(201).json(
-            formatResponse('success', 'Dokumen berhasil diupload', newDocument)
-        );
-    } catch (error) {
-        logger.error('Error creating document:', error);
-        return res.status(500).json(formatError('Gagal mengupload dokumen'));
     }
-}
 
     /**
      * Update document
@@ -126,7 +128,7 @@ async createDocument(req, res) {
                 link: req.body.link || null,
                 keywords: req.body.keywords || null,
                 file: req.file || null,
-                updated_by: req.user.id_user
+                updated_by: req.user.id_user // Sesuaikan dengan struktur user dari auth
             };
 
             const updatedDocument = await repositoryService.updateDocument(id, documentData);
@@ -151,7 +153,7 @@ async createDocument(req, res) {
         try {
             const { id } = req.params;
             
-            const deleted = await repositoryService.deleteDocument(id);
+            const deleted = await repositoryService.deleteDocument(id, req.user.id_user); // Tambahkan user id
             
             if (!deleted) {
                 return res.status(404).json(formatError('Dokumen tidak ditemukan'));

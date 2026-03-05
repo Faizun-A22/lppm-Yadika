@@ -189,44 +189,84 @@
         </div>
     </div>
 
-    <!-- Top Navigation Bar -->
-    <header class="fixed top-0 left-0 right-0 bg-white shadow-md z-50">
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <!-- Logo and Brand -->
-            <a href="admin-dashboard.html" class="flex items-center space-x-3">
-                <img src="images/logoyadika.png" alt="Logo" class="h-10 w-10">
-                <div>
-                    <h1 class="text-xl font-bold gradient-text">LPPM Admin</h1>
-                    <p class="text-xs text-gray-500">ITB Yadika</p>
+                <header class="fixed top-0 left-0 right-0 bg-white shadow-md z-50">
+            <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+                <!-- Logo and Brand -->
+                <a href="admin-dashboard.html" class="flex items-center space-x-3">
+                    <img src="images/logoyadika.png" alt="Logo" class="h-10 w-10">
+                    <div>
+                        <h1 class="text-xl font-bold gradient-text">LPPM Admin</h1>
+                        <p class="text-xs text-gray-500">ITB Yadika</p>
+                    </div>
+                </a>
+
+                <!-- Navigation Links -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="admin-dashboard.html" class="nav-link text-gray-700 hover:text-blue-600">
+                        <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+                    </a>
+                    <a href="manage-kegiatan.html" class="nav-link text-gray-700 hover:text-blue-600">
+                        <i class="fas fa-calendar-alt mr-2"></i>Kegiatan & berita
+                    </a>
+                    <a href="manage-repository.html" class="nav-link text-gray-700 hover:text-blue-600">
+                        <i class="fas fa-book mr-2"></i>Repository
+                    </a>
+                    <a href="admin_penelitian.html" class="nav-link text-gray-700 hover:text-blue-600">
+                        <i class="fas fa-briefcase mr-2"></i>penelitian & Pengabdian
+                    </a>
+                    <a href="manage-magang-kkn.html" class="nav-link text-gray-700 hover:text-blue-600">
+                        <i class="fas fa-briefcase mr-2"></i>Magang & KKN
+                    </a>
                 </div>
-            </a>
 
-            <!-- Navigation Links -->
-            <div class="hidden md:flex items-center space-x-8">
-                <a href="admin-dashboard.html" class="nav-link text-gray-700 hover:text-blue-600">
-                    <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
-                </a>
-                <a href="manage-kegiatan.html" class="nav-link text-gray-700 hover:text-blue-600">
-                    <i class="fas fa-calendar-alt mr-2"></i>Kegiatan
-                </a>
-                <a href="manage-repository.html" class="nav-link active text-gray-700 hover:text-blue-600">
-                    <i class="fas fa-book mr-2"></i>Repository
-                </a>
-                <a href="manage-magang-kkn.html" class="nav-link text-gray-700 hover:text-blue-600">
-                    <i class="fas fa-briefcase mr-2"></i>Magang & KKN
-                </a>
-            </div>
-
-            <!-- User Profile / Logout -->
+            <!-- User Profile / Notifications -->
             <div class="flex items-center space-x-4">
-                <span class="text-sm text-gray-600 hidden sm:block" id="userName">Admin LPPM</span>
-                <button onclick="handleLogout()" class="flex items-center space-x-2 p-2 rounded-lg text-red-600 hover:bg-red-50 transition">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span class="hidden sm:inline">Logout</span>
-                </button>
+                <!-- Notification Bell -->
+                <div class="relative">
+                    <button onclick="toggleNotifications()" class="text-gray-600 hover:text-blue-600 relative">
+                        <i class="fas fa-bell text-xl"></i>
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center" id="notificationBadge">3</span>
+                    </button>
+                    <!-- Notification Dropdown -->
+                    <div id="notificationDropdown" class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl hidden z-50">
+                        <div class="p-4 border-b">
+                            <h4 class="font-semibold">Notifikasi</h4>
+                        </div>
+                        <div class="max-h-96 overflow-y-auto" id="notificationList">
+                            <!-- Notifications will be loaded here -->
+                        </div>
+                        <div class="p-3 border-t text-center">
+                            <button onclick="markAllAsRead()" class="text-sm text-blue-600 hover:text-blue-800">
+                                Tandai semua telah dibaca
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Menu -->
+                <div class="relative">
+                    <button onclick="toggleUserMenu()" class="flex items-center space-x-2 focus:outline-none">
+                        <img src="https://ui-avatars.com/api/?name=Admin+LPPM&background=3B82F6&color=fff" alt="Profile" class="h-8 w-8 rounded-full">
+                        <span class="text-sm text-gray-600 hidden sm:block" id="userName">Admin LPPM</span>
+                        <i class="fas fa-chevron-down text-xs text-gray-500"></i>
+                    </button>
+                    <!-- User Dropdown -->
+                    <div id="userDropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl hidden z-50">
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-user mr-2"></i> Profil
+                        </a>
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-cog mr-2"></i> Pengaturan
+                        </a>
+                        <hr class="my-1">
+                        <button onclick="handleLogout()" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                            <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                        </button>
+                    </div>
+                </div>
             </div>
-        </nav>
-    </header>
+         </nav>
+        </header>
 
     <!-- Main Content -->
     <main class="pt-20">
@@ -256,7 +296,7 @@
                         </div>
                     </div>
                     <div class="mt-4 text-sm text-gray-500">
-                        <i class="fas fa-chart-line mr-1"></i> +12% bulan ini
+                        <i class="fas fa-chart-line mr-1"></i> Total dokumen
                     </div>
                 </div>
 
@@ -272,7 +312,7 @@
                         </div>
                     </div>
                     <div class="mt-4 text-sm text-gray-500">
-                        <i class="fas fa-eye mr-1"></i> 1.2k views
+                        <i class="fas fa-eye mr-1"></i> <span id="totalViews">0</span> views
                     </div>
                 </div>
 
@@ -281,14 +321,14 @@
                     <div class="flex justify-between items-center">
                         <div>
                             <p class="text-sm text-gray-500">Kategori Populer</p>
-                            <h3 class="text-2xl font-bold text-gray-800" id="kategoriPopuler">Jurnal</h3>
+                            <h3 class="text-2xl font-bold text-gray-800" id="kategoriPopuler">-</h3>
                         </div>
                         <div class="bg-purple-100 rounded-full p-3">
                             <i class="fas fa-star text-purple-600"></i>
                         </div>
                     </div>
                     <div class="mt-4 text-sm text-gray-500">
-                        <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded-full text-xs" id="popularCategoryPercentage">45% dari total</span>
+                        <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded-full text-xs" id="popularCategoryPercentage">-</span>
                     </div>
                 </div>
 
@@ -343,6 +383,11 @@
                     <li class="mr-2">
                         <button class="tab-button inline-block p-4 border-b-2 rounded-t-lg" id="tabHakiBtn" data-tab="haki" onclick="activateTab('haki')">
                             <i class="fas fa-copyright mr-2"></i>HKI
+                        </button>
+                    </li>
+                    <li class="mr-2">
+                        <button class="tab-button inline-block p-4 border-b-2 rounded-t-lg" id="tabProsidingBtn" data-tab="prosiding" onclick="activateTab('prosiding')">
+                            <i class="fas fa-file-alt mr-2"></i>Prosiding
                         </button>
                     </li>
                 </ul>
@@ -483,7 +528,7 @@
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
-            <form class="p-6" id="documentForm" onsubmit="event.preventDefault(); saveDocument();">
+            <form class="p-6" id="documentForm" enctype="multipart/form-data">
                 <input type="hidden" id="docId">
 
                 <div class="grid grid-cols-2 gap-4 mb-4">
@@ -549,17 +594,17 @@
                     <label class="block text-gray-700 text-sm font-bold mb-2">Upload File</label>
                     <div class="file-upload-area" onclick="document.getElementById('fileInput').click()">
                         <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-2"></i>
-                        <p class="text-sm text-gray-600" id="fileName">Klik untuk upload file (PDF, DOC, XLS, PPT, max 10MB)</p>
+                        <p class="text-sm text-gray-600" id="fileName">Klik untuk upload file (PDF, DOC, XLS, PPT, max 50MB)</p>
                         <p class="text-xs text-gray-400 mt-1" id="fileSize"></p>
                     </div>
-                    <input type="file" id="fileInput" class="hidden" onchange="handleFileSelect(this)">
+                    <input type="file" id="fileInput" class="hidden" onchange="handleFileSelect(this)" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png,.gif">
                 </div>
 
                 <div class="flex justify-end space-x-3 pt-4 border-t">
                     <button type="button" onclick="closeModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
                         Batal
                     </button>
-                    <button type="submit" class="px-4 py-2 bg-gradient-to-r from-pink-500 to-blue-600 text-white rounded-lg hover:shadow-lg transition">
+                    <button type="button" onclick="saveDocument()" class="px-4 py-2 bg-gradient-to-r from-pink-500 to-blue-600 text-white rounded-lg hover:shadow-lg transition">
                         Upload Dokumen
                     </button>
                 </div>
@@ -649,6 +694,9 @@
         // ==================== INITIALIZATION ====================
         AOS.init({ duration: 800, once: true });
 
+        // API Configuration
+        const API_BASE_URL = 'http://localhost:3000/api/admin/repository';
+        
         // ==================== AUTHENTICATION & LOGOUT ====================
         // Cek autentikasi
         let token = localStorage.getItem('token');
@@ -660,151 +708,8 @@
         const user = JSON.parse(localStorage.getItem('user') || '{}');
         document.getElementById('userName').textContent = user.nama_lengkap || 'Admin LPPM';
 
-        // Handle logout function
-        function handleLogout() {
-            // Gunakan SweetAlert
-            Swal.fire({
-                title: 'Konfirmasi Logout',
-                text: 'Apakah Anda yakin ingin logout?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Ya, Logout',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    performLogout();
-                }
-            });
-        }
-
-        function closeLogoutModal() {
-            document.getElementById('confirmLogoutModal').classList.add('hidden');
-        }
-
-        function performLogout() {
-            // Hapus token dan user data dari localStorage
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            
-            // Redirect ke halaman login
-            window.location.href = '../login.html';
-        }
-
-        // Fungsi untuk mengecek session expiry
-        function checkSession() {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                window.location.href = '../login.html';
-                return;
-            }
-            
-            // Decode token untuk cek expiry
-            try {
-                const base64Url = token.split('.')[1];
-                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-                const payload = JSON.parse(window.atob(base64));
-                
-                // Cek if token expired
-                if (payload.exp && payload.exp < Date.now() / 1000) {
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('user');
-                    window.location.href = '../login.html?session=expired';
-                }
-            } catch (e) {
-                console.error('Error checking session:', e);
-            }
-        }
-
-        // Panggil checkSession setiap 5 menit
-        setInterval(checkSession, 5 * 60 * 1000);
-
-        // ==================== MOCK DATA ====================
-        let documents = [
-            {
-                id: 1,
-                judul: 'Penerapan Machine Learning untuk Prediksi Cuaca',
-                penulis: 'Dr. Budi Santoso, M.Kom, Dr. Ahmad Fauzi, M.T.',
-                kategori: 'jurnal',
-                tahun: '2023',
-                abstrak: 'Penelitian ini mengembangkan model machine learning untuk prediksi cuaca jangka pendek dengan akurasi tinggi menggunakan data historis BMKG.',
-                doi: '10.1234/jurnal.2023.001',
-                link: 'https://journal.yadika.ac.id/article/1',
-                keywords: 'machine learning, prediksi cuaca, neural network',
-                filename: 'machine_learning_cuaca.pdf',
-                filesize: 2450000,
-                downloads: 156,
-                views: 234,
-                tanggal_upload: '2023-06-15'
-            },
-            {
-                id: 2,
-                judul: 'Pemberdayaan UMKM melalui Digital Marketing di Bekasi',
-                penulis: 'Dr. Ratna Dewi, M.Si, Ir. Hendra Kurniawan',
-                kategori: 'pengabdian',
-                tahun: '2023',
-                abstrak: 'Kegiatan pengabdian masyarakat bertujuan meningkatkan kapasitas UMKM dalam memanfaatkan platform digital untuk pemasaran produk.',
-                doi: '',
-                link: '',
-                keywords: 'UMKM, digital marketing, pemberdayaan masyarakat',
-                filename: 'pengabdian_umkm_bekasi.pdf',
-                filesize: 1800000,
-                downloads: 89,
-                views: 145,
-                tanggal_upload: '2023-08-20'
-            },
-            {
-                id: 3,
-                judul: 'Pengembangan Sistem IoT untuk Smart Farming',
-                penulis: 'Prof. Bambang Suharto, Ph.D, Dr. Ahmad Fauzi, M.T.',
-                kategori: 'penelitian',
-                tahun: '2022',
-                abstrak: 'Penelitian ini menghasilkan prototipe sistem IoT untuk monitoring tanaman padi secara real-time dengan sensor tanah dan cuaca.',
-                doi: '10.1234/penelitian.2022.045',
-                link: '',
-                keywords: 'IoT, smart farming, sensor, pertanian presisi',
-                filename: 'iot_smart_farming.pdf',
-                filesize: 3200000,
-                downloads: 203,
-                views: 312,
-                tanggal_upload: '2022-11-10'
-            },
-            {
-                id: 4,
-                judul: 'Buku Ajar Kecerdasan Buatan Dasar',
-                penulis: 'Dr. Ahmad Fauzi, M.T., Ir. Hendra Kurniawan',
-                kategori: 'buku',
-                tahun: '2023',
-                abstrak: 'Buku ajar ini membahas konsep dasar kecerdasan buatan, algoritma machine learning, dan aplikasinya dalam berbagai bidang.',
-                doi: '978-602-1234-56-7',
-                link: 'https://penerbit.yadika.ac.id/buku/ai',
-                keywords: 'AI, machine learning, buku ajar, kecerdasan buatan',
-                filename: 'buku_ajar_ai.pdf',
-                filesize: 5200000,
-                downloads: 312,
-                views: 456,
-                tanggal_upload: '2023-01-25'
-            },
-            {
-                id: 5,
-                judul: 'Paten Alat Deteksi Dini Kebakaran Hutan',
-                penulis: 'Dr. Budi Santoso, M.Kom, Tim LPPM',
-                kategori: 'haki',
-                tahun: '2023',
-                abstrak: 'Invensi berupa alat deteksi dini kebakaran hutan menggunakan sensor asap, suhu, dan kamera termal dengan sistem peringatan dini.',
-                doi: 'IDP000012345',
-                link: '',
-                keywords: 'paten, kebakaran hutan, sensor, deteksi dini',
-                filename: 'paten_kebakaran_hutan.pdf',
-                filesize: 1500000,
-                downloads: 45,
-                views: 78,
-                tanggal_upload: '2023-05-03'
-            }
-        ];
-
-        // View state
+        // State variables
+        let documents = [];
         let currentView = 'grid';
         let currentPage = 1;
         let currentTab = 'semua';
@@ -813,7 +718,146 @@
             kategori: '',
             tahun: ''
         };
+        let totalPages = 1;
+        let totalItems = 0;
         const itemsPerPage = 6;
+        let selectedFile = null;
+
+        // ==================== API FUNCTIONS ====================
+        async function apiCall(endpoint, options = {}) {
+            const headers = {
+                'Authorization': `Bearer ${token}`,
+                ...options.headers
+            };
+
+            // Don't set Content-Type for FormData
+            if (options.body instanceof FormData) {
+                delete headers['Content-Type'];
+            } else {
+                headers['Content-Type'] = 'application/json';
+            }
+
+            const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+                ...options,
+                headers
+            });
+
+            if (!response.ok) {
+                if (response.status === 401) {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    window.location.href = '../login.html?session=expired';
+                    throw new Error('Sesi berakhir');
+                }
+                const error = await response.json();
+                throw new Error(error.message || 'Terjadi kesalahan');
+            }
+
+            return response.json();
+        }
+
+        // ==================== LOAD DATA ====================
+        async function loadDashboardStats() {
+            try {
+                const response = await apiCall('/dashboard-stats');
+                if (response.success) {
+                    const stats = response.data;
+                    
+                    document.getElementById('totalDokumen').textContent = stats.total_documents || 0;
+                    document.getElementById('totalDownload').textContent = (stats.total_downloads || 0).toLocaleString();
+                    document.getElementById('totalViews').textContent = (stats.total_views || 0).toLocaleString();
+                    
+                    // Storage info
+                    const usedGB = (stats.storage_used / (1024 * 1024 * 1024)).toFixed(1);
+                    const percentage = stats.storage_percentage || 0;
+                    
+                    document.getElementById('storageUsed').textContent = usedGB + ' GB';
+                    document.getElementById('storageProgress').style.width = percentage + '%';
+                    document.getElementById('storageInfo').textContent = `dari 5 GB total (${percentage.toFixed(1)}% terpakai)`;
+                    
+                    // Popular category
+                    if (stats.popular_category) {
+                        const categoryNames = {
+                            'jurnal': 'Jurnal',
+                            'penelitian': 'Penelitian',
+                            'pengabdian': 'Pengabdian',
+                            'buku': 'Buku',
+                            'haki': 'HKI',
+                            'prosiding': 'Prosiding'
+                        };
+                        
+                        document.getElementById('kategoriPopuler').textContent = 
+                            categoryNames[stats.popular_category.kategori] || stats.popular_category.kategori;
+                        
+                        const total = stats.total_documents || 0;
+                        const percentage = total > 0 ? Math.round((stats.popular_category.jumlah / total) * 100) : 0;
+                        document.getElementById('popularCategoryPercentage').textContent = `${percentage}% dari total`;
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading dashboard stats:', error);
+            }
+        }
+
+        async function loadCategoryCounts() {
+            try {
+                const response = await apiCall('/categories/count');
+                if (response.success) {
+                    const categories = response.data;
+                    
+                    // Reset all counts
+                    document.getElementById('countJurnal').textContent = '0';
+                    document.getElementById('countPenelitian').textContent = '0';
+                    document.getElementById('countPengabdian').textContent = '0';
+                    document.getElementById('countBuku').textContent = '0';
+                    document.getElementById('countHaki').textContent = '0';
+                    document.getElementById('countProsiding').textContent = '0';
+                    
+                    // Update counts
+                    categories.forEach(cat => {
+                        const element = document.getElementById(`count${cat.kategori.charAt(0).toUpperCase() + cat.kategori.slice(1)}`);
+                        if (element) {
+                            element.textContent = cat.jumlah;
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading category counts:', error);
+            }
+        }
+
+        async function loadDocuments() {
+            showLoading();
+            try {
+                const params = new URLSearchParams({
+                    page: currentPage,
+                    limit: itemsPerPage,
+                    sortBy: 'created_at',
+                    sortOrder: 'DESC'
+                });
+
+                if (currentFilter.search) params.append('search', currentFilter.search);
+                if (currentFilter.kategori) params.append('kategori', currentFilter.kategori);
+                if (currentFilter.tahun) params.append('tahun', currentFilter.tahun);
+                if (currentTab !== 'semua') params.append('kategori', currentTab);
+
+                const response = await apiCall(`/documents?${params}`);
+                
+                if (response.success) {
+                    documents = response.data.data || [];
+                    totalItems = response.data.pagination?.total_data || 0;
+                    totalPages = response.data.pagination?.total_pages || 1;
+                    
+                    renderCurrentView();
+                    updatePagination();
+                }
+            } catch (error) {
+                console.error('Error loading documents:', error);
+                showNotification('Gagal memuat dokumen', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
 
         // ==================== UTILITY FUNCTIONS ====================
         function showLoading() {
@@ -906,110 +950,19 @@
             return icons[kategori] || 'fa-file';
         }
 
-        // ==================== STATS FUNCTIONS ====================
-        function updateStats() {
-            document.getElementById('totalDokumen').textContent = documents.length;
-            
-            const totalDownloads = documents.reduce((sum, doc) => sum + (doc.downloads || 0), 0);
-            document.getElementById('totalDownload').textContent = totalDownloads.toLocaleString();
-            
-            // Count by category
-            document.getElementById('countJurnal').textContent = documents.filter(d => d.kategori === 'jurnal').length;
-            document.getElementById('countPenelitian').textContent = documents.filter(d => d.kategori === 'penelitian').length;
-            document.getElementById('countPengabdian').textContent = documents.filter(d => d.kategori === 'pengabdian').length;
-            document.getElementById('countBuku').textContent = documents.filter(d => d.kategori === 'buku').length;
-            document.getElementById('countHaki').textContent = documents.filter(d => d.kategori === 'haki').length;
-            document.getElementById('countProsiding').textContent = documents.filter(d => d.kategori === 'prosiding').length;
-
-            // Find most popular category
-            const categoryCount = {
-                jurnal: documents.filter(d => d.kategori === 'jurnal').length,
-                penelitian: documents.filter(d => d.kategori === 'penelitian').length,
-                pengabdian: documents.filter(d => d.kategori === 'pengabdian').length,
-                buku: documents.filter(d => d.kategori === 'buku').length,
-                haki: documents.filter(d => d.kategori === 'haki').length,
-                prosiding: documents.filter(d => d.kategori === 'prosiding').length
-            };
-            
-            const maxCategory = Object.keys(categoryCount).reduce((a, b) => 
-                categoryCount[a] > categoryCount[b] ? a : b
-            );
-            
-            const categoryNames = {
-                jurnal: 'Jurnal',
-                penelitian: 'Penelitian',
-                pengabdian: 'Pengabdian',
-                buku: 'Buku',
-                haki: 'HKI',
-                prosiding: 'Prosiding'
-            };
-            
-            const maxCount = categoryCount[maxCategory];
-            const total = documents.length;
-            const percentage = total > 0 ? Math.round((maxCount / total) * 100) : 0;
-            
-            document.getElementById('kategoriPopuler').textContent = categoryNames[maxCategory] || 'Jurnal';
-            document.getElementById('popularCategoryPercentage').textContent = `${percentage}% dari total`;
-            
-            // Calculate storage usage
-            const totalStorage = 5 * 1024 * 1024 * 1024; // 5GB
-            const usedStorage = documents.reduce((sum, doc) => sum + (doc.filesize || 0), 0);
-            const usedGB = (usedStorage / (1024 * 1024 * 1024)).toFixed(1);
-            const percentageStorage = (usedStorage / totalStorage) * 100;
-            
-            document.getElementById('storageUsed').textContent = usedGB + ' GB';
-            document.getElementById('storageProgress').style.width = Math.min(percentageStorage, 100) + '%';
-            document.getElementById('storageInfo').textContent = `dari 5 GB total (${Math.min(percentageStorage, 100).toFixed(1)}% terpakai)`;
-        }
-
         // ==================== FILTER FUNCTIONS ====================
         function applyFilters() {
-            showLoading();
-            setTimeout(() => {
-                currentFilter.search = document.getElementById('searchInput').value;
-                currentFilter.kategori = document.getElementById('kategoriFilter').value;
-                currentFilter.tahun = document.getElementById('tahunFilter').value;
-                currentPage = 1;
-                renderCurrentView();
-                hideLoading();
-            }, 500);
+            currentFilter.search = document.getElementById('searchInput').value;
+            currentFilter.kategori = document.getElementById('kategoriFilter').value;
+            currentFilter.tahun = document.getElementById('tahunFilter').value;
+            currentPage = 1;
+            loadDocuments();
         }
 
         function filterByCategory(kategori) {
             document.getElementById('kategoriFilter').value = kategori;
             applyFilters();
             activateTab(kategori);
-        }
-
-        function getFilteredDocuments() {
-            let filtered = [...documents];
-
-            // Filter by tab
-            if (currentTab !== 'semua') {
-                filtered = filtered.filter(d => d.kategori === currentTab);
-            }
-
-            // Filter by search
-            if (currentFilter.search) {
-                const searchLower = currentFilter.search.toLowerCase();
-                filtered = filtered.filter(d => 
-                    d.judul.toLowerCase().includes(searchLower) ||
-                    d.penulis.toLowerCase().includes(searchLower) ||
-                    (d.keywords && d.keywords.toLowerCase().includes(searchLower))
-                );
-            }
-
-            // Filter by kategori (from filter dropdown)
-            if (currentFilter.kategori) {
-                filtered = filtered.filter(d => d.kategori === currentFilter.kategori);
-            }
-
-            // Filter by tahun
-            if (currentFilter.tahun) {
-                filtered = filtered.filter(d => d.tahun === currentFilter.tahun);
-            }
-
-            return filtered;
         }
 
         // ==================== VIEW FUNCTIONS ====================
@@ -1044,25 +997,19 @@
         }
 
         function renderGridView() {
-            const filtered = getFilteredDocuments();
-            const start = (currentPage - 1) * itemsPerPage;
-            const end = start + itemsPerPage;
-            const paginatedData = filtered.slice(start, end);
-
             const gridView = document.getElementById('gridView');
             
-            if (paginatedData.length === 0) {
+            if (documents.length === 0) {
                 gridView.innerHTML = `
                     <div class="col-span-3 text-center py-12">
                         <i class="fas fa-folder-open text-5xl text-gray-300 mb-4"></i>
                         <p class="text-gray-500">Tidak ada dokumen ditemukan</p>
                     </div>
                 `;
-                updatePagination(filtered.length);
                 return;
             }
 
-            gridView.innerHTML = paginatedData.map(doc => `
+            gridView.innerHTML = documents.map(doc => `
                 <div class="document-card bg-white rounded-xl shadow p-6 hover:shadow-lg transition">
                     <div class="flex items-start space-x-3">
                         <div class="flex-shrink-0">
@@ -1082,20 +1029,20 @@
                             </div>
                             <div class="flex items-center justify-between mt-3 pt-3 border-t">
                                 <div class="text-xs text-gray-500">
-                                    <i class="fas fa-download mr-1"></i> ${doc.downloads}
-                                    <i class="fas fa-eye ml-2 mr-1"></i> ${doc.views}
+                                    <i class="fas fa-download mr-1"></i> ${doc.downloads || 0}
+                                    <i class="fas fa-eye ml-2 mr-1"></i> ${doc.views || 0}
                                 </div>
                                 <div class="flex space-x-2">
-                                    <button onclick="viewDetail(${doc.id})" class="text-blue-600 hover:text-blue-800" title="Detail">
+                                    <button onclick="viewDetail('${doc.id_dokumen}')" class="text-blue-600 hover:text-blue-800" title="Detail">
                                         <i class="fas fa-eye"></i>
                                     </button>
-                                    <button onclick="downloadDocument(${doc.id})" class="text-green-600 hover:text-green-800" title="Download">
+                                    <button onclick="downloadDocument('${doc.id_dokumen}')" class="text-green-600 hover:text-green-800" title="Download">
                                         <i class="fas fa-download"></i>
                                     </button>
-                                    <button onclick="editDocument(${doc.id})" class="text-purple-600 hover:text-purple-800" title="Edit">
+                                    <button onclick="editDocument('${doc.id_dokumen}')" class="text-purple-600 hover:text-purple-800" title="Edit">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <button onclick="confirmDelete(${doc.id})" class="text-red-600 hover:text-red-800" title="Hapus">
+                                    <button onclick="confirmDelete('${doc.id_dokumen}')" class="text-red-600 hover:text-red-800" title="Hapus">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </div>
@@ -1104,19 +1051,12 @@
                     </div>
                 </div>
             `).join('');
-
-            updatePagination(filtered.length);
         }
 
         function renderListView() {
-            const filtered = getFilteredDocuments();
-            const start = (currentPage - 1) * itemsPerPage;
-            const end = start + itemsPerPage;
-            const paginatedData = filtered.slice(start, end);
-
             const listView = document.getElementById('listViewBody');
             
-            if (paginatedData.length === 0) {
+            if (documents.length === 0) {
                 listView.innerHTML = `
                     <tr>
                         <td colspan="6" class="text-center py-8 text-gray-500">
@@ -1125,11 +1065,10 @@
                         </td>
                     </tr>
                 `;
-                updatePagination(filtered.length);
                 return;
             }
 
-            listView.innerHTML = paginatedData.map((doc, index) => `
+            listView.innerHTML = documents.map(doc => `
                 <tr class="hover:bg-gray-50">
                     <td class="px-6 py-4">
                         <div class="flex items-center">
@@ -1147,29 +1086,26 @@
                         </span>
                     </td>
                     <td class="px-6 py-4 text-sm text-gray-600">${doc.tahun}</td>
-                    <td class="px-6 py-4 text-sm text-gray-600">${doc.downloads}</td>
+                    <td class="px-6 py-4 text-sm text-gray-600">${doc.downloads || 0}</td>
                     <td class="px-6 py-4 text-center">
-                        <button onclick="viewDetail(${doc.id})" class="text-blue-600 hover:text-blue-900 mr-2" title="Detail">
+                        <button onclick="viewDetail('${doc.id_dokumen}')" class="text-blue-600 hover:text-blue-900 mr-2" title="Detail">
                             <i class="fas fa-eye"></i>
                         </button>
-                        <button onclick="downloadDocument(${doc.id})" class="text-green-600 hover:text-green-900 mr-2" title="Download">
+                        <button onclick="downloadDocument('${doc.id_dokumen}')" class="text-green-600 hover:text-green-900 mr-2" title="Download">
                             <i class="fas fa-download"></i>
                         </button>
-                        <button onclick="editDocument(${doc.id})" class="text-purple-600 hover:text-purple-900 mr-2" title="Edit">
+                        <button onclick="editDocument('${doc.id_dokumen}')" class="text-purple-600 hover:text-purple-900 mr-2" title="Edit">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button onclick="confirmDelete(${doc.id})" class="text-red-600 hover:text-red-900" title="Hapus">
+                        <button onclick="confirmDelete('${doc.id_dokumen}')" class="text-red-600 hover:text-red-900" title="Hapus">
                             <i class="fas fa-trash"></i>
                         </button>
                     </td>
                 </tr>
             `).join('');
-
-            updatePagination(filtered.length);
         }
 
-        function updatePagination(totalItems) {
-            const totalPages = Math.ceil(totalItems / itemsPerPage);
+        function updatePagination() {
             const start = (currentPage - 1) * itemsPerPage + 1;
             const end = Math.min(currentPage * itemsPerPage, totalItems);
             
@@ -1179,15 +1115,12 @@
         }
 
         function changePage(direction) {
-            const filtered = getFilteredDocuments();
-            const totalPages = Math.ceil(filtered.length / itemsPerPage);
-            
             if (direction === 'prev' && currentPage > 1) {
                 currentPage--;
-                renderCurrentView();
+                loadDocuments();
             } else if (direction === 'next' && currentPage < totalPages) {
                 currentPage++;
-                renderCurrentView();
+                loadDocuments();
             }
         }
 
@@ -1207,7 +1140,8 @@
                 'penelitian': 'tabPenelitianBtn',
                 'pengabdian': 'tabPengabdianBtn',
                 'buku': 'tabBukuBtn',
-                'haki': 'tabHakiBtn'
+                'haki': 'tabHakiBtn',
+                'prosiding': 'tabProsidingBtn'
             };
             
             const buttonId = tabMap[tabId];
@@ -1215,7 +1149,7 @@
                 document.getElementById(buttonId).classList.add('active', 'text-blue-600', 'border-blue-600');
             }
             
-            renderCurrentView();
+            loadDocuments();
         }
 
         // ==================== MODAL FUNCTIONS ====================
@@ -1223,8 +1157,9 @@
             document.getElementById('modalTitle').textContent = 'Upload Dokumen Baru';
             document.getElementById('docId').value = '';
             document.getElementById('documentForm').reset();
-            document.getElementById('fileName').textContent = 'Klik untuk upload file (PDF, DOC, XLS, PPT, max 10MB)';
+            document.getElementById('fileName').textContent = 'Klik untuk upload file (PDF, DOC, XLS, PPT, max 50MB)';
             document.getElementById('fileSize').textContent = '';
+            selectedFile = null;
             document.getElementById('crudModal').classList.remove('hidden');
         }
 
@@ -1234,13 +1169,13 @@
 
         function handleFileSelect(input) {
             if (input.files && input.files[0]) {
-                const file = input.files[0];
-                document.getElementById('fileName').textContent = file.name;
-                document.getElementById('fileSize').textContent = formatBytes(file.size);
+                selectedFile = input.files[0];
+                document.getElementById('fileName').textContent = selectedFile.name;
+                document.getElementById('fileSize').textContent = formatBytes(selectedFile.size);
             }
         }
 
-        function saveDocument() {
+        async function saveDocument() {
             const id = document.getElementById('docId').value;
             const judul = document.getElementById('judul').value;
             const kategori = document.getElementById('kategori').value;
@@ -1256,181 +1191,278 @@
                 return;
             }
 
+            if (!id && !selectedFile) {
+                showNotification('Harap pilih file untuk diupload', 'error');
+                return;
+            }
+
             showLoading();
 
-            setTimeout(() => {
-                if (id) {
-                    // Update existing
-                    const index = documents.findIndex(d => d.id === parseInt(id));
-                    if (index !== -1) {
-                        documents[index] = {
-                            ...documents[index],
-                            judul,
-                            kategori,
-                            tahun,
-                            penulis,
-                            abstrak,
-                            doi,
-                            link,
-                            keywords
-                        };
-                    }
-                    showNotification('Dokumen berhasil diperbarui');
-                } else {
-                    // Add new
-                    const newDoc = {
-                        id: documents.length + 1,
-                        judul,
-                        penulis,
-                        kategori,
-                        tahun,
-                        abstrak,
-                        doi,
-                        link,
-                        keywords,
-                        filename: 'document.pdf',
-                        filesize: 1024000,
-                        downloads: 0,
-                        views: 0,
-                        tanggal_upload: new Date().toISOString().split('T')[0]
-                    };
-                    documents.push(newDoc);
-                    showNotification('Dokumen berhasil diupload');
+            try {
+                const formData = new FormData();
+                formData.append('judul', judul);
+                formData.append('kategori', kategori);
+                formData.append('tahun', tahun);
+                formData.append('penulis', penulis);
+                formData.append('abstrak', abstrak);
+                formData.append('doi', doi);
+                formData.append('link', link);
+                formData.append('keywords', keywords);
+                
+                if (selectedFile) {
+                    formData.append('file', selectedFile);
                 }
 
-                closeModal();
-                updateStats();
-                renderCurrentView();
+                let response;
+                if (id) {
+                    // Update
+                    response = await apiCall(`/documents/${id}`, {
+                        method: 'PUT',
+                        body: formData
+                    });
+                } else {
+                    // Create
+                    response = await apiCall('/documents', {
+                        method: 'POST',
+                        body: formData
+                    });
+                }
+
+                if (response.success) {
+                    showNotification(id ? 'Dokumen berhasil diperbarui' : 'Dokumen berhasil diupload');
+                    closeModal();
+                    await loadDocuments();
+                    await loadDashboardStats();
+                    await loadCategoryCounts();
+                }
+            } catch (error) {
+                console.error('Error saving document:', error);
+                showNotification(error.message || 'Gagal menyimpan dokumen', 'error');
+            } finally {
                 hideLoading();
-            }, 1000);
+            }
         }
 
-        function editDocument(id) {
-            const doc = documents.find(d => d.id === id);
-            if (!doc) return;
-
-            document.getElementById('modalTitle').textContent = 'Edit Dokumen';
-            document.getElementById('docId').value = doc.id;
-            document.getElementById('judul').value = doc.judul;
-            document.getElementById('kategori').value = doc.kategori;
-            document.getElementById('tahun').value = doc.tahun;
-            document.getElementById('penulis').value = doc.penulis;
-            document.getElementById('abstrak').value = doc.abstrak || '';
-            document.getElementById('doi').value = doc.doi || '';
-            document.getElementById('link').value = doc.link || '';
-            document.getElementById('keywords').value = doc.keywords || '';
-            document.getElementById('fileName').textContent = doc.filename;
-            document.getElementById('fileSize').textContent = formatBytes(doc.filesize);
-
-            document.getElementById('crudModal').classList.remove('hidden');
+        async function editDocument(id) {
+            try {
+                showLoading();
+                const response = await apiCall(`/documents/${id}`);
+                
+                if (response.success) {
+                    const doc = response.data;
+                    
+                    document.getElementById('modalTitle').textContent = 'Edit Dokumen';
+                    document.getElementById('docId').value = doc.id_dokumen;
+                    document.getElementById('judul').value = doc.judul;
+                    document.getElementById('kategori').value = doc.kategori;
+                    document.getElementById('tahun').value = doc.tahun;
+                    document.getElementById('penulis').value = doc.penulis;
+                    document.getElementById('abstrak').value = doc.abstrak || '';
+                    document.getElementById('doi').value = doc.doi || '';
+                    document.getElementById('link').value = doc.link || '';
+                    document.getElementById('keywords').value = doc.keywords || '';
+                    document.getElementById('fileName').textContent = doc.filename;
+                    document.getElementById('fileSize').textContent = formatBytes(doc.filesize);
+                    
+                    document.getElementById('crudModal').classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Error loading document:', error);
+                showNotification('Gagal memuat data dokumen', 'error');
+            } finally {
+                hideLoading();
+            }
         }
 
         function confirmDelete(id) {
             showConfirmation('Apakah Anda yakin ingin menghapus dokumen ini?', () => {
-                showLoading();
-                setTimeout(() => {
-                    documents = documents.filter(d => d.id !== id);
-                    updateStats();
-                    renderCurrentView();
-                    showNotification('Dokumen berhasil dihapus');
-                    hideLoading();
-                }, 500);
+                deleteDocument(id);
             });
         }
 
-        function viewDetail(id) {
-            const doc = documents.find(d => d.id === id);
-            if (!doc) return;
+        async function deleteDocument(id) {
+            showLoading();
+            try {
+                const response = await apiCall(`/documents/${id}`, {
+                    method: 'DELETE'
+                });
 
-            const content = `
-                <div class="space-y-4">
-                    <h4 class="font-bold text-lg">${doc.judul}</h4>
+                if (response.success) {
+                    showNotification('Dokumen berhasil dihapus');
+                    await loadDocuments();
+                    await loadDashboardStats();
+                    await loadCategoryCounts();
+                }
+            } catch (error) {
+                console.error('Error deleting document:', error);
+                showNotification(error.message || 'Gagal menghapus dokumen', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function viewDetail(id) {
+            try {
+                showLoading();
+                const response = await apiCall(`/documents/${id}`);
+                
+                if (response.success) {
+                    const doc = response.data;
                     
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <p class="text-sm text-gray-500">Penulis</p>
-                            <p class="font-medium">${doc.penulis}</p>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-500">Kategori</p>
-                            <p><span class="px-2 py-1 text-xs rounded-full ${getCategoryBadge(doc.kategori)}">
-                                <i class="fas ${getCategoryIcon(doc.kategori)} mr-1"></i>${doc.kategori}
-                            </span></p>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-500">Tahun</p>
-                            <p class="font-medium">${doc.tahun}</p>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-500">DOI/ISBN</p>
-                            <p class="font-medium">${doc.doi || '-'}</p>
-                        </div>
-                    </div>
+                    // Increment view count
+                    await apiCall(`/documents/${id}/increment-view`, {
+                        method: 'POST'
+                    });
 
-                    <div>
-                        <p class="text-sm text-gray-500">Abstrak</p>
-                        <p class="mt-1 text-gray-700">${doc.abstrak || 'Tidak ada abstrak'}</p>
-                    </div>
+                    const content = `
+                        <div class="space-y-4">
+                            <h4 class="font-bold text-lg">${doc.judul}</h4>
+                            
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <p class="text-sm text-gray-500">Penulis</p>
+                                    <p class="font-medium">${doc.penulis}</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-500">Kategori</p>
+                                    <p><span class="px-2 py-1 text-xs rounded-full ${getCategoryBadge(doc.kategori)}">
+                                        <i class="fas ${getCategoryIcon(doc.kategori)} mr-1"></i>${doc.kategori}
+                                    </span></p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-500">Tahun</p>
+                                    <p class="font-medium">${doc.tahun}</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-500">DOI/ISBN</p>
+                                    <p class="font-medium">${doc.doi || '-'}</p>
+                                </div>
+                            </div>
 
-                    <div>
-                        <p class="text-sm text-gray-500">Kata Kunci</p>
-                        <div class="flex flex-wrap gap-1 mt-1">
-                            ${doc.keywords ? doc.keywords.split(',').map(k => 
-                                `<span class="px-2 py-1 bg-gray-100 rounded-full text-xs">${k.trim()}</span>`
-                            ).join('') : '-'}
-                        </div>
-                    </div>
+                            <div>
+                                <p class="text-sm text-gray-500">Abstrak</p>
+                                <p class="mt-1 text-gray-700">${doc.abstrak || 'Tidak ada abstrak'}</p>
+                            </div>
 
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <p class="text-sm text-gray-500">Downloads</p>
-                            <p class="font-medium">${doc.downloads}</p>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-500">Views</p>
-                            <p class="font-medium">${doc.views}</p>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-500">Ukuran File</p>
-                            <p class="font-medium">${formatBytes(doc.filesize)}</p>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-500">Tanggal Upload</p>
-                            <p class="font-medium">${formatDate(doc.tanggal_upload)}</p>
-                        </div>
-                    </div>
+                            <div>
+                                <p class="text-sm text-gray-500">Kata Kunci</p>
+                                <div class="flex flex-wrap gap-1 mt-1">
+                                    ${doc.keywords ? doc.keywords.split(',').map(k => 
+                                        `<span class="px-2 py-1 bg-gray-100 rounded-full text-xs">${k.trim()}</span>`
+                                    ).join('') : '-'}
+                                </div>
+                            </div>
 
-                    ${doc.link ? `
-                        <div>
-                            <p class="text-sm text-gray-500">Link Terkait</p>
-                            <a href="${doc.link}" target="_blank" class="text-blue-600 hover:underline">${doc.link}</a>
-                        </div>
-                    ` : ''}
-                </div>
-            `;
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <p class="text-sm text-gray-500">Downloads</p>
+                                    <p class="font-medium">${doc.downloads || 0}</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-500">Views</p>
+                                    <p class="font-medium">${doc.views || 0}</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-500">Ukuran File</p>
+                                    <p class="font-medium">${formatBytes(doc.filesize)}</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-500">Tanggal Upload</p>
+                                    <p class="font-medium">${formatDate(doc.created_at)}</p>
+                                </div>
+                            </div>
 
-            document.getElementById('detailModalContent').innerHTML = content;
-            document.getElementById('detailModal').classList.remove('hidden');
+                            ${doc.link ? `
+                                <div>
+                                    <p class="text-sm text-gray-500">Link Terkait</p>
+                                    <a href="${doc.link}" target="_blank" class="text-blue-600 hover:underline">${doc.link}</a>
+                                </div>
+                            ` : ''}
+                            
+                            <div class="flex justify-end">
+                                <button onclick="downloadDocument('${doc.id_dokumen}')" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+                                    <i class="fas fa-download mr-2"></i>Download
+                                </button>
+                            </div>
+                        </div>
+                    `;
+
+                    document.getElementById('detailModalContent').innerHTML = content;
+                    document.getElementById('detailModal').classList.remove('hidden');
+                    
+                    // Update view count in UI
+                    await loadDocuments();
+                }
+            } catch (error) {
+                console.error('Error loading document detail:', error);
+                showNotification('Gagal memuat detail dokumen', 'error');
+            } finally {
+                hideLoading();
+            }
         }
 
         function closeDetailModal() {
             document.getElementById('detailModal').classList.add('hidden');
         }
 
-        function downloadDocument(id) {
-            const doc = documents.find(d => d.id === id);
-            if (!doc) return;
+        async function downloadDocument(id) {
+            try {
+                showLoading();
+                
+                // Increment download count
+                await apiCall(`/documents/${id}/increment-download`, {
+                    method: 'POST'
+                });
 
-            // Increment download count
-            doc.downloads = (doc.downloads || 0) + 1;
-            showNotification(`Mengunduh: ${doc.filename}`, 'success');
-            updateStats();
+                // Trigger download
+                window.open(`${API_BASE_URL}/documents/${id}/download`, '_blank');
+                
+                showNotification('Mengunduh dokumen...', 'success');
+                
+                // Update download count in UI
+                await loadDocuments();
+                await loadDashboardStats();
+            } catch (error) {
+                console.error('Error downloading document:', error);
+                showNotification('Gagal mengunduh dokumen', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // ==================== LOGOUT FUNCTIONS ====================
+        function handleLogout() {
+            Swal.fire({
+                title: 'Konfirmasi Logout',
+                text: 'Apakah Anda yakin ingin logout?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Logout',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    performLogout();
+                }
+            });
+        }
+
+        function closeLogoutModal() {
+            document.getElementById('confirmLogoutModal').classList.add('hidden');
+        }
+
+        function performLogout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '../login.html';
         }
 
         // ==================== INITIALIZATION ====================
         document.addEventListener('DOMContentLoaded', () => {
-            updateStats();
-            renderGridView();
+            loadDashboardStats();
+            loadCategoryCounts();
+            loadDocuments();
             
             // Set default view
             document.getElementById('gridViewBtn').classList.add('bg-pink-100', 'text-pink-600');

@@ -1,7 +1,7 @@
-const pool = require('../../config/database');
 const { v4: uuidv4 } = require('uuid');
 const fs = require('fs').promises;
 const path = require('path');
+const supabase = require('../../config/database');
 const logger = require('../../config/logger');
 
 class RepositoryService {
@@ -14,88 +14,142 @@ class RepositoryService {
      * Get dashboard statistics
      */
     async getDashboardStats() {
-        const client = await pool.connect();
         try {
-            const queries = {
-                totalDocuments: 'SELECT COUNT(*) as total FROM repository_dokumen',
-                totalDownloads: 'SELECT COALESCE(SUM(downloads), 0) as total FROM repository_dokumen',
-                totalViews: 'SELECT COALESCE(SUM(views), 0) as total FROM repository_dokumen',
-                totalSize: 'SELECT COALESCE(SUM(filesize), 0) as total FROM repository_dokumen',
-                categoryCounts: `
-                    SELECT 
-                        kategori,
-                        COUNT(*) as jumlah,
-                        COALESCE(SUM(downloads), 0) as total_downloads
-                    FROM repository_dokumen
-                    GROUP BY kategori
-                `,
-                recentUploads: `
-                    SELECT 
-                        id_dokumen,
-                        judul,
-                        kategori,
-                        filesize,
-                        downloads,
-                        views,
-                        created_at
-                    FROM repository_dokumen
-                    ORDER BY created_at DESC
-                    LIMIT 5
-                `,
-                popularDownloads: `
-                    SELECT 
-                        judul,
-                        kategori,
-                        downloads
-                    FROM repository_dokumen
-                    ORDER BY downloads DESC
-                    LIMIT 5
-                `,
-                yearlyStats: `
-                    SELECT 
-                        EXTRACT(YEAR FROM created_at) as tahun,
-                        COUNT(*) as jumlah_dokumen,
-                        COALESCE(SUM(downloads), 0) as total_downloads
-                    FROM repository_dokumen
-                    GROUP BY EXTRACT(YEAR FROM created_at)
-                    ORDER BY tahun DESC
-                `
-            };
+            // Total dokumen
+            const { count: totalDocuments, error: countError } = await supabase
+                .from('repository_dokumen')
+                .select('*', { count: 'exact', head: true });
 
-            const results = {};
+            if (countError) throw countError;
+
+            // Total downloads
+            const { data: downloadsData, error: downloadsError } = await supabase
+                .from('repository_dokumen')
+                .select('downloads');
+
+            if (downloadsError) throw downloadsError;
             
-            for (const [key, query] of Object.entries(queries)) {
-                const { rows } = await client.query(query);
-                results[key] = rows;
-            }
+            const totalDownloads = downloadsData?.reduce((sum, doc) => sum + (doc.downloads || 0), 0) || 0;
 
-            // Calculate most popular category
+            // Total views
+            const { data: viewsData, error: viewsError } = await supabase
+                .from('repository_dokumen')
+                .select('views');
+
+            if (viewsError) throw viewsError;
+            
+            const totalViews = viewsData?.reduce((sum, doc) => sum + (doc.views || 0), 0) || 0;
+
+            // Total size
+            const { data: sizeData, error: sizeError } = await supabase
+                .from('repository_dokumen')
+                .select('filesize');
+
+            if (sizeError) throw sizeError;
+            
+            const totalSize = sizeData?.reduce((sum, doc) => sum + (doc.filesize || 0), 0) || 0;
+
+            // Category counts
+            const { data: categoryData, error: categoryError } = await supabase
+                .from('repository_dokumen')
+                .select('kategori, downloads');
+
+            if (categoryError) throw categoryError;
+
+            // Process category counts
+            const categoryMap = new Map();
+            categoryData?.forEach(doc => {
+                if (!categoryMap.has(doc.kategori)) {
+                    categoryMap.set(doc.kategori, {
+                        kategori: doc.kategori,
+                        jumlah: 0,
+                        total_downloads: 0
+                    });
+                }
+                const cat = categoryMap.get(doc.kategori);
+                cat.jumlah++;
+                cat.total_downloads += (doc.downloads || 0);
+            });
+
+            const categoriesArray = Array.from(categoryMap.values());
+
+            // Find most popular category
             let popularCategory = null;
-            if (results.categoryCounts.length > 0) {
-                popularCategory = results.categoryCounts.reduce((max, cat) => 
-                    parseInt(cat.jumlah) > parseInt(max.jumlah) ? cat : max
+            if (categoriesArray.length > 0) {
+                popularCategory = categoriesArray.reduce((max, cat) => 
+                    cat.jumlah > max.jumlah ? cat : max
                 );
             }
 
-            // Calculate storage usage percentage
-            const usedStorage = parseInt(results.totalSize[0]?.total || 0);
-            const storagePercentage = (usedStorage / this.maxStorageSize) * 100;
+            // Recent uploads
+            const { data: recentUploads, error: recentError } = await supabase
+                .from('repository_dokumen')
+                .select(`
+                    id_dokumen,
+                    judul,
+                    kategori,
+                    filesize,
+                    downloads,
+                    views,
+                    created_at
+                `)
+                .order('created_at', { ascending: false })
+                .limit(5);
+
+            if (recentError) throw recentError;
+
+            // Popular downloads
+            const { data: popularDownloads, error: popularError } = await supabase
+                .from('repository_dokumen')
+                .select('judul, kategori, downloads')
+                .order('downloads', { ascending: false })
+                .limit(5);
+
+            if (popularError) throw popularError;
+
+            // Yearly stats
+            const { data: yearlyData, error: yearlyError } = await supabase
+                .from('repository_dokumen')
+                .select('created_at, downloads');
+
+            if (yearlyError) throw yearlyError;
+
+            const yearlyMap = new Map();
+            yearlyData?.forEach(doc => {
+                const year = new Date(doc.created_at).getFullYear();
+                if (!yearlyMap.has(year)) {
+                    yearlyMap.set(year, {
+                        tahun: year,
+                        jumlah_dokumen: 0,
+                        total_downloads: 0
+                    });
+                }
+                const yearStat = yearlyMap.get(year);
+                yearStat.jumlah_dokumen++;
+                yearStat.total_downloads += (doc.downloads || 0);
+            });
+
+            const yearlyArray = Array.from(yearlyMap.values()).sort((a, b) => b.tahun - a.tahun);
+
+            // Calculate storage percentage
+            const storagePercentage = totalSize > 0 ? (totalSize / this.maxStorageSize) * 100 : 0;
 
             return {
-                total_documents: parseInt(results.totalDocuments[0]?.total || 0),
-                total_downloads: parseInt(results.totalDownloads[0]?.total || 0),
-                total_views: parseInt(results.totalViews[0]?.total || 0),
-                storage_used: usedStorage,
+                total_documents: totalDocuments || 0,
+                total_downloads: totalDownloads,
+                total_views: totalViews,
+                storage_used: totalSize,
                 storage_total: this.maxStorageSize,
                 storage_percentage: Math.min(storagePercentage, 100),
                 popular_category: popularCategory,
-                categories: results.categoryCounts,
-                recent_uploads: results.recentUploads,
-                popular_downloads: results.popularDownloads,
-                yearly_stats: results.yearlyStats
+                categories: categoriesArray,
+                recent_uploads: recentUploads || [],
+                popular_downloads: popularDownloads || [],
+                yearly_stats: yearlyArray
             };
-        } finally {
-            client.release();
+        } catch (error) {
+            logger.error('Error in getDashboardStats:', error);
+            throw error;
         }
     }
 
@@ -103,79 +157,68 @@ class RepositoryService {
      * Get all documents with filters
      */
     async getAllDocuments(filters, pagination, sort) {
-        const client = await pool.connect();
         try {
-            let query = `
-                SELECT 
-                    d.*,
-                    u.nama_lengkap as uploaded_by_name,
-                    u.email as uploaded_by_email
-                FROM repository_dokumen d
-                LEFT JOIN users u ON d.uploaded_by = u.id_user
-                WHERE 1=1
-            `;
-            
-            const queryParams = [];
-            let paramIndex = 1;
+            let query = supabase
+                .from('repository_dokumen')
+                .select(`
+                    *,
+                    users!repository_dokumen_uploaded_by_fkey (
+                        nama_lengkap,
+                        email
+                    )
+                `, { count: 'exact' });
 
             // Apply filters
             if (filters.search) {
-                query += ` AND (
-                    d.judul ILIKE $${paramIndex} OR 
-                    d.penulis ILIKE $${paramIndex} OR 
-                    d.keywords ILIKE $${paramIndex}
-                )`;
-                queryParams.push(`%${filters.search}%`);
-                paramIndex++;
+                query = query.or(`judul.ilike.%${filters.search}%,penulis.ilike.%${filters.search}%,keywords.ilike.%${filters.search}%`);
             }
 
             if (filters.kategori) {
-                query += ` AND d.kategori = $${paramIndex}`;
-                queryParams.push(filters.kategori);
-                paramIndex++;
+                query = query.eq('kategori', filters.kategori);
             }
 
             if (filters.tahun) {
-                query += ` AND d.tahun = $${paramIndex}`;
-                queryParams.push(filters.tahun);
-                paramIndex++;
+                query = query.eq('tahun', filters.tahun);
             }
 
             if (filters.status) {
-                query += ` AND d.status = $${paramIndex}`;
-                queryParams.push(filters.status);
-                paramIndex++;
+                query = query.eq('status', filters.status);
             }
 
-            // Count total data before pagination
-            const countQuery = `SELECT COUNT(*) as total FROM (${query}) as count_table`;
-            const { rows: countRows } = await client.query(countQuery, queryParams);
-            const totalData = parseInt(countRows[0].total);
-
             // Apply sorting
-            const validSortColumns = ['judul', 'tahun', 'downloads', 'views', 'created_at'];
-            const sortColumn = validSortColumns.includes(sort.sortBy) ? sort.sortBy : 'created_at';
-            query += ` ORDER BY d.${sortColumn} ${sort.sortOrder === 'ASC' ? 'ASC' : 'DESC'}`;
+            const sortColumn = sort.sortBy || 'created_at';
+            const sortOrder = sort.sortOrder === 'ASC' ? { ascending: true } : { ascending: false };
+            query = query.order(sortColumn, sortOrder);
 
             // Apply pagination
-            const offset = (pagination.page - 1) * pagination.limit;
-            query += ` LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
-            queryParams.push(pagination.limit, offset);
+            const from = (pagination.page - 1) * pagination.limit;
+            const to = from + pagination.limit - 1;
+            query = query.range(from, to);
 
-            // Execute query
-            const { rows } = await client.query(query, queryParams);
+            const { data, error, count } = await query;
+
+            if (error) throw error;
+
+            // Transform data to flatten user info
+            const transformedData = data?.map(doc => ({
+                ...doc,
+                uploaded_by_name: doc.users?.nama_lengkap,
+                uploaded_by_email: doc.users?.email,
+                users: undefined
+            })) || [];
 
             return {
-                data: rows,
+                data: transformedData,
                 pagination: {
                     current_page: pagination.page,
                     per_page: pagination.limit,
-                    total_data: totalData,
-                    total_pages: Math.ceil(totalData / pagination.limit)
+                    total_data: count || 0,
+                    total_pages: Math.ceil((count || 0) / pagination.limit)
                 }
             };
-        } finally {
-            client.release();
+        } catch (error) {
+            logger.error('Error in getAllDocuments:', error);
+            throw error;
         }
     }
 
@@ -183,22 +226,31 @@ class RepositoryService {
      * Get document by ID
      */
     async getDocumentById(id) {
-        const client = await pool.connect();
         try {
-            const query = `
-                SELECT 
-                    d.*,
-                    u.nama_lengkap as uploaded_by_name,
-                    u.email as uploaded_by_email
-                FROM repository_dokumen d
-                LEFT JOIN users u ON d.uploaded_by = u.id_user
-                WHERE d.id_dokumen = $1
-            `;
-            
-            const { rows } = await client.query(query, [id]);
-            return rows[0] || null;
-        } finally {
-            client.release();
+            const { data, error } = await supabase
+                .from('repository_dokumen')
+                .select(`
+                    *,
+                    users!repository_dokumen_uploaded_by_fkey (
+                        nama_lengkap,
+                        email
+                    )
+                `)
+                .eq('id_dokumen', id)
+                .single();
+
+            if (error) throw error;
+
+            if (data) {
+                data.uploaded_by_name = data.users?.nama_lengkap;
+                data.uploaded_by_email = data.users?.email;
+                delete data.users;
+            }
+
+            return data || null;
+        } catch (error) {
+            logger.error('Error in getDocumentById:', error);
+            throw error;
         }
     }
 
@@ -206,83 +258,64 @@ class RepositoryService {
      * Create new document
      */
     async createDocument(data) {
-        const client = await pool.connect();
         try {
-            await client.query('BEGIN');
-
             const id_dokumen = uuidv4();
-            const fileExt = path.extname(data.file.originalname);
-            const fileName = `${id_dokumen}${fileExt}`;
-            const filePath = path.join(this.uploadDir, fileName);
-
-            // Ensure upload directory exists
-            await fs.mkdir(this.uploadDir, { recursive: true });
-
-            // Save file
-            await fs.writeFile(filePath, data.file.buffer);
-
+            
+            // Get file info from multer
+            const file = data.file;
+            const fileName = file.filename;
+            const filePath = file.path;
+            
             // Insert to database
-            const query = `
-                INSERT INTO repository_dokumen (
+            const { data: newDoc, error } = await supabase
+                .from('repository_dokumen')
+                .insert([{
                     id_dokumen,
-                    judul,
-                    kategori,
-                    tahun,
-                    penulis,
-                    abstrak,
-                    doi,
-                    link,
-                    keywords,
-                    filename,
-                    filepath,
-                    filesize,
-                    filetype,
-                    uploaded_by,
-                    downloads,
-                    views,
-                    status,
-                    created_at,
-                    updated_at
-                ) VALUES (
-                    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, NOW(), NOW()
-                ) RETURNING *
-            `;
+                    judul: data.judul,
+                    kategori: data.kategori,
+                    tahun: data.tahun,
+                    penulis: data.penulis,
+                    abstrak: data.abstrak,
+                    doi: data.doi,
+                    link: data.link,
+                    keywords: data.keywords,
+                    filename: fileName,
+                    filepath: filePath,
+                    filesize: file.size,
+                    filetype: file.mimetype,
+                    uploaded_by: data.created_by,
+                    downloads: 0,
+                    views: 0,
+                    status: 'published',
+                    created_at: new Date(),
+                    updated_at: new Date()
+                }])
+                .select()
+                .single();
 
-            const values = [
-                id_dokumen,
-                data.judul,
-                data.kategori,
-                data.tahun,
-                data.penulis,
-                data.abstrak,
-                data.doi,
-                data.link,
-                data.keywords,
-                fileName,
-                filePath,
-                data.file.size,
-                data.file.mimetype,
-                data.created_by,
-                0, // downloads
-                0, // views
-                'published'
-            ];
-
-            const { rows } = await client.query(query, values);
+            if (error) throw error;
 
             // Log activity
-            await client.query(
-                `INSERT INTO log_aktivitas (id_user, aktivitas) VALUES ($1, $2)`,
-                [data.created_by, `Upload dokumen baru: ${data.judul}`]
-            );
+            await supabase
+                .from('log_aktivitas')
+                .insert([{
+                    id_user: data.created_by,
+                    aktivitas: `Upload dokumen baru: ${data.judul}`,
+                    waktu: new Date()
+                }]);
 
-            await client.query('COMMIT');
-            return rows[0];
+            return newDoc;
         } catch (error) {
-            await client.query('ROLLBACK');
+            // If error, delete uploaded file
+            if (data.file) {
+                try {
+                    await fs.unlink(data.file.path);
+                } catch (unlinkError) {
+                    logger.error('Error deleting file after failed insert:', unlinkError);
+                }
+            }
+            logger.error('Error in createDocument:', error);
             throw error;
-        } finally {
-            client.release();
         }
     }
 
@@ -290,10 +323,7 @@ class RepositoryService {
      * Update document
      */
     async updateDocument(id, data) {
-        const client = await pool.connect();
         try {
-            await client.query('BEGIN');
-
             // Get existing document
             const existing = await this.getDocumentById(id);
             if (!existing) {
@@ -315,77 +345,57 @@ class RepositoryService {
                 }
 
                 // Save new file
-                const fileExt = path.extname(data.file.originalname);
-                fileName = `${id}${fileExt}`;
-                filePath = path.join(this.uploadDir, fileName);
-                
-                await fs.writeFile(filePath, data.file.buffer);
+                fileName = data.file.filename;
+                filePath = data.file.path;
                 fileSize = data.file.size;
                 fileType = data.file.mimetype;
             }
 
             // Update database
-            const query = `
-                UPDATE repository_dokumen SET
-                    judul = $1,
-                    kategori = $2,
-                    tahun = $3,
-                    penulis = $4,
-                    abstrak = $5,
-                    doi = $6,
-                    link = $7,
-                    keywords = $8,
-                    filename = $9,
-                    filepath = $10,
-                    filesize = $11,
-                    filetype = $12,
-                    updated_at = NOW()
-                WHERE id_dokumen = $13
-                RETURNING *
-            `;
+            const { data: updatedDoc, error } = await supabase
+                .from('repository_dokumen')
+                .update({
+                    judul: data.judul,
+                    kategori: data.kategori,
+                    tahun: data.tahun,
+                    penulis: data.penulis,
+                    abstrak: data.abstrak,
+                    doi: data.doi,
+                    link: data.link,
+                    keywords: data.keywords,
+                    filename: fileName,
+                    filepath: filePath,
+                    filesize: fileSize,
+                    filetype: fileType,
+                    updated_at: new Date()
+                })
+                .eq('id_dokumen', id)
+                .select()
+                .single();
 
-            const values = [
-                data.judul,
-                data.kategori,
-                data.tahun,
-                data.penulis,
-                data.abstrak,
-                data.doi,
-                data.link,
-                data.keywords,
-                fileName,
-                filePath,
-                fileSize,
-                fileType,
-                id
-            ];
-
-            const { rows } = await client.query(query, values);
+            if (error) throw error;
 
             // Log activity
-            await client.query(
-                `INSERT INTO log_aktivitas (id_user, aktivitas) VALUES ($1, $2)`,
-                [data.updated_by, `Update dokumen: ${data.judul}`]
-            );
+            await supabase
+                .from('log_aktivitas')
+                .insert([{
+                    id_user: data.updated_by,
+                    aktivitas: `Update dokumen: ${data.judul}`,
+                    waktu: new Date()
+                }]);
 
-            await client.query('COMMIT');
-            return rows[0];
+            return updatedDoc;
         } catch (error) {
-            await client.query('ROLLBACK');
+            logger.error('Error in updateDocument:', error);
             throw error;
-        } finally {
-            client.release();
         }
     }
 
     /**
      * Delete document
      */
-    async deleteDocument(id) {
-        const client = await pool.connect();
+    async deleteDocument(id, userId) {
         try {
-            await client.query('BEGIN');
-
             // Get document info
             const document = await this.getDocumentById(id);
             if (!document) {
@@ -400,23 +410,26 @@ class RepositoryService {
             }
 
             // Delete from database
-            const query = 'DELETE FROM repository_dokumen WHERE id_dokumen = $1 RETURNING id_dokumen';
-            const { rows } = await client.query(query, [id]);
+            const { error } = await supabase
+                .from('repository_dokumen')
+                .delete()
+                .eq('id_dokumen', id);
 
-            if (rows.length > 0) {
-                await client.query(
-                    `INSERT INTO log_aktivitas (id_user, aktivitas) VALUES ($1, $2)`,
-                    [document.uploaded_by, `Hapus dokumen: ${document.judul}`]
-                );
-            }
+            if (error) throw error;
 
-            await client.query('COMMIT');
-            return rows.length > 0;
+            // Log activity
+            await supabase
+                .from('log_aktivitas')
+                .insert([{
+                    id_user: userId,
+                    aktivitas: `Hapus dokumen: ${document.judul}`,
+                    waktu: new Date()
+                }]);
+
+            return true;
         } catch (error) {
-            await client.query('ROLLBACK');
+            logger.error('Error in deleteDocument:', error);
             throw error;
-        } finally {
-            client.release();
         }
     }
 
@@ -431,7 +444,12 @@ class RepositoryService {
             }
 
             // Check if file exists
-            await fs.access(document.filepath);
+            try {
+                await fs.access(document.filepath);
+            } catch (err) {
+                logger.error('File not found:', document.filepath);
+                return null;
+            }
 
             return {
                 filePath: document.filepath,
@@ -439,7 +457,7 @@ class RepositoryService {
                 document
             };
         } catch (error) {
-            logger.error('Error accessing file:', error);
+            logger.error('Error in getDocumentFile:', error);
             return null;
         }
     }
@@ -448,16 +466,20 @@ class RepositoryService {
      * Increment view count
      */
     async incrementViewCount(id) {
-        const client = await pool.connect();
         try {
-            const query = `
-                UPDATE repository_dokumen 
-                SET views = COALESCE(views, 0) + 1 
-                WHERE id_dokumen = $1
-            `;
-            await client.query(query, [id]);
-        } finally {
-            client.release();
+            const { error } = await supabase.rpc('increment_repository_views', {
+                doc_id: id
+            });
+
+            if (error) {
+                // Fallback: update manually
+                await supabase
+                    .from('repository_dokumen')
+                    .update({ views: supabase.raw('views + 1') })
+                    .eq('id_dokumen', id);
+            }
+        } catch (error) {
+            logger.error('Error in incrementViewCount:', error);
         }
     }
 
@@ -465,16 +487,20 @@ class RepositoryService {
      * Increment download count
      */
     async incrementDownloadCount(id) {
-        const client = await pool.connect();
         try {
-            const query = `
-                UPDATE repository_dokumen 
-                SET downloads = COALESCE(downloads, 0) + 1 
-                WHERE id_dokumen = $1
-            `;
-            await client.query(query, [id]);
-        } finally {
-            client.release();
+            const { error } = await supabase.rpc('increment_repository_downloads', {
+                doc_id: id
+            });
+
+            if (error) {
+                // Fallback: update manually
+                await supabase
+                    .from('repository_dokumen')
+                    .update({ downloads: supabase.raw('downloads + 1') })
+                    .eq('id_dokumen', id);
+            }
+        } catch (error) {
+            logger.error('Error in incrementDownloadCount:', error);
         }
     }
 
@@ -482,23 +508,33 @@ class RepositoryService {
      * Get category counts
      */
     async getCategoryCounts() {
-        const client = await pool.connect();
         try {
-            const query = `
-                SELECT 
-                    kategori,
-                    COUNT(*) as jumlah,
-                    COALESCE(SUM(downloads), 0) as total_downloads,
-                    COALESCE(SUM(views), 0) as total_views
-                FROM repository_dokumen
-                GROUP BY kategori
-                ORDER BY jumlah DESC
-            `;
-            
-            const { rows } = await client.query(query);
-            return rows;
-        } finally {
-            client.release();
+            const { data, error } = await supabase
+                .from('repository_dokumen')
+                .select('kategori, downloads, views');
+
+            if (error) throw error;
+
+            const categoryMap = new Map();
+            data?.forEach(doc => {
+                if (!categoryMap.has(doc.kategori)) {
+                    categoryMap.set(doc.kategori, {
+                        kategori: doc.kategori,
+                        jumlah: 0,
+                        total_downloads: 0,
+                        total_views: 0
+                    });
+                }
+                const cat = categoryMap.get(doc.kategori);
+                cat.jumlah++;
+                cat.total_downloads += (doc.downloads || 0);
+                cat.total_views += (doc.views || 0);
+            });
+
+            return Array.from(categoryMap.values());
+        } catch (error) {
+            logger.error('Error in getCategoryCounts:', error);
+            throw error;
         }
     }
 
@@ -506,42 +542,47 @@ class RepositoryService {
      * Get storage information
      */
     async getStorageInfo() {
-        const client = await pool.connect();
         try {
-            // Get total storage used
-            const { rows } = await client.query(`
-                SELECT 
-                    COALESCE(SUM(filesize), 0) as used,
-                    COUNT(*) as total_files,
-                    COUNT(DISTINCT kategori) as total_categories
-                FROM repository_dokumen
-            `);
+            const { data, error } = await supabase
+                .from('repository_dokumen')
+                .select('filesize, kategori');
 
-            const used = parseInt(rows[0].used);
-            const totalFiles = parseInt(rows[0].total_files);
-            const totalCategories = parseInt(rows[0].total_categories);
+            if (error) throw error;
 
-            // Get storage by category
-            const categoryStorage = await client.query(`
-                SELECT 
-                    kategori,
-                    COUNT(*) as jumlah,
-                    COALESCE(SUM(filesize), 0) as total_size
-                FROM repository_dokumen
-                GROUP BY kategori
-            `);
+            const totalSize = data?.reduce((sum, doc) => sum + (doc.filesize || 0), 0) || 0;
+            const totalFiles = data?.length || 0;
+
+            // Get unique categories
+            const categories = [...new Set(data?.map(doc => doc.kategori) || [])];
+            const totalCategories = categories.length;
+
+            // Storage by category
+            const categoryMap = new Map();
+            data?.forEach(doc => {
+                if (!categoryMap.has(doc.kategori)) {
+                    categoryMap.set(doc.kategori, {
+                        kategori: doc.kategori,
+                        jumlah: 0,
+                        total_size: 0
+                    });
+                }
+                const cat = categoryMap.get(doc.kategori);
+                cat.jumlah++;
+                cat.total_size += (doc.filesize || 0);
+            });
 
             return {
-                used_storage: used,
+                used_storage: totalSize,
                 total_storage: this.maxStorageSize,
-                available_storage: this.maxStorageSize - used,
-                usage_percentage: (used / this.maxStorageSize) * 100,
+                available_storage: this.maxStorageSize - totalSize,
+                usage_percentage: totalSize > 0 ? (totalSize / this.maxStorageSize) * 100 : 0,
                 total_files: totalFiles,
                 total_categories: totalCategories,
-                by_category: categoryStorage.rows
+                by_category: Array.from(categoryMap.values())
             };
-        } finally {
-            client.release();
+        } catch (error) {
+            logger.error('Error in getStorageInfo:', error);
+            throw error;
         }
     }
 }

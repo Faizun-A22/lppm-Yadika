@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 const { body } = require('express-validator');
 const repositoryController = require('../../controllers/admin/repositoryController');
-const { authenticate, authorize } = require('../../middleware/auth');
-const { uploadRepository } = require('../../middleware/upload'); // Gunakan uploadRepository untuk file besar
+const { authenticateToken, authorizeRoles } = require('../../middleware/auth'); // Sesuaikan dengan export yang ada
+const { uploadRepository } = require('../../middleware/upload');
 
 // Validasi rules
 const documentValidation = [
@@ -18,8 +18,8 @@ const documentValidation = [
 ];
 
 // Middleware untuk semua route admin
-router.use(authenticate);
-router.use(authorize(['admin']));
+router.use(authenticateToken); // Gunakan authenticateToken
+router.use(authorizeRoles('admin')); // Gunakan authorizeRoles dengan parameter string, bukan array
 
 // Routes
 router.get('/dashboard-stats', repositoryController.getDashboardStats);

@@ -19,7 +19,8 @@
     "morgan": "^1.10.0",
     "multer": "^2.0.2",
     "pg": "^8.18.0",
-    "server.js": "^1.0.0"
+    "server.js": "^1.0.0",
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.22"
