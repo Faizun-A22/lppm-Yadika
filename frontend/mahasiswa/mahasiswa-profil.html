@@ -509,410 +509,760 @@
     <!-- Scripts -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="../js/auth.js"></script>
-    
+ 
     <script>
-        // Initialize AOS
-        AOS.init({ duration: 800, once: true });
+        // ===========================================
+// KONFIGURASI API
+// ===========================================
+const API_BASE_URL = 'http://localhost:3000/api';
 
-        // State Management
-        let currentUser = null;
-        let userProfile = null;
-        let applicationHistory = [];
-        let currentPage = 1;
-        let itemsPerPage = 5;
-        let currentFilter = 'all';
+// ===========================================
+// STATE MANAGEMENT
+// ===========================================
+let currentUser = null;
+let userProfile = null;
+let applicationHistory = [];
+let currentPage = 1;
+let itemsPerPage = 5;
+let currentFilter = 'all';
+let documents = [];
 
-        // Function to show/hide loading
-        function showLoading() {
-            document.getElementById('loadingOverlay').classList.remove('hidden');
+// ===========================================
+// FUNGSI UTILITAS
+// ===========================================
+function getAuthToken() {
+    return localStorage.getItem('token');
+}
+
+function getAuthHeaders() {
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getAuthToken()}`
+    };
+}
+
+function showLoading() {
+    document.getElementById('loadingOverlay').classList.remove('hidden');
+}
+
+function hideLoading() {
+    document.getElementById('loadingOverlay').classList.add('hidden');
+}
+
+function showNotification(message, isSuccess = true) {
+    Swal.fire({
+        icon: isSuccess ? 'success' : 'error',
+        title: isSuccess ? 'Berhasil' : 'Gagal',
+        text: message,
+        timer: 2000,
+        showConfirmButton: false
+    });
+}
+
+// ===========================================
+// CEK AUTHENTIKASI
+// ===========================================
+function checkAuth() {
+    const token = getAuthToken();
+    const userStr = localStorage.getItem('user');
+    
+    if (!token || !userStr) {
+        window.location.href = '../login.html';
+        return null;
+    }
+    
+    try {
+        const user = JSON.parse(userStr);
+        if (user.role !== 'mahasiswa') {
+            window.location.href = '../login.html';
+            return null;
+        }
+        currentUser = user;
+        return user;
+    } catch (e) {
+        window.location.href = '../login.html';
+        return null;
+    }
+}
+
+// Update user info in header
+function updateUserInfo() {
+    if (currentUser) {
+        document.getElementById('userNameDisplay').textContent = currentUser.nama_lengkap || 'Mahasiswa';
+        document.getElementById('userNimDisplay').textContent = currentUser.nim || '-';
+    }
+}
+
+// Logout function
+window.handleLogout = function() {
+    Swal.fire({
+        title: 'Konfirmasi Logout',
+        text: 'Apakah Anda yakin ingin logout?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#EF4444',
+        cancelButtonColor: '#6B7280',
+        confirmButtonText: 'Ya, Logout',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '../login.html';
+        }
+    });
+};
+
+// ===========================================
+// LOAD DATA PROFIL DARI API
+// ===========================================
+async function loadProfileData() {
+    try {
+        showLoading();
+        
+        // Load profil
+        const profileResponse = await fetch(`${API_BASE_URL}/mahasiswa/profil`, {
+            method: 'GET',
+            headers: getAuthHeaders()
+        });
+
+        if (!profileResponse.ok) {
+            throw new Error('Gagal memuat data profil');
         }
 
-        function hideLoading() {
-            document.getElementById('loadingOverlay').classList.add('hidden');
+        const profileResult = await profileResponse.json();
+        
+        if (profileResult.success) {
+            userProfile = profileResult.data;
+            
+            // Load statistik
+            await loadStatistics();
+            
+            // Load riwayat pendaftaran
+            await loadRiwayatPendaftaran();
+            
+            // Load dokumen
+            await loadDocuments();
+            
+            updateProfileUI();
+        } else {
+            throw new Error(profileResult.message || 'Gagal memuat data profil');
         }
 
-        // Show notification
-        function showNotification(message, isSuccess = true) {
-            Swal.fire({
-                icon: isSuccess ? 'success' : 'error',
-                title: isSuccess ? 'Berhasil' : 'Gagal',
-                text: message,
-                timer: 2000,
-                showConfirmButton: false
+    } catch (error) {
+        console.error('Error loading profile:', error);
+        showNotification(error.message || 'Gagal memuat data profil', false);
+    } finally {
+        hideLoading();
+    }
+}
+
+// ===========================================
+// LOAD STATISTIK
+// ===========================================
+async function loadStatistics() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/mahasiswa/profil/statistik`, {
+            method: 'GET',
+            headers: getAuthHeaders()
+        });
+
+        if (!response.ok) return;
+
+        const result = await response.json();
+        
+        if (result.success && result.data) {
+            document.getElementById('totalApplications').textContent = result.data.total_pendaftaran || 0;
+            document.getElementById('totalAccepted').textContent = result.data.total_diterima || 0;
+            document.getElementById('totalPending').textContent = (result.data.total_menunggu + result.data.total_review + result.data.total_revisi) || 0;
+            document.getElementById('totalCompleted').textContent = result.data.total_selesai || 0;
+        }
+    } catch (error) {
+        console.error('Error loading statistics:', error);
+    }
+}
+
+// ===========================================
+// LOAD RIWAYAT PENDAFTARAN
+// ===========================================
+async function loadRiwayatPendaftaran(page = 1, filter = 'all') {
+    try {
+        const response = await fetch(
+            `${API_BASE_URL}/mahasiswa/profil/riwayat?page=${page}&limit=${itemsPerPage}&filter=${filter}`,
+            {
+                method: 'GET',
+                headers: getAuthHeaders()
+            }
+        );
+
+        if (!response.ok) return;
+
+        const result = await response.json();
+        
+        if (result.success) {
+            applicationHistory = result.data.items || [];
+            renderHistoryTable(result.data.pagination);
+        }
+    } catch (error) {
+        console.error('Error loading history:', error);
+    }
+}
+
+// ===========================================
+// LOAD DOKUMEN
+// ===========================================
+async function loadDocuments() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/mahasiswa/profil/dokumen`, {
+            method: 'GET',
+            headers: getAuthHeaders()
+        });
+
+        if (!response.ok) return;
+
+        const result = await response.json();
+        
+        if (result.success) {
+            documents = result.data || [];
+            renderDocuments();
+        }
+    } catch (error) {
+        console.error('Error loading documents:', error);
+    }
+}
+
+// ===========================================
+// UPDATE PROFILE UI
+// ===========================================
+function updateProfileUI() {
+    if (!userProfile) return;
+
+    // Update profile card
+    document.getElementById('profileName').textContent = userProfile.nama_lengkap || '-';
+    document.getElementById('profileNim').textContent = userProfile.nim || '-';
+    document.getElementById('profileProdi').textContent = userProfile.nama_prodi || '-';
+    document.getElementById('profileEmail').textContent = userProfile.email || '-';
+    document.getElementById('profilePhone').textContent = userProfile.no_hp || '-';
+    document.getElementById('profileAddress').textContent = userProfile.info_pribadi?.alamat || '-';
+    
+    if (userProfile.foto_profil) {
+        document.getElementById('profilePicture').src = userProfile.foto_profil;
+    }
+
+    // Update form fields
+    document.getElementById('fullName').value = userProfile.nama_lengkap || '';
+    document.getElementById('phone').value = userProfile.no_hp || '';
+    
+    if (userProfile.info_pribadi) {
+        document.getElementById('birthPlace').value = userProfile.info_pribadi.tempat_lahir || '';
+        document.getElementById('birthDate').value = userProfile.info_pribadi.tanggal_lahir || '';
+        document.getElementById('gender').value = userProfile.info_pribadi.jenis_kelamin || 'L';
+        document.getElementById('bloodType').value = userProfile.info_pribadi.golongan_darah || 'O';
+        document.getElementById('religion').value = userProfile.info_pribadi.agama || 'Islam';
+        document.getElementById('address').value = userProfile.info_pribadi.alamat || '';
+        document.getElementById('ktpAddress').value = userProfile.info_pribadi.alamat_ktp || '';
+    }
+}
+
+// ===========================================
+// RENDER HISTORY TABLE
+// ===========================================
+function renderHistoryTable(pagination) {
+    const table = document.getElementById('historyTable');
+    
+    if (applicationHistory.length === 0) {
+        table.innerHTML = `
+            <tr>
+                <td colspan="4" class="px-4 py-6 text-center text-gray-500">
+                    <i class="fas fa-inbox text-3xl mb-2 block"></i>
+                    Belum ada riwayat pendaftaran
+                </td>
+            </tr>
+        `;
+    } else {
+        table.innerHTML = applicationHistory.map(item => {
+            let statusClass = '';
+            let statusText = '';
+            
+            switch(item.status) {
+                case 'diterima':
+                    statusClass = 'status-badge accepted';
+                    statusText = 'Diterima';
+                    break;
+                case 'menunggu':
+                case 'review':
+                    statusClass = 'status-badge pending';
+                    statusText = 'Dalam Proses';
+                    break;
+                case 'selesai':
+                    statusClass = 'status-badge completed';
+                    statusText = 'Selesai';
+                    break;
+                case 'ditolak':
+                    statusClass = 'status-badge rejected';
+                    statusText = 'Ditolak';
+                    break;
+                case 'revisi':
+                    statusClass = 'status-badge pending';
+                    statusText = 'Perlu Revisi';
+                    break;
+                default:
+                    statusClass = 'status-badge pending';
+                    statusText = item.status;
+            }
+
+            const date = new Date(item.date).toLocaleDateString('id-ID', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric'
             });
-        }
 
-        // Get user data
-        function getUser() {
-            return auth.getUser();
-        }
+            return `
+                <tr>
+                    <td class="px-4 py-3 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <i class="fas fa-${
+                                item.type === 'magang' ? 'briefcase' :
+                                item.type === 'kkn' ? 'users' : 'calendar'
+                            } text-gray-400 mr-2"></i>
+                            <span class="text-sm font-medium text-gray-900">${item.program}</span>
+                        </div>
+                    </td>
+                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">${date}</td>
+                    <td class="px-4 py-3 whitespace-nowrap">
+                        <span class="${statusClass}">${statusText}</span>
+                    </td>
+                    <td class="px-4 py-3 whitespace-nowrap text-sm">
+                        <button onclick="viewApplicationDetail('${item.id_pendaftaran}')" class="text-blue-600 hover:text-blue-800">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    }
 
-        // Update user info in header
-        function updateUserInfo() {
-            const user = getUser();
-            if (user) {
-                document.getElementById('userNameDisplay').textContent = user.name || 'Mahasiswa';
-                document.getElementById('userNimDisplay').textContent = user.nim || '-';
-            }
-        }
+    if (pagination) {
+        document.getElementById('pageInfo').textContent = `Halaman ${pagination.currentPage} dari ${pagination.totalPages || 1}`;
+    }
+}
 
-        // Logout function
-        window.handleLogout = function() {
-            auth.logout();
-        };
+// ===========================================
+// RENDER DOCUMENTS
+// ===========================================
+function renderDocuments() {
+    const container = document.getElementById('documentsContainer');
+    if (!container) return;
 
-        // Load profile data
-        async function loadProfileData() {
-            try {
-                // Simulate API call
-                await new Promise(resolve => setTimeout(resolve, 1000));
+    if (documents.length === 0) {
+        container.innerHTML = `
+            <div class="col-span-2 text-center py-8 text-gray-500">
+                <i class="fas fa-folder-open text-4xl mb-2"></i>
+                <p>Belum ada dokumen</p>
+            </div>
+        `;
+        return;
+    }
 
-                const user = getUser();
-                
-                userProfile = {
-                    name: user?.name || 'Ahmad Rizki',
-                    nim: user?.nim || '2021001234',
-                    email: user?.email || 'ahmad.rizki@student.yadika.ac.id',
-                    prodi: 'Teknik Informatika',
-                    phone: '0812-3456-7890',
-                    address: 'Jl. Contoh No. 123, Bandung',
-                    ktpAddress: 'Jl. Contoh No. 123, Bandung',
-                    birthPlace: 'Jakarta',
-                    birthDate: '2000-01-01',
-                    gender: 'L',
-                    bloodType: 'O',
-                    religion: 'Islam',
-                    profilePic: 'https://i.pravatar.cc/150?img=5'
-                };
+    container.innerHTML = documents.map(doc => {
+        const icon = doc.jenis_dokumen === 'ktm' ? 'id-card' : 
+                    doc.jenis_dokumen === 'transkrip' ? 'file-pdf' : 'file';
+        const color = doc.jenis_dokumen === 'ktm' ? 'text-blue-500' : 
+                     doc.jenis_dokumen === 'transkrip' ? 'text-red-500' : 'text-green-500';
 
-                applicationHistory = [
-                    { id: 1, program: 'Magang Batch 5', type: 'magang', date: '2024-06-15', status: 'pending' },
-                    { id: 2, program: 'KKN Desa Wisata', type: 'kkn', date: '2024-06-10', status: 'accepted' },
-                    { id: 3, program: 'Webinar AI', type: 'kegiatan', date: '2024-05-20', status: 'completed' },
-                    { id: 4, program: 'Magang Batch 4', type: 'magang', date: '2024-03-01', status: 'completed' },
-                    { id: 5, program: 'Workshop Penulisan', type: 'kegiatan', date: '2024-02-15', status: 'rejected' },
-                    { id: 6, program: 'KKN Reguler', type: 'kkn', date: '2024-01-10', status: 'completed' },
-                    { id: 7, program: 'Magang Startup', type: 'magang', date: '2023-12-01', status: 'accepted' }
-                ];
+        const statusBadge = doc.status_verifikasi === 'diverifikasi' ? 
+            '<span class="ml-2 text-xs text-green-600">✓ Terverifikasi</span>' :
+            doc.status_verifikasi === 'ditolak' ?
+            '<span class="ml-2 text-xs text-red-600">✗ Ditolak</span>' :
+            '<span class="ml-2 text-xs text-yellow-600">⏳ Menunggu</span>';
 
-                updateProfileUI();
-                updateStatistics();
-                renderHistoryTable();
-
-            } catch (error) {
-                console.error('Error loading profile:', error);
-                showNotification('Gagal memuat data profil', false);
-            }
-        }
-
-        // Update profile UI
-        function updateProfileUI() {
-            if (!userProfile) return;
-
-            document.getElementById('profileName').textContent = userProfile.name;
-            document.getElementById('profileNim').textContent = userProfile.nim;
-            document.getElementById('profileProdi').textContent = userProfile.prodi;
-            document.getElementById('profileEmail').textContent = userProfile.email;
-            document.getElementById('profilePhone').textContent = userProfile.phone;
-            document.getElementById('profileAddress').textContent = userProfile.address;
-            document.getElementById('profilePicture').src = userProfile.profilePic;
-
-            // Update form fields
-            document.getElementById('fullName').value = userProfile.name;
-            document.getElementById('phone').value = userProfile.phone;
-            document.getElementById('birthPlace').value = userProfile.birthPlace;
-            document.getElementById('birthDate').value = userProfile.birthDate;
-            document.getElementById('gender').value = userProfile.gender;
-            document.getElementById('bloodType').value = userProfile.bloodType;
-            document.getElementById('religion').value = userProfile.religion;
-            document.getElementById('address').value = userProfile.address;
-            document.getElementById('ktpAddress').value = userProfile.ktpAddress;
-        }
-
-        // Update statistics
-        function updateStatistics() {
-            const total = applicationHistory.length;
-            const accepted = applicationHistory.filter(a => a.status === 'accepted').length;
-            const pending = applicationHistory.filter(a => a.status === 'pending').length;
-            const completed = applicationHistory.filter(a => a.status === 'completed').length;
-
-            document.getElementById('totalApplications').textContent = total;
-            document.getElementById('totalAccepted').textContent = accepted;
-            document.getElementById('totalPending').textContent = pending;
-            document.getElementById('totalCompleted').textContent = completed;
-        }
-
-        // Render history table
-        function renderHistoryTable() {
-            const table = document.getElementById('historyTable');
-            
-            let filtered = applicationHistory;
-            if (currentFilter !== 'all') {
-                filtered = applicationHistory.filter(a => a.type === currentFilter);
-            }
-
-            const start = (currentPage - 1) * itemsPerPage;
-            const end = start + itemsPerPage;
-            const pageItems = filtered.slice(start, end);
-            const totalPages = Math.ceil(filtered.length / itemsPerPage);
-
-            if (pageItems.length === 0) {
-                table.innerHTML = `
-                    <tr>
-                        <td colspan="4" class="px-4 py-6 text-center text-gray-500">
-                            <i class="fas fa-inbox text-3xl mb-2 block"></i>
-                            Tidak ada data
-                        </td>
-                    </tr>
-                `;
-            } else {
-                table.innerHTML = pageItems.map(item => {
-                    let statusClass = '';
-                    let statusText = '';
-                    
-                    switch(item.status) {
-                        case 'accepted':
-                            statusClass = 'status-badge accepted';
-                            statusText = 'Diterima';
-                            break;
-                        case 'pending':
-                            statusClass = 'status-badge pending';
-                            statusText = 'Dalam Proses';
-                            break;
-                        case 'completed':
-                            statusClass = 'status-badge completed';
-                            statusText = 'Selesai';
-                            break;
-                        case 'rejected':
-                            statusClass = 'status-badge rejected';
-                            statusText = 'Ditolak';
-                            break;
-                    }
-
-                    const date = new Date(item.date).toLocaleDateString('id-ID', {
-                        day: 'numeric',
-                        month: 'short',
-                        year: 'numeric'
-                    });
-
-                    return `
-                        <tr>
-                            <td class="px-4 py-3 whitespace-nowrap">
-                                <div class="flex items-center">
-                                    <i class="fas fa-${
-                                        item.type === 'magang' ? 'briefcase' :
-                                        item.type === 'kkn' ? 'users' : 'calendar'
-                                    } text-gray-400 mr-2"></i>
-                                    <span class="text-sm font-medium text-gray-900">${item.program}</span>
-                                </div>
-                            </td>
-                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">${date}</td>
-                            <td class="px-4 py-3 whitespace-nowrap">
-                                <span class="${statusClass}">${statusText}</span>
-                            </td>
-                            <td class="px-4 py-3 whitespace-nowrap text-sm">
-                                <button onclick="viewApplicationDetail(${item.id})" class="text-blue-600 hover:text-blue-800">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    `;
-                }).join('');
-            }
-
-            document.getElementById('pageInfo').textContent = `Halaman ${currentPage} dari ${totalPages || 1}`;
-        }
-
-        // Filter history
-        window.filterHistory = function() {
-            currentFilter = document.getElementById('historyFilter').value;
-            currentPage = 1;
-            renderHistoryTable();
-        };
-
-        // Pagination functions
-        window.loadPreviousPage = function() {
-            if (currentPage > 1) {
-                currentPage--;
-                renderHistoryTable();
-            }
-        };
-
-        window.loadNextPage = function() {
-            const filtered = applicationHistory.filter(a => currentFilter === 'all' || a.type === currentFilter);
-            const totalPages = Math.ceil(filtered.length / itemsPerPage);
-            
-            if (currentPage < totalPages) {
-                currentPage++;
-                renderHistoryTable();
-            }
-        };
-
-        // View application detail
-        window.viewApplicationDetail = function(id) {
-            const app = applicationHistory.find(a => a.id === id);
-            if (!app) return;
-
-            Swal.fire({
-                title: 'Detail Pendaftaran',
-                html: `
-                    <div class="text-left">
-                        <p><strong>Program:</strong> ${app.program}</p>
-                        <p><strong>Tanggal Daftar:</strong> ${new Date(app.date).toLocaleDateString('id-ID')}</p>
-                        <p><strong>Status:</strong> ${app.status}</p>
+        return `
+            <div class="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <i class="fas fa-${icon} text-2xl ${color} mr-3"></i>
+                        <div>
+                            <p class="font-medium text-gray-800">
+                                ${doc.nama_dokumen}
+                                ${statusBadge}
+                            </p>
+                            <p class="text-xs text-gray-500">
+                                Diupload: ${new Date(doc.uploaded_at).toLocaleDateString('id-ID')}
+                            </p>
+                        </div>
                     </div>
-                `,
-                icon: 'info',
-                confirmButtonColor: '#8B5CF6'
-            });
-        };
+                    <div class="flex space-x-2">
+                        <button onclick="viewDocument('${doc.id_dokumen}')" class="text-blue-600 hover:text-blue-800">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button onclick="deleteDocument('${doc.id_dokumen}')" class="text-red-600 hover:text-red-800">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                ${doc.catatan_verifikasi ? `
+                    <div class="mt-2 text-xs text-red-600 bg-red-50 p-2 rounded">
+                        Catatan: ${doc.catatan_verifikasi}
+                    </div>
+                ` : ''}
+            </div>
+        `;
+    }).join('');
+}
 
-        // Change profile picture
-        window.changeProfilePicture = function() {
-            document.getElementById('profilePicInput').click();
-        };
+// ===========================================
+// FILTER HISTORY
+// ===========================================
+window.filterHistory = function() {
+    currentFilter = document.getElementById('historyFilter').value;
+    currentPage = 1;
+    loadRiwayatPendaftaran(currentPage, currentFilter);
+};
 
-        window.uploadProfilePicture = function(input) {
-            const file = input.files[0];
-            if (file) {
-                if (file.size > 2 * 1024 * 1024) {
-                    showNotification('Ukuran file maksimal 2MB', false);
-                    return;
-                }
+// ===========================================
+// PAGINATION
+// ===========================================
+window.loadPreviousPage = function() {
+    if (currentPage > 1) {
+        currentPage--;
+        loadRiwayatPendaftaran(currentPage, currentFilter);
+    }
+};
 
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('profilePicture').src = e.target.result;
-                    userProfile.profilePic = e.target.result;
-                    showNotification('Foto profil berhasil diperbarui');
-                };
-                reader.readAsDataURL(file);
-            }
-        };
+window.loadNextPage = function() {
+    currentPage++;
+    loadRiwayatPendaftaran(currentPage, currentFilter);
+};
 
-        // Change password
-        window.changePassword = function() {
-            document.getElementById('passwordModal').classList.remove('hidden');
-        };
+// ===========================================
+// VIEW APPLICATION DETAIL
+// ===========================================
+window.viewApplicationDetail = function(id) {
+    const app = applicationHistory.find(a => a.id_pendaftaran === id);
+    if (!app) return;
 
-        window.closePasswordModal = function() {
-            document.getElementById('passwordModal').classList.add('hidden');
-            document.getElementById('passwordForm').reset();
-        };
+    Swal.fire({
+        title: 'Detail Pendaftaran',
+        html: `
+            <div class="text-left">
+                <p><strong>Program:</strong> ${app.program}</p>
+                <p><strong>Tanggal Daftar:</strong> ${new Date(app.date).toLocaleDateString('id-ID')}</p>
+                <p><strong>Status:</strong> ${app.status}</p>
+                ${app.catatan ? `<p><strong>Catatan:</strong> ${app.catatan}</p>` : ''}
+                <p><strong>Lokasi:</strong> ${app.lokasi || '-'}</p>
+                <p><strong>Tanggal Mulai:</strong> ${new Date(app.tanggal_mulai).toLocaleDateString('id-ID')}</p>
+                <p><strong>Tanggal Selesai:</strong> ${new Date(app.tanggal_selesai).toLocaleDateString('id-ID')}</p>
+            </div>
+        `,
+        icon: 'info',
+        confirmButtonColor: '#8B5CF6'
+    });
+};
 
-        window.updatePassword = function() {
-            const oldPass = document.getElementById('oldPassword').value;
-            const newPass = document.getElementById('newPassword').value;
-            const confirmPass = document.getElementById('confirmPassword').value;
+// ===========================================
+// CHANGE PROFILE PICTURE
+// ===========================================
+window.changeProfilePicture = function() {
+    document.getElementById('profilePicInput').click();
+};
 
-            if (!oldPass || !newPass || !confirmPass) {
-                showNotification('Semua field harus diisi', false);
-                return;
-            }
+window.uploadProfilePicture = async function(input) {
+    const file = input.files[0];
+    if (!file) return;
 
-            if (newPass.length < 8) {
-                showNotification('Password baru minimal 8 karakter', false);
-                return;
-            }
+    if (file.size > 2 * 1024 * 1024) {
+        showNotification('Ukuran file maksimal 2MB', false);
+        return;
+    }
 
-            if (newPass !== confirmPass) {
-                showNotification('Konfirmasi password tidak cocok', false);
-                return;
-            }
+    const formData = new FormData();
+    formData.append('foto', file);
 
-            showLoading();
+    try {
+        showLoading();
 
-            setTimeout(() => {
-                hideLoading();
-                closePasswordModal();
-                showNotification('Password berhasil diperbarui');
-            }, 1500);
-        };
+        const response = await fetch(`${API_BASE_URL}/mahasiswa/profil/foto`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${getAuthToken()}`
+            },
+            body: formData
+        });
 
-        // Download data
-        window.downloadData = function() {
-            const data = {
-                profile: userProfile,
-                history: applicationHistory,
-                downloadDate: new Date().toISOString()
-            };
+        const result = await response.json();
 
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        if (result.success) {
+            document.getElementById('profilePicture').src = result.data.foto_profil;
+            showNotification('Foto profil berhasil diperbarui');
+        } else {
+            throw new Error(result.message);
+        }
+    } catch (error) {
+        console.error('Error uploading profile picture:', error);
+        showNotification(error.message || 'Gagal mengupload foto', false);
+    } finally {
+        hideLoading();
+    }
+};
+
+// ===========================================
+// CHANGE PASSWORD
+// ===========================================
+window.changePassword = function() {
+    document.getElementById('passwordModal').classList.remove('hidden');
+};
+
+window.closePasswordModal = function() {
+    document.getElementById('passwordModal').classList.add('hidden');
+    document.getElementById('passwordForm').reset();
+};
+
+window.updatePassword = async function() {
+    const oldPass = document.getElementById('oldPassword').value;
+    const newPass = document.getElementById('newPassword').value;
+    const confirmPass = document.getElementById('confirmPassword').value;
+
+    if (!oldPass || !newPass || !confirmPass) {
+        showNotification('Semua field harus diisi', false);
+        return;
+    }
+
+    if (newPass.length < 8) {
+        showNotification('Password baru minimal 8 karakter', false);
+        return;
+    }
+
+    if (newPass !== confirmPass) {
+        showNotification('Konfirmasi password tidak cocok', false);
+        return;
+    }
+
+    try {
+        showLoading();
+
+        const response = await fetch(`${API_BASE_URL}/mahasiswa/profil/ubah-password`, {
+            method: 'POST',
+            headers: getAuthHeaders(),
+            body: JSON.stringify({
+                oldPassword: oldPass,
+                newPassword: newPass
+            })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            closePasswordModal();
+            showNotification('Password berhasil diperbarui');
+        } else {
+            throw new Error(result.message);
+        }
+    } catch (error) {
+        console.error('Error changing password:', error);
+        showNotification(error.message || 'Gagal mengubah password', false);
+    } finally {
+        hideLoading();
+    }
+};
+
+// ===========================================
+// DOWNLOAD DATA
+// ===========================================
+window.downloadData = async function() {
+    try {
+        showLoading();
+
+        const response = await fetch(`${API_BASE_URL}/mahasiswa/profil/download-data`, {
+            method: 'GET',
+            headers: getAuthHeaders()
+        });
+
+        if (!response.ok) throw new Error('Gagal mengunduh data');
+
+        const result = await response.json();
+
+        if (result.success) {
+            const blob = new Blob([JSON.stringify(result.data, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `data-pribadi-${userProfile.nim}.json`;
+            a.download = `data-pribadi-${currentUser.nim}.json`;
             a.click();
             URL.revokeObjectURL(url);
-
+            
             showNotification('Data berhasil diunduh');
-        };
+        } else {
+            throw new Error(result.message);
+        }
+    } catch (error) {
+        console.error('Error downloading data:', error);
+        showNotification(error.message || 'Gagal mengunduh data', false);
+    } finally {
+        hideLoading();
+    }
+};
 
-        // View document
-        window.viewDocument = function(type) {
-            Swal.fire({
-                title: type === 'ktm' ? 'Kartu Tanda Mahasiswa' : 'Transkrip Nilai',
-                text: 'Dokumen akan dibuka di tab baru',
-                icon: 'info',
-                confirmButtonColor: '#8B5CF6'
-            });
-        };
+// ===========================================
+// VIEW DOCUMENT
+// ===========================================
+window.viewDocument = function(docId) {
+    const doc = documents.find(d => d.id_dokumen === docId);
+    if (doc && doc.file_path) {
+        window.open(doc.file_path, '_blank');
+    } else {
+        showNotification('Dokumen tidak ditemukan', false);
+    }
+};
 
-        // Handle profile form submit
-        document.getElementById('profileForm')?.addEventListener('submit', function(e) {
-            e.preventDefault();
+// ===========================================
+// DELETE DOCUMENT
+// ===========================================
+window.deleteDocument = async function(docId) {
+    const result = await Swal.fire({
+        title: 'Konfirmasi Hapus',
+        text: 'Apakah Anda yakin ingin menghapus dokumen ini?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#EF4444',
+        cancelButtonColor: '#6B7280',
+        confirmButtonText: 'Ya, Hapus',
+        cancelButtonText: 'Batal'
+    });
 
-            const updatedData = {
-                name: document.getElementById('fullName').value,
-                phone: document.getElementById('phone').value,
-                birthPlace: document.getElementById('birthPlace').value,
-                birthDate: document.getElementById('birthDate').value,
-                gender: document.getElementById('gender').value,
-                bloodType: document.getElementById('bloodType').value,
-                religion: document.getElementById('religion').value,
-                address: document.getElementById('address').value,
-                ktpAddress: document.getElementById('ktpAddress').value
-            };
+    if (!result.isConfirmed) return;
 
-            showLoading();
+    try {
+        showLoading();
 
-            setTimeout(() => {
-                userProfile = { ...userProfile, ...updatedData };
-                updateProfileUI();
-                hideLoading();
-                showNotification('Profil berhasil diperbarui');
-            }, 1000);
+        const response = await fetch(`${API_BASE_URL}/mahasiswa/profil/dokumen/${docId}`, {
+            method: 'DELETE',
+            headers: getAuthHeaders()
         });
 
-        // Initialize page
-        document.addEventListener('DOMContentLoaded', async function() {
-            // Check authentication first
-            if (!auth.requireRole('mahasiswa')) return;
+        const data = await response.json();
 
-            showLoading();
+        if (data.success) {
+            await loadDocuments();
+            showNotification('Dokumen berhasil dihapus');
+        } else {
+            throw new Error(data.message);
+        }
+    } catch (error) {
+        console.error('Error deleting document:', error);
+        showNotification(error.message || 'Gagal menghapus dokumen', false);
+    } finally {
+        hideLoading();
+    }
+};
 
-            try {
-                // Update user info
-                updateUserInfo();
+// ===========================================
+// UPLOAD DOCUMENT
+// ===========================================
+window.uploadDocument = async function(jenisDokumen, file) {
+    if (!file) return;
 
-                // Load profile data
-                await loadProfileData();
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('jenis_dokumen', jenisDokumen);
 
-            } catch (error) {
-                console.error('Error initializing page:', error);
-                showNotification('Gagal memuat data', false);
-            } finally {
-                hideLoading();
-            }
+    try {
+        showLoading();
+
+        const response = await fetch(`${API_BASE_URL}/mahasiswa/profil/dokumen`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${getAuthToken()}`
+            },
+            body: formData
         });
 
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            const modal = document.getElementById('passwordModal');
-            if (event.target === modal) {
-                closePasswordModal();
-            }
-        };
+        const result = await response.json();
+
+        if (result.success) {
+            await loadDocuments();
+            showNotification('Dokumen berhasil diupload');
+        } else {
+            throw new Error(result.message);
+        }
+    } catch (error) {
+        console.error('Error uploading document:', error);
+        showNotification(error.message || 'Gagal mengupload dokumen', false);
+    } finally {
+        hideLoading();
+    }
+};
+
+// ===========================================
+// HANDLE PROFILE FORM SUBMIT
+// ===========================================
+document.getElementById('profileForm')?.addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const updatedData = {
+        nama_lengkap: document.getElementById('fullName').value,
+        no_hp: document.getElementById('phone').value,
+        tempat_lahir: document.getElementById('birthPlace').value,
+        tanggal_lahir: document.getElementById('birthDate').value,
+        jenis_kelamin: document.getElementById('gender').value,
+        golongan_darah: document.getElementById('bloodType').value,
+        agama: document.getElementById('religion').value,
+        alamat: document.getElementById('address').value,
+        alamat_ktp: document.getElementById('ktpAddress').value
+    };
+
+    try {
+        showLoading();
+
+        const response = await fetch(`${API_BASE_URL}/mahasiswa/profil`, {
+            method: 'PUT',
+            headers: getAuthHeaders(),
+            body: JSON.stringify(updatedData)
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            userProfile = result.data;
+            updateProfileUI();
+            showNotification('Profil berhasil diperbarui');
+        } else {
+            throw new Error(result.message);
+        }
+    } catch (error) {
+        console.error('Error updating profile:', error);
+        showNotification(error.message || 'Gagal memperbarui profil', false);
+    } finally {
+        hideLoading();
+    }
+});
+
+// ===========================================
+// INITIALIZE PAGE
+// ===========================================
+document.addEventListener('DOMContentLoaded', async function() {
+    // Initialize AOS
+    AOS.init({ duration: 800, once: true });
+
+    // Check authentication
+    const user = checkAuth();
+    if (!user) return;
+
+    // Update user info in header
+    updateUserInfo();
+
+    // Load profile data
+    await loadProfileData();
+});
+
+// ===========================================
+// CLOSE MODAL WHEN CLICKING OUTSIDE
+// ===========================================
+window.onclick = function(event) {
+    const modal = document.getElementById('passwordModal');
+    if (event.target === modal) {
+        closePasswordModal();
+    }
+};
     </script>
 </body>
 </html>

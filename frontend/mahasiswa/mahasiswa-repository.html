@@ -203,11 +203,6 @@
                         <!-- Year Filter -->
                         <select id="yearFilter" class="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                             <option value="all">Semua Tahun</option>
-                            <option value="2024">2024</option>
-                            <option value="2023">2023</option>
-                            <option value="2022">2022</option>
-                            <option value="2021">2021</option>
-                            <option value="2020">2020</option>
                         </select>
                         
                         <!-- Search Button -->
@@ -239,6 +234,7 @@
                         <option value="judul-asc">Judul A-Z</option>
                         <option value="judul-desc">Judul Z-A</option>
                         <option value="penulis-asc">Penulis A-Z</option>
+                        <option value="popular">Terpopuler</option>
                     </select>
                 </div>
             </div>
@@ -295,20 +291,31 @@
         </div>
     </div>
 
+    <!-- Error Notification (Red) -->
+    <div id="errorNotification" class="fixed bottom-4 right-4 z-50 hidden">
+        <div class="bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center">
+            <i class="fas fa-exclamation-circle mr-2"></i>
+            <span id="errorMessage">Terjadi kesalahan!</span>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script src="../js/auth.js"></script>
-    
     <script>
         // Initialize AOS
         AOS.init({ duration: 800, once: true });
+
+        // API Configuration (sama dengan dashboard)
+        const API_CONFIG = {
+            BASE_URL: 'http://localhost:3000'
+        };
 
         // State Management
         let currentPage = 1;
         let isLoading = false;
         let hasMore = true;
+        let totalItems = 0;
         let allDocuments = [];
-        let filteredDocuments = [];
         let currentFilters = {
             search: '',
             category: 'all',
@@ -316,134 +323,7 @@
             sort: 'terbaru'
         };
 
-        // Sample Repository Data
-        const sampleDocuments = [
-            {
-                id: 1,
-                judul: "Penerapan Sistem Pakar untuk Diagnosa Awal Penyakit Tanaman Padi Menggunakan Metode Certainty Factor",
-                penulis: "Budi Santoso",
-                nim: "201810101",
-                tahun: 2023,
-                kategori: "skripsi",
-                abstrak: "Penelitian ini bertujuan untuk mengembangkan sistem pakar yang dapat mendiagnosa penyakit pada tanaman padi berdasarkan gejala yang diamati. Metode Certainty Factor digunakan untuk mengukur tingkat keyakinan diagnosa. Hasil pengujian menunjukkan akurasi sistem mencapai 85%.",
-                kata_kunci: ["sistem pakar", "certainty factor", "tanaman padi", "diagnosa penyakit"],
-                file_type: "pdf",
-                file_size: "2.4 MB",
-                downloads: 156,
-                views: 342,
-                pembimbing: "Dr. Ahmad Yani, M.Kom",
-                abstrak_inggris: "This research aims to develop an expert system that can diagnose diseases in rice plants based on observed symptoms. The Certainty Factor method is used to measure the confidence level of diagnosis. Test results show system accuracy reaches 85%."
-            },
-            {
-                id: 2,
-                judul: "Analisis Sentimen Masyarakat Terhadap Kebijakan Pemerintah Menggunakan Naive Bayes Classifier",
-                penulis: "Siti Nurhaliza",
-                nim: "201810102",
-                tahun: 2023,
-                kategori: "jurnal",
-                abstrak: "Penelitian ini menganalisis sentimen masyarakat terhadap kebijakan pemerintah melalui media sosial Twitter. Menggunakan metode Naive Bayes Classifier, penelitian ini mengklasifikasikan tweet ke dalam sentimen positif, negatif, atau netral. Hasil menunjukkan akurasi 82% dalam klasifikasi sentimen.",
-                kata_kunci: ["analisis sentimen", "naive bayes", "twitter", "kebijakan pemerintah"],
-                file_type: "pdf",
-                file_size: "1.8 MB",
-                downloads: 89,
-                views: 215,
-                publisher: "Jurnal Teknologi Informasi",
-                volume: "Vol. 12 No. 2"
-            },
-            {
-                id: 3,
-                judul: "Rancang Bangun Aplikasi E-Commerce Berbasis Web pada UMKM 'Kerajinan Tangan Jaya'",
-                penulis: "Ahmad Fadli",
-                nim: "201910203",
-                tahun: 2022,
-                kategori: "skripsi",
-                abstrak: "Penelitian ini mengembangkan aplikasi e-commerce untuk UMKM Kerajinan Tangan Jaya guna memperluas pasar dan meningkatkan penjualan. Aplikasi dibangun menggunakan framework Laravel dengan metode waterfall. Hasil implementasi menunjukkan peningkatan penjualan sebesar 40%.",
-                kata_kunci: ["e-commerce", "laravel", "umkm", "waterfall"],
-                file_type: "pdf",
-                file_size: "3.1 MB",
-                downloads: 203,
-                views: 456,
-                pembimbing: "Rina Marlina, M.T"
-            },
-            {
-                id: 4,
-                judul: "Pengaruh Penggunaan Media Sosial Terhadap Prestasi Belajar Mahasiswa",
-                penulis: "Dewi Lestari",
-                nim: "201810104",
-                tahun: 2022,
-                kategori: "jurnal",
-                abstrak: "Penelitian ini mengkaji pengaruh intensitas penggunaan media sosial terhadap prestasi belajar mahasiswa. Menggunakan metode kuantitatif dengan sampel 100 mahasiswa, hasil menunjukkan korelasi negatif signifikan antara waktu penggunaan media sosial dengan IPK mahasiswa.",
-                kata_kunci: ["media sosial", "prestasi belajar", "mahasiswa", "pendidikan"],
-                file_type: "pdf",
-                file_size: "1.2 MB",
-                downloads: 167,
-                views: 298,
-                publisher: "Jurnal Pendidikan",
-                volume: "Vol. 8 No. 1"
-            },
-            {
-                id: 5,
-                judul: "Optimasi Rute Pengiriman Logistik Menggunakan Algoritma Genetika",
-                penulis: "Rizki Pratama",
-                nim: "201910205",
-                tahun: 2023,
-                kategori: "laporan",
-                abstrak: "Laporan penelitian ini membahas optimasi rute pengiriman logistik menggunakan algoritma genetika. Studi kasus dilakukan pada perusahaan logistik di Jakarta. Hasil menunjukkan penghematan jarak tempuh sebesar 25% dan penghematan bahan bakar 20%.",
-                kata_kunci: ["optimasi rute", "algoritma genetika", "logistik", "vehicle routing problem"],
-                file_type: "pdf",
-                file_size: "2.7 MB",
-                downloads: 78,
-                views: 156,
-                sponsor: "PT Logistik Indonesia"
-            },
-            {
-                id: 6,
-                judul: "Pengembangan Media Pembelajaran Interaktif Berbasis Augmented Reality",
-                penulis: "Maya Sari",
-                nim: "202010306",
-                tahun: 2023,
-                kategori: "prosiding",
-                abstrak: "Makalah ini dipresentasikan dalam konferensi internasional tentang pengembangan media pembelajaran interaktif menggunakan teknologi Augmented Reality. Media dikembangkan untuk mata pelajaran IPA tingkat SMP dan diuji coba pada 50 siswa dengan hasil positif.",
-                kata_kunci: ["augmented reality", "media pembelajaran", "interaktif", "pendidikan"],
-                file_type: "pdf",
-                file_size: "4.2 MB",
-                downloads: 45,
-                views: 112,
-                konferensi: "International Conference on Educational Technology 2023"
-            },
-            {
-                id: 7,
-                judul: "Sistem Deteksi Plagiarisme Dokumen Menggunakan Algoritma Rabin-Karp",
-                penulis: "Hendra Wijaya",
-                nim: "201810107",
-                tahun: 2021,
-                kategori: "skripsi",
-                abstrak: "Penelitian ini mengembangkan sistem deteksi plagiarisme dokumen menggunakan algoritma Rabin-Karp. Sistem mampu mendeteksi kemiripan dokumen dengan cepat dan akurat, dengan tingkat akurasi 92% pada pengujian 100 dokumen.",
-                kata_kunci: ["plagiarisme", "rabin-karp", "string matching", "deteksi kemiripan"],
-                file_type: "pdf",
-                file_size: "2.9 MB",
-                downloads: 234,
-                views: 512,
-                pembimbing: "Dr. Budi Hartono, M.Kom"
-            },
-            {
-                id: 8,
-                judul: "Analisis Kinerja Algoritma Machine Learning untuk Prediksi Harga Saham",
-                penulis: "Fajar Nugroho",
-                nim: "201910208",
-                tahun: 2022,
-                kategori: "tesis",
-                abstrak: "Tesis ini membandingkan kinerja berbagai algoritma machine learning (Random Forest, SVM, Neural Network) dalam memprediksi harga saham. Data saham LQ45 selama 5 tahun digunakan sebagai dataset. Random Forest menunjukkan performa terbaik dengan MAPE 3.2%.",
-                kata_kunci: ["machine learning", "prediksi saham", "random forest", "neural network"],
-                file_type: "pdf",
-                file_size: "3.8 MB",
-                downloads: 312,
-                views: 678,
-                pembimbing: "Prof. Dr. Ir. Bambang Suharto, M.Sc"
-            }
-        ];
-
-        // Function to show/hide loading
+        // ============= UTILITY FUNCTIONS (SAMA DENGAN DASHBOARD) =============
         function showLoading() {
             document.getElementById('loadingOverlay').classList.remove('hidden');
         }
@@ -452,27 +332,51 @@
             document.getElementById('loadingOverlay').classList.add('hidden');
         }
 
-        // Show notification
-        function showNotification(message, isSuccess = true) {
-            const notification = document.getElementById('notification');
-            const messageEl = document.getElementById('notificationMessage');
-            
-            notification.className = `fixed bottom-4 right-4 z-50 ${isSuccess ? 'bg-green-500' : 'bg-red-500'} text-white px-6 py-3 rounded-lg shadow-lg flex items-center`;
-            messageEl.textContent = message;
-            
-            notification.classList.remove('hidden');
-            
-            setTimeout(() => {
-                notification.classList.add('hidden');
-            }, 3000);
+        function getToken() {
+            return localStorage.getItem('token');
         }
 
-        // Get user data
         function getUser() {
-            return auth.getUser();
+            const userStr = localStorage.getItem('user');
+            return userStr ? JSON.parse(userStr) : null;
         }
 
-        // Update user info in header
+        // Check Authentication (sama persis dengan dashboard)
+        function checkAuth() {
+            const token = getToken();
+            const user = getUser();
+            
+            if (!token || !user) {
+                window.location.href = '../login.html';
+                return false;
+            }
+
+            if (user.role !== 'mahasiswa') {
+                alert('Anda tidak memiliki akses ke halaman ini');
+                window.location.href = '../login.html';
+                return false;
+            }
+
+            return true;
+        }
+
+        // Logout Function (sama persis dengan dashboard)
+        window.handleLogout = function() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '../login.html';
+        };
+
+        // Get headers with authentication
+        function getAuthHeaders() {
+            const token = getToken();
+            return {
+                'Content-Type': 'application/json',
+                'Authorization': token ? `Bearer ${token}` : ''
+            };
+        }
+
+        // Update user info in header (sama dengan dashboard)
         function updateUserInfo() {
             const user = getUser();
             if (user) {
@@ -481,10 +385,33 @@
             }
         }
 
-        // Logout function
-        window.handleLogout = function() {
-            auth.logout();
-        };
+        // Show success notification
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            const messageEl = document.getElementById('notificationMessage');
+            
+            messageEl.textContent = message;
+            notification.classList.remove('hidden');
+            
+            setTimeout(() => {
+                notification.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Show error notification
+        function showError(message) {
+            const errorNotification = document.getElementById('errorNotification');
+            const errorMessage = document.getElementById('errorMessage');
+            
+            errorMessage.textContent = message;
+            errorNotification.classList.remove('hidden');
+            
+            setTimeout(() => {
+                errorNotification.classList.add('hidden');
+            }, 3000);
+        }
+
+        // ============= REPOSITORY-SPECIFIC FUNCTIONS =============
 
         // Get badge class based on category
         function getBadgeClass(kategori) {
@@ -515,35 +442,95 @@
             return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
         }
 
-        // Update statistics
-        function updateStats() {
-            document.getElementById('totalDocs').textContent = formatNumber(allDocuments.length);
-            document.getElementById('totalSkripsi').textContent = formatNumber(allDocuments.filter(d => d.kategori === 'skripsi').length);
-            document.getElementById('totalJurnal').textContent = formatNumber(allDocuments.filter(d => d.kategori === 'jurnal').length);
-            document.getElementById('totalLaporan').textContent = formatNumber(allDocuments.filter(d => d.kategori === 'laporan').length);
-            document.getElementById('totalProsiding').textContent = formatNumber(allDocuments.filter(d => d.kategori === 'prosiding').length);
+        // Format file size
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         }
 
-        // Generate popular tags
-        function generatePopularTags() {
-            const tagCount = new Map();
-            
-            allDocuments.forEach(doc => {
-                doc.kata_kunci.forEach(keyword => {
-                    tagCount.set(keyword, (tagCount.get(keyword) || 0) + 1);
+        // Fetch statistics from API
+        async function fetchStatistics() {
+            try {
+                const response = await fetch(`${API_CONFIG.BASE_URL}/api/mahasiswa/repository/statistics`, {
+                    headers: getAuthHeaders()
                 });
-            });
-            
-            const sortedTags = Array.from(tagCount.entries())
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 10);
-            
-            const tagsContainer = document.getElementById('popularTags');
-            tagsContainer.innerHTML = sortedTags.map(([tag, count]) => `
-                <button onclick="searchByTag('${tag}')" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full text-sm text-gray-700 transition-colors">
-                    #${tag} (${count})
-                </button>
-            `).join('');
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch statistics');
+                }
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    const stats = result.data;
+                    
+                    // Update statistics display
+                    document.getElementById('totalDocs').textContent = formatNumber(stats.overview?.total_dokumen || 0);
+                    
+                    // Update per-category counts
+                    if (stats.byCategory) {
+                        const categoryMap = {};
+                        stats.byCategory.forEach(item => {
+                            categoryMap[item.kategori] = item.count;
+                        });
+                        
+                        document.getElementById('totalSkripsi').textContent = formatNumber(categoryMap['skripsi'] || 0);
+                        document.getElementById('totalJurnal').textContent = formatNumber(categoryMap['jurnal'] || 0);
+                        document.getElementById('totalLaporan').textContent = formatNumber(categoryMap['laporan'] || 0);
+                        document.getElementById('totalProsiding').textContent = formatNumber(categoryMap['prosiding'] || 0);
+                    }
+
+                    // Populate year filter
+                    if (stats.byYear) {
+                        const yearFilter = document.getElementById('yearFilter');
+                        const currentOptions = Array.from(yearFilter.options).map(opt => opt.value);
+                        
+                        stats.byYear.forEach(item => {
+                            if (!currentOptions.includes(item.tahun.toString())) {
+                                const option = document.createElement('option');
+                                option.value = item.tahun;
+                                option.textContent = item.tahun;
+                                yearFilter.appendChild(option);
+                            }
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching statistics:', error);
+            }
+        }
+
+        // Fetch popular tags
+        async function fetchPopularTags() {
+            try {
+                const response = await fetch(`${API_CONFIG.BASE_URL}/api/mahasiswa/repository/popular-tags?limit=10`, {
+                    headers: getAuthHeaders()
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch popular tags');
+                }
+
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    const tagsContainer = document.getElementById('popularTags');
+                    if (result.data.length === 0) {
+                        tagsContainer.innerHTML = '<p class="text-gray-400 text-sm">Belum ada tag</p>';
+                    } else {
+                        tagsContainer.innerHTML = result.data.map(tag => `
+                            <button onclick="searchByTag('${tag.tag}')" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full text-sm text-gray-700 transition-colors">
+                                #${tag.tag} (${tag.count})
+                            </button>
+                        `).join('');
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching popular tags:', error);
+            }
         }
 
         // Search by tag
@@ -552,59 +539,265 @@
             searchDocuments();
         };
 
-        // Filter and sort documents
-        function filterDocuments() {
-            let filtered = [...allDocuments];
-            
-            // Apply search filter
-            if (currentFilters.search) {
-                const searchTerm = currentFilters.search.toLowerCase();
-                filtered = filtered.filter(doc => 
-                    doc.judul.toLowerCase().includes(searchTerm) ||
-                    doc.penulis.toLowerCase().includes(searchTerm) ||
-                    doc.kata_kunci.some(k => k.toLowerCase().includes(searchTerm)) ||
-                    doc.abstrak.toLowerCase().includes(searchTerm)
-                );
+        // Get sort by parameter from UI sort value
+        function getSortByParam(sortValue) {
+            switch(sortValue) {
+                case 'terbaru':
+                case 'terlama':
+                    return 'tahun';
+                case 'judul-asc':
+                case 'judul-desc':
+                    return 'judul';
+                case 'penulis-asc':
+                    return 'penulis';
+                case 'popular':
+                    return 'downloads';
+                default:
+                    return 'created_at';
             }
-            
-            // Apply category filter
-            if (currentFilters.category !== 'all') {
-                filtered = filtered.filter(doc => doc.kategori === currentFilters.category);
+        }
+
+        // Get sort order parameter from UI sort value
+        function getSortOrderParam(sortValue) {
+            switch(sortValue) {
+                case 'terbaru':
+                case 'judul-asc':
+                case 'penulis-asc':
+                    return 'ASC';
+                case 'terlama':
+                case 'judul-desc':
+                    return 'DESC';
+                case 'popular':
+                    return 'DESC';
+                default:
+                    return 'DESC';
             }
-            
-            // Apply year filter
-            if (currentFilters.year !== 'all') {
-                filtered = filtered.filter(doc => doc.tahun.toString() === currentFilters.year);
+        }
+
+        async function fetchDocuments(reset = false) {
+    if (isLoading) return;
+    
+    isLoading = true;
+    showLoading();
+
+    try {
+        // Build query parameters
+        const params = new URLSearchParams({
+            page: currentPage,
+            limit: 5,
+            sortBy: getSortByParam(currentFilters.sort),
+            sortOrder: getSortOrderParam(currentFilters.sort)
+        });
+
+        if (currentFilters.search) {
+            params.append('search', currentFilters.search);
+        }
+
+        if (currentFilters.category !== 'all') {
+            params.append('kategori', currentFilters.category);
+        }
+
+        if (currentFilters.year !== 'all') {
+            params.append('tahun', currentFilters.year);
+        }
+
+        const response = await fetch(`${API_CONFIG.BASE_URL}/api/mahasiswa/repository?${params.toString()}`, {
+            headers: getAuthHeaders()
+        });
+
+        if (!response.ok) {
+            if (response.status === 401) {
+                handleLogout();
+                return;
             }
+            throw new Error('Failed to fetch documents');
+        }
+
+        const result = await response.json();
+        
+        if (result.success) {
+            // Struktur response dari backend:
+            // {
+            //   success: true,
+            //   message: "...",
+            //   data: [...], // langsung array dokumen
+            //   pagination: { ... } // pagination di root
+            // }
             
-            // Apply sorting
-            filtered.sort((a, b) => {
-                switch(currentFilters.sort) {
-                    case 'terbaru':
-                        return b.tahun - a.tahun;
-                    case 'terlama':
-                        return a.tahun - b.tahun;
-                    case 'judul-asc':
-                        return a.judul.localeCompare(b.judul);
-                    case 'judul-desc':
-                        return b.judul.localeCompare(a.judul);
-                    case 'penulis-asc':
-                        return a.penulis.localeCompare(b.penulis);
-                    default:
-                        return b.tahun - a.tahun;
-                }
-            });
+            const documents = result.data; // Langsung array dokumen
+            const pagination = result.pagination; // Pagination di root
             
-            filteredDocuments = filtered;
+            allDocuments = reset ? documents : [...allDocuments, ...documents];
+            
+            // Gunakan properti dengan underscore (dari formatPaginatedResponse)
+            totalItems = pagination.total_items;
+            hasMore = currentPage < pagination.total_pages;
             
             // Update result count
-            document.getElementById('resultCount').textContent = `Menampilkan ${filtered.length} dokumen`;
+            document.getElementById('resultCount').textContent = `Menampilkan ${allDocuments.length} dari ${totalItems} dokumen`;
             
-            // Update active filters display
-            updateActiveFilters();
+            // Render documents
+            renderDocumentsList(reset);
             
-            return filtered;
+            // Show/hide load more button
+            document.getElementById('loadMoreContainer').style.display = hasMore ? 'block' : 'none';
         }
+    } catch (error) {
+        console.error('Error fetching documents:', error);
+        showError('Gagal memuat data repository');
+        
+        if (reset) {
+            document.getElementById('resultsContainer').innerHTML = `
+                <div class="text-center py-12 bg-white rounded-lg shadow">
+                    <i class="fas fa-exclamation-triangle text-6xl text-red-300 mb-4"></i>
+                    <p class="text-gray-500">Gagal memuat data. Silakan coba lagi.</p>
+                    <button onclick="fetchDocuments(true)" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg">
+                        Muat Ulang
+                    </button>
+                </div>
+            `;
+        }
+    } finally {
+        isLoading = false;
+        hideLoading();
+    }
+}
+        // Render documents list
+        function renderDocumentsList(reset) {
+            const container = document.getElementById('resultsContainer');
+            
+            if (reset) {
+                container.innerHTML = '';
+            }
+
+            if (allDocuments.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 bg-white rounded-lg shadow">
+                        <i class="fas fa-search text-6xl text-gray-300 mb-4"></i>
+                        <p class="text-gray-500">Tidak ada dokumen yang ditemukan</p>
+                        <button onclick="resetFilters()" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg">
+                            Reset Filter
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            const docsHTML = allDocuments.map(doc => renderDocumentCard(doc)).join('');
+            
+            if (reset) {
+                container.innerHTML = docsHTML;
+            } else {
+                container.innerHTML += docsHTML;
+            }
+        }
+
+        // Render document card
+        function renderDocumentCard(doc) {
+            const badgeClass = getBadgeClass(doc.kategori);
+            const borderClass = getBorderClass(doc.kategori);
+            
+            return `
+                <div class="bg-white p-6 rounded-xl shadow-md repository-item border-l-4 ${borderClass}" data-aos="fade-up">
+                    <div class="flex flex-col md:flex-row justify-between items-start gap-4">
+                        <div class="flex-1">
+                            <div class="flex items-start">
+                                <i class="fas fa-file-pdf text-3xl file-pdf mr-3"></i>
+                                <div>
+                                    <h3 class="text-lg font-bold text-gray-800 hover:text-blue-600 cursor-pointer" onclick="previewDocument('${doc.id}')">
+                                        ${doc.judul}
+                                    </h3>
+                                    
+                                    <div class="mt-2 flex flex-wrap items-center gap-2 text-sm text-gray-600">
+                                        <span><i class="fas fa-user mr-1"></i> ${doc.penulis}</span>
+                                        <span><i class="fas fa-calendar mr-1"></i> ${doc.tahun}</span>
+                                        <span class="px-2 py-1 rounded text-xs font-semibold ${badgeClass}">
+                                            ${doc.kategori.charAt(0).toUpperCase() + doc.kategori.slice(1)}
+                                        </span>
+                                        <span><i class="fas fa-file mr-1"></i> PDF</span>
+                                        <span><i class="fas fa-weight mr-1"></i> ${doc.file?.filesize || '0 MB'}</span>
+                                    </div>
+                                    
+                                    <div class="mt-2 flex items-center space-x-4 text-xs text-gray-400">
+                                        <span><i class="fas fa-download mr-1"></i> ${formatNumber(doc.stats?.downloads || 0)} downloads</span>
+                                        <span><i class="fas fa-eye mr-1"></i> ${formatNumber(doc.stats?.views || 0)} views</span>
+                                    </div>
+                                    
+                                    <div class="mt-3 flex flex-wrap gap-1">
+                                        ${doc.keywords ? doc.keywords.map(k => `
+                                            <span class="px-2 py-1 bg-gray-100 rounded text-xs text-gray-600 hover:bg-gray-200 cursor-pointer" onclick="searchByTag('${k}')">
+                                                #${k}
+                                            </span>
+                                        `).join('') : ''}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-col space-y-2 w-full md:w-auto">
+                            <button onclick="previewDocument('${doc.id}')" class="bg-blue-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-600 transition-colors text-sm w-full md:w-auto">
+                                <i class="fas fa-eye mr-2"></i>Preview
+                            </button>
+                            <button onclick="downloadDocument('${doc.id}')" class="bg-green-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-green-600 transition-colors text-sm w-full md:w-auto">
+                                <i class="fas fa-download mr-2"></i>Download
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-3 text-sm text-gray-600 line-clamp-2">
+                        ${doc.abstrak || ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Search documents
+        window.searchDocuments = function() {
+            currentFilters.search = document.getElementById('searchInput').value;
+            currentFilters.category = document.getElementById('categoryFilter').value;
+            currentFilters.year = document.getElementById('yearFilter').value;
+            
+            currentPage = 1;
+            allDocuments = [];
+            fetchDocuments(true);
+            updateActiveFilters();
+        };
+
+        // Reset filters
+        window.resetFilters = function() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('categoryFilter').value = 'all';
+            document.getElementById('yearFilter').value = 'all';
+            document.getElementById('sortSelect').value = 'terbaru';
+            
+            currentFilters = {
+                search: '',
+                category: 'all',
+                year: 'all',
+                sort: 'terbaru'
+            };
+            
+            currentPage = 1;
+            allDocuments = [];
+            fetchDocuments(true);
+            updateActiveFilters();
+        };
+
+        // Sort documents
+        window.sortDocuments = function() {
+            currentFilters.sort = document.getElementById('sortSelect').value;
+            currentPage = 1;
+            allDocuments = [];
+            fetchDocuments(true);
+        };
+
+        // Load more documents
+        window.loadMoreDocuments = function() {
+            if (hasMore && !isLoading) {
+                currentPage++;
+                fetchDocuments(false);
+            }
+        };
 
         // Update active filters display
         function updateActiveFilters() {
@@ -656,256 +849,111 @@
             searchDocuments();
         };
 
-        // Search documents
-        window.searchDocuments = function() {
-            currentFilters.search = document.getElementById('searchInput').value;
-            currentFilters.category = document.getElementById('categoryFilter').value;
-            currentFilters.year = document.getElementById('yearFilter').value;
-            
-            currentPage = 1;
-            renderDocuments(true);
-        };
-
-        // Reset filters
-        window.resetFilters = function() {
-            document.getElementById('searchInput').value = '';
-            document.getElementById('categoryFilter').value = 'all';
-            document.getElementById('yearFilter').value = 'all';
-            document.getElementById('sortSelect').value = 'terbaru';
-            
-            currentFilters = {
-                search: '',
-                category: 'all',
-                year: 'all',
-                sort: 'terbaru'
-            };
-            
-            currentPage = 1;
-            renderDocuments(true);
-        };
-
-        // Sort documents
-        window.sortDocuments = function() {
-            currentFilters.sort = document.getElementById('sortSelect').value;
-            renderDocuments(true);
-        };
-
-        // Render document card
-        function renderDocumentCard(doc) {
-            const badgeClass = getBadgeClass(doc.kategori);
-            const borderClass = getBorderClass(doc.kategori);
-            
-            return `
-                <div class="bg-white p-6 rounded-xl shadow-md repository-item border-l-4 ${borderClass}" data-aos="fade-up">
-                    <div class="flex flex-col md:flex-row justify-between items-start gap-4">
-                        <div class="flex-1">
-                            <div class="flex items-start">
-                                <i class="fas fa-file-pdf text-3xl file-pdf mr-3"></i>
-                                <div>
-                                    <h3 class="text-lg font-bold text-gray-800 hover:text-blue-600 cursor-pointer" onclick="previewDocument(${doc.id})">
-                                        ${doc.judul}
-                                    </h3>
-                                    
-                                    <div class="mt-2 flex flex-wrap items-center gap-2 text-sm text-gray-600">
-                                        <span><i class="fas fa-user mr-1"></i> ${doc.penulis}</span>
-                                        <span><i class="fas fa-calendar mr-1"></i> ${doc.tahun}</span>
-                                        <span class="px-2 py-1 rounded text-xs font-semibold ${badgeClass}">
-                                            ${doc.kategori.charAt(0).toUpperCase() + doc.kategori.slice(1)}
-                                        </span>
-                                        <span><i class="fas fa-file mr-1"></i> ${doc.file_type.toUpperCase()}</span>
-                                        <span><i class="fas fa-weight mr-1"></i> ${doc.file_size}</span>
-                                    </div>
-                                    
-                                    <div class="mt-2 flex items-center space-x-4 text-xs text-gray-400">
-                                        <span><i class="fas fa-download mr-1"></i> ${formatNumber(doc.downloads)} downloads</span>
-                                        <span><i class="fas fa-eye mr-1"></i> ${formatNumber(doc.views)} views</span>
-                                    </div>
-                                    
-                                    <div class="mt-3 flex flex-wrap gap-1">
-                                        ${doc.kata_kunci.map(k => `
-                                            <span class="px-2 py-1 bg-gray-100 rounded text-xs text-gray-600 hover:bg-gray-200 cursor-pointer" onclick="searchByTag('${k}')">
-                                                #${k}
-                                            </span>
-                                        `).join('')}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="flex flex-col space-y-2 w-full md:w-auto">
-                            <button onclick="previewDocument(${doc.id})" class="bg-blue-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-600 transition-colors text-sm w-full md:w-auto">
-                                <i class="fas fa-eye mr-2"></i>Preview
-                            </button>
-                            <button onclick="downloadDocument(${doc.id})" class="bg-green-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-green-600 transition-colors text-sm w-full md:w-auto">
-                                <i class="fas fa-download mr-2"></i>Download
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-3 text-sm text-gray-600 line-clamp-2">
-                        ${doc.abstrak}
-                    </div>
-                </div>
-            `;
-        }
-
-        // Render documents
-        async function renderDocuments(reset = false) {
-            if (isLoading) return;
-            
-            isLoading = true;
-            
-            if (reset) {
-                currentPage = 1;
-                document.getElementById('resultsContainer').innerHTML = '';
-            }
-
+        // Preview document
+        window.previewDocument = async function(id) {
             try {
-                // Filter and sort documents
-                const filtered = filterDocuments();
+                showLoading();
                 
-                // Pagination
-                const itemsPerPage = 5;
-                const start = (currentPage - 1) * itemsPerPage;
-                const end = start + itemsPerPage;
-                const pageDocs = filtered.slice(start, end);
-                
-                hasMore = end < filtered.length;
+                // Increment views
+                await fetch(`${API_CONFIG.BASE_URL}/api/mahasiswa/repository/${id}/view`, {
+                    method: 'POST',
+                    headers: getAuthHeaders()
+                });
 
-                if (pageDocs.length === 0 && currentPage === 1) {
-                    document.getElementById('resultsContainer').innerHTML = `
-                        <div class="text-center py-12 bg-white rounded-lg shadow">
-                            <i class="fas fa-search text-6xl text-gray-300 mb-4"></i>
-                            <p class="text-gray-500">Tidak ada dokumen yang ditemukan</p>
-                            <button onclick="resetFilters()" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg">
-                                Reset Filter
-                            </button>
-                        </div>
-                    `;
-                } else {
-                    const docsHTML = pageDocs.map(doc => renderDocumentCard(doc)).join('');
-                    
-                    if (reset) {
-                        document.getElementById('resultsContainer').innerHTML = docsHTML;
-                    } else {
-                        document.getElementById('resultsContainer').innerHTML += docsHTML;
-                    }
+                // Fetch document details
+                const response = await fetch(`${API_CONFIG.BASE_URL}/api/mahasiswa/repository/${id}`, {
+                    headers: getAuthHeaders()
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch document details');
                 }
 
-                // Show/hide load more button
-                document.getElementById('loadMoreContainer').style.display = hasMore ? 'block' : 'none';
+                const result = await response.json();
                 
+                if (result.success) {
+                    const doc = result.data;
+                    
+                    const modal = document.getElementById('previewModal');
+                    const modalTitle = document.getElementById('modalTitle');
+                    const modalContent = document.getElementById('modalContent');
+                    
+                    modalTitle.textContent = doc.judul;
+                    
+                    modalContent.innerHTML = `
+                        <div class="space-y-6">
+                            <!-- Document Info -->
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                <div class="bg-gray-50 p-3 rounded-lg">
+                                    <p class="text-xs text-gray-500">Penulis</p>
+                                    <p class="font-semibold">${doc.penulis}</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-lg">
+                                    <p class="text-xs text-gray-500">Tahun</p>
+                                    <p class="font-semibold">${doc.tahun}</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-lg">
+                                    <p class="text-xs text-gray-500">Kategori</p>
+                                    <p class="font-semibold">${doc.kategori}</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-lg">
+                                    <p class="text-xs text-gray-500">File</p>
+                                    <p class="font-semibold">PDF - ${doc.file?.filesize || '0 MB'}</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-lg">
+                                    <p class="text-xs text-gray-500">Downloads</p>
+                                    <p class="font-semibold">${formatNumber(doc.stats?.downloads || 0)}</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-lg">
+                                    <p class="text-xs text-gray-500">Views</p>
+                                    <p class="font-semibold">${formatNumber(doc.stats?.views || 0)}</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Abstract -->
+                            <div>
+                                <h4 class="font-semibold text-gray-800 mb-2">Abstrak</h4>
+                                <p class="text-gray-600">${doc.abstrak || '-'}</p>
+                            </div>
+                            
+                            <!-- Keywords -->
+                            <div>
+                                <h4 class="font-semibold text-gray-800 mb-2">Kata Kunci</h4>
+                                <div class="flex flex-wrap gap-2">
+                                    ${doc.keywords ? doc.keywords.map(k => `
+                                        <span class="px-3 py-1 bg-gray-100 rounded-full text-sm text-gray-700">#${k}</span>
+                                    `).join('') : '-'}
+                                </div>
+                            </div>
+                            
+                            <!-- DOI if available -->
+                            ${doc.doi ? `
+                            <div>
+                                <h4 class="font-semibold text-gray-800 mb-2">DOI</h4>
+                                <p class="text-gray-600">${doc.doi}</p>
+                            </div>
+                            ` : ''}
+                            
+                            <!-- Action Buttons -->
+                            <div class="flex justify-end space-x-3 pt-4 border-t">
+                                <button onclick="downloadDocument('${doc.id}')" class="bg-green-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-green-600 transition-colors">
+                                    <i class="fas fa-download mr-2"></i>Download PDF
+                                </button>
+                                <button onclick="closePreview()" class="bg-gray-200 text-gray-700 font-bold py-2 px-6 rounded-lg hover:bg-gray-300 transition-colors">
+                                    <i class="fas fa-times mr-2"></i>Tutup
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    
+                    modal.classList.remove('hidden');
+                }
             } catch (error) {
-                console.error('Error rendering documents:', error);
+                console.error('Error previewing document:', error);
+                showError('Gagal memuat detail dokumen');
             } finally {
-                isLoading = false;
                 hideLoading();
             }
-        }
-
-        // Load more documents
-        window.loadMoreDocuments = function() {
-            currentPage++;
-            renderDocuments(false);
-        };
-
-        // Preview document
-        window.previewDocument = function(id) {
-            const doc = allDocuments.find(d => d.id === id);
-            if (!doc) return;
-            
-            const modal = document.getElementById('previewModal');
-            const modalTitle = document.getElementById('modalTitle');
-            const modalContent = document.getElementById('modalContent');
-            
-            modalTitle.textContent = doc.judul;
-            
-            modalContent.innerHTML = `
-                <div class="space-y-6">
-                    <!-- Document Info -->
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                        <div class="bg-gray-50 p-3 rounded-lg">
-                            <p class="text-xs text-gray-500">Penulis</p>
-                            <p class="font-semibold">${doc.penulis}</p>
-                        </div>
-                        <div class="bg-gray-50 p-3 rounded-lg">
-                            <p class="text-xs text-gray-500">Tahun</p>
-                            <p class="font-semibold">${doc.tahun}</p>
-                        </div>
-                        <div class="bg-gray-50 p-3 rounded-lg">
-                            <p class="text-xs text-gray-500">Kategori</p>
-                            <p class="font-semibold">${doc.kategori}</p>
-                        </div>
-                        <div class="bg-gray-50 p-3 rounded-lg">
-                            <p class="text-xs text-gray-500">File</p>
-                            <p class="font-semibold">${doc.file_type.toUpperCase()} - ${doc.file_size}</p>
-                        </div>
-                        <div class="bg-gray-50 p-3 rounded-lg">
-                            <p class="text-xs text-gray-500">Downloads</p>
-                            <p class="font-semibold">${formatNumber(doc.downloads)}</p>
-                        </div>
-                        <div class="bg-gray-50 p-3 rounded-lg">
-                            <p class="text-xs text-gray-500">Views</p>
-                            <p class="font-semibold">${formatNumber(doc.views)}</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Abstract -->
-                    <div>
-                        <h4 class="font-semibold text-gray-800 mb-2">Abstrak</h4>
-                        <p class="text-gray-600">${doc.abstrak}</p>
-                    </div>
-                    
-                    <!-- Abstract English (if available) -->
-                    ${doc.abstrak_inggris ? `
-                    <div>
-                        <h4 class="font-semibold text-gray-800 mb-2">Abstract</h4>
-                        <p class="text-gray-600">${doc.abstrak_inggris}</p>
-                    </div>
-                    ` : ''}
-                    
-                    <!-- Keywords -->
-                    <div>
-                        <h4 class="font-semibold text-gray-800 mb-2">Kata Kunci</h4>
-                        <div class="flex flex-wrap gap-2">
-                            ${doc.kata_kunci.map(k => `
-                                <span class="px-3 py-1 bg-gray-100 rounded-full text-sm text-gray-700">#${k}</span>
-                            `).join('')}
-                        </div>
-                    </div>
-                    
-                    <!-- Additional Info -->
-                    <div class="border-t pt-4">
-                        ${doc.pembimbing ? `
-                        <p class="text-sm text-gray-600">
-                            <span class="font-semibold">Pembimbing:</span> ${doc.pembimbing}
-                        </p>
-                        ` : ''}
-                        ${doc.publisher ? `
-                        <p class="text-sm text-gray-600 mt-1">
-                            <span class="font-semibold">Publisher:</span> ${doc.publisher} ${doc.volume ? '- ' + doc.volume : ''}
-                        </p>
-                        ` : ''}
-                        ${doc.konferensi ? `
-                        <p class="text-sm text-gray-600 mt-1">
-                            <span class="font-semibold">Konferensi:</span> ${doc.konferensi}
-                        </p>
-                        ` : ''}
-                    </div>
-                    
-                    <!-- Action Buttons -->
-                    <div class="flex justify-end space-x-3 pt-4 border-t">
-                        <button onclick="downloadDocument(${doc.id})" class="bg-green-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-green-600 transition-colors">
-                            <i class="fas fa-download mr-2"></i>Download PDF
-                        </button>
-                        <button onclick="closePreview()" class="bg-gray-200 text-gray-700 font-bold py-2 px-6 rounded-lg hover:bg-gray-300 transition-colors">
-                            <i class="fas fa-times mr-2"></i>Tutup
-                        </button>
-                    </div>
-                </div>
-            `;
-            
-            modal.classList.remove('hidden');
         };
 
         // Close preview modal
@@ -914,15 +962,35 @@
         };
 
         // Download document
-        window.downloadDocument = function(id) {
-            const doc = allDocuments.find(d => d.id === id);
-            if (!doc) return;
-            
-            // Simulate download
-            showNotification(`Mengunduh "${doc.judul.substring(0, 30)}..."`);
-            
-            // In real app, you would trigger actual download
-            // window.location.href = `/api/repository/download/${id}`;
+        window.downloadDocument = async function(id) {
+            try {
+                showLoading();
+                
+                // Get document info first
+                const response = await fetch(`${API_CONFIG.BASE_URL}/api/mahasiswa/repository/${id}`, {
+                    headers: getAuthHeaders()
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch document details');
+                }
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    const doc = result.data;
+                    
+                    // Trigger download
+                    window.location.href = `${API_CONFIG.BASE_URL}/api/mahasiswa/repository/${id}/download?token=${getToken()}`;
+                    
+                    showNotification(`Mengunduh "${doc.judul.substring(0, 30)}..."`);
+                }
+            } catch (error) {
+                console.error('Error downloading document:', error);
+                showError('Gagal mengunduh dokumen');
+            } finally {
+                hideLoading();
+            }
         };
 
         // Close modal when clicking outside
@@ -934,25 +1002,35 @@
         };
 
         // Initialize page
-        document.addEventListener('DOMContentLoaded', function() {
-            // Check authentication first
-            if (!auth.requireRole('mahasiswa')) return;
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Check authentication first (sama persis dengan dashboard)
+            if (!checkAuth()) return;
             
             // Update user info in header
             updateUserInfo();
             
-            // Set initial data
-            allDocuments = sampleDocuments;
+            // Check if token exists
+            const token = getToken();
+            if (!token) {
+                handleLogout();
+                return;
+            }
             
-            // Update statistics
-            updateStats();
-            
-            // Generate popular tags
-            generatePopularTags();
-            
-            // Load documents
             showLoading();
-            renderDocuments(true);
+            
+            try {
+                // Load all repository data
+                await Promise.all([
+                    fetchStatistics(),
+                    fetchPopularTags(),
+                    fetchDocuments(true)
+                ]);
+            } catch (error) {
+                console.error('Error loading page data:', error);
+                showError('Gagal memuat halaman');
+            } finally {
+                hideLoading();
+            }
         });
     </script>
 </body>

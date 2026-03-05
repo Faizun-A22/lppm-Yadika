@@ -22,6 +22,10 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const mahasiswaBeritaRoutes = require('./routes/mahasiswa/beritaRoutes');
 const mahasiswaKegiatanRoutes = require('./routes/mahasiswa/kegiatanRoutes');
+const mahasiswaRepositoryRoutes = require('./routes/mahasiswa/repositoryRoutes');
+const dosenRepositoryRoutes = require('./routes/dosen/repositoryRoutes');
+const mahasiswaProfilRoutes = require('./routes/mahasiswa/profilRoutes');
+
 
 // Middleware
 app.use(helmet({
@@ -50,6 +54,11 @@ app.use('/api/dosen/berita', dosenBeritaRoutes);
 app.use('/api/mahasiswa/berita', mahasiswaBeritaRoutes);
 app.use('/api/mahasiswa/kegiatan', mahasiswaKegiatanRoutes);
 app.use('/api/admin/repository', adminRepositoryRoutes);
+app.use('/api/mahasiswa/repository', mahasiswaRepositoryRoutes);
+app.use('/api/dosen/repository', dosenRepositoryRoutes);
+app.use('/api/mahasiswa/profil', mahasiswaProfilRoutes);
+
+
 // Error handling middleware
 app.use((err, req, res, next) => {
     console.error(err.stack);
