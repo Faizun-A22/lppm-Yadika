@@ -10,6 +10,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         .gradient-text { background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
         .nav-link { position: relative; transition: color 0.3s ease; }
@@ -72,9 +73,43 @@
         .alert-danger { background-color: #fee2e2; color: #991b1b; }
         .alert-warning { background-color: #fef3c7; color: #92400e; }
         .alert-info { background-color: #dbeafe; color: #1e40af; }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .loading-spinner-custom {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3B82F6;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body class="bg-gray-50 font-sans antialiased">
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay hidden">
+        <div class="text-center">
+            <div class="loading-spinner-custom mx-auto"></div>
+            <p class="mt-4 text-gray-600">Memuat data...</p>
+        </div>
+    </div>
+
     <!-- Top Navigation Bar -->
     <header class="fixed top-0 left-0 right-0 bg-white shadow-md z-50">
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
@@ -105,11 +140,11 @@
 
             <!-- User Profile / Logout -->
             <div class="flex items-center space-x-4">
-                <span class="text-sm text-gray-600 hidden sm:block">Admin LPPM</span>
-                <a href="'../../login.html'" class="flex items-center space-x-2 p-2 rounded-lg text-red-600 hover:bg-red-50 transition">
+                <span class="text-sm text-gray-600 hidden sm:block" id="userName">Admin LPPM</span>
+                <button onclick="handleLogout()" class="flex items-center space-x-2 p-2 rounded-lg text-red-600 hover:bg-red-50 transition">
                     <i class="fas fa-sign-out-alt"></i>
                     <span class="hidden sm:inline">Logout</span>
-                </a>
+                </button>
             </div>
         </nav>
     </header>
@@ -160,7 +195,7 @@
                             </button>
                         </div>
                     </div>
-                    <div class="table-responsive">
+                    <div class="table-responsive overflow-x-auto">
                         <table class="w-full">
                             <thead class="bg-gray-50 text-gray-700">
                                 <tr>
@@ -225,7 +260,7 @@
                     <!-- KKN Registrations Table -->
                     <div class="p-4">
                         <h3 class="text-lg font-semibold mb-4">Registrasi KKN</h3>
-                        <div class="table-responsive">
+                        <div class="table-responsive overflow-x-auto">
                             <table class="w-full">
                                 <thead class="bg-gray-50 text-gray-700">
                                     <tr>
@@ -247,7 +282,7 @@
                     <!-- Magang Registrations Table -->
                     <div class="p-4 border-t border-gray-200">
                         <h3 class="text-lg font-semibold mb-4">Registrasi Magang</h3>
-                        <div class="table-responsive">
+                        <div class="table-responsive overflow-x-auto">
                             <table class="w-full">
                                 <thead class="bg-gray-50 text-gray-700">
                                     <tr>
@@ -288,7 +323,7 @@
                             </button>
                         </div>
                     </div>
-                    <div class="table-responsive">
+                    <div class="table-responsive overflow-x-auto">
                         <table class="w-full">
                             <thead class="bg-gray-50 text-gray-700">
                                 <tr>
@@ -617,6 +652,27 @@
         </div>
     </div>
 
+    <!-- Modal Konfirmasi Logout -->
+    <div id="confirmLogoutModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50 flex items-center justify-center">
+        <div class="relative bg-white rounded-lg shadow-xl w-11/12 md:w-1/3">
+            <div class="p-6">
+                <div class="text-center">
+                    <i class="fas fa-exclamation-triangle text-yellow-500 text-5xl mb-4"></i>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Konfirmasi Logout</h3>
+                    <p class="text-gray-600 mb-6">Apakah Anda yakin ingin logout?</p>
+                    <div class="flex justify-center space-x-3">
+                        <button onclick="closeLogoutModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
+                            Batal
+                        </button>
+                        <button onclick="performLogout()" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+                            Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
@@ -636,6 +692,118 @@
         let magangRegistrationData = [];
         let luaranData = [];
         let kknChart, magangChart;
+
+        // ==================== AUTHENTICATION & LOGOUT ====================
+        // Cek autentikasi
+        let token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = '../login.html';
+        }
+
+        // Set user name
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        document.getElementById('userName').textContent = user.nama_lengkap || 'Admin LPPM';
+
+        // Handle logout function
+        function handleLogout() {
+            // Gunakan SweetAlert jika tersedia
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    title: 'Konfirmasi Logout',
+                    text: 'Apakah Anda yakin ingin logout?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Ya, Logout',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        performLogout();
+                    }
+                });
+            } else {
+                // Fallback ke modal kustom
+                document.getElementById('confirmLogoutModal').classList.remove('hidden');
+            }
+        }
+
+        function closeLogoutModal() {
+            document.getElementById('confirmLogoutModal').classList.add('hidden');
+        }
+
+        function performLogout() {
+            // Hapus token dan user data dari localStorage
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            
+            // Redirect ke halaman login
+            window.location.href = '../login.html';
+        }
+
+        // Fungsi untuk mengecek session expiry
+        function checkSession() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '../login.html';
+                return;
+            }
+            
+            // Decode token untuk cek expiry
+            try {
+                const base64Url = token.split('.')[1];
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                const payload = JSON.parse(window.atob(base64));
+                
+                // Cek if token expired
+                if (payload.exp && payload.exp < Date.now() / 1000) {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    window.location.href = '../login.html?session=expired';
+                }
+            } catch (e) {
+                console.error('Error checking session:', e);
+            }
+        }
+
+        // Panggil checkSession setiap 5 menit
+        setInterval(checkSession, 5 * 60 * 1000);
+
+        // ==================== UTILITY FUNCTIONS ====================
+        function showLoading() {
+            document.getElementById('loadingOverlay').classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.add('hidden');
+        }
+
+        function showAlert(message, type = 'success') {
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    icon: type,
+                    title: type === 'success' ? 'Berhasil' : type === 'error' ? 'Gagal' : 'Informasi',
+                    text: message,
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            } else {
+                // Fallback ke alert biasa
+                const alert = document.createElement('div');
+                alert.className = `fixed top-20 right-5 z-50 px-6 py-3 rounded-lg shadow-lg ${
+                    type === 'success' ? 'bg-green-500' : 
+                    type === 'error' ? 'bg-red-500' : 'bg-blue-500'
+                } text-white`;
+                alert.innerHTML = message;
+                document.body.appendChild(alert);
+                
+                setTimeout(() => {
+                    if (alert.parentNode) {
+                        alert.remove();
+                    }
+                }, 3000);
+            }
+        }
 
         // ==================== SECTION NAVIGATION ====================
         function showSection(sectionId) {
@@ -673,6 +841,7 @@
 
         // ==================== PROGRAM FUNCTIONS ====================
         async function loadProgramData() {
+            showLoading();
             const search = document.getElementById('searchProgram').value;
             const jenis = document.getElementById('filterJenisProgram').value;
             
@@ -686,7 +855,9 @@
                 }
             } catch (error) {
                 console.error('Error loading programs:', error);
-                showAlert('Gagal memuat data program', 'danger');
+                showAlert('Gagal memuat data program', 'error');
+            } finally {
+                hideLoading();
             }
         }
 
@@ -766,6 +937,7 @@
 
         async function saveProgram(event) {
             event.preventDefault();
+            showLoading();
             
             const programId = document.getElementById('programId').value;
             const programData = {
@@ -793,16 +965,19 @@
                     closeProgramModal();
                     loadProgramData();
                 } else {
-                    showAlert(result.message, 'danger');
+                    showAlert(result.message, 'error');
                 }
             } catch (error) {
                 console.error('Error saving program:', error);
-                showAlert('Gagal menyimpan program', 'danger');
+                showAlert('Gagal menyimpan program', 'error');
+            } finally {
+                hideLoading();
             }
         }
 
         async function deleteProgram(id) {
             if (!confirm('Apakah Anda yakin ingin menghapus program ini?')) return;
+            showLoading();
             
             try {
                 const response = await fetch(`${API_BASE_URL}/programs/${id}`, {
@@ -815,16 +990,19 @@
                     showAlert('Program berhasil dihapus', 'success');
                     loadProgramData();
                 } else {
-                    showAlert(result.message, 'danger');
+                    showAlert(result.message, 'error');
                 }
             } catch (error) {
                 console.error('Error deleting program:', error);
-                showAlert('Gagal menghapus program', 'danger');
+                showAlert('Gagal menghapus program', 'error');
+            } finally {
+                hideLoading();
             }
         }
 
         // ==================== REGISTRATION FUNCTIONS ====================
         async function loadRegistrationData() {
+            showLoading();
             const search = document.getElementById('searchRegistration').value;
             const jenis = document.getElementById('filterJenisRegistration').value;
             const status = document.getElementById('filterStatusRegistration').value;
@@ -849,7 +1027,9 @@
                 }
             } catch (error) {
                 console.error('Error loading registrations:', error);
-                showAlert('Gagal memuat data registrasi', 'danger');
+                showAlert('Gagal memuat data registrasi', 'error');
+            } finally {
+                hideLoading();
             }
         }
 
@@ -981,6 +1161,7 @@
 
         async function saveRegistration(event) {
             event.preventDefault();
+            showLoading();
             
             const type = document.getElementById('registrationType').value;
             const nim = document.getElementById('registrationNim').value;
@@ -1017,15 +1198,18 @@
                     closeRegistrationModal();
                     loadRegistrationData();
                 } else {
-                    showAlert(result.message, 'danger');
+                    showAlert(result.message, 'error');
                 }
             } catch (error) {
                 console.error('Error saving registration:', error);
-                showAlert('Gagal menyimpan registrasi', 'danger');
+                showAlert('Gagal menyimpan registrasi', 'error');
+            } finally {
+                hideLoading();
             }
         }
 
         async function viewRegistrationDetail(type, nim) {
+            showLoading();
             try {
                 const response = await fetch(`${API_BASE_URL}/${type}-registrations/${nim}`);
                 const result = await response.json();
@@ -1076,7 +1260,9 @@
                 }
             } catch (error) {
                 console.error('Error viewing detail:', error);
-                showAlert('Gagal memuat detail', 'danger');
+                showAlert('Gagal memuat detail', 'error');
+            } finally {
+                hideLoading();
             }
         }
 
@@ -1086,6 +1272,7 @@
 
         async function deleteRegistration(type, nim) {
             if (!confirm('Apakah Anda yakin ingin menghapus registrasi ini?')) return;
+            showLoading();
             
             try {
                 const response = await fetch(`${API_BASE_URL}/${type}-registrations/${nim}`, {
@@ -1098,11 +1285,13 @@
                     showAlert('Registrasi berhasil dihapus', 'success');
                     loadRegistrationData();
                 } else {
-                    showAlert(result.message, 'danger');
+                    showAlert(result.message, 'error');
                 }
             } catch (error) {
                 console.error('Error deleting registration:', error);
-                showAlert('Gagal menghapus registrasi', 'danger');
+                showAlert('Gagal menghapus registrasi', 'error');
+            } finally {
+                hideLoading();
             }
         }
 
@@ -1126,6 +1315,7 @@
         }
 
         async function loadLuaranData() {
+            showLoading();
             const desa = document.getElementById('filterDesaLuaran').value;
             const status = document.getElementById('filterStatusLuaran').value;
             
@@ -1138,7 +1328,9 @@
                 }
             } catch (error) {
                 console.error('Error loading luaran:', error);
-                showAlert('Gagal memuat data luaran', 'danger');
+                showAlert('Gagal memuat data luaran', 'error');
+            } finally {
+                hideLoading();
             }
         }
 
@@ -1202,6 +1394,7 @@
 
         async function submitVerification(event) {
             event.preventDefault();
+            showLoading();
             
             const id = document.getElementById('verificationId').value;
             const data = {
@@ -1223,16 +1416,19 @@
                     closeVerificationModal();
                     loadLuaranData();
                 } else {
-                    showAlert(result.message, 'danger');
+                    showAlert(result.message, 'error');
                 }
             } catch (error) {
                 console.error('Error submitting verification:', error);
-                showAlert('Gagal menyimpan verifikasi', 'danger');
+                showAlert('Gagal menyimpan verifikasi', 'error');
+            } finally {
+                hideLoading();
             }
         }
 
         // ==================== STATS FUNCTIONS ====================
         async function loadStatsData() {
+            showLoading();
             try {
                 const response = await fetch(`${API_BASE_URL}/dashboard/stats`);
                 const result = await response.json();
@@ -1243,6 +1439,8 @@
                 }
             } catch (error) {
                 console.error('Error loading stats:', error);
+            } finally {
+                hideLoading();
             }
         }
 
@@ -1386,30 +1584,6 @@
             });
         }
 
-        function showAlert(message, type) {
-            // Remove existing alerts
-            document.querySelectorAll('.alert').forEach(alert => alert.remove());
-            
-            const alert = document.createElement('div');
-            alert.className = `alert alert-${type} fixed top-20 right-5 z-50 max-w-md`;
-            alert.innerHTML = `
-                <div class="flex items-center justify-between">
-                    <span>${message}</span>
-                    <button onclick="this.parentElement.parentElement.remove()" class="ml-4">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-            `;
-            
-            document.body.appendChild(alert);
-            
-            setTimeout(() => {
-                if (alert.parentNode) {
-                    alert.remove();
-                }
-            }, 5000);
-        }
-
         // ==================== EVENT LISTENERS ====================
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize AOS
@@ -1426,6 +1600,37 @@
             document.getElementById('searchRegistration').addEventListener('input', debounce(loadRegistrationData, 500));
             document.getElementById('filterJenisRegistration').addEventListener('change', loadRegistrationData);
             document.getElementById('filterStatusRegistration').addEventListener('change', loadRegistrationData);
+
+            // Close modals when clicking outside
+            document.getElementById('programModal').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('programModal')) {
+                    closeProgramModal();
+                }
+            });
+
+            document.getElementById('registrationModal').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('registrationModal')) {
+                    closeRegistrationModal();
+                }
+            });
+
+            document.getElementById('detailModal').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('detailModal')) {
+                    closeDetailModal();
+                }
+            });
+
+            document.getElementById('verificationModal').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('verificationModal')) {
+                    closeVerificationModal();
+                }
+            });
+
+            document.getElementById('confirmLogoutModal').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('confirmLogoutModal')) {
+                    closeLogoutModal();
+                }
+            });
         });
 
         // Debounce function

@@ -12,11 +12,11 @@ dotenv.config();
 // Import routes
 const authRoutes = require('./routes/authRoutes');
 const magangRoutes = require('./routes/mahasiswa/magangRoutes');
-
+const dosenKegiatanRoutes = require('./routes/dosen/kegiatanRoutes');
 // Import admin routes
 const adminBeritaRoutes = require('./routes/admin/beritaRoutes');
 const adminKegiatanRoutes = require('./routes/admin/kegiatanRoutes');
-
+const dosenBeritaRoutes = require('./routes/dosen/beritaRoutes');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -39,11 +39,11 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api', fakultasRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/magang', magangRoutes);
-
+app.use('/api/dosen/kegiatan', dosenKegiatanRoutes);
 // Admin routes
 app.use('/api/admin/berita', adminBeritaRoutes);
 app.use('/api/admin/kegiatan', adminKegiatanRoutes);
-
+app.use('/api/dosen/berita', dosenBeritaRoutes);
 // Error handling middleware
 app.use((err, req, res, next) => {
     console.error(err.stack);

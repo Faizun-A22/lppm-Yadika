@@ -156,13 +156,35 @@
             border-radius: 4px;
             transition: width 0.3s ease;
         }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .loading-spinner-custom {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3B82F6;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
     </style>
 </head>
 <body class="bg-gray-50 font-sans antialiased">
     <!-- Loading Overlay -->
-    <div id="loadingOverlay" class="fixed inset-0 bg-white bg-opacity-90 z-50 flex items-center justify-center hidden">
+    <div id="loadingOverlay" class="loading-overlay hidden">
         <div class="text-center">
-            <div class="loading-spinner"></div>
+            <div class="loading-spinner-custom mx-auto"></div>
             <p class="mt-4 text-gray-600">Memuat data...</p>
         </div>
     </div>
@@ -197,7 +219,7 @@
 
             <!-- User Profile / Logout -->
             <div class="flex items-center space-x-4">
-                <span class="text-sm text-gray-600 hidden sm:block">Admin LPPM</span>
+                <span class="text-sm text-gray-600 hidden sm:block" id="userName">Admin LPPM</span>
                 <button onclick="handleLogout()" class="flex items-center space-x-2 p-2 rounded-lg text-red-600 hover:bg-red-50 transition">
                     <i class="fas fa-sign-out-alt"></i>
                     <span class="hidden sm:inline">Logout</span>
@@ -266,7 +288,7 @@
                         </div>
                     </div>
                     <div class="mt-4 text-sm text-gray-500">
-                        <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded-full text-xs">45% dari total</span>
+                        <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded-full text-xs" id="popularCategoryPercentage">45% dari total</span>
                     </div>
                 </div>
 
@@ -275,7 +297,7 @@
                     <div class="flex justify-between items-center">
                         <div>
                             <p class="text-sm text-gray-500">Penggunaan Storage</p>
-                            <h3 class="text-2xl font-bold text-gray-800" id="storageUsed">2.4 GB</h3>
+                            <h3 class="text-2xl font-bold text-gray-800" id="storageUsed">0 GB</h3>
                         </div>
                         <div class="bg-orange-100 rounded-full p-3">
                             <i class="fas fa-database text-orange-600"></i>
@@ -283,9 +305,9 @@
                     </div>
                     <div class="mt-4">
                         <div class="progress-bar">
-                            <div class="progress-fill" id="storageProgress" style="width: 48%"></div>
+                            <div class="progress-fill" id="storageProgress" style="width: 0%"></div>
                         </div>
-                        <p class="text-xs text-gray-500 mt-2">dari 5 GB total</p>
+                        <p class="text-xs text-gray-500 mt-2" id="storageInfo">dari 5 GB total</p>
                     </div>
                 </div>
             </div>
@@ -294,7 +316,7 @@
             <div class="border-b border-gray-200 mb-6" data-aos="fade-up">
                 <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="tabNav">
                     <li class="mr-2">
-                        <button class="tab-button inline-block p-4 border-b-2 rounded-t-lg" id="tabSemuaBtn" data-tab="semua" onclick="activateTab('semua')">
+                        <button class="tab-button inline-block p-4 border-b-2 rounded-t-lg active text-blue-600 border-blue-600" id="tabSemuaBtn" data-tab="semua" onclick="activateTab('semua')">
                             <i class="fas fa-layer-group mr-2"></i>Semua
                         </button>
                     </li>
@@ -363,32 +385,32 @@
 
             <!-- Quick Stats by Category -->
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6" data-aos="fade-up">
-                <div class="bg-white rounded-lg p-3 text-center shadow-sm" onclick="filterByCategory('jurnal')" style="cursor: pointer;">
+                <div class="bg-white rounded-lg p-3 text-center shadow-sm cursor-pointer hover:shadow-md transition" onclick="filterByCategory('jurnal')">
                     <div class="text-blue-600 text-xl mb-1"><i class="fas fa-book-open"></i></div>
                     <div class="text-xs text-gray-500">Jurnal</div>
                     <div class="font-bold" id="countJurnal">0</div>
                 </div>
-                <div class="bg-white rounded-lg p-3 text-center shadow-sm" onclick="filterByCategory('penelitian')" style="cursor: pointer;">
+                <div class="bg-white rounded-lg p-3 text-center shadow-sm cursor-pointer hover:shadow-md transition" onclick="filterByCategory('penelitian')">
                     <div class="text-purple-600 text-xl mb-1"><i class="fas fa-flask"></i></div>
                     <div class="text-xs text-gray-500">Penelitian</div>
                     <div class="font-bold" id="countPenelitian">0</div>
                 </div>
-                <div class="bg-white rounded-lg p-3 text-center shadow-sm" onclick="filterByCategory('pengabdian')" style="cursor: pointer;">
+                <div class="bg-white rounded-lg p-3 text-center shadow-sm cursor-pointer hover:shadow-md transition" onclick="filterByCategory('pengabdian')">
                     <div class="text-green-600 text-xl mb-1"><i class="fas fa-hands-helping"></i></div>
                     <div class="text-xs text-gray-500">Pengabdian</div>
                     <div class="font-bold" id="countPengabdian">0</div>
                 </div>
-                <div class="bg-white rounded-lg p-3 text-center shadow-sm" onclick="filterByCategory('buku')" style="cursor: pointer;">
+                <div class="bg-white rounded-lg p-3 text-center shadow-sm cursor-pointer hover:shadow-md transition" onclick="filterByCategory('buku')">
                     <div class="text-orange-600 text-xl mb-1"><i class="fas fa-book"></i></div>
                     <div class="text-xs text-gray-500">Buku</div>
                     <div class="font-bold" id="countBuku">0</div>
                 </div>
-                <div class="bg-white rounded-lg p-3 text-center shadow-sm" onclick="filterByCategory('haki')" style="cursor: pointer;">
+                <div class="bg-white rounded-lg p-3 text-center shadow-sm cursor-pointer hover:shadow-md transition" onclick="filterByCategory('haki')">
                     <div class="text-red-600 text-xl mb-1"><i class="fas fa-copyright"></i></div>
                     <div class="text-xs text-gray-500">HKI</div>
                     <div class="font-bold" id="countHaki">0</div>
                 </div>
-                <div class="bg-white rounded-lg p-3 text-center shadow-sm" onclick="filterByCategory('prosiding')" style="cursor: pointer;">
+                <div class="bg-white rounded-lg p-3 text-center shadow-sm cursor-pointer hover:shadow-md transition" onclick="filterByCategory('prosiding')">
                     <div class="text-indigo-600 text-xl mb-1"><i class="fas fa-file-alt"></i></div>
                     <div class="text-xs text-gray-500">Prosiding</div>
                     <div class="font-bold" id="countProsiding">0</div>
@@ -399,10 +421,10 @@
             <div id="tabSemua" class="tab-pane active" data-aos="fade-up">
                 <!-- Grid View Toggle -->
                 <div class="flex justify-end mb-4 space-x-2">
-                    <button onclick="setViewMode('grid')" class="p-2 bg-white rounded-lg shadow hover:bg-gray-50" id="gridViewBtn">
+                    <button onclick="setViewMode('grid')" class="p-2 bg-pink-100 text-pink-600 rounded-lg shadow hover:bg-pink-200 transition" id="gridViewBtn">
                         <i class="fas fa-th-large"></i>
                     </button>
-                    <button onclick="setViewMode('list')" class="p-2 bg-white rounded-lg shadow hover:bg-gray-50" id="listViewBtn">
+                    <button onclick="setViewMode('list')" class="p-2 bg-white rounded-lg shadow hover:bg-gray-50 transition" id="listViewBtn">
                         <i class="fas fa-list"></i>
                     </button>
                 </div>
@@ -415,21 +437,23 @@
                 <!-- List View -->
                 <div id="listView" class="hidden">
                     <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-                        <table class="w-full">
-                            <thead class="bg-gray-50 text-gray-700">
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Judul</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Penulis</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Kategori</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Tahun</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Downloads</th>
-                                    <th class="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="listViewBody" class="bg-white divide-y divide-gray-200">
-                                <!-- Data will be loaded here -->
-                            </tbody>
-                        </table>
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50 text-gray-700">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Judul</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Penulis</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Kategori</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Tahun</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Downloads</th>
+                                        <th class="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="listViewBody" class="bg-white divide-y divide-gray-200">
+                                    <!-- Data will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
@@ -437,18 +461,16 @@
                 <div class="mt-6 flex items-center justify-between">
                     <div class="text-sm text-gray-500" id="paginationInfo"></div>
                     <div class="flex space-x-2">
-                        <button onclick="changePage('prev')" class="px-3 py-1 border rounded-lg hover:bg-gray-50">
+                        <button onclick="changePage('prev')" class="px-3 py-1 border rounded-lg hover:bg-gray-50 transition">
                             <i class="fas fa-chevron-left"></i>
                         </button>
                         <span id="currentPage" class="px-3 py-1">1</span>
-                        <button onclick="changePage('next')" class="px-3 py-1 border rounded-lg hover:bg-gray-50">
+                        <button onclick="changePage('next')" class="px-3 py-1 border rounded-lg hover:bg-gray-50 transition">
                             <i class="fas fa-chevron-right"></i>
                         </button>
                     </div>
                 </div>
             </div>
-
-            <!-- Other tabs (jurnal, penelitian, etc) will use the same content but filtered -->
         </div>
     </main>
 
@@ -571,7 +593,7 @@
             <div class="p-6">
                 <div class="text-center">
                     <i class="fas fa-exclamation-triangle text-yellow-500 text-5xl mb-4"></i>
-                    <h3 class="text-lg font-bold text-gray-900 mb-2" id="confirmTitle">Konfirmasi</h3>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Konfirmasi</h3>
                     <p class="text-gray-600 mb-6" id="confirmMessage">Apakah Anda yakin ingin menghapus dokumen ini?</p>
                     <div class="flex justify-center space-x-3">
                         <button onclick="closeConfirmModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
@@ -601,10 +623,102 @@
         </div>
     </div>
 
+    <!-- Modal Konfirmasi Logout -->
+    <div id="confirmLogoutModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50 flex items-center justify-center">
+        <div class="relative bg-white rounded-lg shadow-xl w-11/12 md:w-1/3">
+            <div class="p-6">
+                <div class="text-center">
+                    <i class="fas fa-exclamation-triangle text-yellow-500 text-5xl mb-4"></i>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Konfirmasi Logout</h3>
+                    <p class="text-gray-600 mb-6">Apakah Anda yakin ingin logout?</p>
+                    <div class="flex justify-center space-x-3">
+                        <button onclick="closeLogoutModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
+                            Batal
+                        </button>
+                        <button onclick="performLogout()" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+                            Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        // Initialize AOS
+        // ==================== INITIALIZATION ====================
         AOS.init({ duration: 800, once: true });
+
+        // ==================== AUTHENTICATION & LOGOUT ====================
+        // Cek autentikasi
+        let token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = '../login.html';
+        }
+
+        // Set user name
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        document.getElementById('userName').textContent = user.nama_lengkap || 'Admin LPPM';
+
+        // Handle logout function
+        function handleLogout() {
+            // Gunakan SweetAlert
+            Swal.fire({
+                title: 'Konfirmasi Logout',
+                text: 'Apakah Anda yakin ingin logout?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Logout',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    performLogout();
+                }
+            });
+        }
+
+        function closeLogoutModal() {
+            document.getElementById('confirmLogoutModal').classList.add('hidden');
+        }
+
+        function performLogout() {
+            // Hapus token dan user data dari localStorage
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            
+            // Redirect ke halaman login
+            window.location.href = '../login.html';
+        }
+
+        // Fungsi untuk mengecek session expiry
+        function checkSession() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '../login.html';
+                return;
+            }
+            
+            // Decode token untuk cek expiry
+            try {
+                const base64Url = token.split('.')[1];
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                const payload = JSON.parse(window.atob(base64));
+                
+                // Cek if token expired
+                if (payload.exp && payload.exp < Date.now() / 1000) {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    window.location.href = '../login.html?session=expired';
+                }
+            } catch (e) {
+                console.error('Error checking session:', e);
+            }
+        }
+
+        // Panggil checkSession setiap 5 menit
+        setInterval(checkSession, 5 * 60 * 1000);
 
         // ==================== MOCK DATA ====================
         let documents = [
@@ -734,12 +848,6 @@
             document.getElementById('confirmModal').classList.add('hidden');
         }
 
-        function handleLogout() {
-            showConfirmation('Apakah Anda yakin ingin logout?', () => {
-                window.location.href = '../../login.html';
-            });
-        }
-
         function formatBytes(bytes, decimals = 2) {
             if (bytes === 0) return '0 Bytes';
             const k = 1024;
@@ -836,25 +944,35 @@
                 prosiding: 'Prosiding'
             };
             
-            document.getElementById('kategoriPopuler').textContent = categoryNames[maxCategory] || 'Jurnal';
+            const maxCount = categoryCount[maxCategory];
+            const total = documents.length;
+            const percentage = total > 0 ? Math.round((maxCount / total) * 100) : 0;
             
-            // Simulate storage usage (random for demo)
+            document.getElementById('kategoriPopuler').textContent = categoryNames[maxCategory] || 'Jurnal';
+            document.getElementById('popularCategoryPercentage').textContent = `${percentage}% dari total`;
+            
+            // Calculate storage usage
             const totalStorage = 5 * 1024 * 1024 * 1024; // 5GB
             const usedStorage = documents.reduce((sum, doc) => sum + (doc.filesize || 0), 0);
             const usedGB = (usedStorage / (1024 * 1024 * 1024)).toFixed(1);
-            const percentage = (usedStorage / totalStorage) * 100;
+            const percentageStorage = (usedStorage / totalStorage) * 100;
             
             document.getElementById('storageUsed').textContent = usedGB + ' GB';
-            document.getElementById('storageProgress').style.width = Math.min(percentage, 100) + '%';
+            document.getElementById('storageProgress').style.width = Math.min(percentageStorage, 100) + '%';
+            document.getElementById('storageInfo').textContent = `dari 5 GB total (${Math.min(percentageStorage, 100).toFixed(1)}% terpakai)`;
         }
 
         // ==================== FILTER FUNCTIONS ====================
         function applyFilters() {
-            currentFilter.search = document.getElementById('searchInput').value;
-            currentFilter.kategori = document.getElementById('kategoriFilter').value;
-            currentFilter.tahun = document.getElementById('tahunFilter').value;
-            currentPage = 1;
-            renderCurrentView();
+            showLoading();
+            setTimeout(() => {
+                currentFilter.search = document.getElementById('searchInput').value;
+                currentFilter.kategori = document.getElementById('kategoriFilter').value;
+                currentFilter.tahun = document.getElementById('tahunFilter').value;
+                currentPage = 1;
+                renderCurrentView();
+                hideLoading();
+            }, 500);
         }
 
         function filterByCategory(kategori) {
@@ -968,7 +1086,7 @@
                                     <i class="fas fa-eye ml-2 mr-1"></i> ${doc.views}
                                 </div>
                                 <div class="flex space-x-2">
-                                    <button onclick="previewDocument(${doc.id})" class="text-blue-600 hover:text-blue-800" title="Preview">
+                                    <button onclick="viewDetail(${doc.id})" class="text-blue-600 hover:text-blue-800" title="Detail">
                                         <i class="fas fa-eye"></i>
                                     </button>
                                     <button onclick="downloadDocument(${doc.id})" class="text-green-600 hover:text-green-800" title="Download">
@@ -1031,7 +1149,7 @@
                     <td class="px-6 py-4 text-sm text-gray-600">${doc.tahun}</td>
                     <td class="px-6 py-4 text-sm text-gray-600">${doc.downloads}</td>
                     <td class="px-6 py-4 text-center">
-                        <button onclick="previewDocument(${doc.id})" class="text-blue-600 hover:text-blue-900 mr-2" title="Preview">
+                        <button onclick="viewDetail(${doc.id})" class="text-blue-600 hover:text-blue-900 mr-2" title="Detail">
                             <i class="fas fa-eye"></i>
                         </button>
                         <button onclick="downloadDocument(${doc.id})" class="text-green-600 hover:text-green-900 mr-2" title="Download">
@@ -1066,10 +1184,11 @@
             
             if (direction === 'prev' && currentPage > 1) {
                 currentPage--;
+                renderCurrentView();
             } else if (direction === 'next' && currentPage < totalPages) {
                 currentPage++;
+                renderCurrentView();
             }
-            renderCurrentView();
         }
 
         // ==================== TAB FUNCTIONS ====================
@@ -1081,7 +1200,20 @@
             document.querySelectorAll('.tab-button').forEach(btn => {
                 btn.classList.remove('active', 'text-blue-600', 'border-blue-600');
             });
-            document.getElementById(`tab${tabId.charAt(0).toUpperCase() + tabId.slice(1)}Btn`).classList.add('active', 'text-blue-600', 'border-blue-600');
+            
+            const tabMap = {
+                'semua': 'tabSemuaBtn',
+                'jurnal': 'tabJurnalBtn',
+                'penelitian': 'tabPenelitianBtn',
+                'pengabdian': 'tabPengabdianBtn',
+                'buku': 'tabBukuBtn',
+                'haki': 'tabHakiBtn'
+            };
+            
+            const buttonId = tabMap[tabId];
+            if (buttonId) {
+                document.getElementById(buttonId).classList.add('active', 'text-blue-600', 'border-blue-600');
+            }
             
             renderCurrentView();
         }
@@ -1124,48 +1256,53 @@
                 return;
             }
 
-            if (id) {
-                // Update existing
-                const index = documents.findIndex(d => d.id === parseInt(id));
-                if (index !== -1) {
-                    documents[index] = {
-                        ...documents[index],
+            showLoading();
+
+            setTimeout(() => {
+                if (id) {
+                    // Update existing
+                    const index = documents.findIndex(d => d.id === parseInt(id));
+                    if (index !== -1) {
+                        documents[index] = {
+                            ...documents[index],
+                            judul,
+                            kategori,
+                            tahun,
+                            penulis,
+                            abstrak,
+                            doi,
+                            link,
+                            keywords
+                        };
+                    }
+                    showNotification('Dokumen berhasil diperbarui');
+                } else {
+                    // Add new
+                    const newDoc = {
+                        id: documents.length + 1,
                         judul,
+                        penulis,
                         kategori,
                         tahun,
-                        penulis,
                         abstrak,
                         doi,
                         link,
-                        keywords
+                        keywords,
+                        filename: 'document.pdf',
+                        filesize: 1024000,
+                        downloads: 0,
+                        views: 0,
+                        tanggal_upload: new Date().toISOString().split('T')[0]
                     };
+                    documents.push(newDoc);
+                    showNotification('Dokumen berhasil diupload');
                 }
-                showNotification('Dokumen berhasil diperbarui');
-            } else {
-                // Add new
-                const newDoc = {
-                    id: documents.length + 1,
-                    judul,
-                    penulis,
-                    kategori,
-                    tahun,
-                    abstrak,
-                    doi,
-                    link,
-                    keywords,
-                    filename: 'document.pdf',
-                    filesize: 1024000,
-                    downloads: 0,
-                    views: 0,
-                    tanggal_upload: new Date().toISOString().split('T')[0]
-                };
-                documents.push(newDoc);
-                showNotification('Dokumen berhasil diupload');
-            }
 
-            closeModal();
-            updateStats();
-            renderCurrentView();
+                closeModal();
+                updateStats();
+                renderCurrentView();
+                hideLoading();
+            }, 1000);
         }
 
         function editDocument(id) {
@@ -1190,35 +1327,15 @@
 
         function confirmDelete(id) {
             showConfirmation('Apakah Anda yakin ingin menghapus dokumen ini?', () => {
-                documents = documents.filter(d => d.id !== id);
-                updateStats();
-                renderCurrentView();
-                showNotification('Dokumen berhasil dihapus');
+                showLoading();
+                setTimeout(() => {
+                    documents = documents.filter(d => d.id !== id);
+                    updateStats();
+                    renderCurrentView();
+                    showNotification('Dokumen berhasil dihapus');
+                    hideLoading();
+                }, 500);
             });
-        }
-
-        function previewDocument(id) {
-            const doc = documents.find(d => d.id === id);
-            if (!doc) return;
-
-            // Simulate PDF preview
-            document.getElementById('pdfModalTitle').textContent = doc.judul;
-            document.getElementById('pdfViewer').src = `https://docs.google.com/viewer?url=example.com/${doc.filename}&embedded=true`;
-            document.getElementById('pdfModal').classList.remove('hidden');
-        }
-
-        function closePdfModal() {
-            document.getElementById('pdfModal').classList.add('hidden');
-            document.getElementById('pdfViewer').src = '';
-        }
-
-        function downloadDocument(id) {
-            const doc = documents.find(d => d.id === id);
-            if (!doc) return;
-
-            // Increment download count
-            doc.downloads = (doc.downloads || 0) + 1;
-            showNotification(`Mengunduh: ${doc.filename}`, 'success');
         }
 
         function viewDetail(id) {
@@ -1300,6 +1417,16 @@
             document.getElementById('detailModal').classList.add('hidden');
         }
 
+        function downloadDocument(id) {
+            const doc = documents.find(d => d.id === id);
+            if (!doc) return;
+
+            // Increment download count
+            doc.downloads = (doc.downloads || 0) + 1;
+            showNotification(`Mengunduh: ${doc.filename}`, 'success');
+            updateStats();
+        }
+
         // ==================== INITIALIZATION ====================
         document.addEventListener('DOMContentLoaded', () => {
             updateStats();
@@ -1309,9 +1436,13 @@
             document.getElementById('gridViewBtn').classList.add('bg-pink-100', 'text-pink-600');
         });
 
-        // Search on input
+        // Search on input with debounce
+        let searchTimeout;
         document.getElementById('searchInput').addEventListener('input', () => {
-            applyFilters();
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                applyFilters();
+            }, 500);
         });
 
         // Close modals when clicking outside
@@ -1336,6 +1467,12 @@
         document.getElementById('confirmModal').addEventListener('click', (e) => {
             if (e.target === document.getElementById('confirmModal')) {
                 closeConfirmModal();
+            }
+        });
+
+        document.getElementById('confirmLogoutModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('confirmLogoutModal')) {
+                closeLogoutModal();
             }
         });
     </script>

@@ -138,6 +138,28 @@
             100% { transform: rotate(360deg); }
         }
 
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .loading-spinner-custom {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3B82F6;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+
         /* Welcome Banner */
         .welcome-banner {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -171,9 +193,9 @@
 </head>
 <body class="bg-gray-50 font-sans antialiased">
     <!-- Loading Overlay -->
-    <div id="loadingOverlay" class="fixed inset-0 bg-white bg-opacity-90 z-50 flex items-center justify-center hidden">
+    <div id="loadingOverlay" class="loading-overlay hidden">
         <div class="text-center">
-            <div class="loading-spinner"></div>
+            <div class="loading-spinner-custom mx-auto"></div>
             <p class="mt-4 text-gray-600">Memuat data dashboard...</p>
         </div>
     </div>
@@ -234,7 +256,7 @@
                 <div class="relative">
                     <button onclick="toggleUserMenu()" class="flex items-center space-x-2 focus:outline-none">
                         <img src="https://ui-avatars.com/api/?name=Admin+LPPM&background=3B82F6&color=fff" alt="Profile" class="h-8 w-8 rounded-full">
-                        <span class="text-sm text-gray-600 hidden sm:block">Admin LPPM</span>
+                        <span class="text-sm text-gray-600 hidden sm:block" id="userName">Admin LPPM</span>
                         <i class="fas fa-chevron-down text-xs text-gray-500"></i>
                     </button>
                     <!-- User Dropdown -->
@@ -261,18 +283,10 @@
             <!-- Welcome Banner -->
             <div class="welcome-banner mb-8" data-aos="fade-down">
                 <div class="relative z-10">
-                    <h2 class="text-3xl font-bold mb-2">Selamat Datang kembali, Admin!</h2>
-                    <p class="text-lg opacity-90 mb-4">Kamis, 4 Maret 2026</p>
-                    <div class="flex space-x-4">
-                        <span class="bg-white bg-opacity-20 rounded-lg px-4 py-2 text-sm">
-                            <i class="fas fa-newspaper mr-2"></i> 24 Berita
-                        </span>
-                        <span class="bg-white bg-opacity-20 rounded-lg px-4 py-2 text-sm">
-                            <i class="fas fa-calendar mr-2"></i> 5 Kegiatan Aktif
-                        </span>
-                        <span class="bg-white bg-opacity-20 rounded-lg px-4 py-2 text-sm">
-                            <i class="fas fa-file-alt mr-2"></i> 112 Dokumen
-                        </span>
+                    <h2 class="text-3xl font-bold mb-2" id="welcomeMessage">Selamat Datang kembali, <span id="adminName">Admin</span>!</h2>
+                    <p class="text-lg opacity-90 mb-4" id="currentDate">Kamis, 4 Maret 2026</p>
+                    <div class="flex space-x-4" id="welcomeStats">
+                        <!-- Stats will be loaded here -->
                     </div>
                 </div>
             </div>
@@ -289,14 +303,14 @@
                             <i class="fas fa-arrow-up"></i> +12%
                         </span>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-1" id="totalBerita">24</h3>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-1" id="totalBerita">0</h3>
                     <p class="text-gray-500 text-sm mb-3">Total Berita</p>
                     <div class="progress-bar">
-                        <div class="progress-fill" style="width: 75%"></div>
+                        <div class="progress-fill" id="beritaProgress" style="width: 0%"></div>
                     </div>
                     <div class="flex justify-between text-xs text-gray-500 mt-2">
-                        <span><i class="fas fa-check-circle text-green-500"></i> 18 Published</span>
-                        <span><i class="fas fa-clock text-yellow-500"></i> 6 Draft</span>
+                        <span><i class="fas fa-check-circle text-green-500"></i> <span id="beritaPublished">0</span> Published</span>
+                        <span><i class="fas fa-clock text-yellow-500"></i> <span id="beritaDraft">0</span> Draft</span>
                     </div>
                 </div>
 
@@ -310,20 +324,20 @@
                             <i class="fas fa-arrow-up"></i> +8%
                         </span>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-1" id="totalKegiatan">12</h3>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-1" id="totalKegiatan">0</h3>
                     <p class="text-gray-500 text-sm mb-3">Total Kegiatan</p>
                     <div class="flex justify-between text-sm">
                         <div>
                             <p class="text-xs text-gray-500">Akan Datang</p>
-                            <p class="font-semibold" id="kegiatanUpcoming">5</p>
+                            <p class="font-semibold" id="kegiatanUpcoming">0</p>
                         </div>
                         <div>
                             <p class="text-xs text-gray-500">Berlangsung</p>
-                            <p class="font-semibold" id="kegiatanOngoing">3</p>
+                            <p class="font-semibold" id="kegiatanOngoing">0</p>
                         </div>
                         <div>
                             <p class="text-xs text-gray-500">Selesai</p>
-                            <p class="font-semibold" id="kegiatanCompleted">4</p>
+                            <p class="font-semibold" id="kegiatanCompleted">0</p>
                         </div>
                     </div>
                 </div>
@@ -338,16 +352,16 @@
                             <i class="fas fa-arrow-up"></i> +15%
                         </span>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-1" id="totalDokumen">112</h3>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-1" id="totalDokumen">0</h3>
                     <p class="text-gray-500 text-sm mb-3">Dokumen Repository</p>
                     <div class="flex justify-between text-sm">
                         <div>
                             <p class="text-xs text-gray-500">Downloads</p>
-                            <p class="font-semibold" id="totalDownloads">1,234</p>
+                            <p class="font-semibold" id="totalDownloads">0</p>
                         </div>
                         <div>
                             <p class="text-xs text-gray-500">Views</p>
-                            <p class="font-semibold" id="totalViews">2,567</p>
+                            <p class="font-semibold" id="totalViews">0</p>
                         </div>
                     </div>
                 </div>
@@ -362,46 +376,46 @@
                             <i class="fas fa-arrow-up"></i> +5%
                         </span>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-1" id="totalProgram">3</h3>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-1" id="totalProgram">0</h3>
                     <p class="text-gray-500 text-sm mb-3">Program Berjalan</p>
                     <div class="flex justify-between text-sm">
                         <div>
                             <p class="text-xs text-gray-500">Pendaftar</p>
-                            <p class="font-semibold" id="totalPendaftar">45</p>
+                            <p class="font-semibold" id="totalPendaftar">0</p>
                         </div>
                         <div>
                             <p class="text-xs text-gray-500">Kuota</p>
-                            <p class="font-semibold" id="totalKuota">60</p>
+                            <p class="font-semibold" id="totalKuota">0</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Charts Row - Perbaikan dengan height yang lebih proporsional -->
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-    <!-- Aktivitas Bulanan Chart -->
-    <div class="bg-white rounded-xl shadow-lg p-6" data-aos="fade-up" data-aos-delay="500">
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="text-lg font-semibold text-gray-800">Aktivitas Bulanan</h3>
-            <select id="yearSelect" class="text-sm border rounded-lg px-2 py-1" onchange="updateMonthlyChart()">
-                <option value="2024">2024</option>
-                <option value="2023">2023</option>
-                <option value="2022">2022</option>
-            </select>
-        </div>
-        <div style="height: 250px; position: relative;">
-            <canvas id="monthlyChart"></canvas>
-        </div>
-    </div>
+            <!-- Charts Row -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <!-- Aktivitas Bulanan Chart -->
+                <div class="bg-white rounded-xl shadow-lg p-6" data-aos="fade-up" data-aos-delay="500">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold text-gray-800">Aktivitas Bulanan</h3>
+                        <select id="yearSelect" class="text-sm border rounded-lg px-2 py-1" onchange="updateMonthlyChart()">
+                            <option value="2024">2024</option>
+                            <option value="2023">2023</option>
+                            <option value="2022">2022</option>
+                        </select>
+                    </div>
+                    <div style="height: 250px; position: relative;">
+                        <canvas id="monthlyChart"></canvas>
+                    </div>
+                </div>
 
-    <!-- Distribusi Kategori Chart -->
-    <div class="bg-white rounded-xl shadow-lg p-6" data-aos="fade-up" data-aos-delay="600">
-        <h3 class="text-lg font-semibold text-gray-800 mb-4">Distribusi Kategori</h3>
-        <div style="height: 250px; position: relative;">
-            <canvas id="categoryChart"></canvas>
-        </div>
-    </div>
-</div>
+                <!-- Distribusi Kategori Chart -->
+                <div class="bg-white rounded-xl shadow-lg p-6" data-aos="fade-up" data-aos-delay="600">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Distribusi Kategori</h3>
+                    <div style="height: 250px; position: relative;">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                </div>
+            </div>
 
             <!-- Quick Actions -->
             <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-8" data-aos="fade-up" data-aos-delay="700">
@@ -453,6 +467,7 @@
                     </div>
                     <div class="space-y-4" id="activityTimeline">
                         <!-- Activities will be loaded here -->
+                        <div class="text-center text-gray-500 py-4">Memuat aktivitas...</div>
                     </div>
                 </div>
 
@@ -460,10 +475,11 @@
                 <div class="bg-white rounded-xl shadow-lg p-6" data-aos="fade-up" data-aos-delay="900">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-lg font-semibold text-gray-800">Tugas Perlu Ditindaklanjuti</h3>
-                        <span class="bg-red-100 text-red-600 text-xs font-semibold px-2 py-1 rounded-full" id="pendingCount">5</span>
+                        <span class="bg-red-100 text-red-600 text-xs font-semibold px-2 py-1 rounded-full" id="pendingCount">0</span>
                     </div>
                     <div class="space-y-3" id="pendingTasks">
                         <!-- Tasks will be loaded here -->
+                        <div class="text-center text-gray-500 py-4">Memuat tugas...</div>
                     </div>
                 </div>
             </div>
@@ -471,19 +487,19 @@
             <!-- Footer Stats -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8" data-aos="fade-up" data-aos-delay="1000">
                 <div class="text-center">
-                    <p class="text-2xl font-bold text-gray-800" id="todayVisitors">147</p>
+                    <p class="text-2xl font-bold text-gray-800" id="todayVisitors">0</p>
                     <p class="text-xs text-gray-500">Pengunjung Hari Ini</p>
                 </div>
                 <div class="text-center">
-                    <p class="text-2xl font-bold text-gray-800" id="weeklyVisitors">892</p>
+                    <p class="text-2xl font-bold text-gray-800" id="weeklyVisitors">0</p>
                     <p class="text-xs text-gray-500">Pengunjung Minggu Ini</p>
                 </div>
                 <div class="text-center">
-                    <p class="text-2xl font-bold text-gray-800" id="monthlyVisitors">3.2k</p>
+                    <p class="text-2xl font-bold text-gray-800" id="monthlyVisitors">0</p>
                     <p class="text-xs text-gray-500">Pengunjung Bulan Ini</p>
                 </div>
                 <div class="text-center">
-                    <p class="text-2xl font-bold text-gray-800" id="totalVisitors">15.8k</p>
+                    <p class="text-2xl font-bold text-gray-800" id="totalVisitors">0</p>
                     <p class="text-xs text-gray-500">Total Pengunjung</p>
                 </div>
             </div>
@@ -502,7 +518,7 @@
                         <button onclick="closeLogoutModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
                             Batal
                         </button>
-                        <button onclick="logout()" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+                        <button onclick="performLogout()" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
                             Ya, Logout
                         </button>
                     </div>
@@ -513,8 +529,49 @@
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        // Initialize AOS
+        // ==================== INITIALIZATION ====================
         AOS.init({ duration: 800, once: true });
+
+        // ==================== AUTHENTICATION & LOGOUT ====================
+        // Cek autentikasi
+        let token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = '../login.html';
+        }
+
+        // Set user name
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        const adminName = user.nama_lengkap || 'Admin LPPM';
+        document.getElementById('userName').textContent = adminName;
+        document.getElementById('adminName').textContent = adminName.split(' ')[0]; // First name only for welcome
+
+        // Fungsi untuk mengecek session expiry
+        function checkSession() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '../login.html';
+                return;
+            }
+            
+            // Decode token untuk cek expiry
+            try {
+                const base64Url = token.split('.')[1];
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                const payload = JSON.parse(window.atob(base64));
+                
+                // Cek if token expired
+                if (payload.exp && payload.exp < Date.now() / 1000) {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    window.location.href = '../login.html?session=expired';
+                }
+            } catch (e) {
+                console.error('Error checking session:', e);
+            }
+        }
+
+        // Panggil checkSession setiap 5 menit
+        setInterval(checkSession, 5 * 60 * 1000);
 
         // ==================== MOCK DATA ====================
         const dashboardData = {
@@ -631,31 +688,68 @@
 
         // ==================== INITIALIZATION ====================
         document.addEventListener('DOMContentLoaded', function() {
-            updateStats();
-            renderActivities();
-            renderPendingTasks();
-            renderNotifications();
-            initCharts();
+            showLoading();
+            
+            // Simulate API call
+            setTimeout(() => {
+                updateStats();
+                renderActivities();
+                renderPendingTasks();
+                renderNotifications();
+                updateWelcomeStats();
+                initCharts();
+                updateWelcomeDate();
+                hideLoading();
+            }, 1000);
         });
 
         // ==================== STATS FUNCTIONS ====================
         function updateStats() {
+            // Berita stats
             document.getElementById('totalBerita').textContent = dashboardData.berita.total;
+            document.getElementById('beritaPublished').textContent = dashboardData.berita.published;
+            document.getElementById('beritaDraft').textContent = dashboardData.berita.draft;
+            
+            // Berita progress (published percentage)
+            const beritaProgress = (dashboardData.berita.published / dashboardData.berita.total) * 100;
+            document.getElementById('beritaProgress').style.width = beritaProgress + '%';
+            
+            // Kegiatan stats
             document.getElementById('totalKegiatan').textContent = dashboardData.kegiatan.total;
             document.getElementById('kegiatanUpcoming').textContent = dashboardData.kegiatan.upcoming;
             document.getElementById('kegiatanOngoing').textContent = dashboardData.kegiatan.ongoing;
             document.getElementById('kegiatanCompleted').textContent = dashboardData.kegiatan.completed;
+            
+            // Repository stats
             document.getElementById('totalDokumen').textContent = dashboardData.repository.total;
             document.getElementById('totalDownloads').textContent = dashboardData.repository.downloads.toLocaleString();
             document.getElementById('totalViews').textContent = dashboardData.repository.views.toLocaleString();
+            
+            // Program stats
             document.getElementById('totalProgram').textContent = dashboardData.program.total;
             document.getElementById('totalPendaftar').textContent = dashboardData.program.pendaftar;
             document.getElementById('totalKuota').textContent = dashboardData.program.kuota;
             
+            // Visitor stats
             document.getElementById('todayVisitors').textContent = dashboardData.visitors.today.toLocaleString();
             document.getElementById('weeklyVisitors').textContent = dashboardData.visitors.weekly.toLocaleString();
-            document.getElementById('monthlyVisitors').textContent = dashboardData.visitors.monthly.toLocaleString() + 'k';
-            document.getElementById('totalVisitors').textContent = dashboardData.visitors.total.toLocaleString() + 'k';
+            document.getElementById('monthlyVisitors').textContent = (dashboardData.visitors.monthly / 1000).toFixed(1) + 'k';
+            document.getElementById('totalVisitors').textContent = (dashboardData.visitors.total / 1000).toFixed(1) + 'k';
+        }
+
+        function updateWelcomeStats() {
+            const welcomeStats = document.getElementById('welcomeStats');
+            welcomeStats.innerHTML = `
+                <span class="bg-white bg-opacity-20 rounded-lg px-4 py-2 text-sm">
+                    <i class="fas fa-newspaper mr-2"></i> ${dashboardData.berita.total} Berita
+                </span>
+                <span class="bg-white bg-opacity-20 rounded-lg px-4 py-2 text-sm">
+                    <i class="fas fa-calendar mr-2"></i> ${dashboardData.kegiatan.ongoing} Kegiatan Aktif
+                </span>
+                <span class="bg-white bg-opacity-20 rounded-lg px-4 py-2 text-sm">
+                    <i class="fas fa-file-alt mr-2"></i> ${dashboardData.repository.total} Dokumen
+                </span>
+            `;
         }
 
         // ==================== ACTIVITIES FUNCTIONS ====================
@@ -697,7 +791,8 @@
                 </div>
             `).join('');
             
-            document.getElementById('pendingCount').textContent = dashboardData.pendingTasks.reduce((sum, task) => sum + task.count, 0);
+            const totalPending = dashboardData.pendingTasks.reduce((sum, task) => sum + task.count, 0);
+            document.getElementById('pendingCount').textContent = totalPending;
         }
 
         // ==================== NOTIFICATION FUNCTIONS ====================
@@ -732,7 +827,7 @@
             dashboardData.notifications.forEach(n => n.read = true);
             renderNotifications();
             document.getElementById('notificationDropdown').classList.add('hidden');
-            showNotification('Semua notifikasi telah ditandai dibaca');
+            showNotification('Semua notifikasi telah ditandai dibaca', 'success');
         }
 
         // ==================== USER MENU FUNCTIONS ====================
@@ -748,11 +843,11 @@
             const notificationBell = event.target.closest('[onclick="toggleNotifications()"]');
             const userMenu = event.target.closest('[onclick="toggleUserMenu()"]');
             
-            if (!notificationBell && !notificationDropdown.contains(event.target)) {
+            if (!notificationBell && notificationDropdown && !notificationDropdown.contains(event.target)) {
                 notificationDropdown.classList.add('hidden');
             }
             
-            if (!userMenu && !userDropdown.contains(event.target)) {
+            if (!userMenu && userDropdown && !userDropdown.contains(event.target)) {
                 userDropdown.classList.add('hidden');
             }
         });
@@ -848,8 +943,7 @@
 
         function updateMonthlyChart() {
             const year = document.getElementById('yearSelect').value;
-            // In real application, fetch data for selected year
-            showNotification(`Menampilkan data tahun ${year}`);
+            showNotification(`Menampilkan data tahun ${year}`, 'info');
         }
 
         // ==================== QUICK ACTIONS ====================
@@ -913,33 +1007,39 @@
 
         // ==================== LOGOUT FUNCTIONS ====================
         function handleLogout() {
-            document.getElementById('confirmLogoutModal').classList.remove('hidden');
+            // Gunakan SweetAlert
+            Swal.fire({
+                title: 'Konfirmasi Logout',
+                text: 'Apakah Anda yakin ingin keluar dari sistem?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Logout',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    performLogout();
+                }
+            });
         }
 
         function closeLogoutModal() {
             document.getElementById('confirmLogoutModal').classList.add('hidden');
         }
 
-        function logout() {
-    showLoading();
-    setTimeout(() => {
-        window.location.href = '../../login.html';
-    }, 1000);
-}
-
-        // Close modal when clicking outside
-        document.getElementById('confirmLogoutModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeLogoutModal();
-            }
-        });
-
-        // ==================== AUTO REFRESH (DEMO) ====================
-        // Refresh data every 5 minutes (in production, this would be a real API call)
-        setInterval(() => {
-            // Simulate data refresh
-            console.log('Refreshing dashboard data...');
-        }, 300000);
+        function performLogout() {
+            showLoading();
+            
+            // Hapus token dan user data dari localStorage
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            
+            // Redirect ke halaman login setelah 1 detik
+            setTimeout(() => {
+                window.location.href = '../login.html';
+            }, 1000);
+        }
 
         // ==================== WELCOME MESSAGE WITH DATE ====================
         function updateWelcomeDate() {
@@ -953,10 +1053,17 @@
             const year = now.getFullYear();
             
             const dateString = `${dayName}, ${date} ${month} ${year}`;
-            document.querySelector('.welcome-banner p').textContent = dateString;
+            document.getElementById('currentDate').textContent = dateString;
         }
 
-        updateWelcomeDate();
+        // ==================== AUTO REFRESH (DEMO) ====================
+        // Refresh data every 5 minutes (in production, this would be a real API call)
+        setInterval(() => {
+            // Simulate data refresh
+            console.log('Refreshing dashboard data...');
+            // Uncomment untuk refresh data real
+            // location.reload();
+        }, 300000);
     </script>
 </body>
 </html>
