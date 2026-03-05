@@ -17,8 +17,11 @@ const dosenKegiatanRoutes = require('./routes/dosen/kegiatanRoutes');
 const adminBeritaRoutes = require('./routes/admin/beritaRoutes');
 const adminKegiatanRoutes = require('./routes/admin/kegiatanRoutes');
 const dosenBeritaRoutes = require('./routes/dosen/beritaRoutes');
+const adminRepositoryRoutes = require('./routes/admin/repositoryRoutes');
 const app = express();
 const PORT = process.env.PORT || 3000;
+const mahasiswaBeritaRoutes = require('./routes/mahasiswa/beritaRoutes');
+const mahasiswaKegiatanRoutes = require('./routes/mahasiswa/kegiatanRoutes');
 
 // Middleware
 app.use(helmet({
@@ -44,6 +47,9 @@ app.use('/api/dosen/kegiatan', dosenKegiatanRoutes);
 app.use('/api/admin/berita', adminBeritaRoutes);
 app.use('/api/admin/kegiatan', adminKegiatanRoutes);
 app.use('/api/dosen/berita', dosenBeritaRoutes);
+app.use('/api/mahasiswa/berita', mahasiswaBeritaRoutes);
+app.use('/api/mahasiswa/kegiatan', mahasiswaKegiatanRoutes);
+app.use('/api/admin/repository', adminRepositoryRoutes);
 // Error handling middleware
 app.use((err, req, res, next) => {
     console.error(err.stack);
