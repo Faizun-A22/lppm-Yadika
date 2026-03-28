@@ -1,7 +1,7 @@
-// js/auth.js - Shared authentication functions
+// js/auth.js - Modified version
 
 const API_CONFIG = {
-    BASE_URL: 'http://localhost:3000' // Ganti dengan URL backend Anda
+    BASE_URL: 'http://localhost:3000'
 };
 
 // Get token from localStorage
@@ -12,14 +12,36 @@ function getToken() {
 // Get user data from localStorage
 function getUser() {
     const userStr = localStorage.getItem('user');
-    return userStr ? JSON.parse(userStr) : null;
+    if (!userStr) return null;
+    
+    const user = JSON.parse(userStr);
+    
+    // ✅ FIX: Normalize user data to have consistent field names
+    return {
+        id_user: user.id_user || user.id,
+        id: user.id || user.id_user,
+        nama_lengkap: user.nama_lengkap || user.name, // Support both field names
+        name: user.name || user.nama_lengkap,
+        email: user.email,
+        role: user.role,
+        nim: user.nim,
+        nidn: user.nidn,
+        no_hp: user.no_hp,
+        nama_prodi: user.nama_prodi || user.prodi,
+        prodi: user.prodi || user.nama_prodi,
+        nama_fakultas: user.nama_fakultas || user.fakultas,
+        fakultas: user.fakultas || user.nama_fakultas,
+        foto_profil: user.foto_profil,
+        // Keep original data
+        ...user
+    };
 }
 
 // Check if user is authenticated
 function isAuthenticated() {
     const token = getToken();
     const user = getUser();
-    return !!(token && user && user.id);
+    return !!(token && user && (user.id_user || user.id));
 }
 
 // Check authentication and redirect to login if not authenticated
@@ -92,14 +114,32 @@ async function apiCall(endpoint, options = {}) {
 // Save auth data after login
 function saveAuth(token, user) {
     localStorage.setItem('token', token);
+    // ✅ Store user data with both field formats for compatibility
     localStorage.setItem('user', JSON.stringify(user));
+    
+    // Also store normalized version for quick access
+    const normalizedUser = {
+        id_user: user.id || user.id_user,
+        id: user.id || user.id_user,
+        nama_lengkap: user.nama_lengkap || user.name,
+        name: user.name || user.nama_lengkap,
+        email: user.email,
+        role: user.role,
+        nim: user.nim,
+        nidn: user.nidn,
+        no_hp: user.no_hp,
+        nama_prodi: user.nama_prodi || user.prodi,
+        prodi: user.prodi || user.nama_prodi,
+        ...user
+    };
+    localStorage.setItem('userData', JSON.stringify(normalizedUser));
 }
 
 // Get user display name
 function getUserDisplayName() {
     const user = getUser();
     if (!user) return 'Pengguna';
-    return user.name || user.email || 'Pengguna';
+    return user.nama_lengkap || user.name || user.email || 'Pengguna';
 }
 
 // Check if token is expired
@@ -139,6 +179,30 @@ async function refreshToken() {
     return false;
 }
 
+// Get current user ID
+function getUserId() {
+    const user = getUser();
+    return user?.id_user || user?.id || null;
+}
+
+// Get user role
+function getUserRole() {
+    const user = getUser();
+    return user?.role || null;
+}
+
+// Debug function to check stored data
+function debugAuthData() {
+    console.log('=== Auth Debug ===');
+    console.log('Token:', getToken() ? `${getToken().substring(0, 20)}...` : 'null');
+    console.log('User from localStorage:', localStorage.getItem('user'));
+    console.log('Parsed user:', getUser());
+    console.log('User display name:', getUserDisplayName());
+    console.log('User ID:', getUserId());
+    console.log('User role:', getUserRole());
+    console.log('=================');
+}
+
 // Export functions to global window object
 window.auth = {
     getToken,
@@ -151,7 +215,10 @@ window.auth = {
     saveAuth,
     getUserDisplayName,
     isTokenExpired,
-    refreshToken
+    refreshToken,
+    getUserId,
+    getUserRole,
+    debugAuthData
 };
 
 // Auto-check token on page load
@@ -162,5 +229,11 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!isLoginPage && isAuthenticated() && isTokenExpired()) {
         // Try to refresh token or logout
         refreshToken().catch(() => logout());
+    }
+    
+    // Debug in development
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        console.log('Auth module loaded');
+        window.auth.debugAuthData();
     }
 });

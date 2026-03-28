@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Repository Karya Ilmiah - Portal Mahasiswa LPPM ITB Yadika</title>
+    <title>Repository Ilmiah - Digital Library LPPM ITB Yadika</title>
     
     <!-- CSS External Libraries -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -13,7 +13,7 @@
     <style>
         /* Custom CSS Styles */
         .gradient-text { 
-            background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%); 
+            background: linear-gradient(135deg, #2563EB 0%, #7C3AED 100%); 
             -webkit-background-clip: text; 
             -webkit-text-fill-color: transparent; 
             background-clip: text; 
@@ -31,7 +31,7 @@
             height: 2px; 
             bottom: -5px; 
             left: 50%; 
-            background-color: #3B82F6; 
+            background-color: #2563EB; 
             transition: all 0.3s ease; 
         }
         
@@ -42,14 +42,14 @@
         }
         
         .nav-link.active { 
-            color: #3B82F6; 
+            color: #2563EB; 
             font-weight: 600; 
         }
 
         /* Loading Spinner */
         .loading-spinner {
             border: 3px solid #f3f3f3;
-            border-top: 3px solid #3B82F6;
+            border-top: 3px solid #2563EB;
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -62,34 +62,158 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Category Badge Colors */
-        .badge-skripsi { background: #DBEAFE; color: #1E40AF; }
-        .badge-jurnal { background: #DCFCE7; color: #166534; }
-        .badge-laporan { background: #FEF3C7; color: #92400E; }
-        .badge-prosiding { background: #F3E8FF; color: #6B21A8; }
-        .badge-tesis { background: #FCE7F3; color: #9D174D; }
-
-        /* Border Left Colors */
-        .border-skripsi { border-left-color: #3B82F6; }
-        .border-jurnal { border-left-color: #10B981; }
-        .border-laporan { border-left-color: #F59E0B; }
-        .border-prosiding { border-left-color: #8B5CF6; }
-        .border-tesis { border-left-color: #EC4899; }
-
-        /* Hover Effects */
-        .repository-item {
-            transition: all 0.3s ease;
-        }
-        .repository-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        /* Google Scholar-like styles */
+        .search-container {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 3rem 0;
+            margin-top: -1rem;
         }
 
-        /* File Type Icons */
-        .file-pdf { color: #EF4444; }
-        .file-doc { color: #3B82F6; }
-        .file-ppt { color: #F59E0B; }
-        .file-zip { color: #8B5CF6; }
+        .scholar-header {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .citation-badge {
+            background: #e8f0fe;
+            color: #1a73e8;
+            font-size: 0.7rem;
+            padding: 0.15rem 0.5rem;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+
+        .author-link {
+            color: #1a73e8;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .author-link:hover {
+            text-decoration: underline;
+        }
+
+        .publication-meta {
+            color: #3c4043;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        .article-title {
+            color: #1a0dab;
+            font-size: 1.1rem;
+            font-weight: 500;
+            line-height: 1.3;
+            margin-bottom: 0.25rem;
+        }
+
+        .article-title:hover {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .article-snippet {
+            color: #4d5156;
+            font-size: 0.9rem;
+            line-height: 1.58;
+            margin: 0.25rem 0;
+        }
+
+        .article-footer a {
+            color: #1e7e34;
+            font-size: 0.85rem;
+            text-decoration: none;
+            margin-right: 1rem;
+        }
+
+        .article-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .article-footer i {
+            margin-right: 0.25rem;
+            font-size: 0.8rem;
+        }
+
+        .cited-by {
+            color: #1e7e34 !important;
+        }
+
+        .related-articles {
+            color: #1a73e8 !important;
+        }
+
+        .search-result-item {
+            padding: 1rem 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .metrics-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1rem;
+            transition: all 0.2s;
+        }
+
+        .metrics-card:hover {
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        .filter-section {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .filter-title {
+            font-weight: 600;
+            color: #202124;
+            font-size: 0.95rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .filter-option {
+            display: flex;
+            align-items: center;
+            padding: 0.25rem 0;
+            color: #3c4043;
+            font-size: 0.9rem;
+        }
+
+        .filter-option input[type="checkbox"] {
+            margin-right: 0.5rem;
+        }
+
+        .filter-option .count {
+            color: #70757a;
+            font-size: 0.8rem;
+            margin-left: auto;
+        }
+
+        .year-slider {
+            width: 100%;
+            margin: 0.5rem 0;
+        }
+
+        .year-range {
+            display: flex;
+            justify-content: space-between;
+            color: #70757a;
+            font-size: 0.8rem;
+        }
+
+        .badge-skripsi { background: #e8f0fe; color: #1a73e8; }
+        .badge-jurnal { background: #e6f4ea; color: #1e7e34; }
+        .badge-laporan { background: #fef7e0; color: #b06000; }
+        .badge-prosiding { background: #f3e8ff; color: #7c3aed; }
+        .badge-tesis { background: #fce4e8; color: #c2185b; }
     </style>
 </head>
 <body class="bg-gray-50 font-sans antialiased">
@@ -101,12 +225,12 @@
         </div>
     </div>
 
-    <!-- Header / Navigation Bar -->
+    <!-- Header / Navigation Bar (UNCHANGED) -->
     <header class="fixed top-0 left-0 right-0 bg-white shadow-md z-50">
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
             <!-- Logo and Brand -->
             <a href="mahasiswa-dashboard.html" class="flex items-center space-x-3">
-                <img src="../images/logoyadika.png" alt="Logo LPPM ITB Yadika" class="h-10 w-10">
+                <img src="yadika.png" alt="Logo LPPM ITB Yadika" class="h-10 w-10">
                 <div>
                     <h1 class="text-xl font-bold gradient-text">Portal Mahasiswa</h1>
                     <p class="text-xs text-gray-500">LPPM ITB Yadika</p>
@@ -148,142 +272,256 @@
 
     <!-- Main Content Area -->
     <main class="pt-20">
-        <div class="container mx-auto px-6 py-8">
-            <!-- Page Header -->
-            <header class="mb-8" data-aos="fade-down">
-                <h2 class="text-3xl font-bold text-gray-800">Repository Karya Ilmiah</h2>
-                <p class="text-gray-600">Jelajahi, pelajari, dan dapatkan inspirasi dari karya ilmiah mahasiswa.</p>
-            </header>
-
-            <!-- Statistics Cards -->
-            <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8" data-aos="fade-up" data-aos-delay="50">
-                <div class="bg-white rounded-lg shadow p-4 text-center">
-                    <p class="text-2xl font-bold text-blue-600" id="totalDocs">0</p>
-                    <p class="text-xs text-gray-500">Total Dokumen</p>
-                </div>
-                <div class="bg-white rounded-lg shadow p-4 text-center">
-                    <p class="text-2xl font-bold text-green-600" id="totalSkripsi">0</p>
-                    <p class="text-xs text-gray-500">Skripsi</p>
-                </div>
-                <div class="bg-white rounded-lg shadow p-4 text-center">
-                    <p class="text-2xl font-bold text-yellow-600" id="totalJurnal">0</p>
-                    <p class="text-xs text-gray-500">Jurnal</p>
-                </div>
-                <div class="bg-white rounded-lg shadow p-4 text-center">
-                    <p class="text-2xl font-bold text-purple-600" id="totalLaporan">0</p>
-                    <p class="text-xs text-gray-500">Laporan</p>
-                </div>
-                <div class="bg-white rounded-lg shadow p-4 text-center">
-                    <p class="text-2xl font-bold text-pink-600" id="totalProsiding">0</p>
-                    <p class="text-xs text-gray-500">Prosiding</p>
-                </div>
-            </div>
-
-            <!-- Search and Filter Bar -->
-            <div class="bg-white rounded-xl shadow-lg p-6 mb-6" data-aos="fade-up">
-                <form id="searchForm" onsubmit="event.preventDefault(); searchDocuments();">
-                    <div class="flex flex-col md:flex-row gap-4">
-                        <!-- Search Input -->
-                        <div class="relative flex-1">
-                            <input type="text" id="searchInput" placeholder="Cari berdasarkan judul, penulis, atau kata kunci..." 
-                                   class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                            <i class="fas fa-search absolute left-3 top-3.5 text-gray-400"></i>
+        <!-- Google Scholar-like Search Header -->
+        <div class="search-container">
+            <div class="container mx-auto px-6">
+                <div class="max-w-4xl mx-auto">
+                    <h1 class="text-3xl font-bold text-white mb-2" data-aos="fade-down">
+                        <i class="fas fa-graduation-cap mr-3"></i>Cendekia
+                    </h1>
+                    <p class="text-white text-opacity-90 mb-6" data-aos="fade-down" data-aos-delay="50">
+                        Telusuri karya ilmiah, skripsi, tesis, dan publikasi mahasiswa ITB Yadika
+                    </p>
+                    
+                    <!-- Search Bar -->
+                    <form id="searchForm" onsubmit="event.preventDefault(); searchDocuments();" data-aos="fade-up">
+                        <div class="flex gap-2">
+                            <div class="relative flex-1">
+                                <input type="text" id="searchInput" 
+                                       placeholder="Cari judul, penulis, atau kata kunci..." 
+                                       class="w-full px-6 py-4 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300 text-lg">
+                                <i class="fas fa-search absolute right-4 top-4 text-gray-400 text-xl"></i>
+                            </div>
+                            <button type="submit" class="bg-blue-700 text-white px-8 py-4 rounded-lg hover:bg-blue-800 transition-colors font-medium">
+                                Cari
+                            </button>
                         </div>
-                        
-                        <!-- Category Filter -->
-                        <select id="categoryFilter" class="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                            <option value="all">Semua Kategori</option>
-                            <option value="skripsi">Skripsi</option>
-                            <option value="jurnal">Jurnal</option>
-                            <option value="laporan">Laporan Penelitian</option>
-                            <option value="prosiding">Prosiding</option>
-                            <option value="tesis">Tesis</option>
-                        </select>
-                        
-                        <!-- Year Filter -->
-                        <select id="yearFilter" class="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                            <option value="all">Semua Tahun</option>
-                        </select>
-                        
-                        <!-- Search Button -->
-                        <button type="submit" class="bg-blue-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center">
-                            <i class="fas fa-search mr-2"></i>Cari
-                        </button>
-                        
-                        <!-- Reset Button -->
-                        <button type="button" onclick="resetFilters()" class="bg-gray-200 text-gray-700 font-bold py-3 px-6 rounded-lg hover:bg-gray-300 transition-colors">
-                            <i class="fas fa-redo-alt mr-2"></i>Reset
+                    </form>
+
+                    <!-- Advanced Search Link -->
+                    <div class="mt-3 text-right">
+                        <button onclick="toggleAdvancedSearch()" class="text-white text-sm hover:underline">
+                            <i class="fas fa-chevron-down mr-1"></i>Pencarian Lanjutan
                         </button>
                     </div>
-                </form>
 
-                <!-- Active Filters -->
-                <div id="activeFilters" class="mt-3 flex flex-wrap gap-2 hidden">
-                    <span class="text-sm text-gray-500 mr-2">Filter aktif:</span>
+                    <!-- Advanced Search Panel -->
+                    <div id="advancedSearch" class="mt-4 bg-white bg-opacity-10 rounded-lg p-4 hidden">
+                        <div class="grid md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-white text-sm mb-1">Kategori</label>
+                                <select id="categoryFilter" class="w-full px-3 py-2 rounded text-gray-700">
+                                    <option value="all">Semua Kategori</option>
+                                    <option value="skripsi">Skripsi</option>
+                                    <option value="jurnal">Jurnal</option>
+                                    <option value="laporan">Laporan Penelitian</option>
+                                    <option value="prosiding">Prosiding</option>
+                                    <option value="tesis">Tesis</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-white text-sm mb-1">Tahun</label>
+                                <select id="yearFilter" class="w-full px-3 py-2 rounded text-gray-700">
+                                    <option value="all">Semua Tahun</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-white text-sm mb-1">Urutkan</label>
+                                <select id="sortSelect" onchange="sortDocuments()" class="w-full px-3 py-2 rounded text-gray-700">
+                                    <option value="terbaru">Terbaru</option>
+                                    <option value="terlama">Terlama</option>
+                                    <option value="judul-asc">Judul A-Z</option>
+                                    <option value="popular">Terpopuler</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Sort Options -->
-            <div class="flex justify-between items-center mb-4" data-aos="fade-up">
-                <p class="text-sm text-gray-500" id="resultCount">Menampilkan 0 dokumen</p>
-                <div class="flex items-center space-x-2">
-                    <label class="text-sm text-gray-600">Urutkan:</label>
-                    <select id="sortSelect" onchange="sortDocuments()" class="text-sm border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500">
-                        <option value="terbaru">Terbaru</option>
-                        <option value="terlama">Terlama</option>
-                        <option value="judul-asc">Judul A-Z</option>
-                        <option value="judul-desc">Judul Z-A</option>
-                        <option value="penulis-asc">Penulis A-Z</option>
-                        <option value="popular">Terpopuler</option>
-                    </select>
+        <div class="container mx-auto px-6 py-8">
+            <div class="flex flex-col lg:flex-row gap-8">
+                <!-- Sidebar Filters -->
+                <div class="lg:w-64" data-aos="fade-right">
+                    <div class="filter-section sticky top-24">
+                        <div class="mb-6">
+                            <h3 class="filter-title">
+                                <i class="fas fa-filter mr-2 text-blue-600"></i>Filter
+                            </h3>
+                            <button onclick="resetFilters()" class="text-sm text-blue-600 hover:underline">
+                                Reset semua filter
+                            </button>
+                        </div>
+
+                        <!-- Tahun Filter -->
+                        <div class="mb-6">
+                            <h4 class="font-medium text-gray-700 mb-2">Tahun</h4>
+                            <div class="space-y-2" id="yearCheckboxes">
+                                <!-- Year checkboxes will be loaded here -->
+                            </div>
+                        </div>
+
+                        <!-- Kategori Filter -->
+                        <div class="mb-6">
+                            <h4 class="font-medium text-gray-700 mb-2">Kategori</h4>
+                            <div class="space-y-2" id="categoryCheckboxes">
+                                <label class="filter-option">
+                                    <input type="checkbox" value="skripsi" onchange="filterByCategory('skripsi')">
+                                    <span>Skripsi</span>
+                                    <span class="count" id="countSkripsi">0</span>
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" value="jurnal" onchange="filterByCategory('jurnal')">
+                                    <span>Jurnal</span>
+                                    <span class="count" id="countJurnal">0</span>
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" value="laporan" onchange="filterByCategory('laporan')">
+                                    <span>Laporan</span>
+                                    <span class="count" id="countLaporan">0</span>
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" value="prosiding" onchange="filterByCategory('prosiding')">
+                                    <span>Prosiding</span>
+                                    <span class="count" id="countProsiding">0</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Rentang Tahun -->
+                        <div class="mb-6">
+                            <h4 class="font-medium text-gray-700 mb-2">Rentang Tahun</h4>
+                            <input type="range" min="2010" max="2024" value="2024" class="year-slider" id="yearRange">
+                            <div class="year-range">
+                                <span>2010</span>
+                                <span>2024</span>
+                            </div>
+                        </div>
+
+                        <!-- Penulis Filter -->
+                        <div>
+                            <h4 class="font-medium text-gray-700 mb-2">Penulis Teratas</h4>
+                            <div class="space-y-2" id="topAuthors">
+                                <!-- Top authors will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Results List -->
-            <div id="resultsContainer" class="space-y-4" data-aos="fade-up" data-aos-delay="100">
-                <!-- Repository items will be loaded here dynamically -->
-                <div class="text-center py-12">
-                    <div class="loading-spinner"></div>
-                    <p class="mt-4 text-gray-600">Memuat repository...</p>
+                <!-- Main Content -->
+                <div class="flex-1">
+                    <!-- Stats Bar -->
+                    <div class="bg-white rounded-lg shadow-sm p-4 mb-6 flex justify-between items-center" data-aos="fade-up">
+                        <div>
+                            <span class="text-gray-600" id="resultCount">0 hasil</span>
+                            <span class="text-gray-400 mx-2">(0.03 detik)</span>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <button class="text-gray-500 hover:text-blue-600" onclick="toggleSortMenu()">
+                                <i class="fas fa-sort-amount-down mr-1"></i>Urutkan
+                            </button>
+                            <button class="text-gray-500 hover:text-blue-600 lg:hidden" onclick="toggleMobileFilter()">
+                                <i class="fas fa-sliders-h"></i>Filter
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Results List -->
+                    <div id="resultsContainer" class="bg-white rounded-lg shadow-sm divide-y divide-gray-200" data-aos="fade-up">
+                        <!-- Results will be loaded here -->
+                    </div>
+
+                    <!-- Load More -->
+                    <div class="text-center mt-8" id="loadMoreContainer">
+                        <button onclick="loadMoreDocuments()" class="px-6 py-3 bg-white text-blue-600 rounded-lg hover:bg-gray-50 transition-colors shadow-sm border">
+                            <i class="fas fa-sync-alt mr-2"></i>Muat lebih banyak
+                        </button>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Load More Button -->
-            <div class="text-center mt-8" id="loadMoreContainer">
-                <button onclick="loadMoreDocuments()" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                    <i class="fas fa-sync-alt mr-2"></i>Muat Lebih Banyak
-                </button>
-            </div>
+                <!-- Right Sidebar - Stats & Info -->
+                <div class="lg:w-80" data-aos="fade-left">
+                    <!-- Statistics Cards -->
+                    <div class="bg-white rounded-lg shadow-sm p-5 mb-6">
+                        <h3 class="font-semibold text-gray-700 mb-4 flex items-center">
+                            <i class="fas fa-chart-bar mr-2 text-blue-600"></i>Statistik Repository
+                        </h3>
+                        
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600">Total Dokumen</span>
+                                <span class="font-bold text-gray-900" id="totalDocs">0</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600">Skripsi</span>
+                                <span class="font-bold text-blue-600" id="totalSkripsi">0</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600">Jurnal</span>
+                                <span class="font-bold text-green-600" id="totalJurnal">0</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600">Total Download</span>
+                                <span class="font-bold text-purple-600" id="totalDownloads">0</span>
+                            </div>
+                        </div>
 
-            <!-- Popular Tags -->
-            <div class="mt-12 bg-white rounded-xl shadow-lg p-6" data-aos="fade-up">
-                <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
-                    <i class="fas fa-tags mr-2 text-blue-500"></i>
-                    Topik Populer
-                </h3>
-                <div class="flex flex-wrap gap-2" id="popularTags">
-                    <!-- Tags will be loaded here -->
+                        <div class="mt-4 pt-4 border-t">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-500">H-Index</span>
+                                <span class="font-semibold">12</span>
+                            </div>
+                            <div class="flex justify-between text-sm mt-2">
+                                <span class="text-gray-500">i10-Index</span>
+                                <span class="font-semibold">15</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Topik Populer -->
+                    <div class="bg-white rounded-lg shadow-sm p-5 mb-6">
+                        <h3 class="font-semibold text-gray-700 mb-4 flex items-center">
+                            <i class="fas fa-fire mr-2 text-orange-500"></i>Topik Populer
+                        </h3>
+                        <div class="flex flex-wrap gap-2" id="popularTags">
+                            <!-- Popular tags will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Publikasi Terbaru -->
+                    <div class="bg-white rounded-lg shadow-sm p-5">
+                        <h3 class="font-semibold text-gray-700 mb-4 flex items-center">
+                            <i class="fas fa-clock mr-2 text-blue-600"></i>Publikasi Terbaru
+                        </h3>
+                        <div class="space-y-3" id="recentPublications">
+                            <!-- Recent publications will be loaded here -->
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- Document Preview Modal -->
+    <!-- Document Preview Modal (Google Scholar Style) -->
     <div id="previewModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
-            <div class="p-6 border-b flex justify-between items-center">
-                <h3 class="text-xl font-bold text-gray-800" id="modalTitle"></h3>
+        <div class="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-hidden">
+            <div class="p-6 border-b flex justify-between items-center bg-gray-50">
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-800" id="modalTitle"></h3>
+                    <p class="text-sm text-gray-500 mt-1" id="modalAuthors"></p>
+                </div>
                 <button onclick="closePreview()" class="text-gray-400 hover:text-gray-600">
-                    <i class="fas fa-times text-2xl"></i>
+                    <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
-            <div class="p-6 overflow-y-auto max-h-[calc(90vh-120px)]" id="modalContent">
+            <div class="p-6 overflow-y-auto max-h-[calc(90vh-140px)]" id="modalContent">
                 <!-- Modal content will be loaded here -->
             </div>
         </div>
     </div>
 
-    <!-- Success/Error Notification -->
+    <!-- Notification (UNCHANGED) -->
     <div id="notification" class="fixed bottom-4 right-4 z-50 hidden">
         <div class="bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center">
             <i class="fas fa-check-circle mr-2"></i>
@@ -291,7 +529,6 @@
         </div>
     </div>
 
-    <!-- Error Notification (Red) -->
     <div id="errorNotification" class="fixed bottom-4 right-4 z-50 hidden">
         <div class="bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center">
             <i class="fas fa-exclamation-circle mr-2"></i>
@@ -305,7 +542,7 @@
         // Initialize AOS
         AOS.init({ duration: 800, once: true });
 
-        // API Configuration (sama dengan dashboard)
+        // API Configuration
         const API_CONFIG = {
             BASE_URL: 'http://localhost:3000'
         };
@@ -320,7 +557,8 @@
             search: '',
             category: 'all',
             year: 'all',
-            sort: 'terbaru'
+            sort: 'terbaru',
+            yearRange: { start: 2010, end: 2024 }
         };
 
         // ============= UTILITY FUNCTIONS (SAMA DENGAN DASHBOARD) =============
@@ -341,7 +579,6 @@
             return userStr ? JSON.parse(userStr) : null;
         }
 
-        // Check Authentication (sama persis dengan dashboard)
         function checkAuth() {
             const token = getToken();
             const user = getUser();
@@ -360,14 +597,12 @@
             return true;
         }
 
-        // Logout Function (sama persis dengan dashboard)
         window.handleLogout = function() {
             localStorage.removeItem('token');
             localStorage.removeItem('user');
             window.location.href = '../login.html';
         };
 
-        // Get headers with authentication
         function getAuthHeaders() {
             const token = getToken();
             return {
@@ -376,7 +611,6 @@
             };
         }
 
-        // Update user info in header (sama dengan dashboard)
         function updateUserInfo() {
             const user = getUser();
             if (user) {
@@ -385,7 +619,6 @@
             }
         }
 
-        // Show success notification
         function showNotification(message) {
             const notification = document.getElementById('notification');
             const messageEl = document.getElementById('notificationMessage');
@@ -398,7 +631,6 @@
             }, 3000);
         }
 
-        // Show error notification
         function showError(message) {
             const errorNotification = document.getElementById('errorNotification');
             const errorMessage = document.getElementById('errorMessage');
@@ -411,7 +643,329 @@
             }, 3000);
         }
 
-        // ============= REPOSITORY-SPECIFIC FUNCTIONS =============
+        // ============= REPOSITORY FUNCTIONS =============
+
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+
+        // Toggle advanced search
+        window.toggleAdvancedSearch = function() {
+            const panel = document.getElementById('advancedSearch');
+            panel.classList.toggle('hidden');
+        }
+
+        // Toggle mobile filter
+        window.toggleMobileFilter = function() {
+            // Implement mobile filter toggle
+        }
+
+        // Toggle sort menu
+        window.toggleSortMenu = function() {
+            // Implement sort menu toggle
+        }
+
+        // Filter by category
+        window.filterByCategory = function(category) {
+            const checkbox = event.target;
+            if (checkbox.checked) {
+                currentFilters.category = category;
+            } else {
+                currentFilters.category = 'all';
+            }
+            document.getElementById('categoryFilter').value = currentFilters.category;
+            searchDocuments();
+        }
+
+        // Fetch statistics
+        async function fetchStatistics() {
+            try {
+                const response = await fetch(`${API_CONFIG.BASE_URL}/api/mahasiswa/repository/statistics`, {
+                    headers: getAuthHeaders()
+                });
+
+                if (!response.ok) throw new Error('Failed to fetch statistics');
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    const stats = result.data;
+                    
+                    document.getElementById('totalDocs').textContent = formatNumber(stats.overview?.total_dokumen || 0);
+                    document.getElementById('totalDownloads').textContent = formatNumber(stats.overview?.total_downloads || 0);
+                    
+                    if (stats.byCategory) {
+                        const categoryMap = {};
+                        stats.byCategory.forEach(item => {
+                            categoryMap[item.kategori] = item.count;
+                        });
+                        
+                        document.getElementById('totalSkripsi').textContent = formatNumber(categoryMap['skripsi'] || 0);
+                        document.getElementById('totalJurnal').textContent = formatNumber(categoryMap['jurnal'] || 0);
+                        
+                        // Update category counts in filter
+                        document.getElementById('countSkripsi').textContent = categoryMap['skripsi'] || 0;
+                        document.getElementById('countJurnal').textContent = categoryMap['jurnal'] || 0;
+                        document.getElementById('countLaporan').textContent = categoryMap['laporan'] || 0;
+                        document.getElementById('countProsiding').textContent = categoryMap['prosiding'] || 0;
+                    }
+
+                    // Populate year filter
+                    if (stats.byYear) {
+                        const yearCheckboxes = document.getElementById('yearCheckboxes');
+                        const years = stats.byYear.map(y => y.tahun).sort((a,b) => b - a);
+                        
+                        yearCheckboxes.innerHTML = years.slice(0, 5).map(year => `
+                            <label class="filter-option">
+                                <input type="checkbox" value="${year}" onchange="filterByYear(${year})">
+                                <span>${year}</span>
+                                <span class="count">${stats.byYear.find(y => y.tahun === year)?.count || 0}</span>
+                            </label>
+                        `).join('');
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching statistics:', error);
+            }
+        }
+
+        // Filter by year
+        window.filterByYear = function(year) {
+            const checkbox = event.target;
+            if (checkbox.checked) {
+                currentFilters.year = year.toString();
+            } else {
+                currentFilters.year = 'all';
+            }
+            document.getElementById('yearFilter').value = currentFilters.year;
+            searchDocuments();
+        }
+
+        // Fetch popular tags
+        async function fetchPopularTags() {
+            try {
+                const response = await fetch(`${API_CONFIG.BASE_URL}/api/mahasiswa/repository/popular-tags?limit=10`, {
+                    headers: getAuthHeaders()
+                });
+
+                if (!response.ok) throw new Error('Failed to fetch popular tags');
+
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    const tagsContainer = document.getElementById('popularTags');
+                    tagsContainer.innerHTML = result.data.map(tag => `
+                        <button onclick="searchByTag('${tag.tag}')" 
+                                class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full text-xs text-gray-700 transition-colors">
+                            #${tag.tag}
+                        </button>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Error fetching popular tags:', error);
+            }
+        }
+
+        // Fetch recent publications
+        async function fetchRecentPublications() {
+            try {
+                const response = await fetch(`${API_CONFIG.BASE_URL}/api/mahasiswa/repository?limit=5&sortBy=created_at&sortOrder=DESC`, {
+                    headers: getAuthHeaders()
+                });
+
+                if (!response.ok) throw new Error('Failed to fetch recent publications');
+
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    const container = document.getElementById('recentPublications');
+                    container.innerHTML = result.data.map(doc => `
+                        <div class="text-sm">
+                            <a href="#" onclick="previewDocument('${doc.id}')" class="text-blue-600 hover:underline font-medium">
+                                ${doc.judul.substring(0, 50)}...
+                            </a>
+                            <p class="text-gray-500 text-xs mt-1">${doc.penulis} - ${doc.tahun}</p>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Error fetching recent publications:', error);
+            }
+        }
+
+        window.searchByTag = function(tag) {
+            document.getElementById('searchInput').value = tag;
+            searchDocuments();
+        };
+
+        function getSortByParam(sortValue) {
+            switch(sortValue) {
+                case 'terbaru': return 'tahun';
+                case 'terlama': return 'tahun';
+                case 'judul-asc': return 'judul';
+                case 'popular': return 'downloads';
+                default: return 'created_at';
+            }
+        }
+
+        function getSortOrderParam(sortValue) {
+            switch(sortValue) {
+                case 'terbaru': return 'DESC';
+                case 'terlama': return 'ASC';
+                case 'judul-asc': return 'ASC';
+                case 'popular': return 'DESC';
+                default: return 'DESC';
+            }
+        }
+
+        // Fetch documents (UPDATED with correct response structure)
+        async function fetchDocuments(reset = false) {
+            if (isLoading) return;
+            
+            isLoading = true;
+            showLoading();
+
+            try {
+                const params = new URLSearchParams({
+                    page: currentPage,
+                    limit: 10,
+                    sortBy: getSortByParam(currentFilters.sort),
+                    sortOrder: getSortOrderParam(currentFilters.sort)
+                });
+
+                if (currentFilters.search) {
+                    params.append('search', currentFilters.search);
+                }
+
+                if (currentFilters.category !== 'all') {
+                    params.append('kategori', currentFilters.category);
+                }
+
+                if (currentFilters.year !== 'all') {
+                    params.append('tahun', currentFilters.year);
+                }
+
+                const response = await fetch(`${API_CONFIG.BASE_URL}/api/mahasiswa/repository?${params.toString()}`, {
+                    headers: getAuthHeaders()
+                });
+
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        handleLogout();
+                        return;
+                    }
+                    throw new Error('Failed to fetch documents');
+                }
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    const documents = result.data;
+                    const pagination = result.pagination;
+                    
+                    allDocuments = reset ? documents : [...allDocuments, ...documents];
+                    
+                    totalItems = pagination.total_items;
+                    hasMore = currentPage < pagination.total_pages;
+                    
+                    document.getElementById('resultCount').textContent = 
+                        `Menampilkan ${allDocuments.length} dari ${totalItems} hasil`;
+                    
+                    renderDocumentsList(reset);
+                    
+                    document.getElementById('loadMoreContainer').style.display = hasMore ? 'block' : 'none';
+                }
+            } catch (error) {
+                console.error('Error fetching documents:', error);
+                showError('Gagal memuat data repository');
+                
+                if (reset) {
+                    document.getElementById('resultsContainer').innerHTML = `
+                        <div class="text-center py-12">
+                            <i class="fas fa-exclamation-circle text-5xl text-red-300 mb-4"></i>
+                            <p class="text-gray-500">Gagal memuat data. Silakan coba lagi.</p>
+                            <button onclick="fetchDocuments(true)" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg">
+                                Muat Ulang
+                            </button>
+                        </div>
+                    `;
+                }
+            } finally {
+                isLoading = false;
+                hideLoading();
+            }
+        }
+
+        // Render documents list (Google Scholar style)
+        function renderDocumentsList(reset) {
+            const container = document.getElementById('resultsContainer');
+            
+            if (reset) {
+                container.innerHTML = '';
+            }
+
+            if (allDocuments.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-16">
+                        <i class="fas fa-search text-6xl text-gray-300 mb-4"></i>
+                        <p class="text-gray-500 text-lg">Tidak ada hasil yang ditemukan</p>
+                        <p class="text-gray-400 text-sm mt-2">Coba kata kunci lain atau reset filter</p>
+                        <button onclick="resetFilters()" class="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                            Reset Filter
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            const docsHTML = allDocuments.map(doc => `
+                <div class="search-result-item p-4 hover:bg-gray-50 transition-colors">
+                    <h3 class="article-title" onclick="previewDocument('${doc.id}')">
+                        ${doc.judul}
+                    </h3>
+                    
+                    <div class="publication-meta">
+                        <span class="author-link">${doc.penulis}</span> - 
+                        <span>${doc.tahun}</span>
+                        ${doc.jurnal ? `- ${doc.jurnal}` : ''}
+                    </div>
+                    
+                    <div class="article-snippet">
+                        ${doc.abstrak ? doc.abstrak.substring(0, 200) + '...' : ''}
+                    </div>
+                    
+                    <div class="article-footer mt-2">
+                        <a href="#" onclick="previewDocument('${doc.id}')">
+                            <i class="far fa-file-pdf"></i>PDF
+                        </a>
+                        <a href="#" onclick="downloadDocument('${doc.id}')">
+                            <i class="fas fa-download"></i>Download
+                        </a>
+                        <a href="#" class="cited-by" onclick="showCitations('${doc.id}')">
+                            <i class="fas fa-quote-right"></i>Dikutip ${doc.stats?.citations || 0} kali
+                        </a>
+                        <a href="#" class="related-articles" onclick="findRelated('${doc.id}')">
+                            <i class="fas fa-link"></i>Artikel terkait
+                        </a>
+                    </div>
+                    
+                    <div class="mt-2 flex items-center gap-2">
+                        <span class="px-2 py-1 rounded text-xs font-medium ${getBadgeClass(doc.kategori)}">
+                            ${doc.kategori.toUpperCase()}
+                        </span>
+                        ${doc.keywords ? doc.keywords.slice(0, 3).map(k => `
+                            <span class="text-xs text-gray-500">#${k}</span>
+                        `).join('') : ''}
+                    </div>
+                </div>
+            `).join('');
+            
+            if (reset) {
+                container.innerHTML = docsHTML;
+            } else {
+                container.innerHTML += docsHTML;
+            }
+        }
 
         // Get badge class based on category
         function getBadgeClass(kategori) {
@@ -425,332 +979,6 @@
             }
         }
 
-        // Get border color based on category
-        function getBorderClass(kategori) {
-            switch(kategori.toLowerCase()) {
-                case 'skripsi': return 'border-skripsi';
-                case 'jurnal': return 'border-jurnal';
-                case 'laporan': return 'border-laporan';
-                case 'prosiding': return 'border-prosiding';
-                case 'tesis': return 'border-tesis';
-                default: return 'border-gray-500';
-            }
-        }
-
-        // Format number with thousand separator
-        function formatNumber(num) {
-            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-        }
-
-        // Format file size
-        function formatFileSize(bytes) {
-            if (bytes === 0) return '0 Bytes';
-            const k = 1024;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-        }
-
-        // Fetch statistics from API
-        async function fetchStatistics() {
-            try {
-                const response = await fetch(`${API_CONFIG.BASE_URL}/api/mahasiswa/repository/statistics`, {
-                    headers: getAuthHeaders()
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to fetch statistics');
-                }
-
-                const result = await response.json();
-                
-                if (result.success) {
-                    const stats = result.data;
-                    
-                    // Update statistics display
-                    document.getElementById('totalDocs').textContent = formatNumber(stats.overview?.total_dokumen || 0);
-                    
-                    // Update per-category counts
-                    if (stats.byCategory) {
-                        const categoryMap = {};
-                        stats.byCategory.forEach(item => {
-                            categoryMap[item.kategori] = item.count;
-                        });
-                        
-                        document.getElementById('totalSkripsi').textContent = formatNumber(categoryMap['skripsi'] || 0);
-                        document.getElementById('totalJurnal').textContent = formatNumber(categoryMap['jurnal'] || 0);
-                        document.getElementById('totalLaporan').textContent = formatNumber(categoryMap['laporan'] || 0);
-                        document.getElementById('totalProsiding').textContent = formatNumber(categoryMap['prosiding'] || 0);
-                    }
-
-                    // Populate year filter
-                    if (stats.byYear) {
-                        const yearFilter = document.getElementById('yearFilter');
-                        const currentOptions = Array.from(yearFilter.options).map(opt => opt.value);
-                        
-                        stats.byYear.forEach(item => {
-                            if (!currentOptions.includes(item.tahun.toString())) {
-                                const option = document.createElement('option');
-                                option.value = item.tahun;
-                                option.textContent = item.tahun;
-                                yearFilter.appendChild(option);
-                            }
-                        });
-                    }
-                }
-            } catch (error) {
-                console.error('Error fetching statistics:', error);
-            }
-        }
-
-        // Fetch popular tags
-        async function fetchPopularTags() {
-            try {
-                const response = await fetch(`${API_CONFIG.BASE_URL}/api/mahasiswa/repository/popular-tags?limit=10`, {
-                    headers: getAuthHeaders()
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to fetch popular tags');
-                }
-
-                const result = await response.json();
-                
-                if (result.success && result.data) {
-                    const tagsContainer = document.getElementById('popularTags');
-                    if (result.data.length === 0) {
-                        tagsContainer.innerHTML = '<p class="text-gray-400 text-sm">Belum ada tag</p>';
-                    } else {
-                        tagsContainer.innerHTML = result.data.map(tag => `
-                            <button onclick="searchByTag('${tag.tag}')" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full text-sm text-gray-700 transition-colors">
-                                #${tag.tag} (${tag.count})
-                            </button>
-                        `).join('');
-                    }
-                }
-            } catch (error) {
-                console.error('Error fetching popular tags:', error);
-            }
-        }
-
-        // Search by tag
-        window.searchByTag = function(tag) {
-            document.getElementById('searchInput').value = tag;
-            searchDocuments();
-        };
-
-        // Get sort by parameter from UI sort value
-        function getSortByParam(sortValue) {
-            switch(sortValue) {
-                case 'terbaru':
-                case 'terlama':
-                    return 'tahun';
-                case 'judul-asc':
-                case 'judul-desc':
-                    return 'judul';
-                case 'penulis-asc':
-                    return 'penulis';
-                case 'popular':
-                    return 'downloads';
-                default:
-                    return 'created_at';
-            }
-        }
-
-        // Get sort order parameter from UI sort value
-        function getSortOrderParam(sortValue) {
-            switch(sortValue) {
-                case 'terbaru':
-                case 'judul-asc':
-                case 'penulis-asc':
-                    return 'ASC';
-                case 'terlama':
-                case 'judul-desc':
-                    return 'DESC';
-                case 'popular':
-                    return 'DESC';
-                default:
-                    return 'DESC';
-            }
-        }
-
-        async function fetchDocuments(reset = false) {
-    if (isLoading) return;
-    
-    isLoading = true;
-    showLoading();
-
-    try {
-        // Build query parameters
-        const params = new URLSearchParams({
-            page: currentPage,
-            limit: 5,
-            sortBy: getSortByParam(currentFilters.sort),
-            sortOrder: getSortOrderParam(currentFilters.sort)
-        });
-
-        if (currentFilters.search) {
-            params.append('search', currentFilters.search);
-        }
-
-        if (currentFilters.category !== 'all') {
-            params.append('kategori', currentFilters.category);
-        }
-
-        if (currentFilters.year !== 'all') {
-            params.append('tahun', currentFilters.year);
-        }
-
-        const response = await fetch(`${API_CONFIG.BASE_URL}/api/mahasiswa/repository?${params.toString()}`, {
-            headers: getAuthHeaders()
-        });
-
-        if (!response.ok) {
-            if (response.status === 401) {
-                handleLogout();
-                return;
-            }
-            throw new Error('Failed to fetch documents');
-        }
-
-        const result = await response.json();
-        
-        if (result.success) {
-            // Struktur response dari backend:
-            // {
-            //   success: true,
-            //   message: "...",
-            //   data: [...], // langsung array dokumen
-            //   pagination: { ... } // pagination di root
-            // }
-            
-            const documents = result.data; // Langsung array dokumen
-            const pagination = result.pagination; // Pagination di root
-            
-            allDocuments = reset ? documents : [...allDocuments, ...documents];
-            
-            // Gunakan properti dengan underscore (dari formatPaginatedResponse)
-            totalItems = pagination.total_items;
-            hasMore = currentPage < pagination.total_pages;
-            
-            // Update result count
-            document.getElementById('resultCount').textContent = `Menampilkan ${allDocuments.length} dari ${totalItems} dokumen`;
-            
-            // Render documents
-            renderDocumentsList(reset);
-            
-            // Show/hide load more button
-            document.getElementById('loadMoreContainer').style.display = hasMore ? 'block' : 'none';
-        }
-    } catch (error) {
-        console.error('Error fetching documents:', error);
-        showError('Gagal memuat data repository');
-        
-        if (reset) {
-            document.getElementById('resultsContainer').innerHTML = `
-                <div class="text-center py-12 bg-white rounded-lg shadow">
-                    <i class="fas fa-exclamation-triangle text-6xl text-red-300 mb-4"></i>
-                    <p class="text-gray-500">Gagal memuat data. Silakan coba lagi.</p>
-                    <button onclick="fetchDocuments(true)" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg">
-                        Muat Ulang
-                    </button>
-                </div>
-            `;
-        }
-    } finally {
-        isLoading = false;
-        hideLoading();
-    }
-}
-        // Render documents list
-        function renderDocumentsList(reset) {
-            const container = document.getElementById('resultsContainer');
-            
-            if (reset) {
-                container.innerHTML = '';
-            }
-
-            if (allDocuments.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center py-12 bg-white rounded-lg shadow">
-                        <i class="fas fa-search text-6xl text-gray-300 mb-4"></i>
-                        <p class="text-gray-500">Tidak ada dokumen yang ditemukan</p>
-                        <button onclick="resetFilters()" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg">
-                            Reset Filter
-                        </button>
-                    </div>
-                `;
-                return;
-            }
-
-            const docsHTML = allDocuments.map(doc => renderDocumentCard(doc)).join('');
-            
-            if (reset) {
-                container.innerHTML = docsHTML;
-            } else {
-                container.innerHTML += docsHTML;
-            }
-        }
-
-        // Render document card
-        function renderDocumentCard(doc) {
-            const badgeClass = getBadgeClass(doc.kategori);
-            const borderClass = getBorderClass(doc.kategori);
-            
-            return `
-                <div class="bg-white p-6 rounded-xl shadow-md repository-item border-l-4 ${borderClass}" data-aos="fade-up">
-                    <div class="flex flex-col md:flex-row justify-between items-start gap-4">
-                        <div class="flex-1">
-                            <div class="flex items-start">
-                                <i class="fas fa-file-pdf text-3xl file-pdf mr-3"></i>
-                                <div>
-                                    <h3 class="text-lg font-bold text-gray-800 hover:text-blue-600 cursor-pointer" onclick="previewDocument('${doc.id}')">
-                                        ${doc.judul}
-                                    </h3>
-                                    
-                                    <div class="mt-2 flex flex-wrap items-center gap-2 text-sm text-gray-600">
-                                        <span><i class="fas fa-user mr-1"></i> ${doc.penulis}</span>
-                                        <span><i class="fas fa-calendar mr-1"></i> ${doc.tahun}</span>
-                                        <span class="px-2 py-1 rounded text-xs font-semibold ${badgeClass}">
-                                            ${doc.kategori.charAt(0).toUpperCase() + doc.kategori.slice(1)}
-                                        </span>
-                                        <span><i class="fas fa-file mr-1"></i> PDF</span>
-                                        <span><i class="fas fa-weight mr-1"></i> ${doc.file?.filesize || '0 MB'}</span>
-                                    </div>
-                                    
-                                    <div class="mt-2 flex items-center space-x-4 text-xs text-gray-400">
-                                        <span><i class="fas fa-download mr-1"></i> ${formatNumber(doc.stats?.downloads || 0)} downloads</span>
-                                        <span><i class="fas fa-eye mr-1"></i> ${formatNumber(doc.stats?.views || 0)} views</span>
-                                    </div>
-                                    
-                                    <div class="mt-3 flex flex-wrap gap-1">
-                                        ${doc.keywords ? doc.keywords.map(k => `
-                                            <span class="px-2 py-1 bg-gray-100 rounded text-xs text-gray-600 hover:bg-gray-200 cursor-pointer" onclick="searchByTag('${k}')">
-                                                #${k}
-                                            </span>
-                                        `).join('') : ''}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="flex flex-col space-y-2 w-full md:w-auto">
-                            <button onclick="previewDocument('${doc.id}')" class="bg-blue-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-600 transition-colors text-sm w-full md:w-auto">
-                                <i class="fas fa-eye mr-2"></i>Preview
-                            </button>
-                            <button onclick="downloadDocument('${doc.id}')" class="bg-green-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-green-600 transition-colors text-sm w-full md:w-auto">
-                                <i class="fas fa-download mr-2"></i>Download
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-3 text-sm text-gray-600 line-clamp-2">
-                        ${doc.abstrak || ''}
-                    </div>
-                </div>
-            `;
-        }
-
         // Search documents
         window.searchDocuments = function() {
             currentFilters.search = document.getElementById('searchInput').value;
@@ -760,7 +988,6 @@
             currentPage = 1;
             allDocuments = [];
             fetchDocuments(true);
-            updateActiveFilters();
         };
 
         // Reset filters
@@ -770,17 +997,22 @@
             document.getElementById('yearFilter').value = 'all';
             document.getElementById('sortSelect').value = 'terbaru';
             
+            // Uncheck all checkboxes
+            document.querySelectorAll('#categoryCheckboxes input, #yearCheckboxes input').forEach(cb => {
+                cb.checked = false;
+            });
+            
             currentFilters = {
                 search: '',
                 category: 'all',
                 year: 'all',
-                sort: 'terbaru'
+                sort: 'terbaru',
+                yearRange: { start: 2010, end: 2024 }
             };
             
             currentPage = 1;
             allDocuments = [];
             fetchDocuments(true);
-            updateActiveFilters();
         };
 
         // Sort documents
@@ -799,56 +1031,6 @@
             }
         };
 
-        // Update active filters display
-        function updateActiveFilters() {
-            const container = document.getElementById('activeFilters');
-            const filters = [];
-            
-            if (currentFilters.search) {
-                filters.push(`<span class="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">
-                    <i class="fas fa-search mr-1"></i>${currentFilters.search}
-                    <button onclick="removeFilter('search')" class="ml-1 hover:text-blue-600">&times;</button>
-                </span>`);
-            }
-            
-            if (currentFilters.category !== 'all') {
-                filters.push(`<span class="inline-flex items-center px-2 py-1 bg-green-100 text-green-800 rounded text-xs">
-                    <i class="fas fa-folder mr-1"></i>${currentFilters.category}
-                    <button onclick="removeFilter('category')" class="ml-1 hover:text-green-600">&times;</button>
-                </span>`);
-            }
-            
-            if (currentFilters.year !== 'all') {
-                filters.push(`<span class="inline-flex items-center px-2 py-1 bg-purple-100 text-purple-800 rounded text-xs">
-                    <i class="fas fa-calendar mr-1"></i>${currentFilters.year}
-                    <button onclick="removeFilter('year')" class="ml-1 hover:text-purple-600">&times;</button>
-                </span>`);
-            }
-            
-            if (filters.length > 0) {
-                container.innerHTML = '<span class="text-sm text-gray-500 mr-2">Filter aktif:</span>' + filters.join(' ');
-                container.classList.remove('hidden');
-            } else {
-                container.classList.add('hidden');
-            }
-        }
-
-        // Remove specific filter
-        window.removeFilter = function(filterType) {
-            if (filterType === 'search') {
-                document.getElementById('searchInput').value = '';
-                currentFilters.search = '';
-            } else if (filterType === 'category') {
-                document.getElementById('categoryFilter').value = 'all';
-                currentFilters.category = 'all';
-            } else if (filterType === 'year') {
-                document.getElementById('yearFilter').value = 'all';
-                currentFilters.year = 'all';
-            }
-            
-            searchDocuments();
-        };
-
         // Preview document
         window.previewDocument = async function(id) {
             try {
@@ -865,9 +1047,7 @@
                     headers: getAuthHeaders()
                 });
 
-                if (!response.ok) {
-                    throw new Error('Failed to fetch document details');
-                }
+                if (!response.ok) throw new Error('Failed to fetch document details');
 
                 const result = await response.json();
                 
@@ -876,44 +1056,43 @@
                     
                     const modal = document.getElementById('previewModal');
                     const modalTitle = document.getElementById('modalTitle');
+                    const modalAuthors = document.getElementById('modalAuthors');
                     const modalContent = document.getElementById('modalContent');
                     
                     modalTitle.textContent = doc.judul;
+                    modalAuthors.textContent = `${doc.penulis} - ${doc.tahun}`;
                     
                     modalContent.innerHTML = `
                         <div class="space-y-6">
-                            <!-- Document Info -->
-                            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                <div class="bg-gray-50 p-3 rounded-lg">
-                                    <p class="text-xs text-gray-500">Penulis</p>
-                                    <p class="font-semibold">${doc.penulis}</p>
-                                </div>
-                                <div class="bg-gray-50 p-3 rounded-lg">
-                                    <p class="text-xs text-gray-500">Tahun</p>
-                                    <p class="font-semibold">${doc.tahun}</p>
-                                </div>
-                                <div class="bg-gray-50 p-3 rounded-lg">
-                                    <p class="text-xs text-gray-500">Kategori</p>
-                                    <p class="font-semibold">${doc.kategori}</p>
-                                </div>
-                                <div class="bg-gray-50 p-3 rounded-lg">
-                                    <p class="text-xs text-gray-500">File</p>
-                                    <p class="font-semibold">PDF - ${doc.file?.filesize || '0 MB'}</p>
-                                </div>
-                                <div class="bg-gray-50 p-3 rounded-lg">
-                                    <p class="text-xs text-gray-500">Downloads</p>
-                                    <p class="font-semibold">${formatNumber(doc.stats?.downloads || 0)}</p>
-                                </div>
-                                <div class="bg-gray-50 p-3 rounded-lg">
-                                    <p class="text-xs text-gray-500">Views</p>
-                                    <p class="font-semibold">${formatNumber(doc.stats?.views || 0)}</p>
-                                </div>
+                            <!-- Quick Stats -->
+                            <div class="flex gap-4 text-sm text-gray-600 pb-4 border-b">
+                                <span><i class="fas fa-download mr-1"></i>${formatNumber(doc.stats?.downloads || 0)} downloads</span>
+                                <span><i class="fas fa-eye mr-1"></i>${formatNumber(doc.stats?.views || 0)} views</span>
+                                <span><i class="fas fa-quote-right mr-1"></i>${doc.stats?.citations || 0} citations</span>
                             </div>
                             
                             <!-- Abstract -->
                             <div>
                                 <h4 class="font-semibold text-gray-800 mb-2">Abstrak</h4>
-                                <p class="text-gray-600">${doc.abstrak || '-'}</p>
+                                <p class="text-gray-600 leading-relaxed">${doc.abstrak || '-'}</p>
+                            </div>
+                            
+                            <!-- Metadata -->
+                            <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg">
+                                <div>
+                                    <p class="text-xs text-gray-500">Kategori</p>
+                                    <p class="font-medium">${doc.kategori}</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500">Tahun</p>
+                                    <p class="font-medium">${doc.tahun}</p>
+                                </div>
+                                ${doc.doi ? `
+                                <div class="col-span-2">
+                                    <p class="text-xs text-gray-500">DOI</p>
+                                    <p class="font-medium text-blue-600">${doc.doi}</p>
+                                </div>
+                                ` : ''}
                             </div>
                             
                             <!-- Keywords -->
@@ -921,26 +1100,30 @@
                                 <h4 class="font-semibold text-gray-800 mb-2">Kata Kunci</h4>
                                 <div class="flex flex-wrap gap-2">
                                     ${doc.keywords ? doc.keywords.map(k => `
-                                        <span class="px-3 py-1 bg-gray-100 rounded-full text-sm text-gray-700">#${k}</span>
+                                        <span class="px-3 py-1 bg-gray-100 rounded-full text-sm text-gray-700">${k}</span>
                                     `).join('') : '-'}
                                 </div>
                             </div>
                             
-                            <!-- DOI if available -->
-                            ${doc.doi ? `
+                            <!-- References -->
+                            ${doc.references ? `
                             <div>
-                                <h4 class="font-semibold text-gray-800 mb-2">DOI</h4>
-                                <p class="text-gray-600">${doc.doi}</p>
+                                <h4 class="font-semibold text-gray-800 mb-2">Referensi</h4>
+                                <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
+                                    ${doc.references.map(ref => `<li>${ref}</li>`).join('')}
+                                </ul>
                             </div>
                             ` : ''}
                             
                             <!-- Action Buttons -->
-                            <div class="flex justify-end space-x-3 pt-4 border-t">
-                                <button onclick="downloadDocument('${doc.id}')" class="bg-green-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-green-600 transition-colors">
+                            <div class="flex gap-3 pt-4 border-t">
+                                <button onclick="downloadDocument('${doc.id}')" 
+                                        class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
                                     <i class="fas fa-download mr-2"></i>Download PDF
                                 </button>
-                                <button onclick="closePreview()" class="bg-gray-200 text-gray-700 font-bold py-2 px-6 rounded-lg hover:bg-gray-300 transition-colors">
-                                    <i class="fas fa-times mr-2"></i>Tutup
+                                <button onclick="citeDocument('${doc.id}')" 
+                                        class="flex-1 bg-gray-100 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors">
+                                    <i class="fas fa-quote-right mr-2"></i>Cite
                                 </button>
                             </div>
                         </div>
@@ -966,24 +1149,20 @@
             try {
                 showLoading();
                 
-                // Get document info first
                 const response = await fetch(`${API_CONFIG.BASE_URL}/api/mahasiswa/repository/${id}`, {
                     headers: getAuthHeaders()
                 });
 
-                if (!response.ok) {
-                    throw new Error('Failed to fetch document details');
-                }
+                if (!response.ok) throw new Error('Failed to fetch document details');
 
                 const result = await response.json();
                 
                 if (result.success) {
                     const doc = result.data;
                     
-                    // Trigger download
                     window.location.href = `${API_CONFIG.BASE_URL}/api/mahasiswa/repository/${id}/download?token=${getToken()}`;
                     
-                    showNotification(`Mengunduh "${doc.judul.substring(0, 30)}..."`);
+                    showNotification(`Mengunduh "${doc.judul.substring(0, 50)}..."`);
                 }
             } catch (error) {
                 console.error('Error downloading document:', error);
@@ -991,6 +1170,21 @@
             } finally {
                 hideLoading();
             }
+        };
+
+        // Show citations (placeholder)
+        window.showCitations = function(id) {
+            showNotification('Fitur kutipan akan segera tersedia');
+        };
+
+        // Find related articles (placeholder)
+        window.findRelated = function(id) {
+            showNotification('Mencari artikel terkait...');
+        };
+
+        // Cite document (placeholder)
+        window.citeDocument = function(id) {
+            showNotification('Fitur kutipan akan segera tersedia');
         };
 
         // Close modal when clicking outside
@@ -1003,13 +1197,10 @@
 
         // Initialize page
         document.addEventListener('DOMContentLoaded', async function() {
-            // Check authentication first (sama persis dengan dashboard)
             if (!checkAuth()) return;
             
-            // Update user info in header
             updateUserInfo();
             
-            // Check if token exists
             const token = getToken();
             if (!token) {
                 handleLogout();
@@ -1019,10 +1210,10 @@
             showLoading();
             
             try {
-                // Load all repository data
                 await Promise.all([
                     fetchStatistics(),
                     fetchPopularTags(),
+                    fetchRecentPublications(),
                     fetchDocuments(true)
                 ]);
             } catch (error) {

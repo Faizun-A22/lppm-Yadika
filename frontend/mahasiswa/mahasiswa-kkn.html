@@ -205,6 +205,14 @@
             position: relative;
             z-index: 1;
         }
+
+        /* Line clamp untuk deskripsi */
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
     </style>
 </head>
 <body class="bg-gray-50 font-sans antialiased">
@@ -289,9 +297,6 @@
                     <button onclick="showSection('pendaftaran')" class="tab-button flex-1 py-3 px-4 rounded-lg text-center font-medium text-gray-700 hover:bg-gray-100 transition-all" id="tabPendaftaran">
                         <i class="fas fa-file-signature mr-2"></i>Pendaftaran
                     </button>
-                    <button onclick="showSection('proposal')" class="tab-button flex-1 py-3 px-4 rounded-lg text-center font-medium text-gray-700 hover:bg-gray-100 transition-all" id="tabProposal">
-                        <i class="fas fa-file-alt mr-2"></i>Pengajuan Proposal
-                    </button>
                     <button onclick="showSection('luaran')" class="tab-button flex-1 py-3 px-4 rounded-lg text-center font-medium text-gray-700 hover:bg-gray-100 transition-all" id="tabLuaran">
                         <i class="fas fa-tasks mr-2"></i>Luaran Wajib
                     </button>
@@ -301,7 +306,7 @@
             <!-- Section: Proses Saya (Status Tracker) -->
             <div id="sectionProses" class="section-content">
                 <!-- Status Overview Cards -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                     <div class="bg-white rounded-xl shadow p-4" data-aos="fade-up" data-aos-delay="100">
                         <div class="flex items-center">
                             <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -310,18 +315,6 @@
                             <div class="ml-4">
                                 <p class="text-sm text-gray-600">Pendaftaran</p>
                                 <p class="text-lg font-bold text-gray-800" id="statusPendaftaran">Memuat...</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-white rounded-xl shadow p-4" data-aos="fade-up" data-aos-delay="200">
-                        <div class="flex items-center">
-                            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                                <i class="fas fa-file-alt text-purple-600 text-xl"></i>
-                            </div>
-                            <div class="ml-4">
-                                <p class="text-sm text-gray-600">Proposal</p>
-                                <p class="text-lg font-bold text-gray-800" id="statusProposal">Memuat...</p>
                             </div>
                         </div>
                     </div>
@@ -364,18 +357,13 @@
                         </div>
                         <div class="stepper-item" id="step2">
                             <div class="stepper-number">2</div>
-                            <div class="text-sm font-medium">Proposal</div>
+                            <div class="text-sm font-medium">Pelaksanaan</div>
                             <div class="text-xs text-gray-500" id="step2Status">-</div>
                         </div>
                         <div class="stepper-item" id="step3">
                             <div class="stepper-number">3</div>
-                            <div class="text-sm font-medium">Pelaksanaan</div>
-                            <div class="text-xs text-gray-500" id="step3Status">-</div>
-                        </div>
-                        <div class="stepper-item" id="step4">
-                            <div class="stepper-number">4</div>
                             <div class="text-sm font-medium">Luaran</div>
-                            <div class="text-xs text-gray-500" id="step4Status">-</div>
+                            <div class="text-xs text-gray-500" id="step3Status">-</div>
                         </div>
                     </div>
 
@@ -433,33 +421,46 @@
                             </div>
                         </div>
                         
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                                <input type="email" id="email" readonly class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
+                            </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Program Studi</label>
-                                <select id="programStudi" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                                <select id="programStudi" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required>
                                     <option value="">Pilih Program Studi</option>
-                                    <option value="sistem_informasi">Sistem Informasi</option>
-                                    <option value="manajemen">Manajemen</option>
-                                    <option value="akuntansi">Akuntansi</option>
-                                    <option value="teknik_informatika">Teknik Informatika</option>
-                                    <option value="teknik_mesin">Teknik Mesin</option>
                                 </select>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Nomor HP</label>
-                                <input type="tel" id="noHp" placeholder="08xxxxxxxxxx" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                                <input type="tel" id="noHp" placeholder="08xxxxxxxxxx" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required>
                             </div>
                         </div>
                         
                         <!-- Semester -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Semester</label>
-                            <select id="semester" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                            <select id="semester" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required>
                                 <option value="">Pilih Semester</option>
                                 <option value="6">Semester 6</option>
                                 <option value="7">Semester 7</option>
                                 <option value="8">Semester 8</option>
                             </select>
+                        </div>
+                        
+                        <!-- Filter Desa -->
+                        <div class="mb-4 flex flex-col md:flex-row gap-3">
+                            <div class="flex-1 relative">
+                                <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                                <input type="text" id="searchDesa" placeholder="Cari desa atau kecamatan..." 
+                                    class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                            </div>
+                            <div class="w-full md:w-48">
+                                <select id="filterKabupaten" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                                    <option value="">Semua Kabupaten</option>
+                                </select>
+                            </div>
                         </div>
                         
                         <!-- Pilihan Desa -->
@@ -478,7 +479,7 @@
                             <label class="block text-sm font-medium text-gray-700 mb-3">Ukuran Jaket</label>
                             <div class="flex flex-wrap gap-4">
                                 <label class="flex items-center">
-                                    <input type="radio" name="jacketSize" value="S" class="mr-2"> S
+                                    <input type="radio" name="jacketSize" value="S" class="mr-2" required> S
                                 </label>
                                 <label class="flex items-center">
                                     <input type="radio" name="jacketSize" value="M" class="mr-2"> M
@@ -501,26 +502,26 @@
                             
                             <div class="file-upload-area p-4 rounded-lg">
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Bukti KRS</label>
-                                <input type="file" id="krsFile" accept=".pdf,.jpg,.png" class="w-full">
+                                <input type="file" id="krsFile" accept=".pdf,.jpg,.png" class="w-full" required>
                                 <p class="text-xs text-gray-500 mt-1">Format: PDF/JPG/PNG, Maks 2MB</p>
                             </div>
                             
                             <div class="file-upload-area p-4 rounded-lg">
                                 <label class="block text-sm font-medium text-gray-700 mb-2">KHS (Semester 1-5)</label>
-                                <input type="file" id="khsFile" accept=".pdf,.jpg,.png" class="w-full">
+                                <input type="file" id="khsFile" accept=".pdf,.jpg,.png" class="w-full" required>
                                 <p class="text-xs text-gray-500 mt-1">Format: PDF/JPG/PNG, Maks 2MB</p>
                             </div>
                             
                             <div class="file-upload-area p-4 rounded-lg">
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Bukti Pembayaran</label>
-                                <input type="file" id="paymentFile" accept=".pdf,.jpg,.png" class="w-full">
+                                <input type="file" id="paymentFile" accept=".pdf,.jpg,.png" class="w-full" required>
                                 <p class="text-xs text-gray-500 mt-1">Format: PDF/JPG/PNG, Maks 2MB</p>
                             </div>
                         </div>
                         
                         <!-- Checkbox Persetujuan -->
                         <div class="flex items-center">
-                            <input type="checkbox" id="agreeTerms" class="mr-2">
+                            <input type="checkbox" id="agreeTerms" class="mr-2" required>
                             <label for="agreeTerms" class="text-sm text-gray-600">
                                 Saya menyatakan bahwa data yang diisi adalah benar dan siap mengikuti program KKN
                             </label>
@@ -539,96 +540,6 @@
                 </div>
             </div>
 
-            <!-- Section: Pengajuan Proposal -->
-            <div id="sectionProposal" class="section-content hidden">
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <!-- Form Proposal -->
-                    <div class="lg:col-span-2">
-                        <div class="bg-white rounded-xl shadow-lg p-6" data-aos="fade-up">
-                            <h3 class="text-xl font-bold text-gray-800 mb-6">Form Pengajuan Proposal KKN</h3>
-                            
-                            <form id="proposalForm" class="space-y-6">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Desa Penempatan</label>
-                                    <select id="proposalVillage" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
-                                        <option value="">Pilih Desa</option>
-                                    </select>
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Judul Program Kerja</label>
-                                    <input type="text" id="programJudul" placeholder="Contoh: Digitalisasi UMKM Desa" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Deskripsi Program Kerja</label>
-                                    <textarea id="programDeskripsi" rows="5" placeholder="Jelaskan secara detail program kerja yang akan dilaksanakan..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"></textarea>
-                                </div>
-                                
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Estimasi Biaya (Rp)</label>
-                                        <input type="number" id="programBiaya" placeholder="1000000" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Durasi (Minggu)</label>
-                                        <input type="number" id="programDurasi" placeholder="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
-                                    </div>
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Upload File Proposal (PDF)</label>
-                                    <div class="file-upload-area p-4 rounded-lg">
-                                        <input type="file" id="proposalFile" accept=".pdf" class="w-full">
-                                        <p class="text-xs text-gray-500 mt-1">Format PDF, Maks 5MB. Proposal harus sudah ditandatangani DPL.</p>
-                                    </div>
-                                </div>
-                                
-                                <div class="flex justify-end space-x-3">
-                                    <button type="button" onclick="saveDraft()" class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
-                                        Simpan Draft
-                                    </button>
-                                    <button type="submit" class="px-6 py-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-lg hover:shadow-lg transition">
-                                        Ajukan Proposal
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                    
-                    <!-- Status & Riwayat Proposal -->
-                    <div class="lg:col-span-1">
-                        <div class="bg-white rounded-xl shadow-lg p-6" data-aos="fade-up" data-aos-delay="200">
-                            <h3 class="text-lg font-bold text-gray-800 mb-4">Status Proposal</h3>
-                            
-                            <div id="proposalStatus" class="mb-6 p-4 bg-purple-50 rounded-lg">
-                                <div class="text-center text-gray-500 py-4">
-                                    <i class="fas fa-spinner fa-spin mr-2"></i>Memuat status...
-                                </div>
-                            </div>
-                            
-                            <h4 class="font-semibold text-gray-800 mb-3">Riwayat Review</h4>
-                            <div id="reviewHistory" class="space-y-3">
-                                <div class="text-center text-gray-500 py-4">
-                                    <i class="fas fa-spinner fa-spin mr-2"></i>Memuat riwayat...
-                                </div>
-                            </div>
-                            
-                            <hr class="my-4">
-                            
-                            <div class="flex space-x-2" id="proposalActions">
-                                <button class="flex-1 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm" onclick="downloadProposal()">
-                                    <i class="fas fa-download mr-1"></i> Download
-                                </button>
-                                <button class="flex-1 px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition text-sm" onclick="editProposal()">
-                                    <i class="fas fa-edit mr-1"></i> Edit
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <!-- Section: Luaran Wajib -->
             <div id="sectionLuaran" class="section-content hidden">
                 <div class="bg-white rounded-xl shadow-lg p-6" data-aos="fade-up">
@@ -642,7 +553,7 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Judul Kegiatan</label>
-                                <input type="text" id="luaranJudul" placeholder="Masukkan judul kegiatan KKN" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                                <input type="text" id="luaranJudul" placeholder="Masukkan judul kegiatan KKN" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required>
                             </div>
                         </div>
                         
@@ -697,7 +608,7 @@
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Jenis Luaran</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Judul Kegiatan</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tanggal Upload</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
@@ -722,15 +633,22 @@
     <script src="../js/auth.js"></script>
     
     <script>
+        // ==================== CONFIGURATION ====================
+        const API_BASE_URL = 'http://localhost:3000/api';
+        
         // Initialize AOS
         AOS.init({ duration: 800, once: true });
         
-        // State Management
-        let currentUser = null;
-        let kknData = null;
+        // ==================== STATE MANAGEMENT ====================
+        let kknData = {
+            registrasi: null,
+            luaran: []
+        };
         let villages = [];
+        let programStudi = [];
         
-        // Function to show/hide loading
+        // ==================== UTILITY FUNCTIONS ====================
+        
         function showLoading() {
             document.getElementById('loadingOverlay').classList.remove('hidden');
         }
@@ -739,7 +657,6 @@
             document.getElementById('loadingOverlay').classList.add('hidden');
         }
 
-        // Show notification
         function showNotification(message, isSuccess = true) {
             Swal.fire({
                 icon: isSuccess ? 'success' : 'error',
@@ -750,408 +667,697 @@
             });
         }
 
-        // Get user data
-        function getUser() {
-            return auth.getUser();
+        // ==================== AUTHENTICATION FUNCTIONS ====================
+        
+        function getToken() {
+            return localStorage.getItem('token');
         }
 
-        // Update user info in header
+        function getHeaders() {
+            const token = getToken();
+            return {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            };
+        }
+
+        function getHeadersMultipart() {
+            const token = getToken();
+            return {
+                'Authorization': `Bearer ${token}`
+                // JANGAN set Content-Type, biarkan browser yang set
+            };
+        }
+
+        function getUser() {
+            try {
+                const userStr = localStorage.getItem('user');
+                if (userStr) {
+                    return JSON.parse(userStr);
+                }
+            } catch (error) {
+                console.error('Error parsing user from localStorage:', error);
+            }
+            return null;
+        }
+
         function updateUserInfo() {
             const user = getUser();
             if (user) {
-                document.getElementById('userNameDisplay').textContent = user.name || 'Mahasiswa';
+                document.getElementById('userNameDisplay').textContent = user.nama_lengkap || user.name || 'Mahasiswa';
                 document.getElementById('userNimDisplay').textContent = user.nim || '-';
-                
-                // Update form fields
-                document.getElementById('namaLengkap').value = user.name || '';
-                document.getElementById('nim').value = user.nim || '';
             }
         }
 
-        // Logout function
         window.handleLogout = function() {
-            auth.logout();
+            Swal.fire({
+                title: 'Konfirmasi Logout',
+                text: 'Apakah Anda yakin ingin logout?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Logout',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    window.location.href = '../login.html';
+                }
+            });
         };
-        
-        // Fungsi untuk navigasi antar section
-        function showSection(section) {
-            // Hide all sections
-            document.querySelectorAll('.section-content').forEach(el => {
-                el.classList.add('hidden');
-            });
-            
-            // Remove active class from all tabs
-            document.querySelectorAll('.tab-button').forEach(el => {
-                el.classList.remove('active');
-            });
-            
-            // Show selected section
-            document.getElementById(`section${section.charAt(0).toUpperCase() + section.slice(1)}`).classList.remove('hidden');
-            
-            // Add active class to clicked tab
-            document.getElementById(`tab${section.charAt(0).toUpperCase() + section.slice(1)}`).classList.add('active');
-        }
-        
-        // Load villages data
-        async function loadVillages() {
+
+        // ==================== DATA LOADING FUNCTIONS ====================
+
+        // Load user data dari database
+        async function loadUserBasicData() {
             try {
-                // Simulate API call
-                await new Promise(resolve => setTimeout(resolve, 1000));
+                const token = getToken();
+                if (!token) {
+                    console.error('No token found');
+                    window.location.href = '../login.html';
+                    return null;
+                }
+
+                const response = await fetch(`${API_BASE_URL}/mahasiswa/profil/basic`, {
+                    headers: getHeaders()
+                });
                 
-                villages = [
-                    { id: 1, name: 'Desa Sukamaju', quota: 20, registered: 12, status: 'available' },
-                    { id: 2, name: 'Desa Cipaku', quota: 20, registered: 15, status: 'available' },
-                    { id: 3, name: 'Desa Mekarjaya', quota: 20, registered: 20, status: 'full' },
-                    { id: 4, name: 'Desa Kertajaya', quota: 20, registered: 8, status: 'available' }
-                ];
+                if (!response.ok) {
+                    if (response.status === 401 || response.status === 403) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Sesi Habis',
+                            text: 'Silakan login kembali',
+                            confirmButtonColor: '#8B5CF6'
+                        }).then(() => {
+                            localStorage.removeItem('token');
+                            localStorage.removeItem('user');
+                            window.location.href = '../login.html';
+                        });
+                        return null;
+                    }
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
                 
-                const container = document.getElementById('villageContainer');
-                container.innerHTML = villages.map(village => `
-                    <div class="flex items-center p-3 border rounded-lg hover:bg-purple-50 ${village.status === 'full' ? 'opacity-50' : ''}">
-                        <input type="radio" name="village" value="${village.id}" id="village${village.id}" class="mr-3" ${village.status === 'full' ? 'disabled' : ''}>
-                        <label for="village${village.id}" class="flex-1 cursor-pointer">
-                            <span class="font-medium">${village.name}</span>
-                            <span class="text-sm text-gray-500 ml-2">(Kuota: ${village.registered}/${village.quota})</span>
-                            ${village.status === 'full' ? '<span class="ml-2 text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">Penuh</span>' : ''}
-                        </label>
-                    </div>
-                `).join('');
+                const result = await response.json();
                 
-                // Update proposal village dropdown
-                const proposalVillage = document.getElementById('proposalVillage');
-                proposalVillage.innerHTML = '<option value="">Pilih Desa</option>' + 
-                    villages.filter(v => v.status !== 'full').map(v => 
-                        `<option value="${v.id}">${v.name}</option>`
-                    ).join('');
+                if (result.success) {
+                    const user = result.data;
                     
-            } catch (error) {
-                console.error('Error loading villages:', error);
-            }
-        }
-        
-        // Load KKN data
-        async function loadKKNData() {
-            try {
-                // Simulate API call
-                await new Promise(resolve => setTimeout(resolve, 1500));
-                
-                kknData = {
-                    hasRegistration: true,
-                    registration: {
-                        status: 'approved',
-                        date: '2024-06-10',
-                        village: 'Desa Sukamaju'
-                    },
-                    proposal: {
-                        status: 'pending',
-                        date: '2024-06-15',
-                        title: 'Digitalisasi UMKM Desa Sukamaju'
-                    },
-                    verification: {
-                        status: 'verified',
-                        date: '2024-06-12'
-                    },
-                    outputs: [
-                        { type: 'Video Cinematik', date: '2024-07-20', status: 'approved' },
-                        { type: 'Poster Kegiatan', date: '2024-07-20', status: 'pending' }
-                    ]
-                };
-                
-                updateStatusUI();
-                
-            } catch (error) {
-                console.error('Error loading KKN data:', error);
-            }
-        }
-        
-        // Update status UI
-        function updateStatusUI() {
-            if (!kknData) return;
-            
-            // Update status cards
-            document.getElementById('statusPendaftaran').textContent = 
-                kknData.registration?.status === 'approved' ? 'Disetujui' : 
-                kknData.registration?.status === 'pending' ? 'Menunggu' : 'Belum Daftar';
-                
-            document.getElementById('statusProposal').textContent = 
-                kknData.proposal?.status === 'approved' ? 'Disetujui' :
-                kknData.proposal?.status === 'pending' ? 'Dalam Review' : 'Belum Upload';
-                
-            document.getElementById('statusVerifikasi').textContent = 
-                kknData.verification?.status === 'verified' ? 'Terverifikasi' : 'Belum';
-                
-            document.getElementById('statusLuaran').textContent = 
-                kknData.outputs?.length > 0 ? kknData.outputs.length + ' Upload' : 'Belum Input';
-            
-            // Update overall status
-            const overallStatus = document.getElementById('overallStatus');
-            if (kknData.registration?.status === 'approved' && kknData.proposal?.status === 'pending') {
-                overallStatus.textContent = 'Dalam Proses';
-                overallStatus.className = 'ml-2 status-badge pending';
-            } else if (kknData.registration?.status === 'approved' && kknData.proposal?.status === 'approved') {
-                overallStatus.textContent = 'Aktif';
-                overallStatus.className = 'ml-2 status-badge approved';
-            } else {
-                overallStatus.textContent = 'Belum Mulai';
-                overallStatus.className = 'ml-2 status-badge pending';
-            }
-            
-            // Update stepper
-            updateStepper();
-            
-            // Update timeline
-            updateTimeline();
-            
-            // Update riwayat table
-            updateRiwayatTable();
-            
-            // Update proposal status
-            updateProposalStatus();
-            
-            // Update luaran table
-            updateLuaranTable();
-        }
-        
-        // Update stepper
-        function updateStepper() {
-            const steps = {
-                1: { element: document.getElementById('step1'), status: kknData.registration?.status },
-                2: { element: document.getElementById('step2'), status: kknData.proposal?.status },
-                3: { element: document.getElementById('step3'), status: kknData.verification?.status },
-                4: { element: document.getElementById('step4'), status: kknData.outputs?.length > 0 ? 'completed' : 'pending' }
-            };
-            
-            for (let i = 1; i <= 4; i++) {
-                const step = steps[i];
-                step.element.classList.remove('active', 'completed');
-                
-                if (step.status === 'approved' || step.status === 'verified' || (i === 4 && step.status === 'completed')) {
-                    step.element.classList.add('completed');
-                    document.getElementById(`step${i}Status`).textContent = 'Selesai';
-                } else if (step.status === 'pending' || (i === 3 && step.status === 'verified')) {
-                    step.element.classList.add('active');
-                    document.getElementById(`step${i}Status`).textContent = 'Dalam Proses';
+                    // Update tampilan header
+                    document.getElementById('userNameDisplay').textContent = user.nama_lengkap || 'Mahasiswa';
+                    document.getElementById('userNimDisplay').textContent = user.nim || '-';
+                    
+                    // Isi form pendaftaran
+                    document.getElementById('namaLengkap').value = user.nama_lengkap || '';
+                    document.getElementById('nim').value = user.nim || '';
+                    
+                    // Isi field email
+                    const emailField = document.getElementById('email');
+                    if (emailField) {
+                        emailField.value = user.email || '';
+                    }
+                    
+                    // Isi field no hp jika ada
+                    const noHpField = document.getElementById('noHp');
+                    if (noHpField && user.no_hp) {
+                        noHpField.value = user.no_hp;
+                    }
+                    
+                    // Simpan id_prodi untuk auto-select
+                    if (user.id_prodi) {
+                        window.userProdiId = user.id_prodi;
+                    }
+                    
+                    // Update foto profil di header jika ada
+                    if (user.foto_profil) {
+                        const fotoElement = document.querySelector('img[alt="Profile"]');
+                        if (fotoElement) {
+                            fotoElement.src = `http://localhost:3000${user.foto_profil}`;
+                        }
+                    }
+                    
+                    // Update localStorage
+                    localStorage.setItem('user', JSON.stringify({
+                        id_user: user.id_user,
+                        nama_lengkap: user.nama_lengkap,
+                        nim: user.nim,
+                        email: user.email,
+                        no_hp: user.no_hp,
+                        id_prodi: user.id_prodi,
+                        nama_prodi: user.nama_prodi
+                    }));
+                    
+                    return user;
                 } else {
-                    document.getElementById(`step${i}Status`).textContent = 'Belum Dimulai';
+                    console.error('Failed to load user data:', result.message);
+                    // Fallback ke localStorage
+                    const user = getUser();
+                    if (user) {
+                        updateUserInfo();
+                        document.getElementById('namaLengkap').value = user.nama_lengkap || user.name || '';
+                        document.getElementById('nim').value = user.nim || '';
+                        
+                        const emailField = document.getElementById('email');
+                        if (emailField) {
+                            emailField.value = user.email || '';
+                        }
+                    }
+                    return null;
                 }
+            } catch (error) {
+                console.error('Error loading user data:', error);
+                
+                // Fallback ke localStorage
+                const user = getUser();
+                if (user) {
+                    updateUserInfo();
+                    document.getElementById('namaLengkap').value = user.nama_lengkap || user.name || '';
+                    document.getElementById('nim').value = user.nim || '';
+                    
+                    const emailField = document.getElementById('email');
+                    if (emailField) {
+                        emailField.value = user.email || '';
+                    }
+                }
+                
+                showNotification('Gagal memuat data user', false);
+                return null;
             }
         }
-        
-        // Update timeline
-        function updateTimeline() {
-            const timeline = document.getElementById('timelineDetails');
-            
-            const items = [
-                {
-                    title: 'Pendaftaran KKN',
-                    status: kknData.registration?.status,
-                    description: kknData.registration?.status === 'approved' ? 
-                        'Pendaftaran telah diverifikasi dan disetujui' : 
-                        kknData.registration?.status === 'pending' ? 
-                        'Pendaftaran sedang dalam proses verifikasi' : 
-                        'Belum melakukan pendaftaran',
-                    date: kknData.registration?.date || '-'
-                },
-                {
-                    title: 'Pengajuan Proposal',
-                    status: kknData.proposal?.status,
-                    description: kknData.proposal?.status === 'approved' ? 
-                        'Proposal telah disetujui' : 
-                        kknData.proposal?.status === 'pending' ? 
-                        'Proposal sedang direview oleh DPL' : 
-                        'Belum mengajukan proposal',
-                    date: kknData.proposal?.date || '-'
-                },
-                {
-                    title: 'Pelaksanaan KKN',
-                    status: kknData.registration?.status === 'approved' && kknData.proposal?.status === 'approved' ? 'active' : 'pending',
-                    description: 'Menunggu persetujuan proposal dan jadwal pelaksanaan',
-                    date: '-'
-                },
-                {
-                    title: 'Input Luaran',
-                    status: kknData.outputs?.length > 0 ? 'completed' : 'pending',
-                    description: kknData.outputs?.length > 0 ? 
-                        'Luaran telah diupload' : 
-                        'Upload luaran setelah pelaksanaan',
-                    date: '-'
+
+        // Load program studi
+        async function loadProgramStudi() {
+            try {
+                // Coba endpoint baru dulu
+                let response = await fetch(`${API_BASE_URL}/mahasiswa/kkn/program-studi`, {
+                    headers: getHeaders()
+                });
+                
+                // Jika 404, coba endpoint fakultas
+                if (response.status === 404) {
+                    response = await fetch(`${API_BASE_URL}/fakultas/program-studi`, {
+                        headers: getHeaders()
+                    });
                 }
-            ];
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    programStudi = result.data;
+                    const select = document.getElementById('programStudi');
+                    
+                    let options = '<option value="">Pilih Program Studi</option>';
+                    programStudi.forEach(prodi => {
+                        const selected = (window.userProdiId && window.userProdiId === prodi.id_prodi) ? 'selected' : '';
+                        options += `<option value="${prodi.id_prodi}" ${selected}>${prodi.nama_prodi} (${prodi.jenjang || 'S1'})</option>`;
+                    });
+                    
+                    select.innerHTML = options;
+                }
+            } catch (error) {
+                console.error('Error loading program studi:', error);
+            }
+        }
+
+        // Load daftar kabupaten untuk filter
+        async function loadKabupatenList() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/mahasiswa/kkn/kabupaten-list`, {
+                    headers: getHeaders()
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    const filterSelect = document.getElementById('filterKabupaten');
+                    filterSelect.innerHTML = '<option value="">Semua Kabupaten</option>' +
+                        result.data.map(kab => `<option value="${kab}">${kab}</option>`).join('');
+                }
+            } catch (error) {
+                console.error('Error loading kabupaten list:', error);
+            }
+        }
+
+        // Load desa tersedia dengan filter
+        async function loadDesaTersedia(search = '', kabupaten = '') {
+            try {
+                let url = `${API_BASE_URL}/mahasiswa/kkn/desa-tersedia`;
+                const params = new URLSearchParams();
+                
+                if (search) params.append('search', search);
+                if (kabupaten) params.append('kabupaten', kabupaten);
+                
+                if (params.toString()) {
+                    url += '?' + params.toString();
+                }
+                
+                const response = await fetch(url, {
+                    headers: getHeaders()
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    villages = result.data;
+                    renderVillages();
+                }
+            } catch (error) {
+                console.error('Error loading desa:', error);
+                showNotification('Gagal memuat data desa', false);
+            }
+        }
+
+        // Load dashboard data
+        async function loadDashboard() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/mahasiswa/kkn/dashboard`, {
+                    headers: getHeaders()
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    kknData = result.data;
+                    updateDashboardUI();
+                }
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+            }
+        }
+
+        // Load status
+        async function loadStatus() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/mahasiswa/kkn/status`, {
+                    headers: getHeaders()
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    updateStatusCards(result.data);
+                }
+            } catch (error) {
+                console.error('Error loading status:', error);
+            }
+        }
+
+        // Load timeline
+        async function loadTimeline() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/mahasiswa/kkn/timeline`, {
+                    headers: getHeaders()
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    renderTimeline(result.data);
+                }
+            } catch (error) {
+                console.error('Error loading timeline:', error);
+            }
+        }
+
+        // Load riwayat
+        async function loadRiwayat() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/mahasiswa/kkn/riwayat?page=1&limit=10`, {
+                    headers: getHeaders()
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    renderRiwayatTable(result.data);
+                }
+            } catch (error) {
+                console.error('Error loading riwayat:', error);
+            }
+        }
+
+        // Load luaran data
+        async function loadLuaranData() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/mahasiswa/kkn/luaran`, {
+                    headers: getHeaders()
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    renderLuaranTable(result.data);
+                }
+            } catch (error) {
+                console.error('Error loading luaran:', error);
+            }
+        }
+
+        // Load informasi desa untuk form luaran
+        async function loadDesaInfo() {
+            try {
+                if (kknData.registrasi && kknData.registrasi.desa_kkn) {
+                    document.getElementById('luaranDesa').value = kknData.registrasi.desa_kkn.nama_desa || '';
+                }
+            } catch (error) {
+                console.error('Error loading desa info:', error);
+            }
+        }
+
+        // ==================== RENDER FUNCTIONS ====================
+
+        function renderVillages() {
+            const container = document.getElementById('villageContainer');
             
-            timeline.innerHTML = items.map((item, index) => {
-                const statusClass = item.status === 'approved' || item.status === 'completed' ? 'completed' : 
-                                   item.status === 'pending' || item.status === 'active' ? 'active' : '';
+            if (!villages || villages.length === 0) {
+                container.innerHTML = '<div class="col-span-2 text-center text-gray-500 py-4">Tidak ada desa tersedia</div>';
+                return;
+            }
+            
+            container.innerHTML = villages.map(village => {
+                const sisaKuota = village.sisa_kuota || 0;
+                const isFull = sisaKuota <= 0;
+                const persenTerisi = village.persentase_terisi || 0;
                 
                 return `
-                    <div class="timeline-item ${statusClass}">
-                        <div class="timeline-dot"></div>
-                        <div class="ml-4">
-                            <div class="flex items-center">
-                                <h4 class="font-semibold text-gray-800">${item.title}</h4>
-                                <span class="ml-3 text-xs ${
-                                    item.status === 'approved' ? 'bg-green-100 text-green-800' :
-                                    item.status === 'pending' ? 'bg-blue-100 text-blue-800' :
-                                    'bg-gray-100 text-gray-800'
-                                } px-2 py-1 rounded-full">
-                                    ${item.status === 'approved' ? 'Selesai' :
-                                      item.status === 'pending' ? 'Dalam Proses' :
-                                      item.status === 'active' ? 'Aktif' : 'Menunggu'}
-                                </span>
-                            </div>
-                            <p class="text-sm text-gray-600">${item.description}</p>
-                            ${item.date !== '-' ? `<p class="text-xs text-gray-400 mt-1">${item.date}</p>` : ''}
+                    <div class="border rounded-lg p-4 hover:shadow-md transition-shadow ${isFull ? 'opacity-50 bg-gray-50' : 'hover:border-purple-300'}">
+                        <div class="flex items-start">
+                            <input type="radio" name="village" value="${village.id_desa}" 
+                                id="village${village.id_desa}" class="mt-1 mr-3" ${isFull ? 'disabled' : ''}>
+                            <label for="village${village.id_desa}" class="flex-1 cursor-pointer">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-semibold text-gray-800">${village.nama_desa}</h4>
+                                        <p class="text-sm text-gray-600">${village.kecamatan || '-'}, ${village.kabupaten}</p>
+                                    </div>
+                                    <span class="text-xs px-2 py-1 rounded-full ${
+                                        isFull ? 'bg-red-100 text-red-800' : 
+                                        sisaKuota < 5 ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'
+                                    }">
+                                        Sisa ${sisaKuota} kuota
+                                    </span>
+                                </div>
+                                
+                                <!-- Progress bar kuota -->
+                                <div class="mt-2">
+                                    <div class="flex justify-between text-xs text-gray-500 mb-1">
+                                        <span>Kuota: ${village.kuota_terisi || 0}/${village.kuota}</span>
+                                        <span>${persenTerisi}% terisi</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-purple-600 h-2 rounded-full" style="width: ${persenTerisi}%"></div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Info pembimbing -->
+                                <div class="mt-2 text-xs text-gray-500">
+                                    <i class="fas fa-user mr-1"></i> Pembimbing: ${village.nama_pembimbing_lapangan || 'Belum ditentukan'}
+                                </div>
+                                
+                                <!-- Deskripsi singkat -->
+                                ${village.deskripsi ? `
+                                    <p class="mt-2 text-sm text-gray-600 line-clamp-2">${village.deskripsi}</p>
+                                ` : ''}
+                            </label>
                         </div>
                     </div>
                 `;
             }).join('');
         }
-        
-        // Update riwayat table
-        function updateRiwayatTable() {
+
+        function updateDashboardUI() {
+            updateStatusCards();
+            renderTimeline();
+            renderRiwayatTable();
+            updateOverallStatus();
+        }
+
+        function updateStatusCards(statusData) {
+            const data = statusData || kknData;
+            
+            document.getElementById('statusPendaftaran').textContent = 
+                getStatusText(data.registrasi?.status || 'belum_daftar');
+            
+            document.getElementById('statusVerifikasi').textContent = 
+                data.registrasi?.status === 'verified' ? 'Terverifikasi' : 
+                data.registrasi?.status === 'approved' ? 'Disetujui' : 'Belum';
+            
+            document.getElementById('statusLuaran').textContent = 
+                data.luaran?.length > 0 ? data.luaran.length + ' Upload' : 'Belum Input';
+        }
+
+        function updateOverallStatus() {
+            const overallStatus = document.getElementById('overallStatus');
+            
+            if (!kknData.registrasi) {
+                overallStatus.textContent = 'Belum Daftar';
+                overallStatus.className = 'ml-2 status-badge pending';
+            } else if (kknData.registrasi.status === 'pending') {
+                overallStatus.textContent = 'Menunggu Verifikasi';
+                overallStatus.className = 'ml-2 status-badge pending';
+            } else if (kknData.registrasi.status === 'approved') {
+                overallStatus.textContent = 'Aktif';
+                overallStatus.className = 'ml-2 status-badge approved';
+            } else if (kknData.registrasi.status === 'verified') {
+                overallStatus.textContent = 'Selesai';
+                overallStatus.className = 'ml-2 status-badge completed';
+            } else if (kknData.registrasi.status === 'rejected') {
+                overallStatus.textContent = 'Ditolak';
+                overallStatus.className = 'ml-2 status-badge rejected';
+            }
+        }
+
+        function renderTimeline(timelineData) {
+            const timeline = document.getElementById('timelineDetails');
+            const data = timelineData || kknData.timeline || [];
+            
+            if (data.length === 0) {
+                timeline.innerHTML = '<div class="text-center text-gray-500 py-4">Belum ada data timeline</div>';
+                return;
+            }
+
+            // Update stepper
+            data.forEach((item, index) => {
+                const stepEl = document.getElementById(`step${index + 1}`);
+                const statusEl = document.getElementById(`step${index + 1}Status`);
+                
+                if (stepEl && statusEl) {
+                    stepEl.classList.remove('active', 'completed');
+                    
+                    if (item.is_completed) {
+                        stepEl.classList.add('completed');
+                        statusEl.textContent = 'Selesai';
+                    } else if (item.is_active) {
+                        stepEl.classList.add('active');
+                        statusEl.textContent = 'Berlangsung';
+                    } else {
+                        statusEl.textContent = 'Menunggu';
+                    }
+                }
+            });
+            
+            timeline.innerHTML = data.map(item => `
+                <div class="timeline-item ${item.is_completed ? 'completed' : item.is_active ? 'active' : ''}">
+                    <div class="timeline-dot"></div>
+                    <div class="ml-4">
+                        <div class="flex items-center">
+                            <h4 class="font-semibold text-gray-800">${item.title}</h4>
+                            <span class="ml-3 text-xs ${
+                                item.is_completed ? 'bg-green-100 text-green-800' :
+                                item.is_active ? 'bg-blue-100 text-blue-800' :
+                                'bg-gray-100 text-gray-800'
+                            } px-2 py-1 rounded-full">
+                                ${item.is_completed ? 'Selesai' : item.is_active ? 'Aktif' : 'Menunggu'}
+                            </span>
+                        </div>
+                        <p class="text-sm text-gray-600">${item.description}</p>
+                        ${item.date ? `<p class="text-xs text-gray-400 mt-1">${formatDate(item.date)}</p>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderRiwayatTable(riwayatData) {
             const table = document.getElementById('riwayatTable');
+            const data = riwayatData || [];
             
-            const rows = [];
-            
-            if (kknData.registration) {
-                rows.push({
-                    type: 'Pendaftaran',
-                    icon: 'fa-file-signature',
-                    color: 'blue',
-                    date: kknData.registration.date,
-                    status: kknData.registration.status,
-                    description: kknData.registration.village,
-                    action: 'pendaftaran'
-                });
-            }
-            
-            if (kknData.proposal) {
-                rows.push({
-                    type: 'Proposal',
-                    icon: 'fa-file-alt',
-                    color: 'purple',
-                    date: kknData.proposal.date,
-                    status: kknData.proposal.status,
-                    description: kknData.proposal.title,
-                    action: 'proposal'
-                });
-            }
-            
-            if (rows.length === 0) {
+            if (!data || data.length === 0) {
                 table.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">Belum ada riwayat pengajuan</td></tr>';
                 return;
             }
             
-            table.innerHTML = rows.map(row => `
+            table.innerHTML = data.map(item => `
                 <tr>
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex items-center">
-                            <i class="fas ${row.icon} text-${row.color}-500 mr-2"></i>
-                            <span class="text-sm text-gray-900">${row.type}</span>
+                            <i class="fas ${item.jenis === 'pendaftaran' ? 'fa-file-signature' : 'fa-tasks'} text-purple-500 mr-2"></i>
+                            <span class="text-sm text-gray-900">${item.jenis === 'pendaftaran' ? 'Pendaftaran' : 'Luaran'}</span>
                         </div>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${row.date}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatDate(item.tanggal)}</td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="status-badge ${
-                            row.status === 'approved' ? 'approved' :
-                            row.status === 'pending' ? 'pending' : 'rejected'
-                        }">${
-                            row.status === 'approved' ? 'Disetujui' :
-                            row.status === 'pending' ? 'Diproses' : 'Ditolak'
-                        }</span>
+                        <span class="status-badge ${getStatusBadge(item.status)}">${getStatusText(item.status)}</span>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${row.description}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item.keterangan}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm">
-                        <button class="text-blue-600 hover:text-blue-800 mr-2" onclick="viewDetail('${row.type}')">
+                        <button class="text-blue-600 hover:text-blue-800" onclick="viewDetail('${item.jenis}', '${item.id}')">
                             <i class="fas fa-eye"></i>
                         </button>
-                        ${row.type === 'Proposal' && row.status === 'pending' ? `
-                            <button class="text-green-600 hover:text-green-800" onclick="editProposal()">
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderLuaranTable(luaranData) {
+            const table = document.getElementById('luaranTable');
+            const data = luaranData || [];
+            
+            if (!data || data.length === 0) {
+                table.innerHTML = '<tr><td colspan="4" class="px-6 py-4 text-center text-gray-500">Belum ada luaran yang diupload</td></tr>';
+                return;
+            }
+            
+            table.innerHTML = data.map(item => `
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap">${item.judul_kegiatan}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${formatDate(item.created_at)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="status-badge ${getStatusBadge(item.status)}">${getStatusText(item.status)}</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <button class="text-blue-600 hover:text-blue-800 mr-2" onclick="viewLuaranDetail('${item.id_luaran}')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        ${item.status === 'pending' ? `
+                            <button class="text-green-600 hover:text-green-800" onclick="editLuaran('${item.id_luaran}')">
                                 <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-600 hover:text-red-800" onclick="deleteLuaran('${item.id_luaran}')">
+                                <i class="fas fa-trash"></i>
                             </button>
                         ` : ''}
                     </td>
                 </tr>
             `).join('');
         }
+
+        // ==================== HELPER FUNCTIONS ====================
+
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('id-ID', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+        }
+
+        function getStatusBadge(status) {
+            const badges = {
+                'pending': 'pending',
+                'approved': 'approved',
+                'rejected': 'rejected',
+                'verified': 'verified'
+            };
+            return badges[status] || 'pending';
+        }
+
+        function getStatusText(status) {
+            const texts = {
+                'pending': 'Menunggu',
+                'approved': 'Disetujui',
+                'rejected': 'Ditolak',
+                'verified': 'Terverifikasi',
+                'belum_daftar': 'Belum Daftar',
+                'belum_input': 'Belum Input'
+            };
+            return texts[status] || status;
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // ==================== SECTION NAVIGATION ====================
         
-        // Update proposal status
-        function updateProposalStatus() {
-            const container = document.getElementById('proposalStatus');
-            const reviewContainer = document.getElementById('reviewHistory');
+        function showSection(section) {
+            document.querySelectorAll('.section-content').forEach(el => {
+                el.classList.add('hidden');
+            });
             
-            if (kknData.proposal) {
-                container.innerHTML = `
-                    <div class="flex items-center justify-between mb-3">
-                        <span class="text-sm font-medium text-gray-600">Status:</span>
-                        <span class="status-badge ${kknData.proposal.status}">${
-                            kknData.proposal.status === 'approved' ? 'Disetujui' :
-                            kknData.proposal.status === 'pending' ? 'Dalam Review' : 'Ditolak'
-                        }</span>
-                    </div>
-                    <div class="flex items-center justify-between mb-3">
-                        <span class="text-sm font-medium text-gray-600">Tanggal Pengajuan:</span>
-                        <span class="text-sm">${kknData.proposal.date}</span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <span class="text-sm font-medium text-gray-600">Judul:</span>
-                        <span class="text-sm">${kknData.proposal.title}</span>
-                    </div>
-                `;
-                
-                reviewContainer.innerHTML = `
-                    <div class="p-3 bg-gray-50 rounded-lg">
-                        <div class="flex items-center justify-between mb-1">
-                            <span class="text-sm font-medium">Dosen Pembimbing</span>
-                            <span class="text-xs text-gray-500">2 jam lalu</span>
-                        </div>
-                        <p class="text-sm text-gray-600">Proposal sedang direview, mohon tunggu konfirmasi lebih lanjut.</p>
-                    </div>
-                    <div class="p-3 bg-gray-50 rounded-lg">
-                        <div class="flex items-center justify-between mb-1">
-                            <span class="text-sm font-medium">Admin LPPM</span>
-                            <span class="text-xs text-gray-500">1 hari lalu</span>
-                        </div>
-                        <p class="text-sm text-gray-600">Berkas pendaftaran telah diverifikasi, silakan ajukan proposal.</p>
-                    </div>
-                `;
-            } else {
-                container.innerHTML = '<p class="text-center text-gray-500 py-4">Belum mengajukan proposal</p>';
-                reviewContainer.innerHTML = '<p class="text-center text-gray-500 py-4">Belum ada riwayat review</p>';
+            document.querySelectorAll('.tab-button').forEach(el => {
+                el.classList.remove('active');
+            });
+            
+            document.getElementById(`section${section.charAt(0).toUpperCase() + section.slice(1)}`).classList.remove('hidden');
+            document.getElementById(`tab${section.charAt(0).toUpperCase() + section.slice(1)}`).classList.add('active');
+            
+            // Load data sesuai section
+            if (section === 'pendaftaran') {
+                loadProgramStudi();
+                loadKabupatenList();
+                loadDesaTersedia();
+            } else if (section === 'luaran') {
+                loadLuaranData();
+                loadDesaInfo();
             }
         }
-        
-        // Update luaran table
-        function updateLuaranTable() {
-            const table = document.getElementById('luaranTable');
-            
-            if (kknData.outputs && kknData.outputs.length > 0) {
-                table.innerHTML = kknData.outputs.map(output => `
-                    <tr>
-                        <td class="px-6 py-4 whitespace-nowrap">${output.type}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">${output.date}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="status-badge ${
-                                output.status === 'approved' ? 'approved' :
-                                output.status === 'pending' ? 'pending' : 'rejected'
-                            }">${
-                                output.status === 'approved' ? 'Terverifikasi' :
-                                output.status === 'pending' ? 'Dalam Review' : 'Ditolak'
-                            }</span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <button class="text-blue-600 hover:text-blue-800"><i class="fas fa-eye"></i></button>
-                        </td>
-                    </tr>
-                `).join('');
-            } else {
-                table.innerHTML = '<tr><td colspan="4" class="px-6 py-4 text-center text-gray-500">Belum ada luaran yang diupload</td></tr>';
-            }
-        }
-        
-        // Handle form submissions
-        document.getElementById('kknForm')?.addEventListener('submit', function(e) {
+
+        // ==================== FORM HANDLERS ====================
+
+        // Handle pendaftaran KKN
+        document.getElementById('kknForm')?.addEventListener('submit', async function(e) {
             e.preventDefault();
             
+            if (!document.getElementById('agreeTerms').checked) {
+                showNotification('Anda harus menyetujui persyaratan', false);
+                return;
+            }
+
+            const selectedVillage = document.querySelector('input[name="village"]:checked');
+            if (!selectedVillage) {
+                showNotification('Pilih desa penempatan', false);
+                return;
+            }
+
+            const selectedJacket = document.querySelector('input[name="jacketSize"]:checked');
+            if (!selectedJacket) {
+                showNotification('Pilih ukuran jaket', false);
+                return;
+            }
+
+            // Validasi file
+            if (!document.getElementById('krsFile').files[0]) {
+                showNotification('Upload file KRS', false);
+                return;
+            }
+            if (!document.getElementById('khsFile').files[0]) {
+                showNotification('Upload file KHS', false);
+                return;
+            }
+            if (!document.getElementById('paymentFile').files[0]) {
+                showNotification('Upload file bukti pembayaran', false);
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('id_prodi', document.getElementById('programStudi').value);
+            formData.append('id_desa', selectedVillage.value);
+            formData.append('no_hp', document.getElementById('noHp').value);
+            formData.append('semester', document.getElementById('semester').value);
+            formData.append('ukuran_jaket', selectedJacket.value);
+            
+            // File uploads
+            formData.append('krs_file', document.getElementById('krsFile').files[0]);
+            formData.append('khs_file', document.getElementById('khsFile').files[0]);
+            formData.append('payment_file', document.getElementById('paymentFile').files[0]);
+
             Swal.fire({
                 title: 'Konfirmasi Pendaftaran',
                 text: 'Apakah Anda yakin ingin mendaftar KKN?',
@@ -1161,60 +1367,63 @@
                 cancelButtonColor: '#6B7280',
                 confirmButtonText: 'Ya, Daftar!',
                 cancelButtonText: 'Batal'
-            }).then((result) => {
+            }).then(async (result) => {
                 if (result.isConfirmed) {
                     showLoading();
                     
-                    // Simulate API call
-                    setTimeout(() => {
-                        hideLoading();
-                        Swal.fire({
-                            title: 'Berhasil!',
-                            text: 'Pendaftaran KKN Anda telah diterima',
-                            icon: 'success',
-                            confirmButtonColor: '#8B5CF6'
-                        }).then(() => {
-                            // Refresh data
-                            loadKKNData().then(() => {
+                    try {
+                        const response = await fetch(`${API_BASE_URL}/mahasiswa/kkn/daftar`, {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${getToken()}`
+                            },
+                            body: formData
+                        });
+                        
+                        const result = await response.json();
+                        
+                        if (result.success) {
+                            Swal.fire({
+                                title: 'Berhasil!',
+                                text: 'Pendaftaran KKN berhasil dikirim',
+                                icon: 'success',
+                                confirmButtonColor: '#8B5CF6'
+                            }).then(() => {
+                                document.getElementById('kknForm').reset();
+                                loadDashboard();
+                                loadStatus();
+                                loadTimeline();
+                                loadRiwayat();
                                 showSection('proses');
                             });
-                        });
-                    }, 1500);
-                }
-            });
-        });
-        
-        document.getElementById('proposalForm')?.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            Swal.fire({
-                title: 'Ajukan Proposal',
-                text: 'Proposal akan direview oleh DPL. Lanjutkan?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#8B5CF6',
-                confirmButtonText: 'Ya, Ajukan'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    showLoading();
-                    
-                    setTimeout(() => {
+                        } else {
+                            showNotification(result.message || 'Gagal mendaftar', false);
+                        }
+                    } catch (error) {
+                        console.error('Error submitting form:', error);
+                        showNotification('Terjadi kesalahan: ' + error.message, false);
+                    } finally {
                         hideLoading();
-                        Swal.fire({
-                            title: 'Berhasil!',
-                            text: 'Proposal berhasil diajukan',
-                            icon: 'success',
-                            timer: 2000,
-                            showConfirmButton: false
-                        });
-                    }, 1500);
+                    }
                 }
             });
         });
-        
-        document.getElementById('luaranForm')?.addEventListener('submit', function(e) {
+
+        // Handle simpan luaran
+        document.getElementById('luaranForm')?.addEventListener('submit', async function(e) {
             e.preventDefault();
+
+            const formData = new FormData();
+            formData.append('judul_kegiatan', document.getElementById('luaranJudul').value);
+            formData.append('link_video', document.getElementById('linkVideo').value);
+            formData.append('link_poster', document.getElementById('linkPoster').value);
+            formData.append('link_foto', document.getElementById('linkFoto').value);
+            formData.append('keterangan', document.getElementById('luaranKeterangan').value);
             
+            if (document.getElementById('mouFile').files[0]) {
+                formData.append('mou_file', document.getElementById('mouFile').files[0]);
+            }
+
             Swal.fire({
                 title: 'Simpan Luaran',
                 text: 'Pastikan semua data sudah benar',
@@ -1222,69 +1431,168 @@
                 showCancelButton: true,
                 confirmButtonColor: '#8B5CF6',
                 confirmButtonText: 'Simpan'
-            }).then((result) => {
+            }).then(async (result) => {
                 if (result.isConfirmed) {
                     showLoading();
                     
-                    setTimeout(() => {
-                        hideLoading();
-                        Swal.fire({
-                            title: 'Tersimpan!',
-                            text: 'Data luaran berhasil disimpan',
-                            icon: 'success',
-                            timer: 1500,
-                            showConfirmButton: false
+                    try {
+                        const response = await fetch(`${API_BASE_URL}/mahasiswa/kkn/luaran/simpan`, {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${getToken()}`
+                            },
+                            body: formData
                         });
-                    }, 1500);
+                        
+                        const result = await response.json();
+                        
+                        if (result.success) {
+                            Swal.fire({
+                                title: 'Tersimpan!',
+                                text: 'Data luaran berhasil disimpan',
+                                icon: 'success',
+                                timer: 1500,
+                                showConfirmButton: false
+                            }).then(() => {
+                                document.getElementById('luaranForm').reset();
+                                loadLuaranData();
+                                showSection('proses');
+                            });
+                        } else {
+                            showNotification(result.message || 'Gagal menyimpan', false);
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        showNotification('Terjadi kesalahan', false);
+                    } finally {
+                        hideLoading();
+                    }
                 }
             });
         });
-        
-        // Fungsi-fungsi tambahan
-        function viewDetail(type) {
+
+        // ==================== ACTION FUNCTIONS ====================
+
+        async function viewDetail(jenis, id) {
+            try {
+                const endpoint = jenis === 'pendaftaran' ? 'riwayat' : 'luaran';
+                const response = await fetch(`${API_BASE_URL}/mahasiswa/kkn/${endpoint}/${id}`, {
+                    headers: getHeaders()
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    const data = result.data;
+                    let html = '';
+                    
+                    if (jenis === 'pendaftaran') {
+                        html = `
+                            <div class="text-left space-y-2">
+                                <p><strong>No. Registrasi:</strong> ${data.no_registrasi || '-'}</p>
+                                <p><strong>Desa:</strong> ${data.desa_kkn?.nama_desa || '-'}</p>
+                                <p><strong>Semester:</strong> ${data.angkatan || '-'}</p>
+                                <p><strong>Ukuran Jaket:</strong> ${data.ukuran_jaket || '-'}</p>
+                                <p><strong>Tanggal Daftar:</strong> ${formatDate(data.tanggal_daftar)}</p>
+                                <p><strong>Status:</strong> ${getStatusText(data.status)}</p>
+                                ${data.catatan ? `<p><strong>Catatan:</strong> ${data.catatan}</p>` : ''}
+                            </div>
+                        `;
+                    } else {
+                        html = `
+                            <div class="text-left space-y-2">
+                                <p><strong>Judul Kegiatan:</strong> ${data.judul_kegiatan}</p>
+                                <p><strong>Link Video:</strong> ${data.link_video ? `<a href="${data.link_video}" target="_blank" class="text-blue-600">Lihat</a>` : '-'}</p>
+                                <p><strong>Link Poster:</strong> ${data.link_poster ? `<a href="${data.link_poster}" target="_blank" class="text-blue-600">Lihat</a>` : '-'}</p>
+                                <p><strong>Link Foto:</strong> ${data.link_foto ? `<a href="${data.link_foto}" target="_blank" class="text-blue-600">Lihat</a>` : '-'}</p>
+                                <p><strong>Tanggal Upload:</strong> ${formatDate(data.created_at)}</p>
+                                <p><strong>Status:</strong> ${getStatusText(data.status)}</p>
+                                ${data.catatan_review ? `<p><strong>Catatan Review:</strong> ${data.catatan_review}</p>` : ''}
+                            </div>
+                        `;
+                    }
+                    
+                    Swal.fire({
+                        title: `Detail ${jenis === 'pendaftaran' ? 'Pendaftaran' : 'Luaran'}`,
+                        html: html,
+                        icon: 'info',
+                        confirmButtonColor: '#8B5CF6'
+                    });
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification('Gagal memuat detail', false);
+            }
+        }
+
+        async function viewLuaranDetail(id) {
+            await viewDetail('luaran', id);
+        }
+
+        async function editLuaran(id) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/mahasiswa/kkn/luaran/${id}`, {
+                    headers: getHeaders()
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    const data = result.data;
+                    document.getElementById('luaranJudul').value = data.judul_kegiatan || '';
+                    document.getElementById('linkVideo').value = data.link_video || '';
+                    document.getElementById('linkPoster').value = data.link_poster || '';
+                    document.getElementById('linkFoto').value = data.link_foto || '';
+                    document.getElementById('luaranKeterangan').value = data.keterangan || '';
+                    
+                    showSection('luaran');
+                    
+                    document.getElementById('sectionLuaran').scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification('Gagal memuat data luaran', false);
+            }
+        }
+
+        async function deleteLuaran(id) {
             Swal.fire({
-                title: `Detail ${type}`,
-                html: `
-                    <div class="text-left">
-                        <p><strong>ID Pengajuan:</strong> KKN-2024-001</p>
-                        <p><strong>Tanggal:</strong> 10 Juni 2024</p>
-                        <p><strong>Status:</strong> Disetujui</p>
-                        <p><strong>Keterangan:</strong> Desa Sukamaju</p>
-                    </div>
-                `,
-                icon: 'info',
-                confirmButtonColor: '#8B5CF6'
+                title: 'Hapus Luaran',
+                text: 'Apakah Anda yakin ingin menghapus luaran ini?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6B7280',
+                confirmButtonText: 'Ya, Hapus',
+                cancelButtonText: 'Batal'
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    showLoading();
+                    try {
+                        const response = await fetch(`${API_BASE_URL}/mahasiswa/kkn/luaran/${id}`, {
+                            method: 'DELETE',
+                            headers: getHeaders()
+                        });
+                        
+                        const result = await response.json();
+                        
+                        if (result.success) {
+                            showNotification('Luaran berhasil dihapus', true);
+                            loadLuaranData();
+                            loadDashboard();
+                        } else {
+                            showNotification(result.message || 'Gagal menghapus', false);
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        showNotification('Terjadi kesalahan', false);
+                    } finally {
+                        hideLoading();
+                    }
+                }
             });
         }
-        
-        function editProposal() {
-            showSection('proposal');
-            
-            document.getElementById('sectionProposal').scrollIntoView({
-                behavior: 'smooth'
-            });
-        }
-        
-        function downloadProposal() {
-            Swal.fire({
-                title: 'Download Proposal',
-                text: 'File proposal akan diunduh',
-                icon: 'success',
-                timer: 1500,
-                showConfirmButton: false
-            });
-        }
-        
-        function saveDraft() {
-            Swal.fire({
-                title: 'Draft Tersimpan',
-                text: 'Proposal telah disimpan sebagai draft',
-                icon: 'success',
-                timer: 1500,
-                showConfirmButton: false
-            });
-        }
-        
+
         function cancelRegistration() {
             Swal.fire({
                 title: 'Batal',
@@ -1294,7 +1602,7 @@
                 showConfirmButton: false
             });
         }
-        
+
         function cancelLuaran() {
             Swal.fire({
                 title: 'Batal',
@@ -1304,23 +1612,55 @@
                 showConfirmButton: false
             });
         }
-        
-        // Initialize page
+
+        // ==================== INITIALIZATION ====================
+
         document.addEventListener('DOMContentLoaded', async function() {
-            // Check authentication first
-            if (!auth.requireRole('mahasiswa')) return;
-            
             showLoading();
             
             try {
-                // Update user info
-                updateUserInfo();
+                // Cek token
+                const token = getToken();
+                if (!token) {
+                    window.location.href = '../login.html';
+                    return;
+                }
                 
-                // Load data
+                // Load user data first
+                const user = await loadUserBasicData();
+                
+                if (!user) {
+                    return;
+                }
+                
+                // Load program studi
+                await loadProgramStudi();
+                
+                // Load data KKN
                 await Promise.all([
-                    loadVillages(),
-                    loadKKNData()
+                    loadDashboard(),
+                    loadStatus(),
+                    loadTimeline(),
+                    loadRiwayat(),
+                    loadKabupatenList(),
+                    loadDesaTersedia()
                 ]);
+                
+                // Setup filter listeners
+                const searchInput = document.getElementById('searchDesa');
+                const kabupatenFilter = document.getElementById('filterKabupaten');
+                
+                if (searchInput) {
+                    searchInput.addEventListener('input', debounce(() => {
+                        loadDesaTersedia(searchInput.value, kabupatenFilter?.value || '');
+                    }, 500));
+                }
+                
+                if (kabupatenFilter) {
+                    kabupatenFilter.addEventListener('change', () => {
+                        loadDesaTersedia(searchInput?.value || '', kabupatenFilter.value);
+                    });
+                }
                 
             } catch (error) {
                 console.error('Error initializing page:', error);

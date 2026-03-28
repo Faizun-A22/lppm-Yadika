@@ -18,6 +18,29 @@
         .nav-link:hover::after, .nav-link.active::after { width: 100%; left: 0; }
         .nav-link.active { color: #3B82F6; font-weight: 600; }
         
+        /* Pastikan header menggunakan struktur yang benar */
+header nav {
+    max-width: 100%;
+}
+
+/* Untuk responsive di layar kecil */
+@media (max-width: 1200px) {
+    .flex-1 {
+        overflow-x: auto;
+        padding-bottom: 5px;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .flex-1::-webkit-scrollbar {
+        height: 3px;
+    }
+    
+    .flex-1::-webkit-scrollbar-thumb {
+        background: #ccc;
+        border-radius: 3px;
+    }
+}
+
         /* Status Badges */
         .badge-pending { background-color: #fef3c7; color: #92400e; padding: 4px 8px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
         .badge-approved { background-color: #d1fae5; color: #065f46; padding: 4px 8px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
@@ -99,6 +122,38 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        /* Action Buttons */
+        .action-btn {
+            padding: 6px 10px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        /* Hidden class */
+        .hidden {
+            display: none !important;
+        }
+        
+        /* Form validation styles */
+        .input-error {
+            border-color: #ef4444 !important;
+        }
+        .error-message {
+            color: #ef4444;
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Chart Container */
+        .chart-container {
+            position: relative;
+            height: 250px;
+            width: 100%;
+        }
     </style>
 </head>
 <body class="bg-gray-50 font-sans antialiased">
@@ -110,90 +165,90 @@
         </div>
     </div>
 
-            <header class="fixed top-0 left-0 right-0 bg-white shadow-md z-50">
-            <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-                <!-- Logo and Brand -->
-                <a href="admin-dashboard.html" class="flex items-center space-x-3">
-                    <img src="images/logoyadika.png" alt="Logo" class="h-10 w-10">
-                    <div>
-                        <h1 class="text-xl font-bold gradient-text">LPPM Admin</h1>
-                        <p class="text-xs text-gray-500">ITB Yadika</p>
+    <header class="fixed top-0 left-0 right-0 bg-white shadow-md z-50">
+    <nav class="w-full px-6 py-4 flex justify-between items-center">
+        <!-- Logo and Brand -->
+        <a href="admin-dashboard.html" class="flex items-center space-x-3 flex-shrink-0">
+            <img src="yadika.png" alt="Logo" class="h-10 w-10">
+            <div>
+                <h1 class="text-xl font-bold gradient-text">LPPM Admin</h1>
+                <p class="text-xs text-gray-500">ITB Yadika</p>
+            </div>
+        </a>
+
+        <!-- Navigation Links - Full width dengan flex-grow -->
+        <div class="flex-1 flex items-center justify-center space-x-6">
+            <a href="admin-dashboard.html" class="nav-link text-gray-700 hover:text-blue-600 whitespace-nowrap">
+                <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+            </a>
+            <a href="manage-kegiatan.html" class="nav-link text-gray-700 hover:text-blue-600 whitespace-nowrap">
+                <i class="fas fa-calendar-alt mr-2"></i>Kegiatan & berita
+            </a>
+            <a href="manage-repository.html" class="nav-link text-gray-700 hover:text-blue-600 whitespace-nowrap">
+                <i class="fas fa-book mr-2"></i>Repository
+            </a>
+            <a href="admin_penelitian.html" class="nav-link text-gray-700 hover:text-blue-600 whitespace-nowrap">
+                <i class="fas fa-briefcase mr-2"></i>penelitian & Pengabdian
+            </a>
+            <a href="manage-magang-kkn.html" class="nav-link text-gray-700 hover:text-blue-600 whitespace-nowrap">
+                <i class="fas fa-briefcase mr-2"></i>Magang & KKN
+            </a>
+        </div>
+
+        <!-- User Profile / Notifications -->
+        <div class="flex items-center space-x-4 flex-shrink-0">
+            <!-- Notification Bell -->
+            <div class="relative">
+                <button onclick="toggleNotifications()" class="text-gray-600 hover:text-blue-600 relative">
+                    <i class="fas fa-bell text-xl"></i>
+                    <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center" id="notificationBadge">3</span>
+                </button>
+                <!-- Notification Dropdown -->
+                <div id="notificationDropdown" class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl hidden z-50">
+                    <div class="p-4 border-b">
+                        <h4 class="font-semibold">Notifikasi</h4>
                     </div>
-                </a>
-
-                <!-- Navigation Links -->
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="admin-dashboard.html" class="nav-link text-gray-700 hover:text-blue-600">
-                        <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
-                    </a>
-                    <a href="manage-kegiatan.html" class="nav-link text-gray-700 hover:text-blue-600">
-                        <i class="fas fa-calendar-alt mr-2"></i>Kegiatan & berita
-                    </a>
-                    <a href="manage-repository.html" class="nav-link text-gray-700 hover:text-blue-600">
-                        <i class="fas fa-book mr-2"></i>Repository
-                    </a>
-                    <a href="admin_penelitian.html" class="nav-link text-gray-700 hover:text-blue-600">
-                        <i class="fas fa-briefcase mr-2"></i>penelitian & Pengabdian
-                    </a>
-                    <a href="manage-magang-kkn.html" class="nav-link text-gray-700 hover:text-blue-600">
-                        <i class="fas fa-briefcase mr-2"></i>Magang & KKN
-                    </a>
-                </div>
-
-            <!-- User Profile / Notifications -->
-            <div class="flex items-center space-x-4">
-                <!-- Notification Bell -->
-                <div class="relative">
-                    <button onclick="toggleNotifications()" class="text-gray-600 hover:text-blue-600 relative">
-                        <i class="fas fa-bell text-xl"></i>
-                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center" id="notificationBadge">3</span>
-                    </button>
-                    <!-- Notification Dropdown -->
-                    <div id="notificationDropdown" class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl hidden z-50">
-                        <div class="p-4 border-b">
-                            <h4 class="font-semibold">Notifikasi</h4>
-                        </div>
-                        <div class="max-h-96 overflow-y-auto" id="notificationList">
-                            <!-- Notifications will be loaded here -->
-                        </div>
-                        <div class="p-3 border-t text-center">
-                            <button onclick="markAllAsRead()" class="text-sm text-blue-600 hover:text-blue-800">
-                                Tandai semua telah dibaca
-                            </button>
-                        </div>
+                    <div class="max-h-96 overflow-y-auto" id="notificationList">
+                        <!-- Notifications will be loaded here -->
                     </div>
-                </div>
-
-                <!-- User Menu -->
-                <div class="relative">
-                    <button onclick="toggleUserMenu()" class="flex items-center space-x-2 focus:outline-none">
-                        <img src="https://ui-avatars.com/api/?name=Admin+LPPM&background=3B82F6&color=fff" alt="Profile" class="h-8 w-8 rounded-full">
-                        <span class="text-sm text-gray-600 hidden sm:block" id="userName">Admin LPPM</span>
-                        <i class="fas fa-chevron-down text-xs text-gray-500"></i>
-                    </button>
-                    <!-- User Dropdown -->
-                    <div id="userDropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl hidden z-50">
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            <i class="fas fa-user mr-2"></i> Profil
-                        </a>
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            <i class="fas fa-cog mr-2"></i> Pengaturan
-                        </a>
-                        <hr class="my-1">
-                        <button onclick="handleLogout()" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
-                            <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                    <div class="p-3 border-t text-center">
+                        <button onclick="markAllAsRead()" class="text-sm text-blue-600 hover:text-blue-800">
+                            Tandai semua telah dibaca
                         </button>
                     </div>
                 </div>
             </div>
-         </nav>
-        </header>
+
+            <!-- User Menu -->
+            <div class="relative">
+                <button onclick="toggleUserMenu()" class="flex items-center space-x-2 focus:outline-none">
+                    <img src="https://ui-avatars.com/api/?name=Admin+LPPM&background=3B82F6&color=fff" alt="Profile" class="h-8 w-8 rounded-full">
+                    <span class="text-sm text-gray-600 hidden sm:block" id="userName">Admin LPPM</span>
+                    <i class="fas fa-chevron-down text-xs text-gray-500"></i>
+                </button>
+                <!-- User Dropdown -->
+                <div id="userDropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl hidden z-50">
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-user mr-2"></i> Profil
+                    </a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-cog mr-2"></i> Pengaturan
+                    </a>
+                    <hr class="my-1">
+                    <button onclick="handleLogout()" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                        <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
 
     <!-- Main Content -->
     <main class="pt-20">
         <div class="container mx-auto px-6 py-8">
-            <!-- Header Section -->
-            <header class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between" data-aos="fade-down">
+            <!-- Page Title Section -->
+            <div class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between" data-aos="fade-down">
                 <div>
                     <h2 class="text-3xl font-bold text-gray-800">Kelola Magang & KKN</h2>
                     <p class="text-gray-600">Kelola program, registrasi, dan luaran mahasiswa.</p>
@@ -202,15 +257,16 @@
                     <button onclick="openAddProgramModal()" class="bg-gradient-to-r from-green-500 to-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:shadow-lg transition-all duration-300">
                         <i class="fas fa-plus mr-2"></i> Program Baru
                     </button>
-                    <button onclick="openAddRegistrationModal()" class="bg-gradient-to-r from-purple-500 to-pink-600 text-white px-6 py-2 rounded-lg font-medium hover:shadow-lg transition-all duration-300">
-                        <i class="fas fa-user-plus mr-2"></i> Tambah Registrasi
+                    <button onclick="openAddDesaModal()" class="bg-gradient-to-r from-purple-500 to-pink-600 text-white px-6 py-2 rounded-lg font-medium hover:shadow-lg transition-all duration-300">
+                        <i class="fas fa-map-marker-alt mr-2"></i> Tambah Desa
                     </button>
                 </div>
-            </header>
+            </div>
 
             <!-- Section Tabs -->
             <div class="section-tabs flex overflow-x-auto" data-aos="fade-up">
-                <div class="section-tab active" onclick="showSection('program-section')">Program Magang/KKN</div>
+                <div class="section-tab active" onclick="showSection('program-section')">Program</div>
+                <div class="section-tab" onclick="showSection('desa-section')">Desa KKN</div>
                 <div class="section-tab" onclick="showSection('registrations-section')">Registrasi</div>
                 <div class="section-tab" onclick="showSection('luaran-section')">Luaran Wajib</div>
                 <div class="section-tab" onclick="showSection('stats-section')">Statistik</div>
@@ -249,7 +305,6 @@
                                 </tr>
                             </thead>
                             <tbody id="programTableBody" class="bg-white divide-y divide-gray-200">
-                                <!-- Data will be loaded here -->
                                 <tr>
                                     <td colspan="7" class="text-center py-8 text-gray-500">
                                         <i class="fas fa-spinner fa-spin mr-2"></i> Memuat data...
@@ -273,19 +328,80 @@
                 </div>
             </section>
 
+            <!-- Desa Section -->
+            <section id="desa-section" class="content-section" data-aos="fade-up">
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="p-4 border-b border-gray-200 flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+                        <div class="relative flex-1 max-w-md">
+                            <input type="text" id="searchDesa" placeholder="Cari desa..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                        </div>
+                        <div class="flex space-x-2">
+                            <select id="filterKabupaten" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                                <option value="">Semua Kabupaten</option>
+                            </select>
+                            <select id="filterStatusDesa" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                                <option value="">Semua Status</option>
+                                <option value="aktif">Aktif</option>
+                                <option value="nonaktif">Nonaktif</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="table-responsive overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50 text-gray-700">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Nama Desa</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Kecamatan</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Kabupaten</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Provinsi</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Kuota</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Terisi</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Pembimbing Lapangan</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Status</th>
+                                    <th class="px-4 py-3 text-center text-xs font-medium uppercase">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="desaTableBody" class="bg-white divide-y divide-gray-200">
+                                <tr>
+                                    <td colspan="9" class="text-center py-8 text-gray-500">
+                                        <i class="fas fa-spinner fa-spin mr-2"></i> Memuat data...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+                        <div class="text-sm text-gray-500" id="desaPaginationInfo"></div>
+                        <div class="flex space-x-2">
+                            <button onclick="changeDesaPage('prev')" class="px-3 py-1 border rounded-lg hover:bg-gray-50">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <span id="desaCurrentPage" class="px-3 py-1">1</span>
+                            <button onclick="changeDesaPage('next')" class="px-3 py-1 border rounded-lg hover:bg-gray-50">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- Registrations Section -->
             <section id="registrations-section" class="content-section" data-aos="fade-up">
                 <div class="bg-white rounded-xl shadow-lg overflow-hidden">
                     <div class="p-4 border-b border-gray-200">
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                             <div class="relative">
                                 <input type="text" id="searchRegistration" placeholder="Cari NIM/Nama..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
                                 <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
                             </div>
                             <select id="filterJenisRegistration" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
                                 <option value="">Semua Jenis</option>
-                                <option value="magang">Magang</option>
                                 <option value="kkn">KKN</option>
+                                <option value="magang">Magang</option>
+                            </select>
+                            <select id="filterDesaRegistration" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                                <option value="">Semua Desa</option>
                             </select>
                             <select id="filterStatusRegistration" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
                                 <option value="">Semua Status</option>
@@ -308,12 +424,17 @@
                                         <th class="px-4 py-3 text-left text-xs font-medium uppercase">Nama</th>
                                         <th class="px-4 py-3 text-left text-xs font-medium uppercase">Program Studi</th>
                                         <th class="px-4 py-3 text-left text-xs font-medium uppercase">Desa</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium uppercase">Tanggal Daftar</th>
                                         <th class="px-4 py-3 text-left text-xs font-medium uppercase">Status</th>
                                         <th class="px-4 py-3 text-center text-xs font-medium uppercase">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody id="kknRegistrationTableBody" class="divide-y divide-gray-200">
-                                    <!-- Data will be loaded here -->
+                                    <tr>
+                                        <td colspan="7" class="text-center py-4 text-gray-500">
+                                            <i class="fas fa-spinner fa-spin mr-2"></i> Memuat data...
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -330,12 +451,17 @@
                                         <th class="px-4 py-3 text-left text-xs font-medium uppercase">Nama</th>
                                         <th class="px-4 py-3 text-left text-xs font-medium uppercase">Program Studi</th>
                                         <th class="px-4 py-3 text-left text-xs font-medium uppercase">Perusahaan</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium uppercase">Tanggal Daftar</th>
                                         <th class="px-4 py-3 text-left text-xs font-medium uppercase">Status</th>
                                         <th class="px-4 py-3 text-center text-xs font-medium uppercase">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody id="magangRegistrationTableBody" class="divide-y divide-gray-200">
-                                    <!-- Data will be loaded here -->
+                                    <tr>
+                                        <td colspan="7" class="text-center py-4 text-gray-500">
+                                            <i class="fas fa-spinner fa-spin mr-2"></i> Memuat data...
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -348,7 +474,7 @@
                 <div class="bg-white rounded-xl shadow-lg overflow-hidden">
                     <div class="p-4 border-b border-gray-200">
                         <h3 class="text-lg font-semibold mb-4">Luaran Wajib KKN</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
                             <select id="filterDesaLuaran" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
                                 <option value="">Semua Desa</option>
                             </select>
@@ -358,6 +484,10 @@
                                 <option value="approved">Disetujui</option>
                                 <option value="rejected">Ditolak</option>
                             </select>
+                            <div class="relative">
+                                <input type="text" id="searchLuaran" placeholder="Cari NIM/Judul..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                                <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                            </div>
                             <button onclick="loadLuaranData()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
                                 <i class="fas fa-search mr-2"></i> Cari
                             </button>
@@ -369,9 +499,10 @@
                                 <tr>
                                     <th class="px-4 py-3 text-left text-xs font-medium uppercase">No</th>
                                     <th class="px-4 py-3 text-left text-xs font-medium uppercase">NIM</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Nama</th>
                                     <th class="px-4 py-3 text-left text-xs font-medium uppercase">Desa</th>
                                     <th class="px-4 py-3 text-left text-xs font-medium uppercase">Judul Kegiatan</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Video</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Link Video</th>
                                     <th class="px-4 py-3 text-left text-xs font-medium uppercase">Poster</th>
                                     <th class="px-4 py-3 text-left text-xs font-medium uppercase">MOU</th>
                                     <th class="px-4 py-3 text-left text-xs font-medium uppercase">Status</th>
@@ -379,9 +510,8 @@
                                 </tr>
                             </thead>
                             <tbody id="luaranTableBody" class="divide-y divide-gray-200">
-                                <!-- Data will be loaded here -->
                                 <tr>
-                                    <td colspan="9" class="text-center py-8 text-gray-500">
+                                    <td colspan="10" class="text-center py-8 text-gray-500">
                                         <i class="fas fa-spinner fa-spin mr-2"></i> Memuat data...
                                     </td>
                                 </tr>
@@ -393,79 +523,160 @@
 
             <!-- Stats Section -->
             <section id="stats-section" class="content-section" data-aos="fade-up">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                <!-- Statistics Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                     <!-- Total KKN Card -->
-                    <div class="stat-card bg-gradient-to-br from-blue-500 to-blue-600 text-white p-6 rounded-xl shadow-lg">
+                    <div class="stat-card bg-gradient-to-br from-blue-500 to-blue-600 text-white p-5 rounded-xl shadow-lg">
                         <div class="flex justify-between items-center">
                             <div>
-                                <p class="text-sm opacity-90">Total Pendaftar KKN</p>
-                                <h3 class="text-3xl font-bold" id="totalKknStats">0</h3>
+                                <p class="text-xs opacity-90">Total Pendaftar KKN</p>
+                                <h3 class="text-2xl font-bold" id="totalKknStats">0</h3>
                             </div>
-                            <i class="fas fa-users text-4xl opacity-50"></i>
+                            <i class="fas fa-users text-3xl opacity-50"></i>
                         </div>
-                        <div class="mt-4 flex justify-between text-sm">
+                        <div class="mt-3 flex justify-between text-xs">
                             <span><i class="fas fa-check-circle"></i> <span id="approvedKknStats">0</span> Disetujui</span>
                             <span><i class="fas fa-clock"></i> <span id="pendingKknStats">0</span> Pending</span>
                         </div>
                     </div>
 
                     <!-- Total Magang Card -->
-                    <div class="stat-card bg-gradient-to-br from-green-500 to-green-600 text-white p-6 rounded-xl shadow-lg">
+                    <div class="stat-card bg-gradient-to-br from-green-500 to-green-600 text-white p-5 rounded-xl shadow-lg">
                         <div class="flex justify-between items-center">
                             <div>
-                                <p class="text-sm opacity-90">Total Pendaftar Magang</p>
-                                <h3 class="text-3xl font-bold" id="totalMagangStats">0</h3>
+                                <p class="text-xs opacity-90">Total Pendaftar Magang</p>
+                                <h3 class="text-2xl font-bold" id="totalMagangStats">0</h3>
                             </div>
-                            <i class="fas fa-briefcase text-4xl opacity-50"></i>
+                            <i class="fas fa-briefcase text-3xl opacity-50"></i>
                         </div>
-                        <div class="mt-4 flex justify-between text-sm">
+                        <div class="mt-3 flex justify-between text-xs">
                             <span><i class="fas fa-check-circle"></i> <span id="approvedMagangStats">0</span> Disetujui</span>
                             <span><i class="fas fa-clock"></i> <span id="pendingMagangStats">0</span> Pending</span>
                         </div>
                     </div>
 
                     <!-- Desa Card -->
-                    <div class="stat-card bg-gradient-to-br from-purple-500 to-purple-600 text-white p-6 rounded-xl shadow-lg">
+                    <div class="stat-card bg-gradient-to-br from-purple-500 to-purple-600 text-white p-5 rounded-xl shadow-lg">
                         <div class="flex justify-between items-center">
                             <div>
-                                <p class="text-sm opacity-90">Desa Tersedia</p>
-                                <h3 class="text-3xl font-bold" id="totalDesaStats">0</h3>
+                                <p class="text-xs opacity-90">Desa Tersedia</p>
+                                <h3 class="text-2xl font-bold" id="totalDesaStats">0</h3>
                             </div>
-                            <i class="fas fa-map-marker-alt text-4xl opacity-50"></i>
+                            <i class="fas fa-map-marker-alt text-3xl opacity-50"></i>
                         </div>
-                        <div class="mt-4 flex justify-between text-sm">
+                        <div class="mt-3 flex justify-between text-xs">
                             <span><i class="fas fa-users"></i> <span id="totalKuotaStats">0</span> Kuota</span>
                             <span><i class="fas fa-user-plus"></i> <span id="terisiKuotaStats">0</span> Terisi</span>
                         </div>
                     </div>
 
                     <!-- Program Card -->
-                    <div class="stat-card bg-gradient-to-br from-orange-500 to-orange-600 text-white p-6 rounded-xl shadow-lg">
+                    <div class="stat-card bg-gradient-to-br from-orange-500 to-orange-600 text-white p-5 rounded-xl shadow-lg">
                         <div class="flex justify-between items-center">
                             <div>
-                                <p class="text-sm opacity-90">Total Program</p>
-                                <h3 class="text-3xl font-bold" id="totalProgramStats">0</h3>
+                                <p class="text-xs opacity-90">Total Program</p>
+                                <h3 class="text-2xl font-bold" id="totalProgramStats">0</h3>
                             </div>
-                            <i class="fas fa-calendar-alt text-4xl opacity-50"></i>
+                            <i class="fas fa-calendar-alt text-3xl opacity-50"></i>
                         </div>
-                        <div class="mt-4 flex justify-between text-sm">
+                        <div class="mt-3 flex justify-between text-xs">
                             <span><i class="fas fa-graduation-cap"></i> <span id="programKknStats">0</span> KKN</span>
                             <span><i class="fas fa-briefcase"></i> <span id="programMagangStats">0</span> Magang</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <!-- Chart KKN -->
-                    <div class="bg-white rounded-xl shadow-lg p-6">
-                        <h4 class="text-lg font-semibold mb-4">Status Registrasi KKN</h4>
-                        <canvas id="kknChart" height="250"></canvas>
-                    </div>
+                <!-- Charts Section -->
+                <div class="bg-white rounded-xl shadow-lg p-5 mb-6">
+                    <h4 class="text-lg font-semibold mb-4 text-gray-800 border-b pb-2">Grafik Status Registrasi</h4>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Chart KKN -->
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h5 class="text-md font-medium text-gray-700 mb-3 flex items-center">
+                                <i class="fas fa-chart-pie text-blue-500 mr-2"></i>
+                                Status Registrasi KKN
+                            </h5>
+                            <div class="chart-container">
+                                <canvas id="kknChart"></canvas>
+                            </div>
+                        </div>
 
-                    <!-- Chart Magang -->
-                    <div class="bg-white rounded-xl shadow-lg p-6">
-                        <h4 class="text-lg font-semibold mb-4">Status Registrasi Magang</h4>
-                        <canvas id="magangChart" height="250"></canvas>
+                        <!-- Chart Magang -->
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h5 class="text-md font-medium text-gray-700 mb-3 flex items-center">
+                                <i class="fas fa-chart-pie text-green-500 mr-2"></i>
+                                Status Registrasi Magang
+                            </h5>
+                            <div class="chart-container">
+                                <canvas id="magangChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Statistik Detail -->
+                <div class="bg-white rounded-xl shadow-lg p-5">
+                    <h4 class="text-lg font-semibold mb-4 text-gray-800 border-b pb-2">Statistik Detail</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- KKN Statistics -->
+                        <div class="border rounded-lg p-4">
+                            <h5 class="font-medium text-blue-600 mb-3 flex items-center">
+                                <i class="fas fa-university mr-2"></i>
+                                Detail KKN
+                            </h5>
+                            <div class="space-y-2">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">Total Pendaftar:</span>
+                                    <span class="font-semibold" id="detailTotalKkn">0</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">Disetujui:</span>
+                                    <span class="font-semibold text-green-600" id="detailApprovedKkn">0</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">Pending:</span>
+                                    <span class="font-semibold text-yellow-600" id="detailPendingKkn">0</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">Ditolak:</span>
+                                    <span class="font-semibold text-red-600" id="detailRejectedKkn">0</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">Terverifikasi:</span>
+                                    <span class="font-semibold text-blue-600" id="detailVerifiedKkn">0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Magang Statistics -->
+                        <div class="border rounded-lg p-4">
+                            <h5 class="font-medium text-green-600 mb-3 flex items-center">
+                                <i class="fas fa-briefcase mr-2"></i>
+                                Detail Magang
+                            </h5>
+                            <div class="space-y-2">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">Total Pendaftar:</span>
+                                    <span class="font-semibold" id="detailTotalMagang">0</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">Disetujui:</span>
+                                    <span class="font-semibold text-green-600" id="detailApprovedMagang">0</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">Pending:</span>
+                                    <span class="font-semibold text-yellow-600" id="detailPendingMagang">0</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">Ditolak:</span>
+                                    <span class="font-semibold text-red-600" id="detailRejectedMagang">0</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">Terverifikasi:</span>
+                                    <span class="font-semibold text-blue-600" id="detailVerifiedMagang">0</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -526,108 +737,72 @@
         </div>
     </div>
 
-    <!-- Modal Registrasi -->
-    <div id="registrationModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50 flex items-center justify-center">
-        <div class="relative bg-white rounded-lg shadow-xl w-11/12 md:w-3/4 lg:w-2/3 max-h-[90vh] overflow-y-auto">
+    <!-- Modal Desa -->
+    <div id="desaModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50 flex items-center justify-center">
+        <div class="relative bg-white rounded-lg shadow-xl w-11/12 md:w-3/4 lg:w-1/2 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center p-6 border-b">
-                <h3 class="text-xl font-bold text-gray-900" id="registrationModalTitle">Tambah Registrasi</h3>
-                <button onclick="closeRegistrationModal()" class="text-gray-400 hover:text-gray-600">
+                <h3 class="text-xl font-bold text-gray-900" id="desaModalTitle">Tambah Desa KKN</h3>
+                <button onclick="closeDesaModal()" class="text-gray-400 hover:text-gray-600">
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
-            <form id="registrationForm" class="p-6" onsubmit="saveRegistration(event)">
-                <input type="hidden" id="registrationId">
-                <input type="hidden" id="registrationType" value="kkn">
+            <form id="desaForm" class="p-6" onsubmit="saveDesa(event)">
+                <input type="hidden" id="desaId">
                 
                 <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
-                        <label class="block text-gray-700 text-sm font-bold mb-2">Jenis <span class="text-red-500">*</span></label>
-                        <select id="registrationTypeSelect" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500" onchange="toggleRegistrationForm()" required>
-                            <option value="kkn">KKN</option>
-                            <option value="magang">Magang</option>
-                        </select>
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Nama Desa <span class="text-red-500">*</span></label>
+                        <input type="text" id="desaName" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500" required>
                     </div>
                     <div>
-                        <label class="block text-gray-700 text-sm font-bold mb-2">NIM <span class="text-red-500">*</span></label>
-                        <input type="text" id="registrationNim" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500" required>
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Kecamatan</label>
+                        <input type="text" id="desaKecamatan" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500">
                     </div>
                 </div>
                 
                 <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
-                        <label class="block text-gray-700 text-sm font-bold mb-2">Nama Lengkap <span class="text-red-500">*</span></label>
-                        <input type="text" id="registrationName" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500" required>
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Kabupaten <span class="text-red-500">*</span></label>
+                        <input type="text" id="desaKabupaten" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500" required>
                     </div>
                     <div>
-                        <label class="block text-gray-700 text-sm font-bold mb-2">Email <span class="text-red-500">*</span></label>
-                        <input type="email" id="registrationEmail" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500" required>
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Provinsi <span class="text-red-500">*</span></label>
+                        <input type="text" id="desaProvinsi" value="Jawa Timur" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500" required>
                     </div>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Kuota <span class="text-red-500">*</span></label>
+                    <input type="number" id="desaKuota" min="1" value="30" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500" required>
                 </div>
                 
                 <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
-                        <label class="block text-gray-700 text-sm font-bold mb-2">Program Studi <span class="text-red-500">*</span></label>
-                        <select id="registrationStudyProgram" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500" required>
-                            <option value="">Pilih Prodi</option>
-                            <option value="manajemen">Manajemen</option>
-                            <option value="akuntansi">Akuntansi</option>
-                            <option value="hukum_bisnis">Hukum Bisnis</option>
-                            <option value="sistem_informasi">Sistem Informasi</option>
-                            <option value="teknik_informatika">Teknik Informatika</option>
-                        </select>
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Pembimbing Lapangan</label>
+                        <input type="text" id="desaPembimbingLapangan" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500">
                     </div>
                     <div>
-                        <label class="block text-gray-700 text-sm font-bold mb-2">Telepon</label>
-                        <input type="text" id="registrationPhone" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500">
-                    </div>
-                </div>
-                
-                <!-- KKN Fields -->
-                <div id="kknFields">
-                    <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-bold mb-2">Desa Tujuan</label>
-                        <select id="registrationVillage" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500">
-                            <option value="">Pilih Desa</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <!-- Magang Fields -->
-                <div id="magangFields" style="display: none;">
-                    <div class="grid grid-cols-2 gap-4 mb-4">
-                        <div>
-                            <label class="block text-gray-700 text-sm font-bold mb-2">Nama Perusahaan</label>
-                            <input type="text" id="registrationCompany" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500">
-                        </div>
-                        <div>
-                            <label class="block text-gray-700 text-sm font-bold mb-2">Bidang Magang</label>
-                            <input type="text" id="registrationField" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500">
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4 mb-4">
-                        <div>
-                            <label class="block text-gray-700 text-sm font-bold mb-2">Durasi (bulan)</label>
-                            <input type="number" id="registrationDuration" min="1" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500">
-                        </div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Kontak Pembimbing</label>
+                        <input type="text" id="desaKontakPembimbing" placeholder="081234567890" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500" 
+                               oninput="this.value = this.value.replace(/[^0-9]/g, '')" maxlength="15">
                     </div>
                 </div>
                 
                 <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2">Status</label>
-                    <select id="registrationStatus" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500">
-                        <option value="pending">Pending</option>
-                        <option value="approved">Disetujui</option>
-                        <option value="rejected">Ditolak</option>
-                        <option value="verified">Terverifikasi</option>
-                    </select>
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Alamat</label>
+                    <textarea id="desaAlamat" rows="2" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500"></textarea>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Deskripsi</label>
+                    <textarea id="desaDeskripsi" rows="2" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500"></textarea>
                 </div>
                 
                 <div class="flex justify-end space-x-3">
-                    <button type="button" onclick="closeRegistrationModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
+                    <button type="button" onclick="closeDesaModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
                         Batal
                     </button>
                     <button type="submit" class="px-4 py-2 bg-gradient-to-r from-green-500 to-blue-600 text-white rounded-lg hover:shadow-lg transition">
-                        Simpan Registrasi
+                        Simpan Desa
                     </button>
                 </div>
             </form>
@@ -654,7 +829,47 @@
         </div>
     </div>
 
-    <!-- Modal Verifikasi -->
+    <!-- Modal Status -->
+    <div id="statusModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50 flex items-center justify-center">
+        <div class="relative bg-white rounded-lg shadow-xl w-11/12 md:w-3/4 lg:w-1/2">
+            <div class="flex justify-between items-center p-6 border-b">
+                <h3 class="text-xl font-bold text-gray-900">Ubah Status Registrasi</h3>
+                <button onclick="closeStatusModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form id="statusForm" class="p-6" onsubmit="updateRegistrationStatus(event)">
+                <input type="hidden" id="statusId">
+                <input type="hidden" id="statusType">
+                
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Status <span class="text-red-500">*</span></label>
+                    <select id="newStatus" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500" required>
+                        <option value="pending">Pending</option>
+                        <option value="approved">Disetujui</option>
+                        <option value="rejected">Ditolak</option>
+                        <option value="verified">Terverifikasi</option>
+                    </select>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Catatan</label>
+                    <textarea id="statusCatatan" rows="3" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500" placeholder="Berikan catatan jika diperlukan..."></textarea>
+                </div>
+                
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeStatusModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
+                        Batal
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-gradient-to-r from-green-500 to-blue-600 text-white rounded-lg hover:shadow-lg transition">
+                        Simpan Perubahan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Verifikasi Luaran -->
     <div id="verificationModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50 flex items-center justify-center">
         <div class="relative bg-white rounded-lg shadow-xl w-11/12 md:w-3/4 lg:w-1/2">
             <div class="flex justify-between items-center p-6 border-b">
@@ -665,10 +880,9 @@
             </div>
             <form id="verificationForm" class="p-6" onsubmit="submitVerification(event)">
                 <input type="hidden" id="verificationId">
-                <input type="hidden" id="verificationType">
                 
                 <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2">Status Verifikasi</label>
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Status Verifikasi <span class="text-red-500">*</span></label>
                     <select id="verificationStatus" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500" required>
                         <option value="approved">Disetujui</option>
                         <option value="rejected">Ditolak</option>
@@ -727,87 +941,50 @@
 
         // Global Variables
         let currentProgramPage = 1;
-        let programData = [];
-        let kknRegistrationData = [];
-        let magangRegistrationData = [];
-        let luaranData = [];
+        let currentDesaPage = 1;
         let kknChart, magangChart;
+        let selectedType = '';
+        let selectedId = '';
 
         // ==================== AUTHENTICATION & LOGOUT ====================
-        // Cek autentikasi
         let token = localStorage.getItem('token');
         if (!token) {
             window.location.href = '../login.html';
         }
 
-        // Set user name
         const user = JSON.parse(localStorage.getItem('user') || '{}');
         document.getElementById('userName').textContent = user.nama_lengkap || 'Admin LPPM';
 
+        const getHeaders = () => {
+            return {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            };
+        };
+
         // Handle logout function
         function handleLogout() {
-            // Gunakan SweetAlert jika tersedia
-            if (typeof Swal !== 'undefined') {
-                Swal.fire({
-                    title: 'Konfirmasi Logout',
-                    text: 'Apakah Anda yakin ingin logout?',
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Ya, Logout',
-                    cancelButtonText: 'Batal'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        performLogout();
-                    }
-                });
-            } else {
-                // Fallback ke modal kustom
-                document.getElementById('confirmLogoutModal').classList.remove('hidden');
-            }
-        }
-
-        function closeLogoutModal() {
-            document.getElementById('confirmLogoutModal').classList.add('hidden');
+            Swal.fire({
+                title: 'Konfirmasi Logout',
+                text: 'Apakah Anda yakin ingin logout?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Logout',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    performLogout();
+                }
+            });
         }
 
         function performLogout() {
-            // Hapus token dan user data dari localStorage
             localStorage.removeItem('token');
             localStorage.removeItem('user');
-            
-            // Redirect ke halaman login
             window.location.href = '../login.html';
         }
-
-        // Fungsi untuk mengecek session expiry
-        function checkSession() {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                window.location.href = '../login.html';
-                return;
-            }
-            
-            // Decode token untuk cek expiry
-            try {
-                const base64Url = token.split('.')[1];
-                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-                const payload = JSON.parse(window.atob(base64));
-                
-                // Cek if token expired
-                if (payload.exp && payload.exp < Date.now() / 1000) {
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('user');
-                    window.location.href = '../login.html?session=expired';
-                }
-            } catch (e) {
-                console.error('Error checking session:', e);
-            }
-        }
-
-        // Panggil checkSession setiap 5 menit
-        setInterval(checkSession, 5 * 60 * 1000);
 
         // ==================== UTILITY FUNCTIONS ====================
         function showLoading() {
@@ -819,59 +996,100 @@
         }
 
         function showAlert(message, type = 'success') {
-            if (typeof Swal !== 'undefined') {
-                Swal.fire({
-                    icon: type,
-                    title: type === 'success' ? 'Berhasil' : type === 'error' ? 'Gagal' : 'Informasi',
-                    text: message,
-                    timer: 2000,
-                    showConfirmButton: false
-                });
-            } else {
-                // Fallback ke alert biasa
-                const alert = document.createElement('div');
-                alert.className = `fixed top-20 right-5 z-50 px-6 py-3 rounded-lg shadow-lg ${
-                    type === 'success' ? 'bg-green-500' : 
-                    type === 'error' ? 'bg-red-500' : 'bg-blue-500'
-                } text-white`;
-                alert.innerHTML = message;
-                document.body.appendChild(alert);
-                
-                setTimeout(() => {
-                    if (alert.parentNode) {
-                        alert.remove();
-                    }
-                }, 3000);
-            }
+            Swal.fire({
+                icon: type,
+                title: type === 'success' ? 'Berhasil' : type === 'error' ? 'Gagal' : 'Informasi',
+                text: message,
+                timer: 2000,
+                showConfirmButton: false
+            });
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('id-ID', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        function formatDateTime(dateString) {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('id-ID', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function getStatusBadgeClass(status) {
+            const classes = {
+                'pending': 'badge-pending',
+                'approved': 'badge-approved',
+                'rejected': 'badge-rejected',
+                'verified': 'badge-verified'
+            };
+            return classes[status] || 'badge-pending';
+        }
+
+        function getStatusText(status) {
+            const texts = {
+                'pending': 'Pending',
+                'approved': 'Disetujui',
+                'rejected': 'Ditolak',
+                'verified': 'Terverifikasi'
+            };
+            return texts[status] || status;
+        }
+
+        // Fungsi untuk generate UUID (untuk keperluan frontend jika diperlukan)
+        function generateUUID() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
         }
 
         // ==================== SECTION NAVIGATION ====================
         function showSection(sectionId) {
-            // Hide all sections
             document.querySelectorAll('.content-section').forEach(section => {
                 section.classList.remove('active');
             });
             
-            // Show selected section
             document.getElementById(sectionId).classList.add('active');
             
-            // Update tab active state
             document.querySelectorAll('.section-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
-            event.target.classList.add('active');
             
-            // Load section data if needed
+            // Find the clicked tab and add active class
+            const tabs = document.querySelectorAll('.section-tab');
+            for (let tab of tabs) {
+                if (tab.textContent.trim().toLowerCase().includes(sectionId.replace('-section', ''))) {
+                    tab.classList.add('active');
+                    break;
+                }
+            }
+            
             switch(sectionId) {
                 case 'program-section':
                     loadProgramData();
                     break;
+                case 'desa-section':
+                    loadDesaData();
+                    break;
                 case 'registrations-section':
                     loadRegistrationData();
+                    loadDesaFilterOptions();
                     break;
                 case 'luaran-section':
                     loadLuaranData();
-                    loadDesaOptions();
+                    loadDesaLuaranOptions();
                     break;
                 case 'stats-section':
                     loadStatsData();
@@ -886,12 +1104,18 @@
             const jenis = document.getElementById('filterJenisProgram').value;
             
             try {
-                const response = await fetch(`${API_BASE_URL}/programs?page=${currentProgramPage}&search=${search}&jenis=${jenis}`);
-                const data = await response.json();
+                const response = await fetch(`${API_BASE_URL}/admin/programs?page=${currentProgramPage}&limit=10&search=${search}&jenis=${jenis}`, {
+                    headers: getHeaders()
+                });
+                const result = await response.json();
                 
-                if (data.success) {
-                    renderProgramTable(data.data);
-                    updateProgramPagination(data.pagination);
+                if (result.success) {
+                    renderProgramTable(result.data);
+                    if (result.pagination) {
+                        updateProgramPagination(result.pagination);
+                    }
+                } else {
+                    showAlert(result.message, 'error');
                 }
             } catch (error) {
                 console.error('Error loading programs:', error);
@@ -919,29 +1143,29 @@
             tbody.innerHTML = programs.map(program => `
                 <tr class="hover:bg-gray-50 transition-colors">
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm font-medium text-gray-900">${program.name}</div>
+                        <div class="text-sm font-medium text-gray-900">${program.nama_program}</div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${program.type === 'magang' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}">
-                            ${program.type === 'magang' ? 'Magang' : 'KKN'}
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${program.jenis === 'magang' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}">
+                            ${program.jenis === 'magang' ? 'Magang' : 'KKN'}
                         </span>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${program.period}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${program.quota}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${program.registered || 0}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${program.periode || '-'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${program.kuota}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${program.pendaftar || 0}</td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${program.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">
-                            ${program.status === 'active' ? 'Aktif' : 'Tidak Aktif'}
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${program.status === 'aktif' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">
+                            ${program.status === 'aktif' ? 'Aktif' : 'Tidak Aktif'}
                         </span>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
-                        <button onclick="viewProgramDetail('${program.id}')" class="text-indigo-600 hover:text-indigo-900 mr-3" title="Lihat Detail">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <button onclick="editProgram('${program.id}')" class="text-green-600 hover:text-green-900 mr-3" title="Edit">
+                        <button onclick="editProgram('${program.id_program}')" class="text-green-600 hover:text-green-900 mr-3 action-btn" title="Edit">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button onclick="deleteProgram('${program.id}')" class="text-red-600 hover:text-red-900" title="Hapus">
+                        <button onclick="toggleProgramStatus('${program.id_program}')" class="text-yellow-600 hover:text-yellow-900 mr-3 action-btn" title="${program.status === 'aktif' ? 'Nonaktifkan' : 'Aktifkan'}">
+                            <i class="fas ${program.status === 'aktif' ? 'fa-ban' : 'fa-check-circle'}"></i>
+                        </button>
+                        <button onclick="deleteProgram('${program.id_program}')" class="text-red-600 hover:text-red-900 action-btn" title="Hapus">
                             <i class="fas fa-trash"></i>
                         </button>
                     </td>
@@ -950,8 +1174,10 @@
         }
 
         function updateProgramPagination(pagination) {
+            const from = ((pagination.currentPage - 1) * pagination.itemsPerPage) + 1;
+            const to = Math.min(pagination.currentPage * pagination.itemsPerPage, pagination.totalItems);
             document.getElementById('programPaginationInfo').innerHTML = 
-                `Menampilkan ${((pagination.currentPage - 1) * pagination.itemsPerPage) + 1} - ${Math.min(pagination.currentPage * pagination.itemsPerPage, pagination.totalItems)} dari ${pagination.totalItems} data`;
+                `Menampilkan ${from} - ${to} dari ${pagination.totalItems} data`;
             document.getElementById('programCurrentPage').textContent = pagination.currentPage;
         }
 
@@ -981,20 +1207,20 @@
             
             const programId = document.getElementById('programId').value;
             const programData = {
-                name: document.getElementById('programName').value,
-                type: document.getElementById('programType').value,
-                quota: document.getElementById('programQuota').value,
-                period: document.getElementById('programPeriode').value,
-                description: document.getElementById('programDescription').value
+                nama_program: document.getElementById('programName').value,
+                jenis: document.getElementById('programType').value,
+                kuota: parseInt(document.getElementById('programQuota').value),
+                periode: document.getElementById('programPeriode').value,
+                deskripsi: document.getElementById('programDescription').value
             };
             
             try {
-                const url = programId ? `${API_BASE_URL}/programs/${programId}` : `${API_BASE_URL}/programs`;
+                const url = programId ? `${API_BASE_URL}/admin/programs/${programId}` : `${API_BASE_URL}/admin/programs`;
                 const method = programId ? 'PUT' : 'POST';
                 
                 const response = await fetch(url, {
                     method: method,
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: getHeaders(),
                     body: JSON.stringify(programData)
                 });
                 
@@ -1015,13 +1241,76 @@
             }
         }
 
-        async function deleteProgram(id) {
-            if (!confirm('Apakah Anda yakin ingin menghapus program ini?')) return;
+        async function editProgram(id) {
             showLoading();
-            
             try {
-                const response = await fetch(`${API_BASE_URL}/programs/${id}`, {
-                    method: 'DELETE'
+                const response = await fetch(`${API_BASE_URL}/admin/programs/${id}`, {
+                    headers: getHeaders()
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    document.getElementById('programId').value = result.data.id_program;
+                    document.getElementById('programName').value = result.data.nama_program;
+                    document.getElementById('programType').value = result.data.jenis;
+                    document.getElementById('programQuota').value = result.data.kuota;
+                    document.getElementById('programPeriode').value = result.data.periode;
+                    document.getElementById('programDescription').value = result.data.deskripsi || '';
+                    
+                    document.getElementById('programModalTitle').textContent = 'Edit Program';
+                    document.getElementById('programModal').classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Error loading program:', error);
+                showAlert('Gagal memuat data program', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function toggleProgramStatus(id) {
+            showLoading();
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin/programs/${id}/status`, {
+                    method: 'PATCH',
+                    headers: getHeaders()
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('Status program berhasil diubah', 'success');
+                    loadProgramData();
+                } else {
+                    showAlert(result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error toggling status:', error);
+                showAlert('Gagal mengubah status program', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function deleteProgram(id) {
+            const result = await Swal.fire({
+                title: 'Konfirmasi Hapus',
+                text: 'Apakah Anda yakin ingin menghapus program ini?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Hapus',
+                cancelButtonText: 'Batal'
+            });
+            
+            if (!result.isConfirmed) return;
+            
+            showLoading();
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin/programs/${id}`, {
+                    method: 'DELETE',
+                    headers: getHeaders()
                 });
                 
                 const result = await response.json();
@@ -1040,29 +1329,445 @@
             }
         }
 
+        // ==================== DESA FUNCTIONS ====================
+        async function loadDesaData() {
+            showLoading();
+            const search = document.getElementById('searchDesa').value;
+            const kabupaten = document.getElementById('filterKabupaten').value;
+            const status = document.getElementById('filterStatusDesa').value;
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin/desa-kkn?page=${currentDesaPage}&limit=10&search=${search}&kabupaten=${kabupaten}&status=${status}`, {
+                    headers: getHeaders()
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    renderDesaTable(result.data);
+                    if (result.pagination) {
+                        updateDesaPagination(result.pagination);
+                    }
+                    loadKabupatenFilter(result.data);
+                } else {
+                    showAlert(result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error loading desa:', error);
+                showAlert('Gagal memuat data desa', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function renderDesaTable(desaList) {
+            const tbody = document.getElementById('desaTableBody');
+            
+            if (!desaList || desaList.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="9" class="text-center py-8 text-gray-500">
+                            <i class="fas fa-map-marker-alt text-4xl mb-3"></i><br>
+                            Tidak ada data desa
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tbody.innerHTML = desaList.map(desa => `
+                <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-4 py-3 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900">${desa.nama_desa}</div>
+                    </td>
+                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">${desa.kecamatan || '-'}</td>
+                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">${desa.kabupaten}</td>
+                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">${desa.provinsi}</td>
+                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">${desa.kuota}</td>
+                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                        <span class="${desa.kuota_terisi >= desa.kuota ? 'text-red-600 font-semibold' : 'text-green-600'}">
+                            ${desa.kuota_terisi || 0}/${desa.kuota}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                        ${desa.nama_pembimbing_lapangan || '-'}
+                    </td>
+                    <td class="px-4 py-3 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${desa.status === 'aktif' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">
+                            ${desa.status === 'aktif' ? 'Aktif' : 'Nonaktif'}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3 whitespace-nowrap text-center text-sm font-medium">
+                        <button onclick="viewDesaDetail('${desa.id_desa}')" class="text-blue-600 hover:text-blue-900 mr-2 action-btn" title="Lihat Detail">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button onclick="editDesa('${desa.id_desa}')" class="text-green-600 hover:text-green-900 mr-2 action-btn" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button onclick="toggleDesaStatus('${desa.id_desa}')" class="text-yellow-600 hover:text-yellow-900 mr-2 action-btn" title="${desa.status === 'aktif' ? 'Nonaktifkan' : 'Aktifkan'}">
+                            <i class="fas ${desa.status === 'aktif' ? 'fa-ban' : 'fa-check-circle'}"></i>
+                        </button>
+                        <button onclick="deleteDesa('${desa.id_desa}')" class="text-red-600 hover:text-red-900 action-btn" title="Hapus">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function loadKabupatenFilter(desaList) {
+            const filterSelect = document.getElementById('filterKabupaten');
+            const kabupatenSet = new Set();
+            
+            desaList.forEach(desa => {
+                if (desa.kabupaten) kabupatenSet.add(desa.kabupaten);
+            });
+            
+            filterSelect.innerHTML = '<option value="">Semua Kabupaten</option>';
+            [...kabupatenSet].sort().forEach(kab => {
+                filterSelect.innerHTML += `<option value="${kab}">${kab}</option>`;
+            });
+        }
+
+        function updateDesaPagination(pagination) {
+            const from = ((pagination.currentPage - 1) * pagination.itemsPerPage) + 1;
+            const to = Math.min(pagination.currentPage * pagination.itemsPerPage, pagination.totalItems);
+            document.getElementById('desaPaginationInfo').innerHTML = 
+                `Menampilkan ${from} - ${to} dari ${pagination.totalItems} data`;
+            document.getElementById('desaCurrentPage').textContent = pagination.currentPage;
+        }
+
+        function changeDesaPage(direction) {
+            if (direction === 'prev' && currentDesaPage > 1) {
+                currentDesaPage--;
+            } else if (direction === 'next') {
+                currentDesaPage++;
+            }
+            loadDesaData();
+        }
+
+      function openAddDesaModal() {
+    document.getElementById('desaModalTitle').textContent = 'Tambah Desa KKN';
+    document.getElementById('desaForm').reset();
+    document.getElementById('desaId').value = '';
+    // HAPUS BARIS YANG MENGAKSES idDosenPembimbing
+    document.getElementById('desaModal').classList.remove('hidden');
+}
+
+        function closeDesaModal() {
+            document.getElementById('desaModal').classList.add('hidden');
+        }
+
+        async function saveDesa(event) {
+    event.preventDefault();
+    showLoading();
+    
+    const desaId = document.getElementById('desaId').value;
+    
+    // Ambil nilai kuota
+    const kuotaInput = document.getElementById('desaKuota');
+    const kuota = kuotaInput ? parseInt(kuotaInput.value) : 30; // Default 30 jika tidak ada
+    
+    const desaData = {
+        nama_desa: document.getElementById('desaName').value,
+        kecamatan: document.getElementById('desaKecamatan').value || null,
+        kabupaten: document.getElementById('desaKabupaten').value,
+        provinsi: document.getElementById('desaProvinsi').value,
+        kuota: kuota, // TAMBAHKAN INI
+        nama_pembimbing_lapangan: document.getElementById('desaPembimbingLapangan').value || null,
+        kontak_pembimbing_lapangan: document.getElementById('desaKontakPembimbing').value.replace(/\D/g, '') || null,
+        alamat: document.getElementById('desaAlamat').value || null,
+        deskripsi: document.getElementById('desaDeskripsi').value || null
+    };
+    
+    console.log('Data yang dikirim:', desaData);
+    
+    try {
+        const url = desaId ? `${API_BASE_URL}/admin/desa-kkn/${desaId}` : `${API_BASE_URL}/admin/desa-kkn`;
+        const method = desaId ? 'PUT' : 'POST';
+        
+        const response = await fetch(url, {
+            method: method,
+            headers: getHeaders(),
+            body: JSON.stringify(desaData)
+        });
+        
+        const result = await response.json();
+        console.log('Response dari server:', result);
+        
+        if (result.success) {
+            showAlert(desaId ? 'Desa berhasil diupdate' : 'Desa berhasil ditambahkan', 'success');
+            closeDesaModal();
+            loadDesaData();
+        } else {
+            let errorMessage = result.message || 'Gagal menyimpan data';
+            if (result.errors) {
+                errorMessage = result.errors.map(err => err.message).join('\n');
+            }
+            showAlert(errorMessage, 'error');
+        }
+    } catch (error) {
+        console.error('Error saving desa:', error);
+        showAlert('Gagal menyimpan desa: ' + error.message, 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+
+    async function editDesa(id) {
+    showLoading();
+    try {
+        const response = await fetch(`${API_BASE_URL}/admin/desa-kkn/${id}`, {
+            headers: getHeaders()
+        });
+        const result = await response.json();
+        
+        if (result.success) {
+            const desa = result.data;
+            document.getElementById('desaId').value = desa.id_desa;
+            document.getElementById('desaName').value = desa.nama_desa;
+            document.getElementById('desaKecamatan').value = desa.kecamatan || '';
+            document.getElementById('desaKabupaten').value = desa.kabupaten;
+            document.getElementById('desaProvinsi').value = desa.provinsi;
+            
+            // TAMBAHKAN INI
+            const kuotaInput = document.getElementById('desaKuota');
+            if (kuotaInput) {
+                kuotaInput.value = desa.kuota || 30;
+            }
+            
+            document.getElementById('desaPembimbingLapangan').value = desa.nama_pembimbing_lapangan || '';
+            document.getElementById('desaKontakPembimbing').value = desa.kontak_pembimbing_lapangan || '';
+            document.getElementById('desaAlamat').value = desa.alamat || '';
+            document.getElementById('desaDeskripsi').value = desa.deskripsi || '';
+            
+            document.getElementById('desaModalTitle').textContent = 'Edit Desa KKN';
+            document.getElementById('desaModal').classList.remove('hidden');
+        }
+    } catch (error) {
+        console.error('Error loading desa:', error);
+        showAlert('Gagal memuat data desa', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+        async function toggleDesaStatus(id) {
+            showLoading();
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin/desa-kkn/${id}/status`, {
+                    method: 'PATCH',
+                    headers: getHeaders()
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('Status desa berhasil diubah', 'success');
+                    loadDesaData();
+                } else {
+                    showAlert(result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error toggling status:', error);
+                showAlert('Gagal mengubah status desa', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function deleteDesa(id) {
+            // Check if desa has participants
+            try {
+                const checkResponse = await fetch(`${API_BASE_URL}/admin/desa-kkn/${id}`, {
+                    headers: getHeaders()
+                });
+                const checkResult = await checkResponse.json();
+                
+                if (checkResult.success && checkResult.data.kuota_terisi > 0) {
+                    showAlert('Tidak dapat menghapus desa yang masih memiliki peserta', 'error');
+                    return;
+                }
+            } catch (error) {
+                console.error('Error checking desa:', error);
+            }
+            
+            const result = await Swal.fire({
+                title: 'Konfirmasi Hapus',
+                text: 'Apakah Anda yakin ingin menghapus desa ini?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Hapus',
+                cancelButtonText: 'Batal'
+            });
+            
+            if (!result.isConfirmed) return;
+            
+            showLoading();
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin/desa-kkn/${id}`, {
+                    method: 'DELETE',
+                    headers: getHeaders()
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('Desa berhasil dihapus', 'success');
+                    loadDesaData();
+                } else {
+                    showAlert(result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error deleting desa:', error);
+                showAlert('Gagal menghapus desa', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function viewDesaDetail(id) {
+            showLoading();
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin/desa-kkn/${id}`, {
+                    headers: getHeaders()
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    const desa = result.data;
+                    let pesertaHtml = '';
+                    
+                    if (desa.peserta && desa.peserta.length > 0) {
+                        pesertaHtml = desa.peserta.map(p => `
+                            <tr>
+                                <td class="px-4 py-2">${p.nim}</td>
+                                <td class="px-4 py-2">${p.nama_lengkap}</td>
+                                <td class="px-4 py-2"><span class="${getStatusBadgeClass(p.status)}">${getStatusText(p.status)}</span></td>
+                                <td class="px-4 py-2">${formatDate(p.tanggal_daftar)}</td>
+                            </tr>
+                        `).join('');
+                    } else {
+                        pesertaHtml = '<tr><td colspan="4" class="text-center py-4">Belum ada peserta</td></tr>';
+                    }
+                    
+                    const dosenInfo = desa.dosen_pembimbing ? 
+                        `${desa.dosen_pembimbing.nama_lengkap} (${desa.dosen_pembimbing.nidn})` : '-';
+                    
+                    const content = `
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div><strong>Nama Desa:</strong> ${desa.nama_desa}</div>
+                            <div><strong>Kecamatan:</strong> ${desa.kecamatan || '-'}</div>
+                            <div><strong>Kabupaten:</strong> ${desa.kabupaten}</div>
+                            <div><strong>Provinsi:</strong> ${desa.provinsi}</div>
+                            <div><strong>Kuota:</strong> ${desa.kuota}</div>
+                            <div><strong>Terisi:</strong> ${desa.kuota_terisi || 0}</div>
+                            <div><strong>Sisa Kuota:</strong> ${desa.kuota - (desa.kuota_terisi || 0)}</div>
+                            <div><strong>Status:</strong> <span class="px-2 py-1 rounded-full text-xs font-semibold ${desa.status === 'aktif' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">${desa.status === 'aktif' ? 'Aktif' : 'Nonaktif'}</span></div>
+                        </div>
+                        <hr class="my-4">
+                        <h4 class="font-bold mb-2">Informasi Pembimbing:</h4>
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div><strong>Dosen Pembimbing:</strong> ${dosenInfo}</div>
+                            <div><strong>Pembimbing Lapangan:</strong> ${desa.nama_pembimbing_lapangan || '-'}</div>
+                            <div><strong>Kontak:</strong> ${desa.kontak_pembimbing_lapangan || '-'}</div>
+                        </div>
+                        <hr class="my-4">
+                        <h4 class="font-bold mb-2">Daftar Peserta:</h4>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-4 py-2 text-left">NIM</th>
+                                        <th class="px-4 py-2 text-left">Nama</th>
+                                        <th class="px-4 py-2 text-left">Status</th>
+                                        <th class="px-4 py-2 text-left">Tanggal Daftar</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${pesertaHtml}
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+                    
+                    document.getElementById('detailModalContent').innerHTML = content;
+                    document.getElementById('detailModal').classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Error viewing detail:', error);
+                showAlert('Gagal memuat detail', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
         // ==================== REGISTRATION FUNCTIONS ====================
+        async function loadDesaFilterOptions() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin/desa-kkn/list/aktif`, {
+                    headers: getHeaders()
+                });
+                const result = await response.json();
+                
+                const select = document.getElementById('filterDesaRegistration');
+                select.innerHTML = '<option value="">Semua Desa</option>';
+                
+                if (result.success && result.data) {
+                    result.data.forEach(desa => {
+                        select.innerHTML += `<option value="${desa.id_desa}">${desa.nama_desa}</option>`;
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading desa filters:', error);
+            }
+        }
+
         async function loadRegistrationData() {
             showLoading();
             const search = document.getElementById('searchRegistration').value;
             const jenis = document.getElementById('filterJenisRegistration').value;
             const status = document.getElementById('filterStatusRegistration').value;
+            const id_desa = document.getElementById('filterDesaRegistration').value;
             
             try {
                 // Load KKN Registrations
                 if (jenis === '' || jenis === 'kkn') {
-                    const kknResponse = await fetch(`${API_BASE_URL}/kkn-registrations?search=${search}&status=${status}`);
-                    const kknData = await kknResponse.json();
-                    if (kknData.success) {
-                        renderKKNRegistrationTable(kknData.data);
+                    const kknResponse = await fetch(`${API_BASE_URL}/admin/registrasi-kkn?search=${search}&status=${status}&id_desa=${id_desa}&limit=100`, {
+                        headers: getHeaders()
+                    });
+                    const kknResult = await kknResponse.json();
+                    if (kknResult.success) {
+                        renderKKNRegistrationTable(kknResult.data);
+                    } else {
+                        document.getElementById('kknRegistrationTableBody').innerHTML = `
+                            <tr>
+                                <td colspan="7" class="text-center py-4 text-gray-500">
+                                    Gagal memuat data
+                                </td>
+                            </tr>
+                        `;
                     }
                 }
                 
                 // Load Magang Registrations
                 if (jenis === '' || jenis === 'magang') {
-                    const magangResponse = await fetch(`${API_BASE_URL}/magang-registrations?search=${search}&status=${status}`);
-                    const magangData = await magangResponse.json();
-                    if (magangData.success) {
-                        renderMagangRegistrationTable(magangData.data);
+                    const magangResponse = await fetch(`${API_BASE_URL}/admin/registrasi-magang?search=${search}&status=${status}&limit=100`, {
+                        headers: getHeaders()
+                    });
+                    const magangResult = await magangResponse.json();
+                    if (magangResult.success) {
+                        renderMagangRegistrationTable(magangResult.data);
+                    } else {
+                        document.getElementById('magangRegistrationTableBody').innerHTML = `
+                            <tr>
+                                <td colspan="7" class="text-center py-4 text-gray-500">
+                                    Gagal memuat data
+                                </td>
+                            </tr>
+                        `;
                     }
                 }
             } catch (error) {
@@ -1079,7 +1784,7 @@
             if (!registrations || registrations.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="6" class="text-center py-4 text-gray-500">
+                        <td colspan="7" class="text-center py-4 text-gray-500">
                             Tidak ada data registrasi KKN
                         </td>
                     </tr>
@@ -1091,23 +1796,20 @@
                 <tr class="hover:bg-gray-50">
                     <td class="px-4 py-3">${reg.nim}</td>
                     <td class="px-4 py-3">
-                        <div class="font-medium">${reg.full_name}</div>
-                        <div class="text-xs text-gray-500">${reg.email}</div>
+                        <div class="font-medium">${reg.nama_lengkap}</div>
                     </td>
-                    <td class="px-4 py-3">${formatStudyProgram(reg.study_program)}</td>
-                    <td class="px-4 py-3">${reg.village || '-'}</td>
+                    <td class="px-4 py-3">${reg.program_studi?.nama_prodi || '-'}</td>
+                    <td class="px-4 py-3">${reg.desa_kkn?.nama_desa || '-'}</td>
+                    <td class="px-4 py-3">${formatDate(reg.tanggal_daftar)}</td>
                     <td class="px-4 py-3">
                         <span class="${getStatusBadgeClass(reg.status)}">${getStatusText(reg.status)}</span>
                     </td>
                     <td class="px-4 py-3 text-center">
-                        <button onclick="viewRegistrationDetail('kkn', '${reg.nim}')" class="text-blue-600 hover:text-blue-900 mr-2" title="Lihat Detail">
+                        <button onclick="viewRegistrationDetail('kkn', '${reg.id_registrasi}')" class="text-blue-600 hover:text-blue-900 mr-2 action-btn" title="Lihat Detail">
                             <i class="fas fa-eye"></i>
                         </button>
-                        <button onclick="editRegistration('kkn', '${reg.nim}')" class="text-green-600 hover:text-green-900 mr-2" title="Edit">
+                        <button onclick="openStatusModal('kkn', '${reg.id_registrasi}', '${reg.status}')" class="text-green-600 hover:text-green-900 action-btn" title="Ubah Status">
                             <i class="fas fa-edit"></i>
-                        </button>
-                        <button onclick="deleteRegistration('kkn', '${reg.nim}')" class="text-red-600 hover:text-red-900" title="Hapus">
-                            <i class="fas fa-trash"></i>
                         </button>
                     </td>
                 </tr>
@@ -1120,7 +1822,7 @@
             if (!registrations || registrations.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="6" class="text-center py-4 text-gray-500">
+                        <td colspan="7" class="text-center py-4 text-gray-500">
                             Tidak ada data registrasi Magang
                         </td>
                     </tr>
@@ -1132,126 +1834,32 @@
                 <tr class="hover:bg-gray-50">
                     <td class="px-4 py-3">${reg.nim}</td>
                     <td class="px-4 py-3">
-                        <div class="font-medium">${reg.full_name}</div>
-                        <div class="text-xs text-gray-500">${reg.email}</div>
+                        <div class="font-medium">${reg.nama_lengkap}</div>
                     </td>
-                    <td class="px-4 py-3">${formatStudyProgram(reg.study_program)}</td>
-                    <td class="px-4 py-3">${reg.company || '-'}</td>
+                    <td class="px-4 py-3">${reg.program_studi?.nama_prodi || '-'}</td>
+                    <td class="px-4 py-3">${reg.nama_perusahaan || '-'}</td>
+                    <td class="px-4 py-3">${formatDate(reg.created_at)}</td>
                     <td class="px-4 py-3">
                         <span class="${getStatusBadgeClass(reg.status)}">${getStatusText(reg.status)}</span>
                     </td>
                     <td class="px-4 py-3 text-center">
-                        <button onclick="viewRegistrationDetail('magang', '${reg.nim}')" class="text-blue-600 hover:text-blue-900 mr-2" title="Lihat Detail">
+                        <button onclick="viewRegistrationDetail('magang', '${reg.id_registrasi}')" class="text-blue-600 hover:text-blue-900 mr-2 action-btn" title="Lihat Detail">
                             <i class="fas fa-eye"></i>
                         </button>
-                        <button onclick="editRegistration('magang', '${reg.nim}')" class="text-green-600 hover:text-green-900 mr-2" title="Edit">
+                        <button onclick="openStatusModal('magang', '${reg.id_registrasi}', '${reg.status}')" class="text-green-600 hover:text-green-900 action-btn" title="Ubah Status">
                             <i class="fas fa-edit"></i>
-                        </button>
-                        <button onclick="deleteRegistration('magang', '${reg.nim}')" class="text-red-600 hover:text-red-900" title="Hapus">
-                            <i class="fas fa-trash"></i>
                         </button>
                     </td>
                 </tr>
             `).join('');
         }
 
-        function openAddRegistrationModal() {
-            document.getElementById('registrationModalTitle').textContent = 'Tambah Registrasi Baru';
-            document.getElementById('registrationForm').reset();
-            document.getElementById('registrationId').value = '';
-            toggleRegistrationForm();
-            document.getElementById('registrationModal').classList.remove('hidden');
-        }
-
-        function closeRegistrationModal() {
-            document.getElementById('registrationModal').classList.add('hidden');
-        }
-
-        function toggleRegistrationForm() {
-            const type = document.getElementById('registrationTypeSelect').value;
-            document.getElementById('registrationType').value = type;
-            
-            if (type === 'kkn') {
-                document.getElementById('kknFields').style.display = 'block';
-                document.getElementById('magangFields').style.display = 'none';
-                loadVillageOptions();
-            } else {
-                document.getElementById('kknFields').style.display = 'none';
-                document.getElementById('magangFields').style.display = 'block';
-            }
-        }
-
-        async function loadVillageOptions() {
-            try {
-                const response = await fetch(`${API_BASE_URL}/villages`);
-                const data = await response.json();
-                
-                const select = document.getElementById('registrationVillage');
-                select.innerHTML = '<option value="">Pilih Desa</option>';
-                
-                if (data.success && data.data) {
-                    data.data.forEach(village => {
-                        select.innerHTML += `<option value="${village.id}">${village.name} (Kuota: ${village.available_quota})</option>`;
-                    });
-                }
-            } catch (error) {
-                console.error('Error loading villages:', error);
-            }
-        }
-
-        async function saveRegistration(event) {
-            event.preventDefault();
+        async function viewRegistrationDetail(type, id) {
             showLoading();
-            
-            const type = document.getElementById('registrationType').value;
-            const nim = document.getElementById('registrationNim').value;
-            
-            const registrationData = {
-                nim: nim,
-                full_name: document.getElementById('registrationName').value,
-                email: document.getElementById('registrationEmail').value,
-                study_program: document.getElementById('registrationStudyProgram').value,
-                phone: document.getElementById('registrationPhone').value,
-                status: document.getElementById('registrationStatus').value
-            };
-            
-            if (type === 'kkn') {
-                registrationData.village_id = document.getElementById('registrationVillage').value;
-            } else {
-                registrationData.company = document.getElementById('registrationCompany').value;
-                registrationData.internship_field = document.getElementById('registrationField').value;
-                registrationData.duration = document.getElementById('registrationDuration').value;
-            }
-            
             try {
-                const url = `${API_BASE_URL}/${type}-registrations`;
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(registrationData)
+                const response = await fetch(`${API_BASE_URL}/admin/registrasi-${type}/${id}`, {
+                    headers: getHeaders()
                 });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    showAlert('Registrasi berhasil ditambahkan', 'success');
-                    closeRegistrationModal();
-                    loadRegistrationData();
-                } else {
-                    showAlert(result.message, 'error');
-                }
-            } catch (error) {
-                console.error('Error saving registration:', error);
-                showAlert('Gagal menyimpan registrasi', 'error');
-            } finally {
-                hideLoading();
-            }
-        }
-
-        async function viewRegistrationDetail(type, nim) {
-            showLoading();
-            try {
-                const response = await fetch(`${API_BASE_URL}/${type}-registrations/${nim}`);
                 const result = await response.json();
                 
                 if (result.success) {
@@ -1262,35 +1870,39 @@
                         content = `
                             <div class="grid grid-cols-2 gap-4">
                                 <div><strong>NIM:</strong> ${data.nim}</div>
-                                <div><strong>Nama:</strong> ${data.full_name}</div>
-                                <div><strong>Email:</strong> ${data.email}</div>
-                                <div><strong>Telepon:</strong> ${data.phone}</div>
-                                <div><strong>Program Studi:</strong> ${formatStudyProgram(data.study_program)}</div>
-                                <div><strong>Desa:</strong> ${data.village || '-'}</div>
-                                <div><strong>Ukuran Jaket:</strong> ${data.jacket_size || '-'}</div>
+                                <div><strong>Nama:</strong> ${data.nama_lengkap}</div>
+                                <div><strong>Email:</strong> ${data.email || '-'}</div>
+                                <div><strong>No. HP:</strong> ${data.no_hp || '-'}</div>
+                                <div><strong>Program Studi:</strong> ${data.program_studi?.nama_prodi || '-'}</div>
+                                <div><strong>Desa:</strong> ${data.desa_kkn?.nama_desa || '-'}</div>
+                                <div><strong>Kabupaten:</strong> ${data.desa_kkn?.kabupaten || '-'}</div>
+                                <div><strong>Ukuran Jaket:</strong> ${data.ukuran_jaket || '-'}</div>
                                 <div><strong>Status:</strong> <span class="${getStatusBadgeClass(data.status)}">${getStatusText(data.status)}</span></div>
-                                <div><strong>Tanggal Daftar:</strong> ${formatDate(data.created_at)}</div>
+                                <div><strong>Tanggal Daftar:</strong> ${formatDateTime(data.tanggal_daftar)}</div>
                             </div>
                             <h4 class="font-bold mt-4 mb-2">File Dokumen:</h4>
                             <div class="grid grid-cols-3 gap-2">
-                                ${data.krs_file ? `<div><a href="${API_BASE_URL}/uploads/${data.krs_file}" target="_blank" class="text-blue-600">KRS</a></div>` : ''}
-                                ${data.khs_file ? `<div><a href="${API_BASE_URL}/uploads/${data.khs_file}" target="_blank" class="text-blue-600">KHS</a></div>` : ''}
-                                ${data.payment_file ? `<div><a href="${API_BASE_URL}/uploads/${data.payment_file}" target="_blank" class="text-blue-600">Bukti Bayar</a></div>` : ''}
+                                ${data.krs_file ? `<div><a href="${API_BASE_URL}/uploads/${data.krs_file}" target="_blank" class="text-blue-600"><i class="fas fa-file-pdf"></i> KRS</a></div>` : '<div>-</div>'}
+                                ${data.khs_file ? `<div><a href="${API_BASE_URL}/uploads/${data.khs_file}" target="_blank" class="text-blue-600"><i class="fas fa-file-pdf"></i> KHS</a></div>` : '<div>-</div>'}
+                                ${data.payment_file ? `<div><a href="${API_BASE_URL}/uploads/${data.payment_file}" target="_blank" class="text-blue-600"><i class="fas fa-file-pdf"></i> Bukti Bayar</a></div>` : '<div>-</div>'}
                             </div>
                         `;
                     } else {
                         content = `
                             <div class="grid grid-cols-2 gap-4">
                                 <div><strong>NIM:</strong> ${data.nim}</div>
-                                <div><strong>Nama:</strong> ${data.full_name}</div>
-                                <div><strong>Email:</strong> ${data.email}</div>
-                                <div><strong>Telepon:</strong> ${data.phone}</div>
-                                <div><strong>Program Studi:</strong> ${formatStudyProgram(data.study_program)}</div>
-                                <div><strong>Perusahaan:</strong> ${data.company || '-'}</div>
-                                <div><strong>Bidang:</strong> ${data.internship_field || '-'}</div>
-                                <div><strong>Durasi:</strong> ${data.duration || '-'} bulan</div>
+                                <div><strong>Nama:</strong> ${data.nama_lengkap}</div>
+                                <div><strong>Email:</strong> ${data.email || '-'}</div>
+                                <div><strong>No. HP:</strong> ${data.no_hp || '-'}</div>
+                                <div><strong>Program Studi:</strong> ${data.program_studi?.nama_prodi || '-'}</div>
+                                <div><strong>Perusahaan:</strong> ${data.nama_perusahaan || '-'}</div>
+                                <div><strong>Bidang:</strong> ${data.bidang_magang || '-'}</div>
+                                <div><strong>Durasi:</strong> ${data.durasi || '-'} bulan</div>
+                                <div><strong>Alamat Perusahaan:</strong> ${data.alamat_perusahaan || '-'}</div>
+                                <div><strong>Tanggal Mulai:</strong> ${formatDate(data.tanggal_mulai)}</div>
+                                <div><strong>Tanggal Selesai:</strong> ${formatDate(data.tanggal_selesai)}</div>
                                 <div><strong>Status:</strong> <span class="${getStatusBadgeClass(data.status)}">${getStatusText(data.status)}</span></div>
-                                <div><strong>Tanggal Daftar:</strong> ${formatDate(data.created_at)}</div>
+                                <div><strong>Tanggal Daftar:</strong> ${formatDateTime(data.created_at)}</div>
                             </div>
                         `;
                     }
@@ -1306,51 +1918,72 @@
             }
         }
 
-        function closeDetailModal() {
-            document.getElementById('detailModal').classList.add('hidden');
+        function openStatusModal(type, id, currentStatus) {
+            selectedType = type;
+            selectedId = id;
+            document.getElementById('statusId').value = id;
+            document.getElementById('statusType').value = type;
+            document.getElementById('newStatus').value = currentStatus;
+            document.getElementById('statusCatatan').value = '';
+            document.getElementById('statusModal').classList.remove('hidden');
         }
 
-        async function deleteRegistration(type, nim) {
-            if (!confirm('Apakah Anda yakin ingin menghapus registrasi ini?')) return;
+        function closeStatusModal() {
+            document.getElementById('statusModal').classList.add('hidden');
+        }
+
+        async function updateRegistrationStatus(event) {
+            event.preventDefault();
             showLoading();
             
+            const type = document.getElementById('statusType').value;
+            const id = document.getElementById('statusId').value;
+            const status = document.getElementById('newStatus').value;
+            const catatan = document.getElementById('statusCatatan').value;
+            
             try {
-                const response = await fetch(`${API_BASE_URL}/${type}-registrations/${nim}`, {
-                    method: 'DELETE'
+                const response = await fetch(`${API_BASE_URL}/admin/registrasi-${type}/${id}/status`, {
+                    method: 'PUT',
+                    headers: getHeaders(),
+                    body: JSON.stringify({ status, catatan })
                 });
                 
                 const result = await response.json();
                 
                 if (result.success) {
-                    showAlert('Registrasi berhasil dihapus', 'success');
+                    showAlert(`Status berhasil diubah menjadi ${getStatusText(status)}`, 'success');
+                    closeStatusModal();
                     loadRegistrationData();
+                    loadStatsData();
                 } else {
                     showAlert(result.message, 'error');
                 }
             } catch (error) {
-                console.error('Error deleting registration:', error);
-                showAlert('Gagal menghapus registrasi', 'error');
+                console.error('Error updating status:', error);
+                showAlert('Gagal mengupdate status', 'error');
             } finally {
                 hideLoading();
             }
         }
 
         // ==================== LUARAN FUNCTIONS ====================
-        async function loadDesaOptions() {
+        async function loadDesaLuaranOptions() {
             try {
-                const response = await fetch(`${API_BASE_URL}/villages`);
-                const data = await response.json();
+                const response = await fetch(`${API_BASE_URL}/admin/desa-kkn/list/aktif`, {
+                    headers: getHeaders()
+                });
+                const result = await response.json();
                 
                 const select = document.getElementById('filterDesaLuaran');
                 select.innerHTML = '<option value="">Semua Desa</option>';
                 
-                if (data.success && data.data) {
-                    data.data.forEach(village => {
-                        select.innerHTML += `<option value="${village.id}">${village.name}</option>`;
+                if (result.success && result.data) {
+                    result.data.forEach(desa => {
+                        select.innerHTML += `<option value="${desa.id_desa}">${desa.nama_desa}</option>`;
                     });
                 }
             } catch (error) {
-                console.error('Error loading villages:', error);
+                console.error('Error loading desa luaran:', error);
             }
         }
 
@@ -1358,13 +1991,18 @@
             showLoading();
             const desa = document.getElementById('filterDesaLuaran').value;
             const status = document.getElementById('filterStatusLuaran').value;
+            const search = document.getElementById('searchLuaran').value;
             
             try {
-                const response = await fetch(`${API_BASE_URL}/luaran-kkn?desa=${desa}&status=${status}`);
+                const response = await fetch(`${API_BASE_URL}/admin/luaran-kkn?desa=${desa}&status=${status}&search=${search}&limit=100`, {
+                    headers: getHeaders()
+                });
                 const result = await response.json();
                 
                 if (result.success) {
                     renderLuaranTable(result.data);
+                } else {
+                    showAlert(result.message, 'error');
                 }
             } catch (error) {
                 console.error('Error loading luaran:', error);
@@ -1380,7 +2018,7 @@
             if (!data || data.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="9" class="text-center py-8 text-gray-500">
+                        <td colspan="10" class="text-center py-8 text-gray-500">
                             <i class="fas fa-file-alt text-4xl mb-3"></i><br>
                             Tidak ada data luaran
                         </td>
@@ -1393,28 +2031,29 @@
                 <tr class="hover:bg-gray-50">
                     <td class="px-4 py-3">${index + 1}</td>
                     <td class="px-4 py-3">${item.nim}</td>
-                    <td class="px-4 py-3">${item.village_name}</td>
-                    <td class="px-4 py-3">${item.activity_title}</td>
+                    <td class="px-4 py-3">${item.nama_lengkap}</td>
+                    <td class="px-4 py-3">${item.desa_name}</td>
+                    <td class="px-4 py-3">${item.judul_kegiatan}</td>
                     <td class="px-4 py-3">
-                        ${item.video_link ? 
-                            `<a href="${item.video_link}" target="_blank" class="text-blue-600"><i class="fab fa-youtube"></i> Lihat</a>` : 
+                        ${item.link_video ? 
+                            `<a href="${item.link_video}" target="_blank" class="text-blue-600 hover:text-blue-800"><i class="fab fa-youtube"></i> Lihat</a>` : 
                             '<span class="text-gray-400">-</span>'}
                     </td>
                     <td class="px-4 py-3">
-                        ${item.poster_link ? 
-                            `<a href="${API_BASE_URL}${item.poster_link}" target="_blank" class="text-blue-600"><i class="fas fa-image"></i> Lihat</a>` : 
+                        ${item.file_poster ? 
+                            `<a href="${API_BASE_URL}/uploads/${item.file_poster}" target="_blank" class="text-blue-600 hover:text-blue-800"><i class="fas fa-image"></i> Lihat</a>` : 
                             '<span class="text-gray-400">-</span>'}
                     </td>
                     <td class="px-4 py-3">
-                        ${item.mou_file ? 
-                            `<a href="${API_BASE_URL}${item.mou_file}" target="_blank" class="text-blue-600"><i class="fas fa-file-pdf"></i> Download</a>` : 
+                        ${item.file_mou ? 
+                            `<a href="${API_BASE_URL}/uploads/${item.file_mou}" target="_blank" class="text-blue-600 hover:text-blue-800"><i class="fas fa-file-pdf"></i> Download</a>` : 
                             '<span class="text-gray-400">-</span>'}
                     </td>
                     <td class="px-4 py-3">
                         <span class="${getStatusBadgeClass(item.status)}">${getStatusText(item.status)}</span>
                     </td>
                     <td class="px-4 py-3 text-center">
-                        <button onclick="openVerificationModal('${item.id}')" class="text-blue-600 hover:text-blue-900" title="Verifikasi">
+                        <button onclick="openVerificationModal('${item.id_luaran}')" class="text-blue-600 hover:text-blue-900 action-btn" title="Verifikasi">
                             <i class="fas fa-check-circle"></i>
                         </button>
                     </td>
@@ -1443,9 +2082,9 @@
             };
             
             try {
-                const response = await fetch(`${API_BASE_URL}/luaran-kkn/${id}/verifikasi`, {
+                const response = await fetch(`${API_BASE_URL}/admin/luaran-kkn/${id}/verifikasi`, {
                     method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: getHeaders(),
                     body: JSON.stringify(data)
                 });
                 
@@ -1470,7 +2109,9 @@
         async function loadStatsData() {
             showLoading();
             try {
-                const response = await fetch(`${API_BASE_URL}/dashboard/stats`);
+                const response = await fetch(`${API_BASE_URL}/admin/dashboard/stats`, {
+                    headers: getHeaders()
+                });
                 const result = await response.json();
                 
                 if (result.success) {
@@ -1485,26 +2126,41 @@
         }
 
         function updateStatsCards(data) {
-            document.getElementById('totalKknStats').textContent = data.kkn.total || 0;
-            document.getElementById('approvedKknStats').textContent = data.kkn.approved || 0;
-            document.getElementById('pendingKknStats').textContent = data.kkn.pending || 0;
+            // Update cards utama
+            document.getElementById('totalKknStats').textContent = data.kkn?.total || 0;
+            document.getElementById('approvedKknStats').textContent = data.kkn?.approved || 0;
+            document.getElementById('pendingKknStats').textContent = data.kkn?.pending || 0;
             
-            document.getElementById('totalMagangStats').textContent = data.magang.total || 0;
-            document.getElementById('approvedMagangStats').textContent = data.magang.approved || 0;
-            document.getElementById('pendingMagangStats').textContent = data.magang.pending || 0;
+            document.getElementById('totalMagangStats').textContent = data.magang?.total || 0;
+            document.getElementById('approvedMagangStats').textContent = data.magang?.approved || 0;
+            document.getElementById('pendingMagangStats').textContent = data.magang?.pending || 0;
             
-            document.getElementById('totalDesaStats').textContent = data.villages.total || 0;
-            document.getElementById('totalKuotaStats').textContent = data.villages.total_quota || 0;
-            document.getElementById('terisiKuotaStats').textContent = data.villages.used_quota || 0;
+            document.getElementById('totalDesaStats').textContent = data.villages?.total || 0;
+            document.getElementById('totalKuotaStats').textContent = data.villages?.total_quota || 0;
+            document.getElementById('terisiKuotaStats').textContent = data.villages?.used_quota || 0;
             
-            document.getElementById('totalProgramStats').textContent = data.programs.total || 0;
-            document.getElementById('programKknStats').textContent = data.programs.kkn || 0;
-            document.getElementById('programMagangStats').textContent = data.programs.magang || 0;
+            document.getElementById('totalProgramStats').textContent = data.programs?.total || 0;
+            document.getElementById('programKknStats').textContent = data.programs?.kkn || 0;
+            document.getElementById('programMagangStats').textContent = data.programs?.magang || 0;
+
+            // Update statistik detail
+            if (document.getElementById('detailTotalKkn')) {
+                document.getElementById('detailTotalKkn').textContent = data.kkn?.total || 0;
+                document.getElementById('detailApprovedKkn').textContent = data.kkn?.approved || 0;
+                document.getElementById('detailPendingKkn').textContent = data.kkn?.pending || 0;
+                document.getElementById('detailRejectedKkn').textContent = data.kkn?.rejected || 0;
+                document.getElementById('detailVerifiedKkn').textContent = data.kkn?.verified || 0;
+                
+                document.getElementById('detailTotalMagang').textContent = data.magang?.total || 0;
+                document.getElementById('detailApprovedMagang').textContent = data.magang?.approved || 0;
+                document.getElementById('detailPendingMagang').textContent = data.magang?.pending || 0;
+                document.getElementById('detailRejectedMagang').textContent = data.magang?.rejected || 0;
+                document.getElementById('detailVerifiedMagang').textContent = data.magang?.verified || 0;
+            }
         }
 
         function updateCharts(data) {
             if (!kknChart) {
-                // Initialize KKN Chart
                 const kknCtx = document.getElementById('kknChart').getContext('2d');
                 kknChart = new Chart(kknCtx, {
                     type: 'doughnut',
@@ -1512,10 +2168,10 @@
                         labels: ['Disetujui', 'Pending', 'Ditolak', 'Terverifikasi'],
                         datasets: [{
                             data: [
-                                data.kkn.approved || 0,
-                                data.kkn.pending || 0,
-                                data.kkn.rejected || 0,
-                                data.kkn.verified || 0
+                                data.kkn?.approved || 0,
+                                data.kkn?.pending || 0,
+                                data.kkn?.rejected || 0,
+                                data.kkn?.verified || 0
                             ],
                             backgroundColor: ['#10b981', '#f59e0b', '#ef4444', '#3b82f6'],
                             borderWidth: 0
@@ -1533,16 +2189,15 @@
                 });
             } else {
                 kknChart.data.datasets[0].data = [
-                    data.kkn.approved || 0,
-                    data.kkn.pending || 0,
-                    data.kkn.rejected || 0,
-                    data.kkn.verified || 0
+                    data.kkn?.approved || 0,
+                    data.kkn?.pending || 0,
+                    data.kkn?.rejected || 0,
+                    data.kkn?.verified || 0
                 ];
                 kknChart.update();
             }
 
             if (!magangChart) {
-                // Initialize Magang Chart
                 const magangCtx = document.getElementById('magangChart').getContext('2d');
                 magangChart = new Chart(magangCtx, {
                     type: 'doughnut',
@@ -1550,10 +2205,10 @@
                         labels: ['Disetujui', 'Pending', 'Ditolak', 'Terverifikasi'],
                         datasets: [{
                             data: [
-                                data.magang.approved || 0,
-                                data.magang.pending || 0,
-                                data.magang.rejected || 0,
-                                data.magang.verified || 0
+                                data.magang?.approved || 0,
+                                data.magang?.pending || 0,
+                                data.magang?.rejected || 0,
+                                data.magang?.verified || 0
                             ],
                             backgroundColor: ['#10b981', '#f59e0b', '#ef4444', '#3b82f6'],
                             borderWidth: 0
@@ -1571,63 +2226,51 @@
                 });
             } else {
                 magangChart.data.datasets[0].data = [
-                    data.magang.approved || 0,
-                    data.magang.pending || 0,
-                    data.magang.rejected || 0,
-                    data.magang.verified || 0
+                    data.magang?.approved || 0,
+                    data.magang?.pending || 0,
+                    data.magang?.rejected || 0,
+                    data.magang?.verified || 0
                 ];
                 magangChart.update();
             }
         }
 
-        // ==================== UTILITY FUNCTIONS ====================
-        function formatStudyProgram(program) {
-            const programs = {
-                'manajemen': 'Manajemen',
-                'akuntansi': 'Akuntansi',
-                'hukum_bisnis': 'Hukum Bisnis',
-                'sistem_informasi': 'Sistem Informasi',
-                'teknik_informatika': 'Teknik Informatika'
-            };
-            return programs[program] || program;
+        // ==================== NOTIFICATION FUNCTIONS ====================
+        function toggleNotifications() {
+            const dropdown = document.getElementById('notificationDropdown');
+            dropdown.classList.toggle('hidden');
         }
 
-        function getStatusBadgeClass(status) {
-            const classes = {
-                'pending': 'badge-pending',
-                'approved': 'badge-approved',
-                'rejected': 'badge-rejected',
-                'verified': 'badge-verified'
-            };
-            return classes[status] || 'badge-pending';
+        function toggleUserMenu() {
+            const dropdown = document.getElementById('userDropdown');
+            dropdown.classList.toggle('hidden');
         }
 
-        function getStatusText(status) {
-            const texts = {
-                'pending': 'Pending',
-                'approved': 'Disetujui',
-                'rejected': 'Ditolak',
-                'verified': 'Terverifikasi'
-            };
-            return texts[status] || status;
+        function markAllAsRead() {
+            document.getElementById('notificationBadge').textContent = '0';
+            document.getElementById('notificationList').innerHTML = `
+                <div class="p-4 text-center text-gray-500">
+                    Tidak ada notifikasi
+                </div>
+            `;
         }
 
-        function formatDate(dateString) {
-            if (!dateString) return '-';
-            const date = new Date(dateString);
-            return date.toLocaleDateString('id-ID', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
+        // ==================== MODAL CLOSE FUNCTIONS ====================
+        function closeDetailModal() {
+            document.getElementById('detailModal').classList.add('hidden');
+        }
+
+        function closeLogoutModal() {
+            document.getElementById('confirmLogoutModal').classList.add('hidden');
         }
 
         // ==================== EVENT LISTENERS ====================
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize AOS
             AOS.init();
+            
+            // Set user name from localStorage
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            document.getElementById('userName').textContent = user.nama_lengkap || 'Admin LPPM';
             
             // Load initial data
             loadProgramData();
@@ -1637,43 +2280,66 @@
             document.getElementById('searchProgram').addEventListener('input', debounce(loadProgramData, 500));
             document.getElementById('filterJenisProgram').addEventListener('change', loadProgramData);
             
+            document.getElementById('searchDesa').addEventListener('input', debounce(loadDesaData, 500));
+            document.getElementById('filterKabupaten').addEventListener('change', loadDesaData);
+            document.getElementById('filterStatusDesa').addEventListener('change', loadDesaData);
+            
             document.getElementById('searchRegistration').addEventListener('input', debounce(loadRegistrationData, 500));
             document.getElementById('filterJenisRegistration').addEventListener('change', loadRegistrationData);
+            document.getElementById('filterDesaRegistration').addEventListener('change', loadRegistrationData);
             document.getElementById('filterStatusRegistration').addEventListener('change', loadRegistrationData);
-
+            
+            document.getElementById('searchLuaran').addEventListener('input', debounce(loadLuaranData, 500));
+            
             // Close modals when clicking outside
             document.getElementById('programModal').addEventListener('click', (e) => {
                 if (e.target === document.getElementById('programModal')) {
                     closeProgramModal();
                 }
             });
-
-            document.getElementById('registrationModal').addEventListener('click', (e) => {
-                if (e.target === document.getElementById('registrationModal')) {
-                    closeRegistrationModal();
+            
+            document.getElementById('desaModal').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('desaModal')) {
+                    closeDesaModal();
                 }
             });
-
+            
             document.getElementById('detailModal').addEventListener('click', (e) => {
                 if (e.target === document.getElementById('detailModal')) {
                     closeDetailModal();
                 }
             });
-
+            
+            document.getElementById('statusModal').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('statusModal')) {
+                    closeStatusModal();
+                }
+            });
+            
             document.getElementById('verificationModal').addEventListener('click', (e) => {
                 if (e.target === document.getElementById('verificationModal')) {
                     closeVerificationModal();
                 }
             });
-
+            
             document.getElementById('confirmLogoutModal').addEventListener('click', (e) => {
                 if (e.target === document.getElementById('confirmLogoutModal')) {
                     closeLogoutModal();
                 }
             });
+
+            // Close user menu when clicking outside
+            document.addEventListener('click', function(event) {
+                const userMenu = document.getElementById('userDropdown');
+                const userButton = event.target.closest('button');
+                if (!userButton || !userButton.querySelector('.fa-chevron-down')) {
+                    if (!userMenu.classList.contains('hidden')) {
+                        userMenu.classList.add('hidden');
+                    }
+                }
+            });
         });
 
-        // Debounce function
         function debounce(func, wait) {
             let timeout;
             return function executedFunction(...args) {

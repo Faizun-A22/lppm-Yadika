@@ -1,3 +1,4 @@
+// utils/helpers.js
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const path = require('path');
@@ -30,10 +31,25 @@ const formatDate = (date) => {
     });
 };
 
+/**
+ * Mendapatkan URL publik untuk file
+ * @param {string} filePath - Path file dari database (contoh: "magang/krs/nama-file.jpg")
+ * @returns {string|null} - URL lengkap atau null
+ */
 const getFileUrl = (filePath) => {
     if (!filePath) return null;
-    // Assuming server runs on localhost:3000
-    return `http://localhost:3000/${filePath.replace(/\\/g, '/')}`;
+    
+    // Hapus 'uploads/' dari awal path jika ada (untuk berjaga-jaga)
+    let cleanPath = filePath.replace(/^uploads[\/\\]/, '');
+    
+    // Ganti backslash dengan forward slash
+    cleanPath = cleanPath.replace(/\\/g, '/');
+    
+    // Pastikan tidak ada 'uploads' ganda
+    cleanPath = cleanPath.replace(/^uploads\//, '');
+    
+    // Gunakan endpoint /api/uploads untuk mengakses file
+    return `http://localhost:3000/api/uploads/${cleanPath}`;
 };
 
 const updateMagangStatus = async (supabase, id_magang, status_magang) => {

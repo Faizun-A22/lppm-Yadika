@@ -94,6 +94,16 @@
             transform: translateY(-5px);
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
         }
+
+        .btn-edit {
+            background: linear-gradient(135deg, #8B5CF6, #EC4899);
+            color: white;
+            transition: all 0.3s;
+        }
+        .btn-edit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(139, 92, 246, 0.4);
+        }
     </style>
 </head>
 <body class="bg-gray-50 font-sans antialiased">
@@ -110,7 +120,7 @@
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
             <!-- Logo and Brand -->
             <a href="dosen-dashboard.html" class="flex items-center space-x-3">
-                <img src="https://via.placeholder.com/40x40/3B82F6/ffffff?text=LPPM" alt="Logo LPPM ITB Yadika" class="h-10 w-10 rounded">
+                <img src="yadika.png" alt="Logo LPPM ITB Yadika" class="h-10 w-10 rounded">
                 <div>
                     <h1 class="text-xl font-bold gradient-text">Portal Dosen</h1>
                     <p class="text-xs text-gray-500">LPPM ITB Yadika</p>
@@ -125,7 +135,7 @@
                 <a href="dosen-berita.html" class="nav-link text-gray-700 hover:text-blue-600">
                     <i class="fas fa-newspaper mr-2"></i>Berita
                 </a>
-                                <a href="dosen-penelitian-pengabdian.html" class="nav-link text-gray-700 hover:text-blue-600">
+                <a href="dosen-penelitian-pengabdian.html" class="nav-link text-gray-700 hover:text-blue-600">
                     <i class="fas fa-flask mr-2"></i>Penelitian & Pengabdian
                 </a>
                 <a href="dosen-repository.html" class="nav-link text-gray-700 hover:text-blue-600">
@@ -163,27 +173,27 @@
             <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8" data-aos="fade-up" data-aos-delay="50">
                 <div class="stat-card bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-4 text-white text-center">
                     <i class="fas fa-flask text-2xl mb-2"></i>
-                    <p class="text-2xl font-bold" id="statPenelitian">12</p>
+                    <p class="text-2xl font-bold" id="statPenelitian">0</p>
                     <p class="text-xs">Penelitian</p>
                 </div>
                 <div class="stat-card bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg p-4 text-white text-center">
                     <i class="fas fa-hands-helping text-2xl mb-2"></i>
-                    <p class="text-2xl font-bold" id="statPengabdian">8</p>
+                    <p class="text-2xl font-bold" id="statPengabdian">0</p>
                     <p class="text-xs">Pengabdian</p>
                 </div>
                 <div class="stat-card bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg p-4 text-white text-center">
                     <i class="fas fa-book text-2xl mb-2"></i>
-                    <p class="text-2xl font-bold" id="statPublikasi">25</p>
+                    <p class="text-2xl font-bold" id="statPublikasi">0</p>
                     <p class="text-xs">Publikasi</p>
                 </div>
                 <div class="stat-card bg-gradient-to-br from-pink-500 to-pink-600 rounded-xl shadow-lg p-4 text-white text-center">
                     <i class="fas fa-users text-2xl mb-2"></i>
-                    <p class="text-2xl font-bold" id="statMahasiswa">15</p>
+                    <p class="text-2xl font-bold" id="statMahasiswa">0</p>
                     <p class="text-xs">Bimbingan</p>
                 </div>
                 <div class="stat-card bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl shadow-lg p-4 text-white text-center">
                     <i class="fas fa-certificate text-2xl mb-2"></i>
-                    <p class="text-2xl font-bold" id="statHKI">4</p>
+                    <p class="text-2xl font-bold" id="statHKI">0</p>
                     <p class="text-xs">HKI</p>
                 </div>
             </div>
@@ -201,8 +211,8 @@
                                 </div>
                             </div>
                             <input type="file" id="profilePicInput" accept="image/*" class="hidden" onchange="uploadProfilePicture(this)">
-                            <h3 class="text-xl font-bold text-gray-800 mt-3" id="profileName">Dr. Ahmad Fauzi, M.T.</h3>
-                            <p class="text-sm text-purple-600" id="profilePosition">Lektor Kepala</p>
+                            <h3 class="text-xl font-bold text-gray-800 mt-3" id="profileName">-</h3>
+                            <p class="text-sm text-purple-600" id="profilePosition">-</p>
                         </div>
 
                         <!-- Quick Info -->
@@ -214,22 +224,22 @@
                                 <p class="flex items-center">
                                     <i class="fas fa-id-card mr-2 text-gray-400 w-5"></i>
                                     <span class="font-medium text-gray-600 w-24">NIDN:</span>
-                                    <span class="text-gray-800" id="profileNidn">1234567890</span>
+                                    <span class="text-gray-800" id="profileNidn">-</span>
                                 </p>
                                 <p class="flex items-center">
                                     <i class="fas fa-graduation-cap mr-2 text-gray-400 w-5"></i>
                                     <span class="font-medium text-gray-600 w-24">Program Studi:</span>
-                                    <span class="text-gray-800" id="profileProdi">Teknik Informatika</span>
+                                    <span class="text-gray-800" id="profileProdi">-</span>
                                 </p>
                                 <p class="flex items-center">
                                     <i class="fas fa-trophy mr-2 text-gray-400 w-5"></i>
                                     <span class="font-medium text-gray-600 w-24">Jabatan:</span>
-                                    <span class="text-gray-800" id="profileJabatan">Lektor Kepala</span>
+                                    <span class="text-gray-800" id="profileJabatan">-</span>
                                 </p>
                                 <p class="flex items-center">
                                     <i class="fas fa-clock mr-2 text-gray-400 w-5"></i>
                                     <span class="font-medium text-gray-600 w-24">Masa Kerja:</span>
-                                    <span class="text-gray-800" id="profileMasaKerja">15 Tahun</span>
+                                    <span class="text-gray-800" id="profileMasaKerja">-</span>
                                 </p>
                             </div>
                         </div>
@@ -243,17 +253,17 @@
                                 <p class="flex items-center">
                                     <i class="fas fa-envelope mr-2 text-gray-400 w-5"></i>
                                     <span class="font-medium text-gray-600 w-24">Email:</span>
-                                    <span class="text-gray-800" id="profileEmail">ahmad.fauzi@yadika.ac.id</span>
+                                    <span class="text-gray-800" id="profileEmail">-</span>
                                 </p>
                                 <p class="flex items-center">
                                     <i class="fas fa-phone mr-2 text-gray-400 w-5"></i>
                                     <span class="font-medium text-gray-600 w-24">Telepon:</span>
-                                    <span class="text-gray-800" id="profilePhone">0812-3456-7890</span>
+                                    <span class="text-gray-800" id="profilePhone">-</span>
                                 </p>
                                 <p class="flex items-center">
                                     <i class="fas fa-map-marker-alt mr-2 text-gray-400 w-5"></i>
                                     <span class="font-medium text-gray-600 w-24">Alamat:</span>
-                                    <span class="text-gray-800" id="profileAddress">Jl. Pendidikan No. 123, Bekasi</span>
+                                    <span class="text-gray-800" id="profileAddress">-</span>
                                 </p>
                             </div>
                         </div>
@@ -267,22 +277,22 @@
                                 <p class="flex items-center">
                                     <i class="fab fa-google-scholar mr-2 text-gray-400 w-5"></i>
                                     <span class="font-medium text-gray-600 w-24">Scholar ID:</span>
-                                    <span class="text-gray-800">A1B2C3D4</span>
+                                    <span class="text-gray-800" id="profileScholarId">-</span>
                                 </p>
                                 <p class="flex items-center">
                                     <i class="fab fa-orcid mr-2 text-gray-400 w-5"></i>
                                     <span class="font-medium text-gray-600 w-24">ORCID:</span>
-                                    <span class="text-gray-800">0000-0001-2345-6789</span>
+                                    <span class="text-gray-800" id="profileOrcid">-</span>
                                 </p>
                                 <p class="flex items-center">
                                     <i class="fas fa-link mr-2 text-gray-400 w-5"></i>
                                     <span class="font-medium text-gray-600 w-24">Scopus ID:</span>
-                                    <span class="text-gray-800">57123456789</span>
+                                    <span class="text-gray-800" id="profileScopusId">-</span>
                                 </p>
                                 <p class="flex items-center">
                                     <i class="fas fa-link mr-2 text-gray-400 w-5"></i>
                                     <span class="font-medium text-gray-600 w-24">Sinta ID:</span>
-                                    <span class="text-gray-800">123456</span>
+                                    <span class="text-gray-800" id="profileSintaId">-</span>
                                 </p>
                             </div>
                         </div>
@@ -312,59 +322,56 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
-                                    <input type="text" id="fullName" value="Dr. Ahmad Fauzi, M.T." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                                    <input type="text" id="fullName" value="" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
                                 </div>
                                 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">NIDN</label>
-                                    <input type="text" id="nidn" value="1234567890" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                                    <input type="text" id="nidn" value="" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" readonly>
                                 </div>
                                 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Program Studi</label>
                                     <select id="prodi" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
-                                        <option value="Teknik Informatika" selected>Teknik Informatika</option>
-                                        <option value="Sistem Informasi">Sistem Informasi</option>
-                                        <option value="Teknik Elektro">Teknik Elektro</option>
-                                        <option value="Teknik Mesin">Teknik Mesin</option>
-                                        <option value="Manajemen">Manajemen</option>
+                                        <option value="">Pilih Program Studi</option>
                                     </select>
                                 </div>
                                 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Jabatan Akademik</label>
                                     <select id="jabatan" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                                        <option value="">Pilih Jabatan</option>
                                         <option value="Asisten Ahli">Asisten Ahli</option>
                                         <option value="Lektor">Lektor</option>
-                                        <option value="Lektor Kepala" selected>Lektor Kepala</option>
+                                        <option value="Lektor Kepala">Lektor Kepala</option>
                                         <option value="Guru Besar">Guru Besar</option>
                                     </select>
                                 </div>
                                 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                                    <input type="email" id="email" value="ahmad.fauzi@yadika.ac.id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                                    <input type="email" id="email" value="" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" readonly>
                                 </div>
                                 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">No. Telepon</label>
-                                    <input type="tel" id="phone" value="0812-3456-7890" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                                    <input type="tel" id="phone" value="" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
                                 </div>
                                 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Tempat Lahir</label>
-                                    <input type="text" id="birthPlace" value="Jakarta" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                    <input type="text" id="birthPlace" value="" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
                                 </div>
                                 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Lahir</label>
-                                    <input type="date" id="birthDate" value="1975-05-15" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                    <input type="date" id="birthDate" value="" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
                                 </div>
                                 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Jenis Kelamin</label>
                                     <select id="gender" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-                                        <option value="L" selected>Laki-laki</option>
+                                        <option value="L">Laki-laki</option>
                                         <option value="P">Perempuan</option>
                                     </select>
                                 </div>
@@ -372,7 +379,7 @@
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Agama</label>
                                     <select id="religion" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-                                        <option value="Islam" selected>Islam</option>
+                                        <option value="Islam">Islam</option>
                                         <option value="Kristen">Kristen</option>
                                         <option value="Katolik">Katolik</option>
                                         <option value="Hindu">Hindu</option>
@@ -382,7 +389,7 @@
                                 
                                 <div class="md:col-span-2">
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Alamat</label>
-                                    <textarea id="address" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg">Jl. Pendidikan No. 123, Bekasi</textarea>
+                                    <textarea id="address" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg"></textarea>
                                 </div>
                                 
                                 <div class="md:col-span-2">
@@ -391,26 +398,26 @@
                                 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Google Scholar ID</label>
-                                    <input type="text" id="scholarId" value="A1B2C3D4" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                    <input type="text" id="scholarId" value="" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
                                 </div>
                                 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">ORCID</label>
-                                    <input type="text" id="orcid" value="0000-0001-2345-6789" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                    <input type="text" id="orcid" value="" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
                                 </div>
                                 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Scopus ID</label>
-                                    <input type="text" id="scopusId" value="57123456789" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                    <input type="text" id="scopusId" value="" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
                                 </div>
                                 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Sinta ID</label>
-                                    <input type="text" id="sintaId" value="123456" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                    <input type="text" id="sintaId" value="" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
                                 </div>
                                 
                                 <div class="md:col-span-2">
-                                    <button type="submit" class="bg-gradient-to-r from-purple-500 to-pink-600 text-white font-bold py-2 px-6 rounded-lg hover:shadow-lg transition-all">
+                                    <button type="submit" class="btn-edit font-bold py-2 px-6 rounded-lg transition-all">
                                         <i class="fas fa-save mr-2"></i>Simpan Perubahan
                                     </button>
                                 </div>
@@ -431,20 +438,8 @@
                         </div>
                         
                         <div class="space-y-4" id="educationList">
-                            <div class="border-l-4 border-purple-500 pl-4">
-                                <h4 class="font-semibold text-gray-800">S3 Teknik Informatika</h4>
-                                <p class="text-sm text-gray-600">Institut Teknologi Bandung • 2010-2015</p>
-                                <p class="text-xs text-gray-500">Disertasi: Pengembangan Metode Deep Learning untuk Analisis Sentimen</p>
-                            </div>
-                            <div class="border-l-4 border-blue-500 pl-4">
-                                <h4 class="font-semibold text-gray-800">S2 Teknik Informatika</h4>
-                                <p class="text-sm text-gray-600">Universitas Indonesia • 2005-2008</p>
-                                <p class="text-xs text-gray-500">Tesis: Sistem Rekomendasi Menggunakan Collaborative Filtering</p>
-                            </div>
-                            <div class="border-l-4 border-green-500 pl-4">
-                                <h4 class="font-semibold text-gray-800">S1 Teknik Informatika</h4>
-                                <p class="text-sm text-gray-600">ITB Yadika • 1998-2003</p>
-                                <p class="text-xs text-gray-500">Skripsi: Aplikasi E-Learning Berbasis Web</p>
+                            <div class="text-center text-gray-500 py-4">
+                                <i class="fas fa-spinner fa-spin mr-2"></i>Memuat data...
                             </div>
                         </div>
                     </div>
@@ -462,18 +457,8 @@
                         </div>
                         
                         <div class="space-y-4" id="positionList">
-                            <div class="border-l-4 border-purple-500 pl-4">
-                                <h4 class="font-semibold text-gray-800">Lektor Kepala</h4>
-                                <p class="text-sm text-gray-600">ITB Yadika • 2020-Sekarang</p>
-                                <p class="text-xs text-gray-500">Bidang Keahlian: Artificial Intelligence, Data Mining</p>
-                            </div>
-                            <div class="border-l-4 border-blue-500 pl-4">
-                                <h4 class="font-semibold text-gray-800">Lektor</h4>
-                                <p class="text-sm text-gray-600">ITB Yadika • 2015-2020</p>
-                            </div>
-                            <div class="border-l-4 border-green-500 pl-4">
-                                <h4 class="font-semibold text-gray-800">Asisten Ahli</h4>
-                                <p class="text-sm text-gray-600">ITB Yadika • 2008-2015</p>
+                            <div class="text-center text-gray-500 py-4">
+                                <i class="fas fa-spinner fa-spin mr-2"></i>Memuat data...
                             </div>
                         </div>
                     </div>
@@ -486,17 +471,8 @@
                         </h3>
                         
                         <div class="space-y-3" id="recentPublications">
-                            <div class="p-3 hover:bg-gray-50 rounded-lg">
-                                <p class="font-medium text-gray-800">Deep Learning Approach for Sentiment Analysis in Indonesian Social Media</p>
-                                <p class="text-xs text-gray-500">IEEE Access, Vol. 12, 2024 (Scopus Q1)</p>
-                            </div>
-                            <div class="p-3 hover:bg-gray-50 rounded-lg">
-                                <p class="font-medium text-gray-800">Pengembangan Sistem IoT untuk Smart Farming pada Tanaman Hidroponik</p>
-                                <p class="text-xs text-gray-500">International Conference on Smart Agriculture, 2023</p>
-                            </div>
-                            <div class="p-3 hover:bg-gray-50 rounded-lg">
-                                <p class="font-medium text-gray-800">Analisis Perbandingan Algoritma Machine Learning untuk Prediksi Harga Saham</p>
-                                <p class="text-xs text-gray-500">Jurnal Teknologi Informasi, Vol. 15 No. 2, 2023 (Sinta 2)</p>
+                            <div class="text-center text-gray-500 py-4">
+                                <i class="fas fa-spinner fa-spin mr-2"></i>Memuat data...
                             </div>
                         </div>
                         
@@ -552,31 +528,34 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     
     <script>
-        // Initialize AOS
-        AOS.init({ duration: 800, once: true });
+        // ===========================================
+        // KONFIGURASI API
+        // ===========================================
+        const API_BASE_URL = 'http://localhost:3000/api';
 
-        // Mock Auth Object
-        const auth = {
-            getUser: function() {
-                const userStr = localStorage.getItem('user');
-                return userStr ? JSON.parse(userStr) : null;
-            },
-            requireRole: function(role) {
-                const user = this.getUser();
-                if (!user || user.role !== role) {
-                    window.location.href = '../login.html';
-                    return false;
-                }
-                return true;
-            },
-            logout: function() {
-                localStorage.removeItem('token');
-                localStorage.removeItem('user');
-                window.location.href = '../login.html';
-            }
-        };
+        // ===========================================
+        // STATE MANAGEMENT
+        // ===========================================
+        let currentUser = null;
+        let dosenProfile = null;
+        let pendidikanList = [];
+        let jabatanList = [];
+        let prodiList = [];
 
-        // Utility Functions
+        // ===========================================
+        // FUNGSI UTILITAS
+        // ===========================================
+        function getAuthToken() {
+            return localStorage.getItem('token');
+        }
+
+        function getAuthHeaders() {
+            return {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getAuthToken()}`
+            };
+        }
+
         function showLoading() {
             document.getElementById('loadingOverlay').classList.remove('hidden');
         }
@@ -595,45 +574,463 @@
             });
         }
 
-        function handleLogout() {
-            auth.logout();
-        }
-
-        // Update User Info
-        function updateUserInfo() {
-            const user = auth.getUser();
-            if (user) {
-                document.getElementById('userNameDisplay').textContent = user.name || 'Dr. Ahmad Fauzi, M.T.';
-                document.getElementById('userNidnDisplay').textContent = user.nidn || '1234567890';
-                
-                document.getElementById('profileName').textContent = user.name || 'Dr. Ahmad Fauzi, M.T.';
-                document.getElementById('profileNidn').textContent = user.nidn || '1234567890';
+        // ===========================================
+        // CEK AUTHENTIKASI
+        // ===========================================
+        function checkAuth() {
+            const token = getAuthToken();
+            const userStr = localStorage.getItem('user');
+            
+            if (!token || !userStr) {
+                window.location.href = '../login.html';
+                return null;
+            }
+            
+            try {
+                const user = JSON.parse(userStr);
+                if (user.role !== 'dosen') {
+                    window.location.href = '../login.html';
+                    return null;
+                }
+                currentUser = user;
+                return user;
+            } catch (e) {
+                window.location.href = '../login.html';
+                return null;
             }
         }
 
-        // Change Profile Picture
+        // ===========================================
+        // LOAD PROGRAM STUDI
+        // ===========================================
+        async function loadProgramStudi() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/prodi`, {
+                    method: 'GET',
+                    headers: getAuthHeaders()
+                });
+
+                if (!response.ok) return;
+
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    prodiList = result.data;
+                    const prodiSelect = document.getElementById('prodi');
+                    prodiSelect.innerHTML = '<option value="">Pilih Program Studi</option>';
+                    
+                    prodiList.forEach(prodi => {
+                        const option = document.createElement('option');
+                        option.value = prodi.id_prodi;
+                        option.textContent = prodi.nama_prodi;
+                        prodiSelect.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading prodi:', error);
+            }
+        }
+
+        // ===========================================
+        // LOAD DATA PROFIL
+        // ===========================================
+        async function loadProfileData() {
+            try {
+                showLoading();
+                
+                const response = await fetch(`${API_BASE_URL}/dosen/profil`, {
+                    method: 'GET',
+                    headers: getAuthHeaders()
+                });
+
+                if (!response.ok) {
+                    throw new Error('Gagal memuat data profil');
+                }
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    dosenProfile = result.data;
+                    
+                    // Update header
+                    document.getElementById('userNameDisplay').textContent = dosenProfile.nama_lengkap || '-';
+                    document.getElementById('userNidnDisplay').textContent = dosenProfile.nidn || '-';
+                    
+                    updateProfileUI();
+                    
+                    // Load data lainnya
+                    await Promise.all([
+                        loadStatistics(),
+                        loadPublikasi(),
+                        loadPendidikan(),
+                        loadJabatan()
+                    ]);
+                } else {
+                    throw new Error(result.message || 'Gagal memuat data profil');
+                }
+
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                showNotification(error.message || 'Gagal memuat data profil', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // ===========================================
+        // UPDATE PROFILE UI
+        // ===========================================
+        function updateProfileUI() {
+            if (!dosenProfile) return;
+
+            // Profile card
+            document.getElementById('profileName').textContent = dosenProfile.nama_lengkap || '-';
+            document.getElementById('profileNidn').textContent = dosenProfile.nidn || '-';
+            document.getElementById('profileProdi').textContent = dosenProfile.nama_prodi || '-';
+            document.getElementById('profileEmail').textContent = dosenProfile.email || '-';
+            document.getElementById('profilePhone').textContent = dosenProfile.no_hp || '-';
+            document.getElementById('profileAddress').textContent = dosenProfile.info_pribadi?.alamat || '-';
+            
+            // Jabatan
+            if (dosenProfile.jabatan_saat_ini) {
+                document.getElementById('profileJabatan').textContent = 
+                    dosenProfile.jabatan_saat_ini.jabatan_fungsional?.nama_jabatan || 'Lektor';
+                document.getElementById('profilePosition').textContent = 
+                    dosenProfile.jabatan_saat_ini.jabatan_fungsional?.nama_jabatan || 'Lektor';
+            }
+            
+            // Foto profil
+            if (dosenProfile.foto_profil) {
+                document.getElementById('profilePicture').src = dosenProfile.foto_profil;
+            }
+
+            // Masa kerja (hitung dari tahun pertama jabatan)
+            if (dosenProfile.jabatan_saat_ini?.tanggal_mulai) {
+                const tahunMulai = new Date(dosenProfile.jabatan_saat_ini.tanggal_mulai).getFullYear();
+                const tahunSekarang = new Date().getFullYear();
+                const masaKerja = tahunSekarang - tahunMulai;
+                document.getElementById('profileMasaKerja').textContent = `${masaKerja} Tahun`;
+            }
+
+            // Researcher IDs
+            if (dosenProfile.researcher_ids) {
+                document.getElementById('profileScholarId').textContent = dosenProfile.researcher_ids.scholar_id || '-';
+                document.getElementById('profileOrcid').textContent = dosenProfile.researcher_ids.orcid || '-';
+                document.getElementById('profileScopusId').textContent = dosenProfile.researcher_ids.scopus_id || '-';
+                document.getElementById('profileSintaId').textContent = dosenProfile.researcher_ids.sinta_id || '-';
+            }
+
+            // Update form fields
+            document.getElementById('fullName').value = dosenProfile.nama_lengkap || '';
+            document.getElementById('nidn').value = dosenProfile.nidn || '';
+            document.getElementById('email').value = dosenProfile.email || '';
+            document.getElementById('phone').value = dosenProfile.no_hp || '';
+            
+            // Set prodi dropdown
+            if (dosenProfile.id_prodi) {
+                document.getElementById('prodi').value = dosenProfile.id_prodi;
+            }
+            
+            if (dosenProfile.info_pribadi) {
+                document.getElementById('birthPlace').value = dosenProfile.info_pribadi.tempat_lahir || '';
+                document.getElementById('birthDate').value = dosenProfile.info_pribadi.tanggal_lahir || '';
+                document.getElementById('gender').value = dosenProfile.info_pribadi.jenis_kelamin || 'L';
+                document.getElementById('religion').value = dosenProfile.info_pribadi.agama || 'Islam';
+                document.getElementById('address').value = dosenProfile.info_pribadi.alamat || '';
+            }
+            
+            // Researcher IDs in form
+            if (dosenProfile.researcher_ids) {
+                document.getElementById('scholarId').value = dosenProfile.researcher_ids.scholar_id || '';
+                document.getElementById('orcid').value = dosenProfile.researcher_ids.orcid || '';
+                document.getElementById('scopusId').value = dosenProfile.researcher_ids.scopus_id || '';
+                document.getElementById('sintaId').value = dosenProfile.researcher_ids.sinta_id || '';
+            }
+        }
+
+        // ===========================================
+        // LOAD STATISTIK
+        // ===========================================
+        async function loadStatistics() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/dosen/profil/statistik`, {
+                    method: 'GET',
+                    headers: getAuthHeaders()
+                });
+
+                if (!response.ok) return;
+
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    document.getElementById('statPenelitian').textContent = result.data.penelitian || 0;
+                    document.getElementById('statPengabdian').textContent = result.data.pengabdian || 0;
+                    document.getElementById('statPublikasi').textContent = result.data.publikasi || 0;
+                    document.getElementById('statMahasiswa').textContent = result.data.mahasiswa_bimbingan || 0;
+                    document.getElementById('statHKI').textContent = result.data.hki || 0;
+                }
+            } catch (error) {
+                console.error('Error loading statistics:', error);
+            }
+        }
+
+        // ===========================================
+        // LOAD PUBLIKASI
+        // ===========================================
+        async function loadPublikasi() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/dosen/profil/publikasi?limit=3`, {
+                    method: 'GET',
+                    headers: getAuthHeaders()
+                });
+
+                if (!response.ok) return;
+
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    renderPublikasi(result.data);
+                }
+            } catch (error) {
+                console.error('Error loading publikasi:', error);
+                document.getElementById('recentPublications').innerHTML = `
+                    <div class="text-center text-gray-500 py-4">
+                        <i class="fas fa-exclamation-circle mr-2"></i>Gagal memuat data
+                    </div>
+                `;
+            }
+        }
+
+        // ===========================================
+        // LOAD PENDIDIKAN
+        // ===========================================
+        async function loadPendidikan() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/dosen/profil/pendidikan`, {
+                    method: 'GET',
+                    headers: getAuthHeaders()
+                });
+
+                if (!response.ok) return;
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    pendidikanList = result.data || [];
+                    renderPendidikan();
+                }
+            } catch (error) {
+                console.error('Error loading pendidikan:', error);
+                document.getElementById('educationList').innerHTML = `
+                    <div class="text-center text-gray-500 py-4">
+                        <i class="fas fa-exclamation-circle mr-2"></i>Gagal memuat data
+                    </div>
+                `;
+            }
+        }
+
+        // ===========================================
+        // LOAD JABATAN
+        // ===========================================
+        async function loadJabatan() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/dosen/profil/jabatan`, {
+                    method: 'GET',
+                    headers: getAuthHeaders()
+                });
+
+                if (!response.ok) return;
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    jabatanList = result.data || [];
+                    renderJabatan();
+                }
+            } catch (error) {
+                console.error('Error loading jabatan:', error);
+                document.getElementById('positionList').innerHTML = `
+                    <div class="text-center text-gray-500 py-4">
+                        <i class="fas fa-exclamation-circle mr-2"></i>Gagal memuat data
+                    </div>
+                `;
+            }
+        }
+
+        // ===========================================
+        // RENDER PENDIDIKAN
+        // ===========================================
+        function renderPendidikan() {
+            const container = document.getElementById('educationList');
+            if (!container) return;
+
+            if (pendidikanList.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-center py-4">Belum ada riwayat pendidikan</p>';
+                return;
+            }
+
+            const colors = ['purple', 'blue', 'green', 'orange'];
+            
+            container.innerHTML = pendidikanList.map((item, index) => {
+                const color = colors[index % colors.length];
+                const tahun = item.tahun_lulus ? (item.tahun_masuk ? `${item.tahun_masuk}-${item.tahun_lulus}` : item.tahun_lulus) : '-';
+                
+                return `
+                    <div class="border-l-4 border-${color}-500 pl-4">
+                        <h4 class="font-semibold text-gray-800">${item.jenjang || ''} ${item.gelar ? `(${item.gelar})` : ''}</h4>
+                        <p class="text-sm text-gray-600">${item.institusi || '-'} • ${tahun}</p>
+                        ${item.judul_tesis ? `<p class="text-xs text-gray-500">${item.jenjang === 'S3' ? 'Disertasi' : item.jenjang === 'S2' ? 'Tesis' : 'Skripsi'}: ${item.judul_tesis}</p>` : ''}
+                        ${item.bidang_studi ? `<p class="text-xs text-gray-500">Bidang: ${item.bidang_studi}</p>` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ===========================================
+        // RENDER JABATAN
+        // ===========================================
+        function renderJabatan() {
+            const container = document.getElementById('positionList');
+            if (!container) return;
+
+            if (jabatanList.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-center py-4">Belum ada riwayat jabatan</p>';
+                return;
+            }
+
+            const colors = ['purple', 'blue', 'green', 'orange'];
+            
+            container.innerHTML = jabatanList.map((item, index) => {
+                const color = colors[index % colors.length];
+                const jabatan = item.jabatan_fungsional?.nama_jabatan || 'Jabatan';
+                const tahunMulai = item.tanggal_mulai ? new Date(item.tanggal_mulai).getFullYear() : '';
+                const tahunSelesai = item.tanggal_selesai ? new Date(item.tanggal_selesai).getFullYear() : 'Sekarang';
+                const periode = tahunMulai ? `${tahunMulai} - ${tahunSelesai}` : '-';
+                
+                return `
+                    <div class="border-l-4 border-${color}-500 pl-4">
+                        <h4 class="font-semibold text-gray-800">${jabatan}</h4>
+                        <p class="text-sm text-gray-600">ITB Yadika • ${periode}</p>
+                        <p class="text-xs text-gray-500">SK: ${item.nomor_sk || '-'}</p>
+                        ${item.keterangan ? `<p class="text-xs text-gray-500">${item.keterangan}</p>` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ===========================================
+        // RENDER PUBLIKASI
+        // ===========================================
+        function renderPublikasi(publikasi) {
+            const container = document.getElementById('recentPublications');
+            if (!container) return;
+
+            if (publikasi.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-center py-4">Belum ada publikasi</p>';
+                return;
+            }
+
+            container.innerHTML = publikasi.map(item => `
+                <div class="p-3 hover:bg-gray-50 rounded-lg">
+                    <p class="font-medium text-gray-800">${item.judul}</p>
+                    <p class="text-xs text-gray-500">${item.jenis || 'Jurnal'} • ${item.tanggal ? new Date(item.tanggal).getFullYear() : '-'} • ${item.peran || 'Penulis'}</p>
+                </div>
+            `).join('');
+        }
+
+        // ===========================================
+        // SAVE PROFILE
+        // ===========================================
+        window.saveProfile = async function() {
+            const updatedData = {
+                nama_lengkap: document.getElementById('fullName').value,
+                no_hp: document.getElementById('phone').value,
+                tempat_lahir: document.getElementById('birthPlace').value,
+                tanggal_lahir: document.getElementById('birthDate').value,
+                jenis_kelamin: document.getElementById('gender').value,
+                agama: document.getElementById('religion').value,
+                alamat: document.getElementById('address').value,
+                scholar_id: document.getElementById('scholarId').value,
+                orcid: document.getElementById('orcid').value,
+                scopus_id: document.getElementById('scopusId').value,
+                sinta_id: document.getElementById('sintaId').value
+            };
+
+            try {
+                showLoading();
+
+                const response = await fetch(`${API_BASE_URL}/dosen/profil`, {
+                    method: 'PUT',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify(updatedData)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    dosenProfile = result.data;
+                    updateProfileUI();
+                    showNotification('Profil berhasil diperbarui');
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                showNotification(error.message || 'Gagal memperbarui profil', 'error');
+            } finally {
+                hideLoading();
+            }
+        };
+
+        // ===========================================
+        // UPLOAD FOTO PROFIL
+        // ===========================================
         window.changeProfilePicture = function() {
             document.getElementById('profilePicInput').click();
         };
 
-        window.uploadProfilePicture = function(input) {
+        window.uploadProfilePicture = async function(input) {
             const file = input.files[0];
-            if (file) {
-                if (file.size > 2 * 1024 * 1024) {
-                    showNotification('Ukuran file maksimal 2MB', 'error');
-                    return;
-                }
+            if (!file) return;
 
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('profilePicture').src = e.target.result;
+            if (file.size > 2 * 1024 * 1024) {
+                showNotification('Ukuran file maksimal 2MB', 'error');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('foto', file);
+
+            try {
+                showLoading();
+
+                const response = await fetch(`${API_BASE_URL}/dosen/profil/foto`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${getAuthToken()}`
+                    },
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    document.getElementById('profilePicture').src = result.data.foto_profil;
                     showNotification('Foto profil berhasil diperbarui');
-                };
-                reader.readAsDataURL(file);
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                console.error('Error uploading profile picture:', error);
+                showNotification(error.message || 'Gagal mengupload foto', 'error');
+            } finally {
+                hideLoading();
             }
         };
 
-        // Change Password
+        // ===========================================
+        // CHANGE PASSWORD
+        // ===========================================
         window.changePassword = function() {
             document.getElementById('passwordModal').classList.remove('hidden');
         };
@@ -643,7 +1040,7 @@
             document.getElementById('passwordForm').reset();
         };
 
-        window.updatePassword = function() {
+        window.updatePassword = async function() {
             const oldPass = document.getElementById('oldPassword').value;
             const newPass = document.getElementById('newPassword').value;
             const confirmPass = document.getElementById('confirmPassword').value;
@@ -663,178 +1060,255 @@
                 return;
             }
 
-            showLoading();
+            try {
+                showLoading();
 
-            setTimeout(() => {
+                const response = await fetch(`${API_BASE_URL}/dosen/profil/ubah-password`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({
+                        oldPassword: oldPass,
+                        newPassword: newPass
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    closePasswordModal();
+                    showNotification('Password berhasil diperbarui');
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                console.error('Error changing password:', error);
+                showNotification(error.message || 'Gagal mengubah password', 'error');
+            } finally {
                 hideLoading();
-                closePasswordModal();
-                showNotification('Password berhasil diperbarui');
-            }, 1500);
+            }
         };
 
-        // Save Profile
-        window.saveProfile = function() {
-            showLoading();
-            
-            setTimeout(() => {
-                // Update displayed values
-                document.getElementById('profileName').textContent = document.getElementById('fullName').value;
-                document.getElementById('profileEmail').textContent = document.getElementById('email').value;
-                document.getElementById('profilePhone').textContent = document.getElementById('phone').value;
-                document.getElementById('profileAddress').textContent = document.getElementById('address').value;
-                document.getElementById('profileProdi').textContent = document.getElementById('prodi').value;
-                document.getElementById('profileJabatan').textContent = document.getElementById('jabatan').value;
-                
+        // ===========================================
+        // EXPORT DATA
+        // ===========================================
+        window.exportData = async function() {
+            try {
+                showLoading();
+
+                const response = await fetch(`${API_BASE_URL}/dosen/profil/export`, {
+                    method: 'GET',
+                    headers: getAuthHeaders()
+                });
+
+                if (!response.ok) throw new Error('Gagal mengexport data');
+
+                const result = await response.json();
+
+                if (result.success) {
+                    const blob = new Blob([JSON.stringify(result.data, null, 2)], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `kinerja-${dosenProfile?.nidn || 'dosen'}.json`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    
+                    showNotification('Data kinerja berhasil diexport');
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                console.error('Error exporting data:', error);
+                showNotification(error.message || 'Gagal mengexport data', 'error');
+            } finally {
                 hideLoading();
-                showNotification('Profil berhasil diperbarui');
-            }, 1000);
+            }
         };
 
-        // Export Data
-        window.exportData = function() {
-            const data = {
-                profile: {
-                    name: document.getElementById('fullName').value,
-                    nidn: document.getElementById('nidn').value,
-                    prodi: document.getElementById('prodi').value,
-                    jabatan: document.getElementById('jabatan').value,
-                    email: document.getElementById('email').value,
-                    phone: document.getElementById('phone').value
-                },
-                statistics: {
-                    penelitian: 12,
-                    pengabdian: 8,
-                    publikasi: 25,
-                    mahasiswa: 15,
-                    hki: 4
-                },
-                exportDate: new Date().toISOString()
-            };
-
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `kinerja-${data.profile.nidn}.json`;
-            a.click();
-            URL.revokeObjectURL(url);
-
-            showNotification('Data kinerja berhasil diexport');
-        };
-
-        // Add Education
-        window.addEducation = function() {
-            Swal.fire({
+        // ===========================================
+        // ADD PENDIDIKAN
+        // ===========================================
+        window.addEducation = async function() {
+            const { value: formValues } = await Swal.fire({
                 title: 'Tambah Riwayat Pendidikan',
                 html: `
-                    <input id="swal-degree" class="swal2-input" placeholder="Jenjang (S1/S2/S3)">
-                    <input id="swal-institution" class="swal2-input" placeholder="Institusi">
-                    <input id="swal-year" class="swal2-input" placeholder="Tahun (contoh: 2010-2015)">
-                    <textarea id="swal-thesis" class="swal2-input" placeholder="Judul Tesis/Disertasi"></textarea>
+                    <select id="swal-jenjang" class="swal2-input">
+                        <option value="S1">S1</option>
+                        <option value="S2">S2</option>
+                        <option value="S3">S3</option>
+                        <option value="Sp-1">Sp-1</option>
+                        <option value="Sp-2">Sp-2</option>
+                    </select>
+                    <input id="swal-institusi" class="swal2-input" placeholder="Institusi">
+                    <input id="swal-tahun-masuk" class="swal2-input" type="number" placeholder="Tahun Masuk">
+                    <input id="swal-tahun-lulus" class="swal2-input" type="number" placeholder="Tahun Lulus" required>
+                    <input id="swal-gelar" class="swal2-input" placeholder="Gelar (contoh: M.T.)">
+                    <input id="swal-bidang" class="swal2-input" placeholder="Bidang Studi">
+                    <textarea id="swal-judul" class="swal2-input" placeholder="Judul Tesis/Disertasi"></textarea>
                 `,
+                focusConfirm: false,
                 showCancelButton: true,
                 confirmButtonText: 'Simpan',
                 cancelButtonText: 'Batal',
                 preConfirm: () => {
-                    const degree = document.getElementById('swal-degree').value;
-                    const institution = document.getElementById('swal-institution').value;
-                    const year = document.getElementById('swal-year').value;
-                    const thesis = document.getElementById('swal-thesis').value;
-                    
-                    if (!degree || !institution || !year) {
-                        Swal.showValidationMessage('Semua field harus diisi');
-                        return false;
-                    }
-                    
-                    return { degree, institution, year, thesis };
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    const educationList = document.getElementById('educationList');
-                    const colors = ['purple', 'blue', 'green', 'orange'];
-                    const randomColor = colors[Math.floor(Math.random() * colors.length)];
-                    
-                    const newItem = document.createElement('div');
-                    newItem.className = `border-l-4 border-${randomColor}-500 pl-4`;
-                    newItem.innerHTML = `
-                        <h4 class="font-semibold text-gray-800">${result.value.degree} ${result.value.institution}</h4>
-                        <p class="text-sm text-gray-600">${result.value.institution} • ${result.value.year}</p>
-                        <p class="text-xs text-gray-500">${result.value.thesis}</p>
-                    `;
-                    
-                    educationList.appendChild(newItem);
-                    showNotification('Riwayat pendidikan berhasil ditambahkan');
+                    return {
+                        jenjang: document.getElementById('swal-jenjang').value,
+                        institusi: document.getElementById('swal-institusi').value,
+                        tahun_masuk: document.getElementById('swal-tahun-masuk').value,
+                        tahun_lulus: document.getElementById('swal-tahun-lulus').value,
+                        gelar: document.getElementById('swal-gelar').value,
+                        bidang_studi: document.getElementById('swal-bidang').value,
+                        judul_tesis: document.getElementById('swal-judul').value
+                    };
                 }
             });
+
+            if (formValues) {
+                try {
+                    showLoading();
+
+                    const response = await fetch(`${API_BASE_URL}/dosen/profil/pendidikan`, {
+                        method: 'POST',
+                        headers: getAuthHeaders(),
+                        body: JSON.stringify(formValues)
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        await loadPendidikan();
+                        showNotification('Riwayat pendidikan berhasil ditambahkan');
+                    } else {
+                        throw new Error(result.message);
+                    }
+                } catch (error) {
+                    console.error('Error adding education:', error);
+                    showNotification(error.message || 'Gagal menambah riwayat pendidikan', 'error');
+                } finally {
+                    hideLoading();
+                }
+            }
         };
 
-        // Add Position
-        window.addPosition = function() {
-            Swal.fire({
+        // ===========================================
+        // ADD JABATAN
+        // ===========================================
+        window.addPosition = async function() {
+            // Load daftar jabatan fungsional dari API
+            let jabatanOptions = '';
+            try {
+                const response = await fetch(`${API_BASE_URL}/jabatan-fungsional`, {
+                    method: 'GET',
+                    headers: getAuthHeaders()
+                });
+                const result = await response.json();
+                if (result.success && result.data) {
+                    jabatanOptions = result.data.map(j => 
+                        `<option value="${j.id_jabatan_fungsional}">${j.nama_jabatan}</option>`
+                    ).join('');
+                }
+            } catch (error) {
+                console.error('Error loading jabatan:', error);
+            }
+
+            const { value: formValues } = await Swal.fire({
                 title: 'Tambah Riwayat Jabatan',
                 html: `
-                    <input id="swal-position" class="swal2-input" placeholder="Jabatan">
-                    <input id="swal-period" class="swal2-input" placeholder="Periode (contoh: 2020-Sekarang)">
-                    <textarea id="swal-desc" class="swal2-input" placeholder="Keterangan"></textarea>
+                    <select id="swal-jabatan" class="swal2-input">
+                        ${jabatanOptions || '<option value="">Pilih Jabatan</option>'}
+                    </select>
+                    <input id="swal-nomor-sk" class="swal2-input" placeholder="Nomor SK" required>
+                    <input id="swal-tanggal-sk" class="swal2-input" type="date" placeholder="Tanggal SK">
+                    <input id="swal-tanggal-mulai" class="swal2-input" type="date" placeholder="Tanggal Mulai" required>
+                    <input id="swal-tanggal-selesai" class="swal2-input" type="date" placeholder="Tanggal Selesai (kosongkan jika masih aktif)">
+                    <textarea id="swal-keterangan" class="swal2-input" placeholder="Keterangan"></textarea>
                 `,
+                focusConfirm: false,
                 showCancelButton: true,
                 confirmButtonText: 'Simpan',
                 cancelButtonText: 'Batal',
                 preConfirm: () => {
-                    const position = document.getElementById('swal-position').value;
-                    const period = document.getElementById('swal-period').value;
-                    const desc = document.getElementById('swal-desc').value;
-                    
-                    if (!position || !period) {
-                        Swal.showValidationMessage('Jabatan dan Periode harus diisi');
-                        return false;
-                    }
-                    
-                    return { position, period, desc };
+                    return {
+                        id_jabatan_fungsional: document.getElementById('swal-jabatan').value,
+                        nomor_sk: document.getElementById('swal-nomor-sk').value,
+                        tanggal_sk: document.getElementById('swal-tanggal-sk').value,
+                        tanggal_mulai: document.getElementById('swal-tanggal-mulai').value,
+                        tanggal_selesai: document.getElementById('swal-tanggal-selesai').value || null,
+                        keterangan: document.getElementById('swal-keterangan').value
+                    };
                 }
+            });
+
+            if (formValues) {
+                try {
+                    showLoading();
+
+                    const response = await fetch(`${API_BASE_URL}/dosen/profil/jabatan`, {
+                        method: 'POST',
+                        headers: getAuthHeaders(),
+                        body: JSON.stringify(formValues)
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        await loadJabatan();
+                        showNotification('Riwayat jabatan berhasil ditambahkan');
+                    } else {
+                        throw new Error(result.message);
+                    }
+                } catch (error) {
+                    console.error('Error adding position:', error);
+                    showNotification(error.message || 'Gagal menambah riwayat jabatan', 'error');
+                } finally {
+                    hideLoading();
+                }
+            }
+        };
+
+        // ===========================================
+        // LOGOUT
+        // ===========================================
+        window.handleLogout = function() {
+            Swal.fire({
+                title: 'Konfirmasi Logout',
+                text: 'Apakah Anda yakin ingin logout?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#EF4444',
+                cancelButtonColor: '#6B7280',
+                confirmButtonText: 'Ya, Logout',
+                cancelButtonText: 'Batal'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    const positionList = document.getElementById('positionList');
-                    const colors = ['purple', 'blue', 'green', 'orange'];
-                    const randomColor = colors[Math.floor(Math.random() * colors.length)];
-                    
-                    const newItem = document.createElement('div');
-                    newItem.className = `border-l-4 border-${randomColor}-500 pl-4`;
-                    newItem.innerHTML = `
-                        <h4 class="font-semibold text-gray-800">${result.value.position}</h4>
-                        <p class="text-sm text-gray-600">ITB Yadika • ${result.value.period}</p>
-                        ${result.value.desc ? `<p class="text-xs text-gray-500">${result.value.desc}</p>` : ''}
-                    `;
-                    
-                    positionList.appendChild(newItem);
-                    showNotification('Riwayat jabatan berhasil ditambahkan');
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    window.location.href = '../login.html';
                 }
             });
         };
 
-        // Initialize Page
-        document.addEventListener('DOMContentLoaded', function() {
+        // ===========================================
+        // INITIALIZE PAGE
+        // ===========================================
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Initialize AOS
+            AOS.init({ duration: 800, once: true });
+
             // Check authentication
-            if (!auth.requireRole('dosen')) return;
-            
-            // Set mock user in localStorage if not exists
-            if (!localStorage.getItem('user')) {
-                localStorage.setItem('user', JSON.stringify({
-                    name: 'Dr. Ahmad Fauzi, M.T.',
-                    nidn: '1234567890',
-                    role: 'dosen',
-                    email: 'ahmad.fauzi@yadika.ac.id'
-                }));
-            }
-            
-            // Update UI
-            updateUserInfo();
-            
-            // Hide loading
-            hideLoading();
+            const user = checkAuth();
+            if (!user) return;
+
+            // Load program studi
+            await loadProgramStudi();
+
+            // Load profile data
+            await loadProfileData();
         });
 
-        // Close modal when clicking outside
+        // ===========================================
+        // CLOSE MODAL WHEN CLICKING OUTSIDE
+        // ===========================================
         window.onclick = function(event) {
             const modal = document.getElementById('passwordModal');
             if (event.target === modal) {

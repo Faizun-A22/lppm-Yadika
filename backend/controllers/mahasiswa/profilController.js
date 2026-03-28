@@ -83,9 +83,7 @@ exports.getProfile = async (req, res) => {
     }
 };
 
-// ===========================================
-// UPDATE PROFILE MAHASISWA
-// ===========================================
+// ✅ KODE YANG BENAR
 exports.updateProfile = async (req, res) => {
     try {
         const userId = req.user.id_user;
@@ -120,9 +118,7 @@ exports.updateProfile = async (req, res) => {
             .eq('id_user', userId)
             .eq('role', 'mahasiswa');
 
-        if (userError) {
-            throw userError;
-        }
+        if (userError) throw userError;
 
         // Cek apakah data info pribadi sudah ada
         const { data: existingInfo, error: checkError } = await supabase
@@ -131,7 +127,7 @@ exports.updateProfile = async (req, res) => {
             .eq('id_user', userId)
             .single();
 
-        if (checkError && checkError.code !== 'PGRST116') { // PGRST116 = not found
+        if (checkError && checkError.code !== 'PGRST116') {
             throw checkError;
         }
 
@@ -178,18 +174,67 @@ exports.updateProfile = async (req, res) => {
                 aktivitas: 'Memperbarui profil'
             }]);
 
-        // Ambil data terbaru
-        const updatedProfile = await exports.getProfile(req, res, true);
+        // ✅ AMBIL DATA TERBARU LANGSUNG (BUKAN PANGGIL getProfile)
+        const { data: updatedUser, error: userFetchError } = await supabase
+            .from('users')
+            .select(`
+                id_user,
+                nama_lengkap,
+                email,
+                nim,
+                no_hp,
+                foto_profil,
+                created_at,
+                updated_at,
+                program_studi:program_studi!users_id_prodi_fkey (
+                    id_prodi,
+                    nama_prodi,
+                    jenjang,
+                    fakultas:fakultas!program_studi_id_fakultas_fkey (
+                        id_fakultas,
+                        nama_fakultas
+                    )
+                )
+            `)
+            .eq('id_user', userId)
+            .single();
 
-        res.json({
+        if (userFetchError) throw userFetchError;
+
+        const { data: updatedInfoPribadi } = await supabase
+            .from('mahasiswa_info_pribadi')
+            .select('*')
+            .eq('id_user', userId)
+            .single();
+
+        const formattedProfile = {
+            id_user: updatedUser.id_user,
+            nama_lengkap: updatedUser.nama_lengkap,
+            email: updatedUser.email,
+            nim: updatedUser.nim,
+            no_hp: updatedUser.no_hp,
+            foto_profil: updatedUser.foto_profil,
+            created_at: updatedUser.created_at,
+            updated_at: updatedUser.updated_at,
+            id_prodi: updatedUser.program_studi?.id_prodi,
+            nama_prodi: updatedUser.program_studi?.nama_prodi,
+            jenjang: updatedUser.program_studi?.jenjang,
+            id_fakultas: updatedUser.program_studi?.fakultas?.id_fakultas,
+            nama_fakultas: updatedUser.program_studi?.fakultas?.nama_fakultas,
+            info_pribadi: updatedInfoPribadi || null
+        };
+
+        // ✅ HANYA SATU KALI MENGIRIM RESPONSE
+        return res.json({
             success: true,
             message: 'Profil berhasil diperbarui',
-            data: updatedProfile
+            data: formattedProfile
         });
 
     } catch (error) {
         console.error('Error updateProfile:', error);
-        res.status(500).json({
+        // ✅ HANYA SATU KALI MENGIRIM RESPONSE
+        return res.status(500).json({
             success: false,
             message: 'Terjadi kesalahan server',
             error: process.env.NODE_ENV === 'development' ? error.message : undefined

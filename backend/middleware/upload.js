@@ -47,72 +47,68 @@ createUploadDirs();
 
 // Configure storage
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        let uploadPath = 'uploads/';
+    // Di uploads.js - bagian destination
+destination: (req, file, cb) => {
+    let uploadPath = 'uploads/';
+    
+    if (req.baseUrl?.includes('berita')) {
+        uploadPath += 'berita';
+    } 
+    else if (req.baseUrl?.includes('kegiatan')) {
+        uploadPath += 'kegiatan';
+    }
+    else if (req.baseUrl?.includes('repository')) {
+        uploadPath += 'repository/';
+        const kategori = req.body?.kategori || req.query?.kategori || 'documents';
         
-        // Determine folder based on route or fieldname
-        if (req.baseUrl?.includes('berita')) {
-            uploadPath += 'berita';
-        } 
-        else if (req.baseUrl?.includes('kegiatan')) {
-            uploadPath += 'kegiatan';
-        }
-        else if (req.baseUrl?.includes('repository')) {
-            // For repository documents
-            uploadPath += 'repository/';
-            
-            // Get category from request body or query
-            const kategori = req.body?.kategori || req.query?.kategori || 'documents';
-            
-            // Map category to folder
-            const categoryFolders = {
-                'jurnal': 'jurnal',
-                'penelitian': 'penelitian',
-                'pengabdian': 'pengabdian',
-                'buku': 'buku',
-                'haki': 'haki',
-                'prosiding': 'prosiding',
-                'laporan': 'laporan'
-            };
-            
-            uploadPath += categoryFolders[kategori] || 'documents';
-        }
-        else {
-            // Default for magang
-            uploadPath += 'magang/';
-            
-            switch (file.fieldname) {
-                case 'krs':
-                    uploadPath += 'krs';
-                    break;
-                case 'khs':
-                    uploadPath += 'khs';
-                    break;
-                case 'bukti_pembayaran':
-                    uploadPath += 'pembayaran';
-                    break;
-                case 'surat_keterangan':
-                    uploadPath += 'surat_keterangan';
-                    break;
-                case 'struktur_organisasi':
-                    uploadPath += 'struktur_organisasi';
-                    break;
-                case 'mou':
-                    uploadPath += 'mou';
-                    break;
-                case 'sertifikat':
-                    uploadPath += 'sertifikat';
-                    break;
-                case 'logbook':
-                    uploadPath += 'logbook';
-                    break;
-                default:
-                    uploadPath += 'others';
-            }
-        }
+        const categoryFolders = {
+            'jurnal': 'jurnal',
+            'penelitian': 'penelitian',
+            'pengabdian': 'pengabdian',
+            'buku': 'buku',
+            'haki': 'haki',
+            'prosiding': 'prosiding',
+            'laporan': 'laporan'
+        };
         
-        cb(null, uploadPath);
-    },
+        uploadPath += categoryFolders[kategori] || 'documents';
+    }
+    else {
+        uploadPath += 'magang/';
+        
+        // Sesuaikan dengan nama field dari form
+        switch (file.fieldname) {
+            case 'krs_file':  // <-- GANTI dari 'krs' ke 'krs_file'
+                uploadPath += 'krs';
+                break;
+            case 'khs_file':  // <-- GANTI dari 'khs' ke 'khs_file'
+                uploadPath += 'khs';
+                break;
+            case 'payment_file':  // <-- GANTI dari 'bukti_pembayaran' ke 'payment_file'
+                uploadPath += 'pembayaran';
+                break;
+            case 'mou_file':  // Untuk upload luaran
+                uploadPath += 'mou';
+                break;
+            case 'surat_keterangan':
+                uploadPath += 'surat_keterangan';
+                break;
+            case 'struktur_organisasi':
+                uploadPath += 'struktur_organisasi';
+                break;
+            case 'sertifikat':
+                uploadPath += 'sertifikat';
+                break;
+            case 'logbook':
+                uploadPath += 'logbook';
+                break;
+            default:
+                uploadPath += 'others';
+        }
+    }
+    
+    cb(null, uploadPath);
+},
     filename: (req, file, cb) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
         const ext = path.extname(file.originalname);

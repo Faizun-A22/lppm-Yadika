@@ -5,6 +5,18 @@ const path = require('path');
 const fs = require('fs');
 const profilController = require('../../controllers/mahasiswa/profilController');
 const { authenticateToken, authorizeRoles } = require('../../middleware/auth');
+const supabase = require('../../config/database'); // TAMBAHKAN INI!
+
+// ===========================================
+// MIDDLEWARE - Harus DIPALING ATAS!
+// ===========================================
+// Semua route di bawah ini memerlukan autentikasi
+router.use(authenticateToken);
+router.use(authorizeRoles('mahasiswa'));
+
+// ===========================================
+// KONFIGURASI UPLOAD
+// ===========================================
 
 // Konfigurasi storage untuk upload foto profil
 const profileStorage = multer.diskStorage({
@@ -18,7 +30,7 @@ const profileStorage = multer.diskStorage({
     filename: (req, file, cb) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
         const ext = path.extname(file.originalname);
-        // Gunakan req.user.id_user (dari middleware auth)
+        // req.user sudah tersedia karena middleware sudah dijalankan
         cb(null, `profile-${req.user.id_user}-${uniqueSuffix}${ext}`);
     }
 });
@@ -70,13 +82,90 @@ const dokumenUpload = multer({
     fileFilter: fileFilter
 });
 
-// Semua route di bawah ini memerlukan autentikasi dan role mahasiswa
-// Gunakan middleware yang sudah ada: authenticateToken dan authorizeRoles
-router.use(authenticateToken);
-router.use(authorizeRoles('mahasiswa'));
+// ===========================================
+// ROUTE UNTUK DATA DASAR (ringan)
+// ===========================================
+
+/**
+ * @route   GET /api/mahasiswa/profil/basic
+ * @desc    Mendapatkan data dasar mahasiswa (nama, nim, email, prodi)
+ * @access  Private (Mahasiswa)
+ */
+router.get('/basic', async (req, res) => {
+    try {
+        // Log untuk debugging
+        console.log('=== GET /basic ===');
+        console.log('User dari token:', req.user ? {
+            id: req.user.id_user,
+            nama: req.user.nama_lengkap,
+            role: req.user.role
+        } : 'TIDAK ADA USER');
+
+        const userId = req.user.id_user; // Sekarang pasti ada!
+
+        const { data, error } = await supabase
+            .from('users')
+            .select(`
+                id_user,
+                nama_lengkap,
+                email,
+                nim,
+                no_hp,
+                foto_profil,
+                id_prodi,
+                program_studi!inner (
+                    id_prodi,
+                    nama_prodi,
+                    jenjang
+                )
+            `)
+            .eq('id_user', userId)
+            .eq('role', 'mahasiswa')
+            .eq('status', 'aktif')
+            .single();
+
+        if (error) {
+            console.error('Error fetching user:', error);
+            return res.status(404).json({
+                success: false,
+                message: 'Data mahasiswa tidak ditemukan'
+            });
+        }
+
+        if (!data) {
+            return res.status(404).json({
+                success: false,
+                message: 'Data mahasiswa tidak ditemukan'
+            });
+        }
+
+        res.json({
+            success: true,
+            data: {
+                id_user: data.id_user,
+                nama_lengkap: data.nama_lengkap,
+                email: data.email,
+                nim: data.nim,
+                no_hp: data.no_hp || '',
+                foto_profil: data.foto_profil,
+                id_prodi: data.id_prodi,
+                nama_prodi: data.program_studi?.nama_prodi,
+                jenjang: data.program_studi?.jenjang
+            }
+        });
+
+    } catch (error) {
+        console.error('Error in /basic:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Terjadi kesalahan server',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+    }
+});
 
 // ===========================================
-// ROUTES PROFIL
+// ROUTES PROFIL LAINNYA
 // ===========================================
 
 /**

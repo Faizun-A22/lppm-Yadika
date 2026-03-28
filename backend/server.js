@@ -25,6 +25,17 @@ const mahasiswaKegiatanRoutes = require('./routes/mahasiswa/kegiatanRoutes');
 const mahasiswaRepositoryRoutes = require('./routes/mahasiswa/repositoryRoutes');
 const dosenRepositoryRoutes = require('./routes/dosen/repositoryRoutes');
 const mahasiswaProfilRoutes = require('./routes/mahasiswa/profilRoutes');
+const dosenProfilRoutes = require('./routes/dosen/profilRoutes');
+const desaRoutes = require('./routes/admin/desaRoutes');
+const programRoutes = require('./routes/admin/programRoutes'); // <<< TAMBAHKAN INI
+const dashboardRoutes = require('./routes/admin/dashboardRoutes'); // <<< TAMBAHKAN INI
+const registrasiKknRoutes = require('./routes/admin/registrasiKknRoutes'); // <<< TAMBAHKAN INI
+const registrasiMagangRoutes = require('./routes/admin/registrasiMagangRoutes'); // <<< TAMBAHKAN INI
+const luaranKknRoutes = require('./routes/admin/luaranKknRoutes'); // <<< TAMBAHKAN INI
+const mahasiswaKKNRoutes = require('./routes/mahasiswa/kknRoutes');
+const penelitianRoutes = require('./routes/admin/penelitianRoutes');
+const dosenPenelitianRoutes = require('./routes/dosen/penelitianRoutes');
+const mahasiswaFakultasRoutes = require('./routes/mahasiswa/fakultasRoutes');
 
 
 // Middleware
@@ -57,9 +68,20 @@ app.use('/api/admin/repository', adminRepositoryRoutes);
 app.use('/api/mahasiswa/repository', mahasiswaRepositoryRoutes);
 app.use('/api/dosen/repository', dosenRepositoryRoutes);
 app.use('/api/mahasiswa/profil', mahasiswaProfilRoutes);
+app.use('/api/dosen/profil', dosenProfilRoutes);
+app.use('/api/admin/desa-kkn', desaRoutes);
+app.use('/api/admin/programs', programRoutes); // <<< TAMBAHKAN INI
+app.use('/api/admin/dashboard', dashboardRoutes); // <<< TAMBAHKAN INI
+app.use('/api/admin/registrasi-kkn', registrasiKknRoutes); // <<< TAMBAHKAN INI
+app.use('/api/admin/registrasi-magang', registrasiMagangRoutes); // <<< TAMBAHKAN INI
+app.use('/api/admin/luaran-kkn', luaranKknRoutes);
+app.use('/api/mahasiswa/kkn', mahasiswaKKNRoutes);
+app.use('/api/admin/penelitian', penelitianRoutes);
+app.use('/api/dosen/penelitian', dosenPenelitianRoutes);
+app.use('/api/dosen/penelitian', dosenPenelitianRoutes);
+app.use('/api/mahasiswa', mahasiswaFakultasRoutes);
 
 
-// Error handling middleware
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(err.status || 500).json({

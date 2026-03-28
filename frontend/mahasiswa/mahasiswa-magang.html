@@ -152,11 +152,33 @@
             transform: translateY(-5px);
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
+
+        /* Tambahkan di bagian style yang sudah ada */
+.fakultas-group {
+    transition: all 0.3s ease;
+}
+
+.fakultas-select {
+    cursor: pointer;
+}
+
+.prodi-select {
+    background-color: white;
+}
+
+.select-loading {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>');
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1rem;
+}
         
         /* File Upload Area */
         .file-upload-area {
             border: 2px dashed #E5E7EB;
             transition: all 0.3s ease;
+            border-radius: 0.5rem;
+            padding: 1rem;
         }
         
         .file-upload-area:hover {
@@ -215,18 +237,17 @@
             border: 1px solid #E5E7EB;
             border-radius: 0.5rem;
             padding: 0.75rem;
+            margin-top: 0.5rem;
         }
         
-        /* Button Loading Spinner */
-        .loading-spinner-sm {
-            display: inline-block;
-            width: 1rem;
-            height: 1rem;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 0.6s linear infinite;
-            margin-right: 0.5rem;
+        /* Existing File Info */
+        .existing-file {
+            background: #EFF6FF;
+            border: 1px solid #BFDBFE;
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
         }
     </style>
 </head>
@@ -442,7 +463,7 @@
                 <div class="bg-white rounded-xl shadow-lg p-6" data-aos="fade-up">
                     <h3 class="text-xl font-bold text-gray-800 mb-6">Formulir Pendaftaran Magang</h3>
                     
-                    <form id="magangForm" class="space-y-6">
+                    <form id="magangForm" class="space-y-6" enctype="multipart/form-data">
                         <!-- Data Diri -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
@@ -455,23 +476,25 @@
                             </div>
                         </div>
                         
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Program Studi</label>
-                                <select id="magangStudyProgram" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
-                                    <option value="">Pilih Program Studi</option>
-                                    <option value="manajemen">Manajemen</option>
-                                    <option value="akuntansi">Akuntansi</option>
-                                    <option value="hukum_bisnis">Hukum Bisnis</option>
-                                    <option value="sistem_informasi">Sistem Informasi</option>
-                                    <option value="teknik_informatika">Teknik Informatika</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Nomor HP</label>
-                                <input type="tel" id="magangPhone" placeholder="08xxxxxxxxxx" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
-                            </div>
-                        </div>
+                        <!-- GANTI block program studi yang lama dengan yang baru ini -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+            <i class="fas fa-university mr-1 text-gray-400"></i>Fakultas
+        </label>
+        <select id="fakultasSelect" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 fakultas-select" required>
+            <option value="">-- Pilih Fakultas --</option>
+        </select>
+    </div>
+    <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+            <i class="fas fa-graduation-cap mr-1 text-gray-400"></i>Program Studi
+        </label>
+        <select id="magangStudyProgram" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required disabled>
+            <option value="">-- Pilih Fakultas Terlebih Dahulu --</option>
+        </select>
+    </div>
+</div>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
@@ -480,15 +503,20 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Domisili/Tempat Tinggal</label>
-                                <input type="text" id="magangDomicile" placeholder="Jakarta Selatan" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                                <input type="text" id="magangDomicile" placeholder="Jakarta Selatan" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required>
                             </div>
                         </div>
 
                         <!-- Semester -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Semester</label>
-                            <select id="magangSemester" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                            <select id="magangSemester" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required>
                                 <option value="">Pilih Semester</option>
+                                <option value="1">Semester 1</option>
+                                <option value="2">Semester 2</option>
+                                <option value="3">Semester 3</option>
+                                <option value="4">Semester 4</option>
+                                <option value="5">Semester 5</option>
                                 <option value="6">Semester 6</option>
                                 <option value="7">Semester 7</option>
                                 <option value="8">Semester 8</option>
@@ -499,28 +527,31 @@
                         <div class="space-y-4">
                             <h4 class="font-semibold text-gray-800">Upload Dokumen Persyaratan</h4>
                             
-                            <div class="file-upload-area p-4 rounded-lg">
+                            <div class="file-upload-area">
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Bukti KRS</label>
-                                <input type="file" id="magangKrs" accept=".pdf,.jpg,.png" class="w-full">
+                                <input type="file" id="magangKrs" name="krs_file" accept=".pdf,.jpg,.png" class="w-full" required>
                                 <p class="text-xs text-gray-500 mt-1">Format: PDF/JPG/PNG, Maks 2MB</p>
+                                <div id="existingKrs" class="existing-file hidden"></div>
                             </div>
                             
-                            <div class="file-upload-area p-4 rounded-lg">
+                            <div class="file-upload-area">
                                 <label class="block text-sm font-medium text-gray-700 mb-2">KHS (Semester 1-5)</label>
-                                <input type="file" id="magangKhs" accept=".pdf,.jpg,.png" class="w-full">
+                                <input type="file" id="magangKhs" name="khs_file" accept=".pdf,.jpg,.png" class="w-full" required>
                                 <p class="text-xs text-gray-500 mt-1">Format: PDF/JPG/PNG, Maks 2MB</p>
+                                <div id="existingKhs" class="existing-file hidden"></div>
                             </div>
                             
-                            <div class="file-upload-area p-4 rounded-lg">
+                            <div class="file-upload-area">
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Bukti Pembayaran</label>
-                                <input type="file" id="magangPayment" accept=".pdf,.jpg,.png" class="w-full">
+                                <input type="file" id="magangPayment" name="payment_file" accept=".pdf,.jpg,.png" class="w-full" required>
                                 <p class="text-xs text-gray-500 mt-1">Format: PDF/JPG/PNG, Maks 2MB</p>
+                                <div id="existingPayment" class="existing-file hidden"></div>
                             </div>
                         </div>
                         
                         <!-- Checkbox Persetujuan -->
                         <div class="flex items-center">
-                            <input type="checkbox" id="magangAgreeTerms" class="mr-2">
+                            <input type="checkbox" id="magangAgreeTerms" class="mr-2" required>
                             <label for="magangAgreeTerms" class="text-sm text-gray-600">
                                 Saya menyatakan bahwa data yang diisi adalah benar dan siap mengikuti program magang
                             </label>
@@ -544,80 +575,84 @@
                 <div class="bg-white rounded-xl shadow-lg p-6" data-aos="fade-up">
                     <h3 class="text-xl font-bold text-gray-800 mb-6">Form Data Perusahaan Magang</h3>
                     
-                    <form id="perusahaanForm" class="space-y-6">
+                    <form id="perusahaanForm" class="space-y-6" enctype="multipart/form-data">
+                        <input type="hidden" id="perusahaanId" value="">
+                        
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Nama Perusahaan/Instansi</label>
-                                <input type="text" id="companyName" placeholder="PT Maju Jaya" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required>
+                                <input type="text" id="companyName" name="nama_perusahaan" placeholder="PT Maju Jaya" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Bidang Magang</label>
-                                <input type="text" id="internshipField" placeholder="Digital Marketing" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required>
+                                <input type="text" id="internshipField" name="bidang_magang" placeholder="Digital Marketing" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required>
                             </div>
                         </div>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Posisi Magang</label>
-                                <input type="text" id="position" placeholder="Marketing Intern" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required>
+                                <input type="text" id="position" name="posisi" placeholder="Marketing Intern" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Durasi Magang (Bulan)</label>
-                                <input type="number" id="duration" min="1" max="12" placeholder="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required>
+                                <input type="number" id="duration" name="durasi" min="1" max="12" placeholder="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required>
                             </div>
                         </div>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Tanggal Mulai</label>
-                                <input type="date" id="startDate" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required>
+                                <input type="date" id="startDate" name="tanggal_mulai" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Tanggal Selesai</label>
-                                <input type="date" id="endDate" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required>
+                                <input type="date" id="endDate" name="tanggal_selesai" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required>
                             </div>
                         </div>
                         
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Alamat Perusahaan</label>
-                            <textarea id="companyAddress" rows="3" placeholder="Jl. Sudirman No. 123, Jakarta" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required></textarea>
+                            <textarea id="companyAddress" name="alamat_perusahaan" rows="3" placeholder="Jl. Sudirman No. 123, Jakarta" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required></textarea>
                         </div>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Nama Pembimbing Lapangan</label>
-                                <input type="text" id="supervisor" placeholder="Bapak Ahmad" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required>
+                                <input type="text" id="supervisor" name="nama_pembimbing" placeholder="Bapak Ahmad" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Kontak Pembimbing</label>
-                                <input type="tel" id="supervisorContact" placeholder="08123456789" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required>
+                                <input type="tel" id="supervisorContact" name="kontak_pembimbing" placeholder="08123456789" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required>
                             </div>
                         </div>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Email Pembimbing</label>
-                                <input type="email" id="supervisorEmail" placeholder="ahmad@company.com" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                                <input type="email" id="supervisorEmail" name="email_pembimbing" placeholder="ahmad@company.com" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Jabatan Pembimbing</label>
-                                <input type="text" id="supervisorPosition" placeholder="HR Manager" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                                <input type="text" id="supervisorPosition" name="jabatan_pembimbing" placeholder="HR Manager" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
                             </div>
                         </div>
                         
                         <div class="space-y-4">
                             <h4 class="font-semibold text-gray-800">Upload Dokumen Perusahaan</h4>
                             
-                            <div class="file-upload-area p-4 rounded-lg">
+                            <div class="file-upload-area">
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Surat Keterangan/KTA Tempat Kerja</label>
-                                <input type="file" id="workCertificate" accept=".pdf,.jpg,.png" class="w-full" required>
+                                <input type="file" id="workCertificate" name="surat_keterangan" accept=".pdf,.jpg,.png" class="w-full">
                                 <p class="text-xs text-gray-500 mt-1">Format: PDF/JPG/PNG, Maks 2MB</p>
+                                <div id="existingSuratKeterangan" class="existing-file hidden"></div>
                             </div>
                             
-                            <div class="file-upload-area p-4 rounded-lg">
+                            <div class="file-upload-area">
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Struktur Organisasi Perusahaan</label>
-                                <input type="file" id="companyStructure" accept=".pdf,.jpg,.png" class="w-full">
+                                <input type="file" id="companyStructure" name="struktur_organisasi" accept=".pdf,.jpg,.png" class="w-full">
                                 <p class="text-xs text-gray-500 mt-1">Format: PDF/JPG/PNG, Maks 2MB (Opsional)</p>
+                                <div id="existingStrukturOrganisasi" class="existing-file hidden"></div>
                             </div>
                             
                             <!-- File Preview Container -->
@@ -667,7 +702,10 @@
                 <div class="bg-white rounded-xl shadow-lg p-6" data-aos="fade-up">
                     <h3 class="text-xl font-bold text-gray-800 mb-6">Input Luaran Wajib Magang</h3>
                     
-                    <form id="luaranMagangForm" class="space-y-6">
+                    <form id="luaranMagangForm" class="space-y-6" enctype="multipart/form-data">
+                        <input type="hidden" id="luaranId" value="">
+                        <input type="hidden" id="luaranPerusahaanId" name="id_perusahaan" value="">
+                        
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Nama Perusahaan</label>
@@ -675,29 +713,18 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Posisi Magang</label>
-                                <input type="text" id="posisi_magang" placeholder="Marketing Intern" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
-                            </div>
-                        </div>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Periode Mulai</label>
-                                <input type="date" id="mulai_magang" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Periode Selesai</label>
-                                <input type="date" id="selesai_magang" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                                <input type="text" id="posisi_magang" name="posisi" readonly class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
                             </div>
                         </div>
                         
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Judul Proyek/Tugas Akhir Magang</label>
-                            <input type="text" id="judul_proyek" placeholder="Strategi Digital Marketing UMKM" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                            <input type="text" id="judul_proyek" name="judul_proyek" placeholder="Strategi Digital Marketing UMKM" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required>
                         </div>
                         
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Deskripsi Pekerjaan</label>
-                            <textarea id="deskripsi_pekerjaan" rows="3" placeholder="Jelaskan tugas dan tanggung jawab selama magang..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"></textarea>
+                            <textarea id="deskripsi_pekerjaan" name="deskripsi_pekerjaan" rows="3" placeholder="Jelaskan tugas dan tanggung jawab selama magang..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required></textarea>
                         </div>
                         
                         <div class="space-y-4">
@@ -705,50 +732,48 @@
                             
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Link GD Poster Presentasi</label>
-                                <input type="url" id="link_poster_magang" placeholder="https://drive.google.com/..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                                <input type="url" id="link_poster_magang" name="poster" placeholder="https://drive.google.com/..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
                             </div>
                             
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Link GD Laporan Magang</label>
-                                <input type="url" id="link_laporan" placeholder="https://drive.google.com/..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                                <input type="url" id="link_laporan" name="laporan" placeholder="https://drive.google.com/..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
                             </div>
                             
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Link GD Foto Kegiatan</label>
-                                <input type="url" id="link_foto" placeholder="https://drive.google.com/..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                                <input type="url" id="link_foto" name="foto_kegiatan" placeholder="https://drive.google.com/..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
                             </div>
                         </div>
                         
                         <div class="space-y-4">
                             <h4 class="font-semibold text-gray-800">Upload Dokumen</h4>
                             
-                            <div class="file-upload-area p-4 rounded-lg">
+                            <div class="file-upload-area">
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Upload MOU Magang (PDF)</label>
-                                <input type="file" id="file_mou_magang" accept=".pdf" class="w-full">
+                                <input type="file" id="file_mou_magang" name="mou_file" accept=".pdf" class="w-full">
                                 <p class="text-xs text-gray-500 mt-1">Format PDF, Maks 5MB</p>
+                                <div id="existingMou" class="existing-file hidden"></div>
                             </div>
                             
-                            <div class="file-upload-area p-4 rounded-lg">
+                            <div class="file-upload-area">
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Upload Sertifikat Magang (PDF/JPG)</label>
-                                <input type="file" id="sertifikat_magang" accept=".pdf,.jpg,.jpeg" class="w-full">
+                                <input type="file" id="sertifikat_magang" name="sertifikat" accept=".pdf,.jpg,.jpeg" class="w-full">
                                 <p class="text-xs text-gray-500 mt-1">Format PDF/JPG, Maks 5MB</p>
+                                <div id="existingSertifikat" class="existing-file hidden"></div>
                             </div>
                             
-                            <div class="file-upload-area p-4 rounded-lg">
+                            <div class="file-upload-area">
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Upload Logbook Magang (PDF)</label>
-                                <input type="file" id="logbook_magang" accept=".pdf" class="w-full">
+                                <input type="file" id="logbook_magang" name="logbook" accept=".pdf" class="w-full">
                                 <p class="text-xs text-gray-500 mt-1">Format PDF, Maks 5MB (Opsional)</p>
+                                <div id="existingLogbook" class="existing-file hidden"></div>
                             </div>
-                            
-                            <!-- File Info -->
-                            <div id="file-info-mou-magang" class="text-sm text-gray-600">Belum ada file MOU yang dipilih</div>
-                            <div id="file-info-sertifikat" class="text-sm text-gray-600">Belum ada file sertifikat yang dipilih</div>
-                            <div id="file-info-logbook" class="text-sm text-gray-600">Belum ada file logbook yang dipilih</div>
                         </div>
                         
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Keterangan Tambahan</label>
-                            <textarea id="keterangan_magang" rows="3" placeholder="Tambahkan keterangan lain jika diperlukan" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"></textarea>
+                            <textarea id="keterangan_magang" name="keterangan_magang" rows="3" placeholder="Tambahkan keterangan lain jika diperlukan" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"></textarea>
                         </div>
                         
                         <div class="flex justify-end space-x-3">
@@ -794,747 +819,1252 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="../js/auth.js"></script>
     
-    <script>
-        // ========== INITIALIZATION ==========
-        AOS.init({ duration: 800, once: true });
+  <script>
+    // ========== INITIALIZATION ==========
+    AOS.init({ duration: 800, once: true });
+    
+    // ========== CONFIGURATION ==========
+    const API_BASE_URL = 'http://localhost:3000/api';
+    
+    // ========== STATE MANAGEMENT ==========
+    let currentUser = null;
+    let magangData = {
+        registrasi: null,
+        perusahaan: [],
+        luaran: []
+    };
+    let fakultasList = [];
+    let prodiList = [];
+    
+    // ========== AUTH & USER FUNCTIONS ==========
+    
+    // Get user from auth
+    function getUser() {
+        return auth.getUser();
+    }
+
+    // Update user info
+    function updateUserInfo() {
+        const user = window.auth.getUser();
         
-        // ========== STATE MANAGEMENT ==========
-        let currentUser = null;
-        let magangData = null;
-        let perusahaanList = [];
+        console.log('Updating user info with:', user);
         
-        // ========== UI HELPER FUNCTIONS ==========
-        
-        // Show loading overlay
-        function showLoading() {
-            document.getElementById('loadingOverlay').classList.remove('hidden');
-        }
-
-        // Hide loading overlay
-        function hideLoading() {
-            document.getElementById('loadingOverlay').classList.add('hidden');
-        }
-
-        // Show notification
-        function showNotification(message, isSuccess = true) {
-            Swal.fire({
-                icon: isSuccess ? 'success' : 'error',
-                title: isSuccess ? 'Berhasil' : 'Gagal',
-                text: message,
-                timer: 2000,
-                showConfirmButton: false
-            });
-        }
-
-        // Get user data from auth
-        function getUser() {
-            return auth.getUser();
-        }
-
-        // Update user info in header
-        function updateUserInfo() {
-            const user = getUser();
-            if (user) {
-                document.getElementById('userNameDisplay').textContent = user.name || 'Mahasiswa';
-                document.getElementById('userNimDisplay').textContent = user.nim || '-';
-                
-                // Update form fields
-                document.getElementById('magangFullName').value = user.name || '';
-                document.getElementById('magangNim').value = user.nim || '';
+        if (user) {
+            const userName = user.nama_lengkap || user.name || 'Mahasiswa';
+            const userNim = user.nim || '-';
+            
+            document.getElementById('userNameDisplay').textContent = userName;
+            document.getElementById('userNimDisplay').textContent = userNim;
+            
+            if (document.getElementById('magangFullName')) {
+                document.getElementById('magangFullName').value = userName;
+            }
+            if (document.getElementById('magangNim')) {
+                document.getElementById('magangNim').value = userNim;
+            }
+            if (document.getElementById('magangEmail')) {
                 document.getElementById('magangEmail').value = user.email || '';
             }
+        } else {
+            console.error('No user data found');
+            document.getElementById('userNameDisplay').textContent = 'User tidak ditemukan';
+            document.getElementById('userNimDisplay').textContent = '-';
         }
+    }
 
-        // Logout function
-        window.handleLogout = function() {
-            auth.logout();
+    // Logout function
+    window.handleLogout = function() {
+        auth.logout();
+    };
+    
+    // ========== UI HELPER FUNCTIONS ==========
+    
+    function showLoading() {
+        document.getElementById('loadingOverlay').classList.remove('hidden');
+    }
+
+    function hideLoading() {
+        document.getElementById('loadingOverlay').classList.add('hidden');
+    }
+
+    function showNotification(message, type = 'success') {
+        const titles = {
+            success: 'Berhasil',
+            error: 'Gagal',
+            warning: 'Peringatan',
+            info: 'Informasi'
         };
         
-        // ========== SECTION NAVIGATION ==========
-        function showSection(section) {
-            // Hide all sections
-            document.querySelectorAll('.section-content').forEach(el => {
-                el.classList.add('hidden');
-            });
-            
-            // Remove active class from all tabs
-            document.querySelectorAll('.tab-button').forEach(el => {
-                el.classList.remove('active');
-            });
-            
-            // Show selected section
-            document.getElementById(`section${section.charAt(0).toUpperCase() + section.slice(1)}`).classList.remove('hidden');
-            
-            // Add active class to clicked tab
-            document.getElementById(`tab${section.charAt(0).toUpperCase() + section.slice(1)}`).classList.add('active');
-        }
+        Swal.fire({
+            icon: type,
+            title: titles[type],
+            text: message,
+            timer: type === 'success' ? 2000 : null,
+            showConfirmButton: type !== 'success',
+            confirmButtonColor: '#8B5CF6'
+        });
+    }
+
+    function formatDate(dateString) {
+        if (!dateString) return '-';
+        const date = new Date(dateString);
+        return date.toLocaleDateString('id-ID', {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric'
+        });
+    }
+
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    function getStatusBadgeClass(status) {
+        const classes = {
+            'draft': 'bg-gray-100 text-gray-800',
+            'pending': 'bg-yellow-100 text-yellow-800',
+            'review': 'bg-blue-100 text-blue-800',
+            'approved': 'bg-green-100 text-green-800',
+            'rejected': 'bg-red-100 text-red-800',
+            'verified': 'bg-purple-100 text-purple-800'
+        };
+        return classes[status] || 'bg-gray-100 text-gray-800';
+    }
+
+    function getStatusText(status) {
+        const texts = {
+            'draft': 'Draft',
+            'pending': 'Menunggu',
+            'review': 'Dalam Review',
+            'approved': 'Disetujui',
+            'rejected': 'Ditolak',
+            'verified': 'Terverifikasi'
+        };
+        return texts[status] || status;
+    }
+    
+    // ========== SECTION NAVIGATION ==========
+    function showSection(section) {
+        document.querySelectorAll('.section-content').forEach(el => {
+            el.classList.add('hidden');
+        });
         
-        // ========== DATA LOADING ==========
-        async function loadMagangData() {
-            try {
-                // Simulate API call
-                await new Promise(resolve => setTimeout(resolve, 1500));
-                
-                // Mock data
-                magangData = {
-                    hasRegistration: true,
-                    registration: {
-                        status: 'approved',
-                        date: '2024-06-10',
-                        programStudi: 'Sistem Informasi',
-                        semester: 6
-                    },
-                    perusahaan: {
-                        status: 'pending',
-                        date: '2024-06-15',
-                        name: 'PT Maju Jaya',
-                        bidang: 'Digital Marketing'
-                    },
-                    verification: {
-                        status: 'verified',
-                        date: '2024-06-12'
-                    },
-                    outputs: [
-                        { type: 'Poster Presentasi', date: '2024-08-20', status: 'approved' },
-                        { type: 'Laporan Magang', date: '2024-08-20', status: 'pending' }
-                    ]
-                };
-                
-                perusahaanList = [
-                    {
-                        id: 1,
-                        name: 'PT Maju Jaya',
-                        bidang: 'Digital Marketing',
-                        periode: 'Juli - Sept 2024',
-                        status: 'approved'
-                    }
-                ];
-                
-                updateStatusUI();
-                
-            } catch (error) {
-                console.error('Error loading magang data:', error);
-            }
-        }
+        document.querySelectorAll('.tab-button').forEach(el => {
+            el.classList.remove('active');
+        });
         
-        // ========== UI UPDATE FUNCTIONS ==========
-        function updateStatusUI() {
-            if (!magangData) return;
+        document.getElementById(`section${section.charAt(0).toUpperCase() + section.slice(1)}`).classList.remove('hidden');
+        document.getElementById(`tab${section.charAt(0).toUpperCase() + section.slice(1)}`).classList.add('active');
+        
+        if (section === 'perusahaan') {
+            loadPerusahaanData();
+        } else if (section === 'luaran') {
+            loadLuaranData();
+        }
+    }
+    
+    // ========== FAKULTAS & PRODI FUNCTIONS ==========
+    
+    // Load fakultas from API
+    async function loadFakultas() {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) throw new Error('Not authenticated');
+
+            console.log('Loading fakultas...');
             
-            // Update status cards
-            document.getElementById('statusPendaftaran').textContent = 
-                magangData.registration?.status === 'approved' ? 'Disetujui' : 
-                magangData.registration?.status === 'pending' ? 'Menunggu' : 'Belum Daftar';
-                
-            document.getElementById('statusPerusahaan').textContent = 
-                magangData.perusahaan?.status === 'approved' ? 'Disetujui' :
-                magangData.perusahaan?.status === 'pending' ? 'Dalam Review' : 'Belum Input';
-                
-            document.getElementById('statusVerifikasi').textContent = 
-                magangData.verification?.status === 'verified' ? 'Terverifikasi' : 'Belum';
-                
-            document.getElementById('statusLuaran').textContent = 
-                magangData.outputs?.length > 0 ? magangData.outputs.length + ' Upload' : 'Belum Input';
+            const response = await fetch(`${API_BASE_URL}/mahasiswa/fakultas`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) throw new Error('Failed to load fakultas');
+
+            const result = await response.json();
+            console.log('Fakultas response:', result);
             
-            // Update overall status
-            const overallStatus = document.getElementById('overallStatus');
-            if (magangData.registration?.status === 'approved' && magangData.perusahaan?.status === 'pending') {
-                overallStatus.textContent = 'Dalam Proses';
-                overallStatus.className = 'ml-2 status-badge pending';
-            } else if (magangData.registration?.status === 'approved' && magangData.perusahaan?.status === 'approved') {
-                overallStatus.textContent = 'Aktif';
-                overallStatus.className = 'ml-2 status-badge approved';
+            if (result.success && result.data) {
+                fakultasList = result.data;
+                const fakultasSelect = document.getElementById('fakultasSelect');
+                fakultasSelect.innerHTML = '<option value="">-- Pilih Fakultas --</option>';
+                
+                fakultasList.forEach(fakultas => {
+                    const option = document.createElement('option');
+                    option.value = fakultas.id_fakultas;
+                    option.textContent = fakultas.nama_fakultas;
+                    fakultasSelect.appendChild(option);
+                });
             } else {
-                overallStatus.textContent = 'Belum Mulai';
-                overallStatus.className = 'ml-2 status-badge pending';
+                console.error('No fakultas data found');
+                const fakultasSelect = document.getElementById('fakultasSelect');
+                fakultasSelect.innerHTML = '<option value="">Tidak ada data fakultas</option>';
             }
-            
-            // Update all UI components
-            updateStepper();
-            updateTimeline();
-            updateRiwayatTable();
-            updatePerusahaanTable();
-            updateLuaranTable();
-            
-            // Update form with saved data
-            if (magangData.registration) {
-                document.getElementById('magangStudyProgram').value = magangData.registration.programStudi || '';
-                document.getElementById('magangSemester').value = magangData.registration.semester || '';
-            }
-            
-            if (magangData.perusahaan) {
-                document.getElementById('nama_perusahaan').value = magangData.perusahaan.name || '';
-            }
+        } catch (error) {
+            console.error('Error loading fakultas:', error);
+            showNotification('Gagal memuat data fakultas', 'error');
+            const fakultasSelect = document.getElementById('fakultasSelect');
+            fakultasSelect.innerHTML = '<option value="">Gagal memuat fakultas</option>';
         }
-        
-        // Update stepper
-        function updateStepper() {
-            const steps = {
-                1: { element: document.getElementById('step1'), status: magangData.registration?.status },
-                2: { element: document.getElementById('step2'), status: magangData.perusahaan?.status },
-                3: { element: document.getElementById('step3'), status: magangData.verification?.status },
-                4: { element: document.getElementById('step4'), status: magangData.outputs?.length > 0 ? 'completed' : 'pending' }
-            };
+    }
+
+    // Load prodi based on selected fakultas
+    async function loadProdiByFakultas(id_fakultas) {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) throw new Error('Not authenticated');
+
+            const prodiSelect = document.getElementById('magangStudyProgram');
+            prodiSelect.disabled = true;
+            prodiSelect.innerHTML = '<option value="">Memuat data...</option>';
+
+            console.log('Loading prodi for fakultas:', id_fakultas);
             
-            for (let i = 1; i <= 4; i++) {
-                const step = steps[i];
-                step.element.classList.remove('active', 'completed');
-                
-                if (step.status === 'approved' || step.status === 'verified' || (i === 4 && step.status === 'completed')) {
-                    step.element.classList.add('completed');
-                    document.getElementById(`step${i}Status`).textContent = 'Selesai';
-                } else if (step.status === 'pending' || (i === 3 && step.status === 'verified')) {
-                    step.element.classList.add('active');
-                    document.getElementById(`step${i}Status`).textContent = 'Dalam Proses';
-                } else {
-                    document.getElementById(`step${i}Status`).textContent = 'Belum Dimulai';
+            const response = await fetch(`${API_BASE_URL}/mahasiswa/fakultas/${id_fakultas}/prodi`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
                 }
-            }
-        }
-        
-        // Update timeline
-        function updateTimeline() {
-            const timeline = document.getElementById('timelineDetails');
+            });
+
+            if (!response.ok) throw new Error('Failed to load prodi');
+
+            const result = await response.json();
+            console.log('Prodi response:', result);
             
-            const items = [
-                {
-                    title: 'Pendaftaran Magang',
-                    status: magangData.registration?.status,
-                    description: magangData.registration?.status === 'approved' ? 
-                        'Pendaftaran telah diverifikasi dan disetujui' : 
-                        magangData.registration?.status === 'pending' ? 
-                        'Pendaftaran sedang dalam proses verifikasi' : 
-                        'Belum melakukan pendaftaran',
-                    date: magangData.registration?.date || '-'
-                },
-                {
-                    title: 'Input Data Perusahaan',
-                    status: magangData.perusahaan?.status,
-                    description: magangData.perusahaan?.status === 'approved' ? 
-                        'Data perusahaan telah disetujui' : 
-                        magangData.perusahaan?.status === 'pending' ? 
-                        'Data perusahaan sedang direview oleh DPL' : 
-                        'Belum menginput data perusahaan',
-                    date: magangData.perusahaan?.date || '-'
-                },
-                {
-                    title: 'Pelaksanaan Magang',
-                    status: magangData.registration?.status === 'approved' && magangData.perusahaan?.status === 'approved' ? 'active' : 'pending',
-                    description: 'Menunggu persetujuan data perusahaan dan jadwal pelaksanaan',
-                    date: '-'
-                },
-                {
-                    title: 'Input Luaran',
-                    status: magangData.outputs?.length > 0 ? 'completed' : 'pending',
-                    description: magangData.outputs?.length > 0 ? 
-                        'Luaran telah diupload' : 
-                        'Upload luaran setelah pelaksanaan magang',
-                    date: '-'
-                }
-            ];
-            
-            timeline.innerHTML = items.map((item, index) => {
-                const statusClass = item.status === 'approved' || item.status === 'completed' ? 'completed' : 
-                                   item.status === 'pending' || item.status === 'active' ? 'active' : '';
+            if (result.success && result.data && result.data.length > 0) {
+                prodiSelect.innerHTML = '<option value="">-- Pilih Program Studi --</option>';
                 
-                return `
-                    <div class="timeline-item ${statusClass}">
-                        <div class="timeline-dot"></div>
-                        <div class="ml-4">
-                            <div class="flex items-center">
-                                <h4 class="font-semibold text-gray-800">${item.title}</h4>
-                                <span class="ml-3 text-xs ${
-                                    item.status === 'approved' ? 'bg-green-100 text-green-800' :
-                                    item.status === 'pending' ? 'bg-blue-100 text-blue-800' :
-                                    'bg-gray-100 text-gray-800'
-                                } px-2 py-1 rounded-full">
-                                    ${item.status === 'approved' ? 'Selesai' :
-                                      item.status === 'pending' ? 'Dalam Proses' :
-                                      item.status === 'active' ? 'Aktif' : 'Menunggu'}
-                                </span>
-                            </div>
-                            <p class="text-sm text-gray-600">${item.description}</p>
-                            ${item.date !== '-' ? `<p class="text-xs text-gray-400 mt-1">${item.date}</p>` : ''}
-                            ${item.status === 'pending' && item.title === 'Input Data Perusahaan' ? `
-                                <div class="mt-2 w-full bg-gray-200 rounded-full h-2">
-                                    <div class="bg-blue-600 rounded-full h-2" style="width: 60%"></div>
-                                </div>
-                            ` : ''}
-                        </div>
-                    </div>
-                `;
-            }).join('');
+                result.data.forEach(prodi => {
+                    const option = document.createElement('option');
+                    option.value = prodi.id_prodi;
+                    option.textContent = `${prodi.nama_prodi} (${prodi.jenjang})`;
+                    prodiSelect.appendChild(option);
+                });
+                
+                prodiSelect.disabled = false;
+            } else {
+                prodiSelect.innerHTML = '<option value="">Tidak ada program studi</option>';
+                prodiSelect.disabled = true;
+            }
+        } catch (error) {
+            console.error('Error loading prodi:', error);
+            const prodiSelect = document.getElementById('magangStudyProgram');
+            prodiSelect.innerHTML = '<option value="">Gagal memuat data</option>';
+            prodiSelect.disabled = true;
+            showNotification('Gagal memuat data program studi', 'error');
         }
+    }
+    
+    // ========== API CALLS ==========
+    
+    // Load all magang data
+    async function loadMagangData() {
+        try {
+            showLoading();
+            
+            const token = localStorage.getItem('token');
+            if (!token) throw new Error('Not authenticated');
+
+            // Load status
+            const statusResponse = await fetch(`${API_BASE_URL}/magang/status`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (statusResponse.ok) {
+                const statusResult = await statusResponse.json();
+                magangData.status = statusResult.data;
+            }
+
+            // Load registrasi
+            const registrasiResponse = await fetch(`${API_BASE_URL}/magang/registrasi`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (registrasiResponse.ok) {
+                const registrasiResult = await registrasiResponse.json();
+                magangData.registrasi = registrasiResult.data;
+            }
+
+            // Load perusahaan
+            await loadPerusahaanData(false);
+            
+            // Load luaran
+            await loadLuaranData(false);
+            
+            // Load riwayat
+            await loadRiwayatData();
+
+            // Update UI
+            updateStatusUI();
+            
+        } catch (error) {
+            console.error('Error loading magang data:', error);
+            showNotification('Gagal memuat data magang', 'error');
+        } finally {
+            hideLoading();
+        }
+    }
+
+    // Load perusahaan data
+    async function loadPerusahaanData(showLoader = true) {
+        try {
+            if (showLoader) showLoading();
+            
+            const token = localStorage.getItem('token');
+            if (!token) throw new Error('Not authenticated');
+
+            const response = await fetch(`${API_BASE_URL}/magang/perusahaan`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                magangData.perusahaan = result.data || [];
+                updatePerusahaanTable();
+            }
+
+        } catch (error) {
+            console.error('Error loading perusahaan data:', error);
+        } finally {
+            if (showLoader) hideLoading();
+        }
+    }
+
+    // Load luaran data
+    async function loadLuaranData(showLoader = true) {
+        try {
+            if (showLoader) showLoading();
+            
+            const token = localStorage.getItem('token');
+            if (!token) throw new Error('Not authenticated');
+
+            const response = await fetch(`${API_BASE_URL}/magang/luaran`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                magangData.luaran = result.data || [];
+                updateLuaranTable();
+            }
+
+        } catch (error) {
+            console.error('Error loading luaran data:', error);
+        } finally {
+            if (showLoader) hideLoading();
+        }
+    }
+
+    // Load riwayat data
+    async function loadRiwayatData() {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) throw new Error('Not authenticated');
+
+            const response = await fetch(`${API_BASE_URL}/magang/riwayat`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                magangData.riwayat = result.data || [];
+                updateRiwayatTable();
+            }
+
+        } catch (error) {
+            console.error('Error loading riwayat data:', error);
+        }
+    }
+
+    // Load timeline data
+    async function loadTimelineData() {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) throw new Error('Not authenticated');
+
+            const response = await fetch(`${API_BASE_URL}/magang/timeline`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                magangData.timeline = result.data || [];
+                updateTimeline();
+            }
+
+        } catch (error) {
+            console.error('Error loading timeline data:', error);
+        }
+    }
+    
+    // ========== FORM SUBMISSIONS ==========
+    
+    // Submit pendaftaran magang
+    document.getElementById('magangForm')?.addEventListener('submit', async function(e) {
+        e.preventDefault();
         
-        // Update riwayat table
-        function updateRiwayatTable() {
-            const table = document.getElementById('riwayatTable');
-            
-            const rows = [];
-            
-            if (magangData.registration) {
-                rows.push({
-                    type: 'Pendaftaran',
-                    icon: 'fa-file-signature',
-                    color: 'blue',
-                    date: magangData.registration.date,
-                    status: magangData.registration.status,
-                    description: 'PT Maju Jaya',
-                    action: 'pendaftaran'
-                });
+        if (!document.getElementById('magangAgreeTerms').checked) {
+            showNotification('Anda harus menyetujui pernyataan di atas', 'warning');
+            return;
+        }
+
+        // Validate files
+        const krsFile = document.getElementById('magangKrs').files[0];
+        const khsFile = document.getElementById('magangKhs').files[0];
+        const paymentFile = document.getElementById('magangPayment').files[0];
+
+        if (!krsFile || !khsFile || !paymentFile) {
+            showNotification('Semua file harus diupload', 'warning');
+            return;
+        }
+
+        // Validate file sizes (max 2MB)
+        const maxSize = 2 * 1024 * 1024;
+        if (krsFile.size > maxSize || khsFile.size > maxSize || paymentFile.size > maxSize) {
+            showNotification('Ukuran file maksimal 2MB', 'warning');
+            return;
+        }
+
+        try {
+            showLoading();
+
+            const token = localStorage.getItem('token');
+            if (!token) throw new Error('Not authenticated');
+
+            const formData = new FormData();
+            formData.append('program_studi', document.getElementById('magangStudyProgram').value);
+            formData.append('no_hp', document.getElementById('magangPhone').value);
+            formData.append('domisili', document.getElementById('magangDomicile').value);
+            formData.append('semester', document.getElementById('magangSemester').value);
+            formData.append('krs_file', krsFile);
+            formData.append('khs_file', khsFile);
+            formData.append('payment_file', paymentFile);
+
+            const response = await fetch(`${API_BASE_URL}/magang/registrasi`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || 'Gagal mendaftar magang');
             }
+
+            showNotification('Pendaftaran magang berhasil dikirim', 'success');
             
-            if (magangData.perusahaan) {
-                rows.push({
-                    type: 'Data Perusahaan',
-                    icon: 'fa-building',
-                    color: 'purple',
-                    date: magangData.perusahaan.date,
-                    status: magangData.perusahaan.status,
-                    description: magangData.perusahaan.bidang,
-                    action: 'perusahaan'
-                });
-            }
+            // Reset form
+            this.reset();
+            document.getElementById('fakultasSelect').value = '';
+            document.getElementById('magangStudyProgram').innerHTML = '<option value="">-- Pilih Fakultas Terlebih Dahulu --</option>';
+            document.getElementById('magangStudyProgram').disabled = true;
             
-            if (rows.length === 0) {
-                table.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">Belum ada riwayat pengajuan</td></tr>';
+            // Reload data and switch to proses section
+            await loadMagangData();
+            showSection('proses');
+
+        } catch (error) {
+            console.error('Error submitting registration:', error);
+            showNotification(error.message, 'error');
+        } finally {
+            hideLoading();
+        }
+    });
+
+    // Submit data perusahaan
+    document.getElementById('perusahaanForm')?.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const requiredFields = ['companyName', 'internshipField', 'position', 'duration', 
+                               'startDate', 'endDate', 'companyAddress', 'supervisor', 'supervisorContact'];
+        
+        for (const fieldId of requiredFields) {
+            const field = document.getElementById(fieldId);
+            if (!field.value) {
+                showNotification('Semua field wajib harus diisi', 'warning');
                 return;
             }
+        }
+
+        try {
+            showLoading();
+
+            const token = localStorage.getItem('token');
+            if (!token) throw new Error('Not authenticated');
+
+            const formData = new FormData();
             
-            table.innerHTML = rows.map(row => `
+            formData.append('nama_perusahaan', document.getElementById('companyName').value);
+            formData.append('bidang_magang', document.getElementById('internshipField').value);
+            formData.append('posisi', document.getElementById('position').value);
+            formData.append('durasi', document.getElementById('duration').value);
+            formData.append('tanggal_mulai', document.getElementById('startDate').value);
+            formData.append('tanggal_selesai', document.getElementById('endDate').value);
+            formData.append('alamat_perusahaan', document.getElementById('companyAddress').value);
+            formData.append('nama_pembimbing', document.getElementById('supervisor').value);
+            formData.append('kontak_pembimbing', document.getElementById('supervisorContact').value);
+            
+            const emailPembimbing = document.getElementById('supervisorEmail').value;
+            if (emailPembimbing) formData.append('email_pembimbing', emailPembimbing);
+            
+            const jabatanPembimbing = document.getElementById('supervisorPosition').value;
+            if (jabatanPembimbing) formData.append('jabatan_pembimbing', jabatanPembimbing);
+
+            const suratKeterangan = document.getElementById('workCertificate').files[0];
+            if (suratKeterangan) {
+                formData.append('surat_keterangan', suratKeterangan);
+            }
+
+            const strukturOrganisasi = document.getElementById('companyStructure').files[0];
+            if (strukturOrganisasi) {
+                formData.append('struktur_organisasi', strukturOrganisasi);
+            }
+
+            const perusahaanId = document.getElementById('perusahaanId').value;
+            const url = perusahaanId 
+                ? `${API_BASE_URL}/magang/perusahaan/${perusahaanId}`
+                : `${API_BASE_URL}/magang/perusahaan`;
+            
+            const method = perusahaanId ? 'PUT' : 'POST';
+
+            const response = await fetch(url, {
+                method: method,
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || 'Gagal menyimpan data perusahaan');
+            }
+
+            showNotification('Data perusahaan berhasil disimpan', 'success');
+            
+            this.reset();
+            document.getElementById('perusahaanId').value = '';
+            
+            await loadPerusahaanData();
+            await loadMagangData();
+            showSection('proses');
+
+        } catch (error) {
+            console.error('Error submitting company data:', error);
+            showNotification(error.message, 'error');
+        } finally {
+            hideLoading();
+        }
+    });
+
+    // Submit luaran magang
+    document.getElementById('luaranMagangForm')?.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const requiredFields = ['judul_proyek', 'deskripsi_pekerjaan'];
+        for (const fieldId of requiredFields) {
+            const field = document.getElementById(fieldId);
+            if (!field.value) {
+                showNotification(`${fieldId.replace('_', ' ')} harus diisi`, 'warning');
+                return;
+            }
+        }
+
+        try {
+            showLoading();
+
+            const token = localStorage.getItem('token');
+            if (!token) throw new Error('Not authenticated');
+
+            const formData = new FormData();
+            
+            formData.append('judul_proyek', document.getElementById('judul_proyek').value);
+            formData.append('deskripsi_pekerjaan', document.getElementById('deskripsi_pekerjaan').value);
+            formData.append('keterangan_magang', document.getElementById('keterangan_magang').value || '');
+            
+            const posterLink = document.getElementById('link_poster_magang').value;
+            if (posterLink) formData.append('poster', posterLink);
+            
+            const laporanLink = document.getElementById('link_laporan').value;
+            if (laporanLink) formData.append('laporan', laporanLink);
+            
+            const fotoLink = document.getElementById('link_foto').value;
+            if (fotoLink) formData.append('foto_kegiatan', fotoLink);
+
+            const mouFile = document.getElementById('file_mou_magang').files[0];
+            if (mouFile) {
+                formData.append('mou_file', mouFile);
+            }
+
+            const sertifikatFile = document.getElementById('sertifikat_magang').files[0];
+            if (sertifikatFile) {
+                formData.append('sertifikat', sertifikatFile);
+            }
+
+            const logbookFile = document.getElementById('logbook_magang').files[0];
+            if (logbookFile) {
+                formData.append('logbook', logbookFile);
+            }
+
+            const luaranId = document.getElementById('luaranId').value;
+            const url = luaranId 
+                ? `${API_BASE_URL}/magang/luaran/${luaranId}`
+                : `${API_BASE_URL}/magang/luaran`;
+            
+            const method = luaranId ? 'PUT' : 'POST';
+
+            const response = await fetch(url, {
+                method: method,
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || 'Gagal menyimpan data luaran');
+            }
+
+            showNotification('Data luaran berhasil disimpan', 'success');
+            
+            this.reset();
+            document.getElementById('luaranId').value = '';
+            
+            await loadLuaranData();
+            await loadMagangData();
+            showSection('proses');
+
+        } catch (error) {
+            console.error('Error submitting luaran data:', error);
+            showNotification(error.message, 'error');
+        } finally {
+            hideLoading();
+        }
+    });
+    
+    // ========== UI UPDATE FUNCTIONS ==========
+    function updateStatusUI() {
+        const statusPendaftaran = document.getElementById('statusPendaftaran');
+        const statusPerusahaan = document.getElementById('statusPerusahaan');
+        const statusVerifikasi = document.getElementById('statusVerifikasi');
+        const statusLuaran = document.getElementById('statusLuaran');
+        const overallStatus = document.getElementById('overallStatus');
+
+        if (magangData.registrasi) {
+            statusPendaftaran.textContent = getStatusText(magangData.registrasi.status);
+            statusPendaftaran.className = `status-badge ${getStatusBadgeClass(magangData.registrasi.status)}`;
+        } else {
+            statusPendaftaran.textContent = 'Belum Daftar';
+            statusPendaftaran.className = 'status-badge bg-gray-100 text-gray-800';
+        }
+
+        if (magangData.perusahaan && magangData.perusahaan.length > 0) {
+            const latest = magangData.perusahaan[0];
+            statusPerusahaan.textContent = getStatusText(latest.status);
+            statusPerusahaan.className = `status-badge ${getStatusBadgeClass(latest.status)}`;
+        } else {
+            statusPerusahaan.textContent = 'Belum Input';
+            statusPerusahaan.className = 'status-badge bg-gray-100 text-gray-800';
+        }
+
+        if (magangData.registrasi && magangData.registrasi.status === 'verified') {
+            statusVerifikasi.textContent = 'Terverifikasi';
+            statusVerifikasi.className = 'status-badge bg-purple-100 text-purple-800';
+        } else if (magangData.registrasi && magangData.registrasi.status === 'approved') {
+            statusVerifikasi.textContent = 'Disetujui';
+            statusVerifikasi.className = 'status-badge bg-green-100 text-green-800';
+        } else if (magangData.registrasi && magangData.registrasi.status === 'pending') {
+            statusVerifikasi.textContent = 'Menunggu';
+            statusVerifikasi.className = 'status-badge bg-yellow-100 text-yellow-800';
+        } else {
+            statusVerifikasi.textContent = 'Belum';
+            statusVerifikasi.className = 'status-badge bg-gray-100 text-gray-800';
+        }
+
+        if (magangData.luaran && magangData.luaran.length > 0) {
+            const latest = magangData.luaran[0];
+            statusLuaran.textContent = getStatusText(latest.status);
+            statusLuaran.className = `status-badge ${getStatusBadgeClass(latest.status)}`;
+        } else {
+            statusLuaran.textContent = 'Belum Input';
+            statusLuaran.className = 'status-badge bg-gray-100 text-gray-800';
+        }
+
+        if (magangData.luaran && magangData.luaran.some(l => l.status === 'verified')) {
+            overallStatus.textContent = 'Selesai';
+            overallStatus.className = 'status-badge bg-green-100 text-green-800';
+        } else if (magangData.perusahaan && magangData.perusahaan.some(p => p.status === 'approved')) {
+            overallStatus.textContent = 'Sedang Berjalan';
+            overallStatus.className = 'status-badge bg-blue-100 text-blue-800';
+        } else if (magangData.registrasi && magangData.registrasi.status === 'approved') {
+            overallStatus.textContent = 'Disetujui';
+            overallStatus.className = 'status-badge bg-green-100 text-green-800';
+        } else if (magangData.registrasi) {
+            overallStatus.textContent = 'Dalam Proses';
+            overallStatus.className = 'status-badge bg-yellow-100 text-yellow-800';
+        } else {
+            overallStatus.textContent = 'Belum Mulai';
+            overallStatus.className = 'status-badge bg-gray-100 text-gray-800';
+        }
+
+        updateStepper();
+        loadTimelineData();
+        
+        if (magangData.registrasi) {
+            document.getElementById('magangPhone').value = magangData.registrasi.no_hp || '';
+            document.getElementById('magangDomicile').value = magangData.registrasi.domisili || '';
+            document.getElementById('magangSemester').value = magangData.registrasi.semester || '';
+            
+            if (magangData.registrasi.krs_file) {
+                document.getElementById('existingKrs').innerHTML = `<i class="fas fa-file-pdf text-red-500 mr-2"></i>File KRS sudah diupload`;
+                document.getElementById('existingKrs').classList.remove('hidden');
+            }
+            if (magangData.registrasi.khs_file) {
+                document.getElementById('existingKhs').innerHTML = `<i class="fas fa-file-pdf text-red-500 mr-2"></i>File KHS sudah diupload`;
+                document.getElementById('existingKhs').classList.remove('hidden');
+            }
+            if (magangData.registrasi.payment_file) {
+                document.getElementById('existingPayment').innerHTML = `<i class="fas fa-file-pdf text-red-500 mr-2"></i>File Bukti Pembayaran sudah diupload`;
+                document.getElementById('existingPayment').classList.remove('hidden');
+            }
+        }
+
+        if (magangData.perusahaan && magangData.perusahaan.length > 0) {
+            const latest = magangData.perusahaan[0];
+            document.getElementById('perusahaanId').value = latest.id_perusahaan;
+            document.getElementById('companyName').value = latest.nama_perusahaan || '';
+            document.getElementById('internshipField').value = latest.bidang_magang || '';
+            document.getElementById('position').value = latest.posisi || '';
+            document.getElementById('duration').value = latest.durasi || '';
+            document.getElementById('startDate').value = latest.tanggal_mulai || '';
+            document.getElementById('endDate').value = latest.tanggal_selesai || '';
+            document.getElementById('companyAddress').value = latest.alamat_perusahaan || '';
+            document.getElementById('supervisor').value = latest.nama_pembimbing || '';
+            document.getElementById('supervisorContact').value = latest.kontak_pembimbing || '';
+            document.getElementById('supervisorEmail').value = latest.email_pembimbing || '';
+            document.getElementById('supervisorPosition').value = latest.jabatan_pembimbing || '';
+
+            if (latest.surat_keterangan) {
+                document.getElementById('existingSuratKeterangan').innerHTML = `<i class="fas fa-file-pdf text-red-500 mr-2"></i>File Surat Keterangan sudah diupload`;
+                document.getElementById('existingSuratKeterangan').classList.remove('hidden');
+            }
+            if (latest.struktur_organisasi) {
+                document.getElementById('existingStrukturOrganisasi').innerHTML = `<i class="fas fa-file-pdf text-red-500 mr-2"></i>File Struktur Organisasi sudah diupload`;
+                document.getElementById('existingStrukturOrganisasi').classList.remove('hidden');
+            }
+
+            document.getElementById('nama_perusahaan').value = latest.nama_perusahaan || '';
+            document.getElementById('posisi_magang').value = latest.posisi || '';
+            document.getElementById('luaranPerusahaanId').value = latest.id_perusahaan;
+        }
+
+        if (magangData.luaran && magangData.luaran.length > 0) {
+            const latest = magangData.luaran[0];
+            document.getElementById('luaranId').value = latest.id_luaran;
+            document.getElementById('judul_proyek').value = latest.judul_proyek || '';
+            document.getElementById('deskripsi_pekerjaan').value = latest.deskripsi_pekerjaan || '';
+            document.getElementById('link_poster_magang').value = latest.link_poster || '';
+            document.getElementById('link_laporan').value = latest.link_laporan || '';
+            document.getElementById('link_foto').value = latest.link_foto || '';
+            document.getElementById('keterangan_magang').value = latest.keterangan || '';
+
+            if (latest.file_mou) {
+                document.getElementById('existingMou').innerHTML = `<i class="fas fa-file-pdf text-red-500 mr-2"></i>File MOU sudah diupload`;
+                document.getElementById('existingMou').classList.remove('hidden');
+            }
+            if (latest.file_sertifikat) {
+                document.getElementById('existingSertifikat').innerHTML = `<i class="fas fa-file-pdf text-red-500 mr-2"></i>File Sertifikat sudah diupload`;
+                document.getElementById('existingSertifikat').classList.remove('hidden');
+            }
+            if (latest.file_logbook) {
+                document.getElementById('existingLogbook').innerHTML = `<i class="fas fa-file-pdf text-red-500 mr-2"></i>File Logbook sudah diupload`;
+                document.getElementById('existingLogbook').classList.remove('hidden');
+            }
+        }
+    }
+
+    function updateStepper() {
+        const step1 = document.getElementById('step1');
+        const step2 = document.getElementById('step2');
+        const step3 = document.getElementById('step3');
+        const step4 = document.getElementById('step4');
+
+        [step1, step2, step3, step4].forEach(step => {
+            step.classList.remove('active', 'completed');
+        });
+
+        if (magangData.registrasi) {
+            if (magangData.registrasi.status === 'verified' || magangData.registrasi.status === 'approved') {
+                step1.classList.add('completed');
+                document.getElementById('step1Status').textContent = 'Selesai';
+            } else if (magangData.registrasi.status === 'pending') {
+                step1.classList.add('active');
+                document.getElementById('step1Status').textContent = 'Dalam Proses';
+            } else {
+                document.getElementById('step1Status').textContent = getStatusText(magangData.registrasi.status);
+            }
+        } else {
+            document.getElementById('step1Status').textContent = 'Belum Dimulai';
+        }
+
+        if (magangData.perusahaan && magangData.perusahaan.length > 0) {
+            const latest = magangData.perusahaan[0];
+            if (latest.status === 'verified' || latest.status === 'approved') {
+                step2.classList.add('completed');
+                document.getElementById('step2Status').textContent = 'Selesai';
+            } else if (latest.status === 'pending' || latest.status === 'review') {
+                step2.classList.add('active');
+                document.getElementById('step2Status').textContent = 'Dalam Proses';
+            } else {
+                document.getElementById('step2Status').textContent = getStatusText(latest.status);
+            }
+        } else {
+            document.getElementById('step2Status').textContent = 'Belum Dimulai';
+        }
+
+        if (magangData.perusahaan && magangData.perusahaan.some(p => p.status === 'approved')) {
+            step3.classList.add('active');
+            document.getElementById('step3Status').textContent = 'Sedang Berjalan';
+        } else if (magangData.registrasi && magangData.registrasi.status === 'approved') {
+            document.getElementById('step3Status').textContent = 'Menunggu';
+        } else {
+            document.getElementById('step3Status').textContent = 'Belum Dimulai';
+        }
+
+        if (magangData.luaran && magangData.luaran.length > 0) {
+            const latest = magangData.luaran[0];
+            if (latest.status === 'verified') {
+                step4.classList.add('completed');
+                document.getElementById('step4Status').textContent = 'Selesai';
+            } else if (latest.status === 'pending' || latest.status === 'review') {
+                step4.classList.add('active');
+                document.getElementById('step4Status').textContent = 'Dalam Proses';
+            } else {
+                document.getElementById('step4Status').textContent = getStatusText(latest.status);
+            }
+        } else {
+            document.getElementById('step4Status').textContent = 'Belum Dimulai';
+        }
+    }
+
+    function updateTimeline() {
+        const timeline = document.getElementById('timelineDetails');
+        
+        if (!magangData.timeline || magangData.timeline.length === 0) {
+            timeline.innerHTML = '<div class="text-center text-gray-500 py-4">Belum ada aktivitas</div>';
+            return;
+        }
+
+        timeline.innerHTML = magangData.timeline.map(item => {
+            const statusClass = item.status === 'approved' || item.status === 'verified' ? 'completed' : 
+                               item.status === 'pending' || item.status === 'review' ? 'active' : '';
+            
+            return `
+                <div class="timeline-item ${statusClass}">
+                    <div class="timeline-dot"></div>
+                    <div class="ml-4">
+                        <div class="flex items-center">
+                            <h4 class="font-semibold text-gray-800">${item.tahap}</h4>
+                            <span class="ml-3 ${getStatusBadgeClass(item.status)} px-2 py-1 rounded-full text-xs">
+                                ${getStatusText(item.status)}
+                            </span>
+                        </div>
+                        <p class="text-sm text-gray-600">${item.deskripsi || '-'}</p>
+                        <p class="text-xs text-gray-400 mt-1">${formatDate(item.tanggal)}</p>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function updateRiwayatTable() {
+        const table = document.getElementById('riwayatTable');
+        
+        if (!magangData.riwayat || magangData.riwayat.length === 0) {
+            table.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">Belum ada riwayat pengajuan</td></tr>';
+            return;
+        }
+
+        table.innerHTML = magangData.riwayat.map(item => {
+            let jenisIcon = 'fa-file-signature';
+            let jenisText = 'Pendaftaran';
+            let keterangan = '';
+
+            if (item.jenis === 'perusahaan') {
+                jenisIcon = 'fa-building';
+                jenisText = 'Data Perusahaan';
+                keterangan = item.nama_perusahaan || '-';
+            } else if (item.jenis === 'luaran') {
+                jenisIcon = 'fa-tasks';
+                jenisText = 'Luaran';
+                keterangan = item.judul_proyek || '-';
+            } else {
+                keterangan = 'Pendaftaran magang';
+            }
+
+            return `
                 <tr>
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex items-center">
-                            <i class="fas ${row.icon} text-${row.color}-500 mr-2"></i>
-                            <span class="text-sm text-gray-900">${row.type}</span>
+                            <i class="fas ${jenisIcon} text-purple-500 mr-2"></i>
+                            <span class="text-sm text-gray-900">${jenisText}</span>
                         </div>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${row.date}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatDate(item.created_at)}</td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="status-badge ${
-                            row.status === 'approved' ? 'approved' :
-                            row.status === 'pending' ? 'pending' : 'rejected'
-                        }">${
-                            row.status === 'approved' ? 'Disetujui' :
-                            row.status === 'pending' ? 'Diproses' : 'Ditolak'
-                        }</span>
+                        <span class="${getStatusBadgeClass(item.status)} px-2 py-1 rounded-full text-xs">
+                            ${getStatusText(item.status)}
+                        </span>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${row.description}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${keterangan}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm">
-                        <button class="text-blue-600 hover:text-blue-800 mr-2" onclick="viewDetail('${row.type}')">
+                        <button class="text-blue-600 hover:text-blue-800 mr-2" onclick="viewDetail('${item.jenis}', '${item.id_registrasi || item.id_perusahaan || item.id_luaran}')">
                             <i class="fas fa-eye"></i>
                         </button>
-                        ${row.type === 'Data Perusahaan' && row.status === 'pending' ? `
-                            <button class="text-green-600 hover:text-green-800" onclick="editPerusahaan()">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                        ` : ''}
                     </td>
                 </tr>
-            `).join('');
-        }
+            `;
+        }).join('');
+    }
+
+    function updatePerusahaanTable() {
+        const table = document.getElementById('perusahaanTable');
         
-        // Update perusahaan table
-        function updatePerusahaanTable() {
-            const table = document.getElementById('perusahaanTable');
+        if (!magangData.perusahaan || magangData.perusahaan.length === 0) {
+            table.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">Belum ada data perusahaan</td></tr>';
+            return;
+        }
+
+        table.innerHTML = magangData.perusahaan.map(company => {
+            const periode = company.tanggal_mulai && company.tanggal_selesai
+                ? `${formatDate(company.tanggal_mulai)} - ${formatDate(company.tanggal_selesai)}`
+                : '-';
+
+            return `
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap">${company.nama_perusahaan || '-'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${company.bidang_magang || '-'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${periode}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="${getStatusBadgeClass(company.status)} px-2 py-1 rounded-full text-xs">
+                            ${getStatusText(company.status)}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <button class="text-blue-600 hover:text-blue-800 mr-2" onclick="viewCompanyDetail('${company.id_perusahaan}')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="text-green-600 hover:text-green-800" onclick="editPerusahaan('${company.id_perusahaan}')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    function updateLuaranTable() {
+        const table = document.getElementById('luaranMagangTable');
+        
+        if (!magangData.luaran || magangData.luaran.length === 0) {
+            table.innerHTML = '<tr><td colspan="4" class="px-6 py-4 text-center text-gray-500">Belum ada luaran yang diupload</td></tr>';
+            return;
+        }
+
+        table.innerHTML = magangData.luaran.map(luaran => {
+            return `
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap">${luaran.judul_proyek || '-'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${formatDate(luaran.created_at)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="${getStatusBadgeClass(luaran.status)} px-2 py-1 rounded-full text-xs">
+                            ${getStatusText(luaran.status)}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <button class="text-blue-600 hover:text-blue-800 mr-2" onclick="viewLuaranDetail('${luaran.id_luaran}')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="text-green-600 hover:text-green-800" onclick="editLuaran('${luaran.id_luaran}')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    }
+    
+    // ========== DETAIL VIEW FUNCTIONS ==========
+    
+    async function viewDetail(jenis, id) {
+        try {
+            showLoading();
             
-            if (perusahaanList.length > 0) {
-                table.innerHTML = perusahaanList.map(company => `
-                    <tr>
-                        <td class="px-6 py-4 whitespace-nowrap">${company.name}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">${company.bidang}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">${company.periode}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="status-badge ${company.status}">${
-                                company.status === 'approved' ? 'Terverifikasi' :
-                                company.status === 'pending' ? 'Dalam Review' : 'Ditolak'
-                            }</span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <button class="text-blue-600 hover:text-blue-800" onclick="viewCompanyDetail(${company.id})">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `).join('');
-            } else {
-                table.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">Belum ada data perusahaan</td></tr>';
+            const token = localStorage.getItem('token');
+            if (!token) throw new Error('Not authenticated');
+
+            let data = null;
+            let title = '';
+
+            if (jenis === 'perusahaan') {
+                const response = await fetch(`${API_BASE_URL}/magang/perusahaan/${id}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (response.ok) {
+                    const result = await response.json();
+                    data = result.data;
+                    title = 'Detail Perusahaan';
+                }
+            } else if (jenis === 'luaran') {
+                const response = await fetch(`${API_BASE_URL}/magang/luaran/${id}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (response.ok) {
+                    const result = await response.json();
+                    data = result.data;
+                    title = 'Detail Luaran';
+                }
+            }
+
+            if (!data) {
+                showNotification('Data tidak ditemukan', 'error');
+                return;
+            }
+
+            let html = '<div class="text-left space-y-2">';
+            
+            if (jenis === 'perusahaan') {
+                html += `
+                    <p><strong>Nama Perusahaan:</strong> ${data.nama_perusahaan || '-'}</p>
+                    <p><strong>Bidang:</strong> ${data.bidang_magang || '-'}</p>
+                    <p><strong>Posisi:</strong> ${data.posisi || '-'}</p>
+                    <p><strong>Durasi:</strong> ${data.durasi || '-'} bulan</p>
+                    <p><strong>Periode:</strong> ${formatDate(data.tanggal_mulai)} - ${formatDate(data.tanggal_selesai)}</p>
+                    <p><strong>Alamat:</strong> ${data.alamat_perusahaan || '-'}</p>
+                    <p><strong>Pembimbing:</strong> ${data.nama_pembimbing || '-'}</p>
+                    <p><strong>Kontak:</strong> ${data.kontak_pembimbing || '-'}</p>
+                    <p><strong>Status:</strong> <span class="${getStatusBadgeClass(data.status)} px-2 py-1 rounded-full text-xs">${getStatusText(data.status)}</span></p>
+                `;
+            } else if (jenis === 'luaran') {
+                html += `
+                    <p><strong>Judul Proyek:</strong> ${data.judul_proyek || '-'}</p>
+                    <p><strong>Deskripsi:</strong> ${data.deskripsi_pekerjaan || '-'}</p>
+                    <p><strong>Link Poster:</strong> ${data.link_poster ? `<a href="${data.link_poster}" target="_blank" class="text-blue-600">Lihat</a>` : '-'}</p>
+                    <p><strong>Link Laporan:</strong> ${data.link_laporan ? `<a href="${data.link_laporan}" target="_blank" class="text-blue-600">Lihat</a>` : '-'}</p>
+                    <p><strong>Link Foto:</strong> ${data.link_foto ? `<a href="${data.link_foto}" target="_blank" class="text-blue-600">Lihat</a>` : '-'}</p>
+                    <p><strong>Status:</strong> <span class="${getStatusBadgeClass(data.status)} px-2 py-1 rounded-full text-xs">${getStatusText(data.status)}</span></p>
+                `;
+            }
+
+            html += '</div>';
+
+            Swal.fire({
+                title: title,
+                html: html,
+                icon: 'info',
+                confirmButtonColor: '#8B5CF6',
+                width: 600
+            });
+
+        } catch (error) {
+            console.error('Error viewing detail:', error);
+            showNotification('Gagal memuat detail', 'error');
+        } finally {
+            hideLoading();
+        }
+    }
+
+    async function viewCompanyDetail(id) {
+        await viewDetail('perusahaan', id);
+    }
+
+    async function viewLuaranDetail(id) {
+        await viewDetail('luaran', id);
+    }
+
+    function editPerusahaan(id) {
+        const perusahaan = magangData.perusahaan.find(p => p.id_perusahaan === id);
+        if (perusahaan) {
+            showSection('perusahaan');
+            
+            document.getElementById('perusahaanId').value = perusahaan.id_perusahaan;
+            document.getElementById('companyName').value = perusahaan.nama_perusahaan || '';
+            document.getElementById('internshipField').value = perusahaan.bidang_magang || '';
+            document.getElementById('position').value = perusahaan.posisi || '';
+            document.getElementById('duration').value = perusahaan.durasi || '';
+            document.getElementById('startDate').value = perusahaan.tanggal_mulai || '';
+            document.getElementById('endDate').value = perusahaan.tanggal_selesai || '';
+            document.getElementById('companyAddress').value = perusahaan.alamat_perusahaan || '';
+            document.getElementById('supervisor').value = perusahaan.nama_pembimbing || '';
+            document.getElementById('supervisorContact').value = perusahaan.kontak_pembimbing || '';
+            document.getElementById('supervisorEmail').value = perusahaan.email_pembimbing || '';
+            document.getElementById('supervisorPosition').value = perusahaan.jabatan_pembimbing || '';
+
+            document.getElementById('sectionPerusahaan').scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+
+    function editLuaran(id) {
+        const luaran = magangData.luaran.find(l => l.id_luaran === id);
+        if (luaran) {
+            showSection('luaran');
+            
+            document.getElementById('luaranId').value = luaran.id_luaran;
+            document.getElementById('judul_proyek').value = luaran.judul_proyek || '';
+            document.getElementById('deskripsi_pekerjaan').value = luaran.deskripsi_pekerjaan || '';
+            document.getElementById('link_poster_magang').value = luaran.link_poster || '';
+            document.getElementById('link_laporan').value = luaran.link_laporan || '';
+            document.getElementById('link_foto').value = luaran.link_foto || '';
+            document.getElementById('keterangan_magang').value = luaran.keterangan || '';
+
+            document.getElementById('sectionLuaran').scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+    
+    // ========== CANCEL FUNCTIONS ==========
+    function cancelRegistration() {
+        document.getElementById('magangForm').reset();
+        document.getElementById('fakultasSelect').value = '';
+        document.getElementById('magangStudyProgram').innerHTML = '<option value="">-- Pilih Fakultas Terlebih Dahulu --</option>';
+        document.getElementById('magangStudyProgram').disabled = true;
+        showSection('proses');
+    }
+    
+    function cancelCompanyData() {
+        document.getElementById('perusahaanForm').reset();
+        document.getElementById('perusahaanId').value = '';
+        showSection('proses');
+    }
+    
+    function cancelLuaran() {
+        document.getElementById('luaranMagangForm').reset();
+        document.getElementById('luaranId').value = '';
+        showSection('proses');
+    }
+    
+    // ========== FILE HANDLING ==========
+    
+    function setupFileValidation() {
+        const fileInputs = document.querySelectorAll('input[type="file"]');
+        
+        fileInputs.forEach(input => {
+            input.addEventListener('change', function() {
+                const file = this.files[0];
+                if (!file) return;
+
+                const maxSize = this.id.includes('mou') || this.id.includes('sertifikat') || this.id.includes('logbook')
+                    ? 5 * 1024 * 1024
+                    : 2 * 1024 * 1024;
+
+                if (file.size > maxSize) {
+                    showNotification(`Ukuran file maksimal ${maxSize / (1024 * 1024)}MB`, 'warning');
+                    this.value = '';
+                    return;
+                }
+
+                const validTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg'];
+                if (!validTypes.includes(file.type) && !file.name.toLowerCase().endsWith('.pdf')) {
+                    showNotification('Format file harus PDF, JPG, atau PNG', 'warning');
+                    this.value = '';
+                    return;
+                }
+
+                const previewId = `file-preview-${this.id}`;
+                let previewDiv = document.getElementById(previewId);
+                
+                if (!previewDiv) {
+                    previewDiv = document.createElement('div');
+                    previewDiv.id = previewId;
+                    previewDiv.className = 'file-preview text-sm mt-2';
+                    this.parentNode.appendChild(previewDiv);
+                }
+
+                previewDiv.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <i class="fas ${file.type === 'application/pdf' ? 'fa-file-pdf text-red-500' : 'fa-file-image text-blue-500'} mr-2"></i>
+                            <span>${file.name} (${formatFileSize(file.size)})</span>
+                        </div>
+                        <button type="button" onclick="removeFile('${this.id}')" class="text-red-500 hover:text-red-700">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+            });
+        });
+    }
+
+    window.removeFile = function(inputId) {
+        const input = document.getElementById(inputId);
+        if (input) {
+            input.value = '';
+            const previewId = `file-preview-${inputId}`;
+            const previewDiv = document.getElementById(previewId);
+            if (previewDiv) {
+                previewDiv.remove();
             }
         }
-        
-        // Update luaran table
-        function updateLuaranTable() {
-            const table = document.getElementById('luaranMagangTable');
+    };
+    
+    // ========== DOM CONTENT LOADED ==========
+    document.addEventListener('DOMContentLoaded', async function() {
+        if (!auth.requireRole('mahasiswa')) return;
+        showLoading();
+        try {
+            currentUser = getUser();
+            updateUserInfo();
             
-            if (magangData.outputs && magangData.outputs.length > 0) {
-                table.innerHTML = magangData.outputs.map(output => `
-                    <tr>
-                        <td class="px-6 py-4 whitespace-nowrap">${output.type}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">${output.date}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="status-badge ${
-                                output.status === 'approved' ? 'approved' :
-                                output.status === 'pending' ? 'pending' : 'rejected'
-                            }">${
-                                output.status === 'approved' ? 'Terverifikasi' :
-                                output.status === 'pending' ? 'Dalam Review' : 'Ditolak'
-                            }</span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <button class="text-blue-600 hover:text-blue-800"><i class="fas fa-eye"></i></button>
-                        </td>
-                    </tr>
-                `).join('');
-            } else {
-                table.innerHTML = '<tr><td colspan="4" class="px-6 py-4 text-center text-gray-500">Belum ada luaran yang diupload</td></tr>';
-            }
-        }
-        
-        // ========== FILE HANDLING ==========
-        
-        // Setup file preview
-        function setupFilePreview() {
-            const fileInput = document.getElementById('workCertificate');
-            const previewContainer = document.getElementById('filePreviewContainer');
+            // Load fakultas first
+            await loadFakultas();
             
-            if (fileInput) {
-                fileInput.addEventListener('change', function() {
-                    const file = this.files[0];
-                    if (file) {
-                        // Validasi ukuran file
-                        if (file.size > 2 * 1024 * 1024) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Ukuran File Terlalu Besar',
-                                text: 'Maksimal ukuran file adalah 2MB'
-                            });
-                            this.value = '';
-                            return;
-                        }
-                        
-                        // Validasi tipe file
-                        const validTypes = ['application/pdf', 'image/jpeg', 'image/png'];
-                        if (!validTypes.includes(file.type)) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Tipe File Tidak Valid',
-                                text: 'Hanya file PDF, JPG, atau PNG yang diperbolehkan'
-                            });
-                            this.value = '';
-                            return;
-                        }
-                        
-                        // Tampilkan preview
-                        const fileType = file.type === 'application/pdf' ? 'pdf' : 'image';
-                        const icon = fileType === 'pdf' ? 'fa-file-pdf text-red-500' : 'fa-file-image text-blue-500';
-                        
-                        previewContainer.innerHTML = `
-                            <div class="file-preview">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center">
-                                        <i class="fas ${icon} text-xl mr-2"></i>
-                                        <div>
-                                            <div class="file-name text-sm font-medium">${file.name}</div>
-                                            <div class="file-size text-xs text-gray-500">${formatFileSize(file.size)}</div>
-                                        </div>
-                                    </div>
-                                    <button type="button" onclick="removeFile()" class="text-red-500 hover:text-red-700">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        `;
+            // Setup event listener for fakultas select
+            const fakultasSelect = document.getElementById('fakultasSelect');
+            if (fakultasSelect) {
+                fakultasSelect.addEventListener('change', function(e) {
+                    const id_fakultas = e.target.value;
+                    if (id_fakultas) {
+                        loadProdiByFakultas(id_fakultas);
                     } else {
-                        previewContainer.innerHTML = '';
+                        const prodiSelect = document.getElementById('magangStudyProgram');
+                        prodiSelect.innerHTML = '<option value="">-- Pilih Fakultas Terlebih Dahulu --</option>';
+                        prodiSelect.disabled = true;
                     }
                 });
             }
+            
+            // Load other data
+            await loadMagangData();
+            setupFileValidation();
+            
+        } catch (error) {
+            console.error('Error initializing page:', error);
+            showNotification('Gagal memuat halaman', 'error');
+        } finally {
+            hideLoading();
         }
-        
-        // Remove file
-        window.removeFile = function() {
-            document.getElementById('workCertificate').value = '';
-            document.getElementById('filePreviewContainer').innerHTML = '';
-        };
-        
-        // Format file size
-        function formatFileSize(bytes) {
-            if (bytes === 0) return '0 Bytes';
-            const k = 1024;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-        }
-        
-        // ========== FORM HANDLERS ==========
-        
-        // Pendaftaran form
-        document.getElementById('magangForm')?.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            if (!document.getElementById('magangAgreeTerms').checked) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Perhatian',
-                    text: 'Anda harus menyetujui pernyataan di atas'
-                });
-                return;
-            }
-            
-            Swal.fire({
-                title: 'Konfirmasi Pendaftaran',
-                text: 'Apakah Anda yakin ingin mendaftar magang?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#8B5CF6',
-                cancelButtonColor: '#6B7280',
-                confirmButtonText: 'Ya, Daftar!',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    showLoading();
-                    
-                    setTimeout(() => {
-                        hideLoading();
-                        Swal.fire({
-                            title: 'Berhasil!',
-                            text: 'Pendaftaran magang Anda telah diterima',
-                            icon: 'success',
-                            confirmButtonColor: '#8B5CF6'
-                        }).then(() => {
-                            showSection('proses');
-                        });
-                    }, 1500);
-                }
-            });
-        });
-        
-        // Perusahaan form
-        document.getElementById('perusahaanForm')?.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            Swal.fire({
-                title: 'Simpan Data Perusahaan',
-                text: 'Pastikan semua data sudah benar',
-                icon: 'info',
-                showCancelButton: true,
-                confirmButtonColor: '#8B5CF6',
-                confirmButtonText: 'Simpan'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    showLoading();
-                    
-                    setTimeout(() => {
-                        hideLoading();
-                        Swal.fire({
-                            title: 'Tersimpan!',
-                            text: 'Data perusahaan berhasil disimpan',
-                            icon: 'success',
-                            timer: 1500,
-                            showConfirmButton: false
-                        });
-                    }, 1500);
-                }
-            });
-        });
-        
-        // Luaran form
-        document.getElementById('luaranMagangForm')?.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            Swal.fire({
-                title: 'Simpan Luaran',
-                text: 'Pastikan semua data sudah benar',
-                icon: 'info',
-                showCancelButton: true,
-                confirmButtonColor: '#8B5CF6',
-                confirmButtonText: 'Simpan'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    showLoading();
-                    
-                    setTimeout(() => {
-                        hideLoading();
-                        Swal.fire({
-                            title: 'Tersimpan!',
-                            text: 'Data luaran berhasil disimpan',
-                            icon: 'success',
-                            timer: 1500,
-                            showConfirmButton: false
-                        });
-                    }, 1500);
-                }
-            });
-        });
-        
-        // ========== HELPER FUNCTIONS ==========
-        function viewDetail(type) {
-            Swal.fire({
-                title: `Detail ${type}`,
-                html: `
-                    <div class="text-left">
-                        <p><strong>ID Pengajuan:</strong> MAG-2024-001</p>
-                        <p><strong>Tanggal:</strong> 10 Juni 2024</p>
-                        <p><strong>Status:</strong> Disetujui</p>
-                        <p><strong>Keterangan:</strong> PT Maju Jaya</p>
-                    </div>
-                `,
-                icon: 'info',
-                confirmButtonColor: '#8B5CF6'
-            });
-        }
-        
-        function viewCompanyDetail(id) {
-            Swal.fire({
-                title: 'Detail Perusahaan',
-                html: `
-                    <div class="text-left">
-                        <p><strong>Nama:</strong> PT Maju Jaya</p>
-                        <p><strong>Bidang:</strong> Digital Marketing</p>
-                        <p><strong>Periode:</strong> Juli - Sept 2024</p>
-                        <p><strong>Pembimbing:</strong> Bapak Ahmad</p>
-                        <p><strong>Kontak:</strong> 08123456789</p>
-                    </div>
-                `,
-                icon: 'info',
-                confirmButtonColor: '#8B5CF6'
-            });
-        }
-        
-        function editPerusahaan() {
-            showSection('perusahaan');
-            
-            document.getElementById('sectionPerusahaan').scrollIntoView({
-                behavior: 'smooth'
-            });
-        }
-        
-        function cancelRegistration() {
-            Swal.fire({
-                title: 'Batal',
-                text: 'Pendaftaran dibatalkan',
-                icon: 'info',
-                timer: 1500,
-                showConfirmButton: false
-            });
-        }
-        
-        function cancelCompanyData() {
-            Swal.fire({
-                title: 'Batal',
-                text: 'Input data perusahaan dibatalkan',
-                icon: 'info',
-                timer: 1500,
-                showConfirmButton: false
-            });
-        }
-        
-        function cancelLuaran() {
-            Swal.fire({
-                title: 'Batal',
-                text: 'Input luaran dibatalkan',
-                icon: 'info',
-                timer: 1500,
-                showConfirmButton: false
-            });
-        }
-        
-        // ========== FILE UPLOAD HANDLERS FOR LUARAN ==========
-        document.getElementById('file_mou_magang')?.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            const infoElement = document.getElementById('file-info-mou-magang');
-            
-            if (file) {
-                if (file.size > 5 * 1024 * 1024) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Ukuran File Terlalu Besar',
-                        text: 'Maksimal ukuran file adalah 5MB'
-                    });
-                    this.value = '';
-                    infoElement.textContent = 'Belum ada file MOU yang dipilih';
-                } else if (file.type !== 'application/pdf') {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Tipe File Tidak Valid',
-                        text: 'File MOU harus dalam format PDF'
-                    });
-                    this.value = '';
-                    infoElement.textContent = 'Belum ada file MOU yang dipilih';
-                } else {
-                    infoElement.textContent = `File terpilih: ${file.name} (${formatFileSize(file.size)})`;
-                }
-            } else {
-                infoElement.textContent = 'Belum ada file MOU yang dipilih';
-            }
-        });
-        
-        document.getElementById('sertifikat_magang')?.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            const infoElement = document.getElementById('file-info-sertifikat');
-            
-            if (file) {
-                if (file.size > 5 * 1024 * 1024) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Ukuran File Terlalu Besar',
-                        text: 'Maksimal ukuran file adalah 5MB'
-                    });
-                    this.value = '';
-                    infoElement.textContent = 'Belum ada file sertifikat yang dipilih';
-                } else {
-                    infoElement.textContent = `File terpilih: ${file.name} (${formatFileSize(file.size)})`;
-                }
-            } else {
-                infoElement.textContent = 'Belum ada file sertifikat yang dipilih';
-            }
-        });
-        
-        document.getElementById('logbook_magang')?.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            const infoElement = document.getElementById('file-info-logbook');
-            
-            if (file) {
-                if (file.size > 5 * 1024 * 1024) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Ukuran File Terlalu Besar',
-                        text: 'Maksimal ukuran file adalah 5MB'
-                    });
-                    this.value = '';
-                    infoElement.textContent = 'Belum ada file logbook yang dipilih';
-                } else {
-                    infoElement.textContent = `File terpilih: ${file.name} (${formatFileSize(file.size)})`;
-                }
-            } else {
-                infoElement.textContent = 'Belum ada file logbook yang dipilih';
-            }
-        });
-        
-        // ========== PAGE INITIALIZATION ==========
-        document.addEventListener('DOMContentLoaded', async function() {
-            // Check authentication first
-            if (!auth.requireRole('mahasiswa')) return;
-            
-            showLoading();
-            
-            try {
-                // Update user info
-                updateUserInfo();
-                
-                // Load magang data
-                await loadMagangData();
-                
-                // Setup file preview
-                setupFilePreview();
-                
-            } catch (error) {
-                console.error('Error initializing page:', error);
-                showNotification('Gagal memuat data', false);
-            } finally {
-                hideLoading();
-            }
-        });
-    </script>
+    });
+</script>
 </body>
 </html>

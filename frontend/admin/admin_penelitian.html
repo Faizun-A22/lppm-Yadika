@@ -280,7 +280,7 @@
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
             <!-- Logo and Brand -->
             <a href="admin-dashboard.html" class="flex items-center space-x-3">
-                <img src="images/logoyadika.png" alt="Logo" class="h-10 w-10">
+                <img src="yadika.png" alt="Logo" class="h-10 w-10">
                 <div>
                     <h1 class="text-xl font-bold gradient-text">LPPM Admin</h1>
                     <p class="text-xs text-gray-500">ITB Yadika</p>
@@ -312,7 +312,7 @@
                 <div class="relative">
                     <button onclick="toggleNotifications()" class="text-gray-600 hover:text-blue-600 relative">
                         <i class="fas fa-bell text-xl"></i>
-                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center" id="notificationBadge">5</span>
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center" id="notificationBadge">0</span>
                     </button>
                     <!-- Notification Dropdown -->
                     <div id="notificationDropdown" class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl hidden z-50">
@@ -320,21 +320,7 @@
                             <h4 class="font-semibold">Notifikasi</h4>
                         </div>
                         <div class="max-h-96 overflow-y-auto" id="notificationList">
-                            <div class="p-3 hover:bg-gray-50 border-b">
-                                <p class="text-sm font-medium">Pengajuan Baru</p>
-                                <p class="text-xs text-gray-500">Dr. Ahmad Fauzi mengajukan penelitian</p>
-                                <p class="text-xs text-gray-400 mt-1">5 menit lalu</p>
-                            </div>
-                            <div class="p-3 hover:bg-gray-50 border-b">
-                                <p class="text-sm font-medium">Menunggu Review</p>
-                                <p class="text-xs text-gray-500">3 pengajuan perlu direview</p>
-                                <p class="text-xs text-gray-400 mt-1">1 jam lalu</p>
-                            </div>
-                            <div class="p-3 hover:bg-gray-50">
-                                <p class="text-sm font-medium">Laporan Diupload</p>
-                                <p class="text-xs text-gray-500">Dr. Ratna Dewi upload laporan akhir</p>
-                                <p class="text-xs text-gray-400 mt-1">2 jam lalu</p>
-                            </div>
+                            <!-- Notifications will be loaded dynamically -->
                         </div>
                         <div class="p-3 border-t text-center">
                             <button onclick="markAllAsRead()" class="text-sm text-blue-600 hover:text-blue-800">
@@ -381,6 +367,12 @@
                 
                 <!-- Action Buttons -->
                 <div class="mt-4 md:mt-0 flex flex-wrap gap-3">
+                    <button onclick="openAddPenelitianModal()" class="bg-gradient-to-r from-blue-500 to-blue-700 text-white font-semibold py-3 px-6 rounded-lg hover:shadow-lg transition-all">
+                        <i class="fas fa-plus-circle mr-2"></i>Buat Penelitian
+                    </button>
+                    <button onclick="openAddPengabdianModal()" class="bg-gradient-to-r from-green-500 to-green-700 text-white font-semibold py-3 px-6 rounded-lg hover:shadow-lg transition-all">
+                        <i class="fas fa-plus-circle mr-2"></i>Buat Pengabdian
+                    </button>
                     <button onclick="openAddSkemaModal()" class="bg-gradient-to-r from-purple-500 to-purple-700 text-white font-semibold py-3 px-6 rounded-lg hover:shadow-lg transition-all">
                         <i class="fas fa-plus-circle mr-2"></i>Tambah Skema
                     </button>
@@ -411,17 +403,18 @@
                             <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
                         </div>
                         
-                        <select id="filterStatusSemua" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                            <option value="">Semua Status</option>
-                            <option value="draft">Draft</option>
-                            <option value="submitted">Terkirim</option>
-                            <option value="review">Review Admin</option>
-                            <option value="review_content">Review Substansi</option>
-                            <option value="revision">Perlu Revisi</option>
-                            <option value="approved">Disetujui</option>
-                            <option value="rejected">Ditolak</option>
-                            <option value="completed">Selesai</option>
-                        </select>
+                        <!-- Di semua filter dropdown, ganti nilai status -->
+<select id="filterStatusSemua" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+    <option value="">Semua Status</option>
+    <option value="draft">Draft</option>
+    <option value="submit">Terkirim</option>  <!-- Ganti dari "submitted" -->
+    <option value="review">Review Admin</option>
+    <option value="review_content">Review Substansi</option>
+    <option value="revisi">Perlu Revisi</option>  <!-- Ganti dari "revision" -->
+    <option value="diterima">Disetujui</option>  <!-- Ganti dari "approved" -->
+    <option value="ditolak">Ditolak</option>  <!-- Ganti dari "rejected" -->
+    <option value="completed">Selesai</option>
+</select>
 
                         <select id="filterTahunSemua" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                             <option value="">Semua Tahun</option>
@@ -454,7 +447,7 @@
                                 </tr>
                             </thead>
                             <tbody id="semuaTableBody" class="divide-y divide-gray-200">
-                                <!-- Data will be loaded here -->
+                                <!-- Data will be loaded from API -->
                                 <tr>
                                     <td colspan="9" class="text-center py-8 text-gray-500">
                                         <i class="fas fa-spinner fa-spin mr-2"></i> Memuat data...
@@ -489,23 +482,22 @@
                                 <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
                             </div>
                             
-                            <select id="filterStatusPenelitian" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                                <option value="">Semua Status</option>
-                                <option value="draft">Draft</option>
-                                <option value="submitted">Terkirim</option>
-                                <option value="review">Review Admin</option>
-                                <option value="review_content">Review Substansi</option>
-                                <option value="revision">Perlu Revisi</option>
-                                <option value="approved">Disetujui</option>
-                                <option value="rejected">Ditolak</option>
-                                <option value="completed">Selesai</option>
-                            </select>
+                            <!-- Ini masih pakai nilai lama! -->
+<select id="filterStatusPenelitian" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+    <option value="">Semua Status</option>
+    <option value="draft">Draft</option>
+    <option value="submitted">Terkirim</option>  <!-- Harusnya "submit" -->
+    <option value="review">Review Admin</option>
+    <option value="review_content">Review Substansi</option>
+    <option value="revision">Perlu Revisi</option>  <!-- Harusnya "revisi" -->
+    <option value="approved">Disetujui</option>  <!-- Harusnya "diterima" -->
+    <option value="rejected">Ditolak</option>  <!-- Harusnya "ditolak" -->
+    <option value="completed">Selesai</option>
+</select>
 
                             <select id="filterSkemaPenelitian" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                                 <option value="">Semua Skema</option>
-                                <option value="penelitian_dasar">Penelitian Dasar</option>
-                                <option value="penelitian_terapan">Penelitian Terapan</option>
-                                <option value="penelitian_pengembangan">Penelitian Pengembangan</option>
+                                <!-- Skema akan dimuat dari API -->
                             </select>
                         </div>
                     </div>
@@ -524,7 +516,7 @@
                                 </tr>
                             </thead>
                             <tbody id="penelitianTableBody" class="divide-y divide-gray-200">
-                                <!-- Data will be loaded here -->
+                                <!-- Data will be loaded from API -->
                             </tbody>
                         </table>
                     </div>
@@ -542,23 +534,21 @@
                                 <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
                             </div>
                             
-                            <select id="filterStatusPengabdian" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                                <option value="">Semua Status</option>
-                                <option value="draft">Draft</option>
-                                <option value="submitted">Terkirim</option>
-                                <option value="review">Review Admin</option>
-                                <option value="review_content">Review Substansi</option>
-                                <option value="revision">Perlu Revisi</option>
-                                <option value="approved">Disetujui</option>
-                                <option value="rejected">Ditolak</option>
-                                <option value="completed">Selesai</option>
-                            </select>
+                                <select id="filterStatusPengabdian" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+    <option value="">Semua Status</option>
+    <option value="draft">Draft</option>
+    <option value="submit">Terkirim</option>  <!-- Ganti dari "submitted" -->
+    <option value="review">Review Admin</option>
+    <option value="review_content">Review Substansi</option>
+    <option value="revisi">Perlu Revisi</option>  <!-- Ganti dari "revision" -->
+    <option value="diterima">Disetujui</option>  <!-- Ganti dari "approved" -->
+    <option value="ditolak">Ditolak</option>  <!-- Ganti dari "rejected" -->
+    <option value="completed">Selesai</option>
+</select>
 
                             <select id="filterSkemaPengabdian" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                                 <option value="">Semua Skema</option>
-                                <option value="pengabdian_masyarakat">Pengabdian Masyarakat</option>
-                                <option value="penerapan_ipteks">Penerapan Ipteks</option>
-                                <option value="pemberdayaan_mitra">Pemberdayaan Mitra</option>
+                                <!-- Skema akan dimuat dari API -->
                             </select>
                         </div>
                     </div>
@@ -577,7 +567,7 @@
                                 </tr>
                             </thead>
                             <tbody id="pengabdianTableBody" class="divide-y divide-gray-200">
-                                <!-- Data will be loaded here -->
+                                <!-- Data will be loaded from API -->
                             </tbody>
                         </table>
                     </div>
@@ -591,10 +581,10 @@
                     <div class="bg-white rounded-xl shadow-lg p-6">
                         <div class="flex justify-between items-center mb-4">
                             <h3 class="text-lg font-semibold">Review Administrasi</h3>
-                            <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm" id="countReviewAdmin">3</span>
+                            <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm" id="countReviewAdmin">0</span>
                         </div>
                         <div class="space-y-3" id="reviewAdminList">
-                            <!-- Review items will be loaded here -->
+                            <!-- Review items will be loaded from API -->
                         </div>
                     </div>
 
@@ -602,10 +592,10 @@
                     <div class="bg-white rounded-xl shadow-lg p-6">
                         <div class="flex justify-between items-center mb-4">
                             <h3 class="text-lg font-semibold">Review Substansi</h3>
-                            <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm" id="countReviewSubstansi">5</span>
+                            <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm" id="countReviewSubstansi">0</span>
                         </div>
                         <div class="space-y-3" id="reviewSubstansiList">
-                            <!-- Review items will be loaded here -->
+                            <!-- Review items will be loaded from API -->
                         </div>
                     </div>
                 </div>
@@ -614,10 +604,10 @@
                 <div class="bg-white rounded-xl shadow-lg p-6">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-lg font-semibold">Menunggu Revisi dari Dosen</h3>
-                        <span class="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm" id="countRevision">2</span>
+                        <span class="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm" id="countRevision">0</span>
                     </div>
                     <div class="space-y-3" id="revisionList">
-                        <!-- Revision items will be loaded here -->
+                        <!-- Revision items will be loaded from API -->
                     </div>
                 </div>
             </section>
@@ -630,13 +620,13 @@
                         <div class="flex justify-between items-center">
                             <div>
                                 <p class="text-sm opacity-90">Total Pengajuan</p>
-                                <h3 class="text-3xl font-bold" id="totalPengajuanStats">24</h3>
+                                <h3 class="text-3xl font-bold" id="totalPengajuanStats">0</h3>
                             </div>
                             <i class="fas fa-file-alt text-4xl opacity-50"></i>
                         </div>
                         <div class="mt-4 flex justify-between text-sm">
-                            <span><i class="fas fa-flask"></i> <span id="totalPenelitianStats">15</span> Penelitian</span>
-                            <span><i class="fas fa-hands-helping"></i> <span id="totalPengabdianStats">9</span> Pengabdian</span>
+                            <span><i class="fas fa-flask"></i> <span id="totalPenelitianStats">0</span> Penelitian</span>
+                            <span><i class="fas fa-hands-helping"></i> <span id="totalPengabdianStats">0</span> Pengabdian</span>
                         </div>
                     </div>
 
@@ -645,13 +635,13 @@
                         <div class="flex justify-between items-center">
                             <div>
                                 <p class="text-sm opacity-90">Dalam Review</p>
-                                <h3 class="text-3xl font-bold" id="totalReviewStats">8</h3>
+                                <h3 class="text-3xl font-bold" id="totalReviewStats">0</h3>
                             </div>
                             <i class="fas fa-clock text-4xl opacity-50"></i>
                         </div>
                         <div class="mt-4 flex justify-between text-sm">
-                            <span><i class="fas fa-check-circle"></i> <span id="reviewAdminStats">3</span> Admin</span>
-                            <span><i class="fas fa-search"></i> <span id="reviewSubstansiStats">5</span> Substansi</span>
+                            <span><i class="fas fa-check-circle"></i> <span id="reviewAdminStats">0</span> Admin</span>
+                            <span><i class="fas fa-search"></i> <span id="reviewSubstansiStats">0</span> Substansi</span>
                         </div>
                     </div>
 
@@ -660,13 +650,13 @@
                         <div class="flex justify-between items-center">
                             <div>
                                 <p class="text-sm opacity-90">Total Dana</p>
-                                <h3 class="text-3xl font-bold" id="totalDanaStats">Rp 4.3 M</h3>
+                                <h3 class="text-3xl font-bold" id="totalDanaStats">Rp 0</h3>
                             </div>
                             <i class="fas fa-coins text-4xl opacity-50"></i>
                         </div>
                         <div class="mt-4 flex justify-between text-sm">
-                            <span><i class="fas fa-flask"></i> <span id="danaPenelitianStats">Rp 3.2 M</span></span>
-                            <span><i class="fas fa-hands-helping"></i> <span id="danaPengabdianStats">Rp 1.1 M</span></span>
+                            <span><i class="fas fa-flask"></i> <span id="danaPenelitianStats">Rp 0</span></span>
+                            <span><i class="fas fa-hands-helping"></i> <span id="danaPengabdianStats">Rp 0</span></span>
                         </div>
                     </div>
 
@@ -675,36 +665,37 @@
                         <div class="flex justify-between items-center">
                             <div>
                                 <p class="text-sm opacity-90">Total Luaran</p>
-                                <h3 class="text-3xl font-bold" id="totalLuaranStats">45</h3>
+                                <h3 class="text-3xl font-bold" id="totalLuaranStats">0</h3>
                             </div>
                             <i class="fas fa-file-alt text-4xl opacity-50"></i>
                         </div>
                         <div class="mt-4 flex justify-between text-sm">
-                            <span><i class="fas fa-book"></i> <span id="publikasiStats">28</span> Publikasi</span>
-                            <span><i class="fas fa-copyright"></i> <span id="hakiStats">17</span> HKI</span>
+                            <span><i class="fas fa-book"></i> <span id="publikasiStats">0</span> Publikasi</span>
+                            <span><i class="fas fa-copyright"></i> <span id="hakiStats">0</span> HKI</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                     <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="bg-white rounded-xl shadow-lg p-6">
                         <h4 class="text-lg font-semibold mb-4">Status Pengajuan</h4>
                         <div class="relative" style="height: 300px;">
                             <canvas id="statusChart"></canvas>
                         </div>
                     </div>
 
-                      <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="bg-white rounded-xl shadow-lg p-6">
                         <h4 class="text-lg font-semibold mb-4">Pengajuan per Fakultas</h4>
                         <div class="relative" style="height: 300px;">
                             <canvas id="fakultasChart"></canvas>
                         </div>
                     </div>
+                </div>
 
                 <!-- Tabel Ringkasan per Dosen -->
                 <div class="bg-white rounded-xl shadow-lg p-6">
                     <h4 class="text-lg font-semibold mb-4">Ringkasan per Dosen</h4>
-                    <div class="overflow-x-auto"></div>
+                    <div class="overflow-x-auto">
                         <table class="w-full">
                             <thead class="bg-gray-50">
                                 <tr>
@@ -720,7 +711,7 @@
                                 </tr>
                             </thead>
                             <tbody id="dosenSummaryBody" class="divide-y divide-gray-200">
-                                <!-- Data will be loaded here -->
+                                <!-- Data will be loaded from API -->
                             </tbody>
                         </table>
                     </div>
@@ -753,7 +744,7 @@
                                 </tr>
                             </thead>
                             <tbody id="skemaTableBody" class="divide-y divide-gray-200">
-                                <!-- Data will be loaded here -->
+                                <!-- Data will be loaded from API -->
                             </tbody>
                         </table>
                     </div>
@@ -791,17 +782,19 @@
             <div class="p-6">
                 <form id="reviewForm" onsubmit="event.preventDefault(); submitReview();">
                     <input type="hidden" id="reviewSubmissionId">
-                    <input type="hidden" id="reviewType">
+                    <input type="hidden" id="reviewJenis">
+                    <input type="hidden" id="reviewTipe">
                     
                     <div class="space-y-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Status Review</label>
-                            <select id="reviewStatus" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required>
-                                <option value="">Pilih Status</option>
-                                <option value="approved">Setujui</option>
-                                <option value="revision">Perlu Revisi</option>
-                                <option value="rejected">Tolak</option>
-                            </select>
+                            <!-- Di modal review, bagian select status -->
+<select id="reviewStatus" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required>
+    <option value="">Pilih Status</option>
+    <option value="diterima">Setujui</option>  <!-- Ganti dari "approved" -->
+    <option value="revisi">Perlu Revisi</option>  <!-- Ganti dari "revision" -->
+    <option value="ditolak">Tolak</option>  <!-- Ganti dari "rejected" -->
+</select>
                         </div>
 
                         <div>
@@ -834,6 +827,204 @@
         </div>
     </div>
 
+    <!-- Modal Tambah/Edit Penelitian -->
+    <div id="penelitianModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6 border-b sticky top-0 bg-white flex justify-between items-center">
+                <h3 class="text-xl font-bold text-gray-800" id="penelitianModalTitle">Tambah Penelitian Baru</h3>
+                <button onclick="closePenelitianModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+            
+            <div class="p-6">
+                <form id="penelitianForm" enctype="multipart/form-data">
+                    <input type="hidden" id="penelitianId">
+                    
+                    <div class="space-y-6">
+                        <div class="form-section">
+                            <h4 class="form-section-title">Informasi Dasar</h4>
+                            
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Judul Penelitian</label>
+                                    <input type="text" id="penelitianJudul" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Skema Penelitian</label>
+                                    <select id="penelitianSkema" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required>
+                                        <option value="">Pilih Skema</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-4 mt-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Sumber Dana</label>
+                                    <input type="text" id="penelitianSumberDana" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Tahun</label>
+                                    <select id="penelitianTahun" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required>
+                                        <option value="">Pilih Tahun</option>
+                                        <option value="2024">2024</option>
+                                        <option value="2023">2023</option>
+                                        <option value="2022">2022</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-4 mt-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Dana Diajukan (Rp)</label>
+                                    <input type="number" id="penelitianDanaDiajukan" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-section">
+                            <h4 class="form-section-title">Tim Peneliti</h4>
+                            
+                            <div id="anggotaContainer">
+                                <!-- Anggota akan ditambahkan secara dinamis -->
+                            </div>
+                            
+                            <button type="button" onclick="tambahAnggota()" class="mt-2 text-blue-600 hover:text-blue-800">
+                                <i class="fas fa-plus mr-2"></i>Tambah Anggota
+                            </button>
+                        </div>
+                        
+                        <div class="form-section">
+                            <h4 class="form-section-title">Dokumen</h4>
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">File Proposal</label>
+                                    <div class="file-upload-area" onclick="document.getElementById('fileProposal').click()">
+                                        <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-2"></i>
+                                        <p class="text-sm text-gray-600" id="proposalFileName">Upload file proposal (PDF)</p>
+                                    </div>
+                                    <input type="file" id="fileProposal" accept=".pdf" class="hidden" onchange="updateFileName(this, 'proposalFileName')">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-end space-x-3 pt-4 border-t">
+                            <button type="button" onclick="closePenelitianModal()" 
+                                    class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                                Batal
+                            </button>
+                            <button type="submit" 
+                                    class="px-6 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:shadow-lg">
+                                Simpan
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Tambah/Edit Pengabdian -->
+    <div id="pengabdianModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6 border-b sticky top-0 bg-white flex justify-between items-center">
+                <h3 class="text-xl font-bold text-gray-800" id="pengabdianModalTitle">Tambah Pengabdian Baru</h3>
+                <button onclick="closePengabdianModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+            
+            <div class="p-6">
+                <form id="pengabdianForm" enctype="multipart/form-data">
+                    <input type="hidden" id="pengabdianId">
+                    
+                    <div class="space-y-6">
+                        <div class="form-section">
+                            <h4 class="form-section-title">Informasi Dasar</h4>
+                            
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Judul Pengabdian</label>
+                                    <input type="text" id="pengabdianJudul" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Skema Pengabdian</label>
+                                    <select id="pengabdianSkema" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required>
+                                        <option value="">Pilih Skema</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Lokasi</label>
+                                <input type="text" id="pengabdianLokasi" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-4 mt-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Tahun</label>
+                                    <select id="pengabdianTahun" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required>
+                                        <option value="">Pilih Tahun</option>
+                                        <option value="2024">2024</option>
+                                        <option value="2023">2023</option>
+                                        <option value="2022">2022</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Dana Diajukan (Rp)</label>
+                                    <input type="number" id="pengabdianDanaDiajukan" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-section">
+                            <h4 class="form-section-title">Tim Pengabdian</h4>
+                            
+                            <div id="pengabdianAnggotaContainer">
+                                <!-- Anggota akan ditambahkan secara dinamis -->
+                            </div>
+                            
+                            <button type="button" onclick="tambahAnggotaPengabdian()" class="mt-2 text-blue-600 hover:text-blue-800">
+                                <i class="fas fa-plus mr-2"></i>Tambah Anggota
+                            </button>
+                        </div>
+                        
+                        <div class="form-section">
+                            <h4 class="form-section-title">Dokumen</h4>
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">File Proposal</label>
+                                    <div class="file-upload-area" onclick="document.getElementById('pengabdianFileProposal').click()">
+                                        <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-2"></i>
+                                        <p class="text-sm text-gray-600" id="pengabdianProposalFileName">Upload file proposal (PDF)</p>
+                                    </div>
+                                    <input type="file" id="pengabdianFileProposal" accept=".pdf" class="hidden" onchange="updateFileName(this, 'pengabdianProposalFileName')">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-end space-x-3 pt-4 border-t">
+                            <button type="button" onclick="closePengabdianModal()" 
+                                    class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                                Batal
+                            </button>
+                            <button type="submit" 
+                                    class="px-6 py-2 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:shadow-lg">
+                                Simpan
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal Tambah Skema -->
     <div id="skemaModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-xl max-w-2xl w-full">
@@ -846,6 +1037,8 @@
             
             <div class="p-6">
                 <form id="skemaForm" onsubmit="event.preventDefault(); saveSkema();">
+                    <input type="hidden" id="skemaId">
+                    
                     <div class="space-y-4">
                         <div class="grid grid-cols-2 gap-4">
                             <div>
@@ -949,70 +1142,1174 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     
     <script>
+        // API Configuration
+        const API_BASE_URL = 'http://localhost:3000/api';
+        let authToken = localStorage.getItem('token');
+        
         // Initialize AOS
         AOS.init({ duration: 800, once: true });
 
         // Chart instances
         let statusChart, fakultasChart;
+        
+        // Pagination state
+        let currentPage = {
+            semua: 1,
+            penelitian: 1,
+            pengabdian: 1
+        };
+        
+        let totalPages = {
+            semua: 1,
+            penelitian: 1,
+            pengabdian: 1
+        };
 
-        // Section Navigation
+        // ==================== API HELPERS ====================
+        
+        async function apiCall(endpoint, options = {}) {
+            const defaultOptions = {
+                headers: {
+                    'Authorization': `Bearer ${authToken}`,
+                    'Content-Type': 'application/json'
+                }
+            };
+            
+            if (options.body && !(options.body instanceof FormData)) {
+                options.body = JSON.stringify(options.body);
+            }
+            
+            if (options.body instanceof FormData) {
+                delete defaultOptions.headers['Content-Type'];
+            }
+            
+            const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+                ...defaultOptions,
+                ...options,
+                headers: {
+                    ...defaultOptions.headers,
+                    ...options.headers
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(data.message || 'Terjadi kesalahan');
+            }
+            
+            return data;
+        }
+
+        // ==================== AUTH & NOTIFICATION ====================
+
+        function checkAuth() {
+            if (!authToken) {
+                window.location.href = '../login.html';
+            }
+        }
+
+        // async function loadNotifications() {
+        //     try {
+        //         const response = await apiCall('/notifikasi');
+        //         const notifications = response.data || [];
+                
+        //         const notificationList = document.getElementById('notificationList');
+        //         const badge = document.getElementById('notificationBadge');
+                
+        //         const unreadCount = notifications.filter(n => !n.dibaca).length;
+        //         badge.textContent = unreadCount;
+                
+        //         if (notifications.length === 0) {
+        //             notificationList.innerHTML = '<div class="p-3 text-center text-gray-500">Tidak ada notifikasi</div>';
+        //         } else {
+        //             notificationList.innerHTML = notifications.map(n => `
+        //                 <div class="p-3 hover:bg-gray-50 border-b ${!n.dibaca ? 'bg-blue-50' : ''}">
+        //                     <p class="text-sm font-medium">${n.judul}</p>
+        //                     <p class="text-xs text-gray-600">${n.pesan}</p>
+        //                     <p class="text-xs text-gray-400 mt-1">${formatRelativeTime(n.created_at)}</p>
+        //                 </div>
+        //             `).join('');
+        //         }
+        //     } catch (error) {
+        //         console.error('Error loading notifications:', error);
+        //     }
+        // }
+
+        // async function markAllAsRead() {
+        //     try {
+        //         await apiCall('/notifikasi/read-all', { method: 'POST' });
+        //         document.getElementById('notificationBadge').textContent = '0';
+        //         showNotification('Semua notifikasi telah dibaca');
+        //         await loadNotifications();
+        //     } catch (error) {
+        //         showNotification(error.message, 'error');
+        //     }
+        // }
+
+        // ==================== LOAD DATA FUNCTIONS ====================
+
+        async function loadAllSubmissions(page = 1) {
+            showLoading();
+            try {
+                const search = document.getElementById('searchSemua').value;
+                const status = document.getElementById('filterStatusSemua').value;
+                const tahun = document.getElementById('filterTahunSemua').value;
+                
+                const queryParams = new URLSearchParams({
+                    page,
+                    limit: 10,
+                    ...(search && { search }),
+                    ...(status && { status }),
+                    ...(tahun && { tahun })
+                });
+                
+                // Load penelitian
+                const penelitianResponse = await apiCall(`/admin/penelitian/penelitian?${queryParams}`);
+                const penelitianData = penelitianResponse.data || [];
+                
+                // Load pengabdian
+                const pengabdianResponse = await apiCall(`/admin/penelitian/pengabdian?${queryParams}`);
+                const pengabdianData = pengabdianResponse.data || [];
+                
+                // Combine and sort
+                const semuaData = [...penelitianData, ...pengabdianData].sort((a, b) => 
+                    new Date(b.created_at) - new Date(a.created_at)
+                );
+                
+                totalPages.semua = Math.ceil(semuaData.length / 10) || 1;
+                currentPage.semua = page;
+                
+                renderAllSubmissions(semuaData);
+                document.getElementById('semuaPaginationInfo').innerHTML = 
+                    `Menampilkan ${(page-1)*10+1}-${Math.min(page*10, semuaData.length)} dari ${semuaData.length} data`;
+                document.getElementById('semuaCurrentPage').textContent = page;
+            } catch (error) {
+                console.error('Error loading submissions:', error);
+                showNotification('Gagal memuat data: ' + error.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function renderAllSubmissions(data) {
+            const tbody = document.getElementById('semuaTableBody');
+            
+            if (!data || data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" class="text-center py-8 text-gray-500">Tidak ada data</td></tr>';
+                return;
+            }
+            
+            let html = '';
+            data.forEach((item, index) => {
+                const badge = getStatusBadge(item.status);
+                const jenis = item.hasOwnProperty('ketua_peneliti') ? 'penelitian' : 'pengabdian';
+                const pengusul = item.ketua?.nama_lengkap || item.ketua_pengabdian?.nama_lengkap || '-';
+                const nidn = item.ketua?.nidn || item.ketua_pengabdian?.nidn || '-';
+                const skema = item.skema_penelitian || item.skema_pengabdian || '-';
+                const dana = item.dana_diajukan || item.dana_disetujui || 0;
+                
+                html += `
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-4 py-3">${index + 1}</td>
+                        <td class="px-4 py-3">
+                            <span class="px-2 py-1 rounded text-xs font-semibold ${jenis === 'penelitian' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}">
+                                ${jenis === 'penelitian' ? 'Penelitian' : 'Pengabdian'}
+                            </span>
+                        </td>
+                        <td class="px-4 py-3">${item.judul}</td>
+                        <td class="px-4 py-3">
+                            <div class="font-medium">${pengusul}</div>
+                            <div class="text-xs text-gray-500">${nidn}</div>
+                        </td>
+                        <td class="px-4 py-3">${skema.replace(/_/g, ' ')}</td>
+                        <td class="px-4 py-3">${item.tahun}</td>
+                        <td class="px-4 py-3">${formatCurrency(dana)}</td>
+                        <td class="px-4 py-3">
+                            <span class="px-2 py-1 rounded text-xs font-semibold ${badge.class}">${badge.text}</span>
+                        </td>
+                        <td class="px-4 py-3 text-center">
+                            <button onclick="viewDetail('${jenis}', '${item.id_penelitian || item.id_pengabdian}')" class="text-blue-600 hover:text-blue-900 mr-2" title="Detail">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button onclick="openReviewModal('${jenis}', '${item.id_penelitian || item.id_pengabdian}')" class="text-green-600 hover:text-green-900 mr-2" title="Review">
+                                <i class="fas fa-check-circle"></i>
+                            </button>
+                            <button onclick="downloadProposal('${jenis}', '${item.id_penelitian || item.id_pengabdian}')" class="text-purple-600 hover:text-purple-900 mr-2" title="Download Proposal">
+                                <i class="fas fa-download"></i>
+                            </button>
+                            <button onclick="deleteSubmission('${jenis}', '${item.id_penelitian || item.id_pengabdian}')" class="text-red-600 hover:text-red-900" title="Hapus">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tbody.innerHTML = html;
+        }
+
+        async function loadPenelitianData(page = 1) {
+            try {
+                const search = document.getElementById('searchPenelitian').value;
+                const status = document.getElementById('filterStatusPenelitian').value;
+                const skema = document.getElementById('filterSkemaPenelitian').value;
+                
+                const queryParams = new URLSearchParams({
+                    page,
+                    limit: 10,
+                    ...(search && { search }),
+                    ...(status && { status }),
+                    ...(skema && { skema })
+                });
+                
+                const response = await apiCall(`/admin/penelitian/penelitian?${queryParams}`);
+                const data = response.data || [];
+                
+                totalPages.penelitian = response.pagination?.total_pages || 1;
+                currentPage.penelitian = page;
+                
+                renderPenelitianData(data);
+            } catch (error) {
+                console.error('Error loading penelitian:', error);
+                showNotification('Gagal memuat data penelitian', 'error');
+            }
+        }
+
+        function renderPenelitianData(data) {
+            const tbody = document.getElementById('penelitianTableBody');
+            
+            if (!data || data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4">Tidak ada data penelitian</td></tr>';
+                return;
+            }
+            
+            let html = '';
+            data.forEach((item, index) => {
+                const badge = getStatusBadge(item.status);
+                const pengusul = item.ketua?.nama_lengkap || '-';
+                const dana = item.dana_diajukan || item.dana_disetujui || 0;
+                
+                html += `
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-4 py-3">${index + 1}</td>
+                        <td class="px-4 py-3">${item.judul}</td>
+                        <td class="px-4 py-3">${pengusul}</td>
+                        <td class="px-4 py-3">${(item.skema_penelitian || '').replace(/_/g, ' ')}</td>
+                        <td class="px-4 py-3">${formatCurrency(dana)}</td>
+                        <td class="px-4 py-3">
+                            <span class="px-2 py-1 rounded text-xs font-semibold ${badge.class}">${badge.text}</span>
+                        </td>
+                        <td class="px-4 py-3 text-center">
+                            <button onclick="viewDetail('penelitian', '${item.id_penelitian}')" class="text-blue-600 hover:text-blue-900 mr-2">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button onclick="editPenelitian('${item.id_penelitian}')" class="text-green-600 hover:text-green-900 mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="openReviewModal('penelitian', '${item.id_penelitian}')" class="text-purple-600 hover:text-purple-900">
+                                <i class="fas fa-check-circle"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tbody.innerHTML = html;
+        }
+
+        async function loadPengabdianData(page = 1) {
+            try {
+                const search = document.getElementById('searchPengabdian').value;
+                const status = document.getElementById('filterStatusPengabdian').value;
+                const skema = document.getElementById('filterSkemaPengabdian').value;
+                
+                const queryParams = new URLSearchParams({
+                    page,
+                    limit: 10,
+                    ...(search && { search }),
+                    ...(status && { status }),
+                    ...(skema && { skema })
+                });
+                
+                const response = await apiCall(`/admin/penelitian/pengabdian?${queryParams}`);
+                const data = response.data || [];
+                
+                totalPages.pengabdian = response.pagination?.total_pages || 1;
+                currentPage.pengabdian = page;
+                
+                renderPengabdianData(data);
+            } catch (error) {
+                console.error('Error loading pengabdian:', error);
+                showNotification('Gagal memuat data pengabdian', 'error');
+            }
+        }
+
+        function renderPengabdianData(data) {
+            const tbody = document.getElementById('pengabdianTableBody');
+            
+            if (!data || data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4">Tidak ada data pengabdian</td></tr>';
+                return;
+            }
+            
+            let html = '';
+            data.forEach((item, index) => {
+                const badge = getStatusBadge(item.status);
+                const pengusul = item.ketua?.nama_lengkap || '-';
+                const dana = item.dana_diajukan || item.dana_disetujui || 0;
+                
+                html += `
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-4 py-3">${index + 1}</td>
+                        <td class="px-4 py-3">${item.judul}</td>
+                        <td class="px-4 py-3">${pengusul}</td>
+                        <td class="px-4 py-3">${(item.skema_pengabdian || '').replace(/_/g, ' ')}</td>
+                        <td class="px-4 py-3">${formatCurrency(dana)}</td>
+                        <td class="px-4 py-3">
+                            <span class="px-2 py-1 rounded text-xs font-semibold ${badge.class}">${badge.text}</span>
+                        </td>
+                        <td class="px-4 py-3 text-center">
+                            <button onclick="viewDetail('pengabdian', '${item.id_pengabdian}')" class="text-blue-600 hover:text-blue-900 mr-2">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button onclick="editPengabdian('${item.id_pengabdian}')" class="text-green-600 hover:text-green-900 mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="openReviewModal('pengabdian', '${item.id_pengabdian}')" class="text-purple-600 hover:text-purple-900">
+                                <i class="fas fa-check-circle"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tbody.innerHTML = html;
+        }
+
+        async function loadSkemaData() {
+            try {
+                const response = await apiCall('/admin/penelitian/skema');
+                const data = response.data || [];
+                renderSkemaData(data);
+            } catch (error) {
+                console.error('Error loading skema:', error);
+                showNotification('Gagal memuat data skema', 'error');
+            }
+        }
+
+        function renderSkemaData(data) {
+            const tbody = document.getElementById('skemaTableBody');
+            
+            if (!data || data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" class="text-center py-4">Tidak ada data skema</td></tr>';
+                return;
+            }
+            
+            let html = '';
+            data.forEach((item, index) => {
+                html += `
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-4 py-3">${index + 1}</td>
+                        <td class="px-4 py-3">${item.kode_skema}</td>
+                        <td class="px-4 py-3 font-medium">${item.nama_skema}</td>
+                        <td class="px-4 py-3">
+                            <span class="px-2 py-1 rounded text-xs font-semibold ${item.jenis === 'penelitian' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}">
+                                ${item.jenis === 'penelitian' ? 'Penelitian' : 'Pengabdian'}
+                            </span>
+                        </td>
+                        <td class="px-4 py-3">${formatCurrency(item.min_dana)}</td>
+                        <td class="px-4 py-3">${formatCurrency(item.max_dana)}</td>
+                        <td class="px-4 py-3">${item.durasi_min} - ${item.durasi_max}</td>
+                        <td class="px-4 py-3">
+                            <span class="px-2 py-1 rounded text-xs font-semibold ${item.status === 'aktif' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                ${item.status}
+                            </span>
+                        </td>
+                        <td class="px-4 py-3 text-center">
+                            <button onclick="editSkema('${item.id_skema}')" class="text-green-600 hover:text-green-900 mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="deleteSkema('${item.id_skema}')" class="text-red-600 hover:text-red-900">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tbody.innerHTML = html;
+            
+            // Update filter dropdowns
+            updateSkemaFilters(data);
+        }
+
+        function updateSkemaFilters(skemaData) {
+            const penelitianFilter = document.getElementById('filterSkemaPenelitian');
+            const pengabdianFilter = document.getElementById('filterSkemaPengabdian');
+            
+            if (penelitianFilter) {
+                penelitianFilter.innerHTML = '<option value="">Semua Skema</option>' + 
+                    skemaData.filter(s => s.jenis === 'penelitian').map(s => 
+                        `<option value="${s.kode_skema}">${s.nama_skema}</option>`
+                    ).join('');
+            }
+            
+            if (pengabdianFilter) {
+                pengabdianFilter.innerHTML = '<option value="">Semua Skema</option>' + 
+                    skemaData.filter(s => s.jenis === 'pengabdian').map(s => 
+                        `<option value="${s.kode_skema}">${s.nama_skema}</option>`
+                    ).join('');
+            }
+        }
+
+        async function loadReviewData() {
+    try {
+        const response = await apiCall('/admin/penelitian/review/pending');
+        const reviews = response.data || [];
+        
+        // Mapping status dari database ke display
+        const adminReviews = reviews.filter(r => {
+            const status = r.status === 'submit' ? 'submitted' : 
+                          r.status === 'revisi' ? 'revision' :
+                          r.status === 'diterima' ? 'approved' :
+                          r.status === 'ditolak' ? 'rejected' : r.status;
+            return status === 'submitted' && r.tipe_review === 'admin';
+        });
+        
+        const substansiReviews = reviews.filter(r => {
+            const status = r.status === 'submit' ? 'submitted' : 
+                          r.status === 'revisi' ? 'revision' :
+                          r.status === 'diterima' ? 'approved' :
+                          r.status === 'ditolak' ? 'rejected' : r.status;
+            return status === 'review_content' && r.tipe_review === 'substansi';
+        });
+        
+        const revisions = reviews.filter(r => r.status === 'revisi');
+        
+        document.getElementById('countReviewAdmin').textContent = adminReviews.length;
+        document.getElementById('countReviewSubstansi').textContent = substansiReviews.length;
+        document.getElementById('countRevision').textContent = revisions.length;
+        
+        renderReviewList('reviewAdminList', adminReviews);
+        renderReviewList('reviewSubstansiList', substansiReviews);
+        renderReviewList('revisionList', revisions, true);
+    } catch (error) {
+        console.error('Error loading reviews:', error);
+    }
+}
+
+        function renderReviewList(elementId, reviews, isRevision = false) {
+    const container = document.getElementById(elementId);
+    
+    if (!reviews || reviews.length === 0) {
+        container.innerHTML = '<div class="p-3 text-center text-gray-500">Tidak ada data</div>';
+        return;
+    }
+    
+    container.innerHTML = reviews.map(r => {
+        // Mapping status untuk display
+        const displayStatus = r.status === 'submit' ? 'submitted' : 
+                             r.status === 'revisi' ? 'revision' :
+                             r.status === 'diterima' ? 'approved' :
+                             r.status === 'ditolak' ? 'rejected' : r.status;
+        
+        return `
+            <div class="p-3 border rounded-lg hover:bg-gray-50">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="font-medium">${r.ketua || '-'}</p>
+                        <p class="text-sm text-gray-600">${r.judul}</p>
+                        <p class="text-xs text-gray-500">
+                            ${isRevision ? 'Revisi diminta: ' : 'Pengajuan: '} ${formatDate(r.tanggal_pengajuan)}
+                        </p>
+                    </div>
+                    ${!isRevision && displayStatus === 'submitted' ? `
+                        <button onclick="openReviewModal('${r.jenis}', '${r.id}', '${r.tipe_review}')" 
+                                class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700">
+                            Review
+                        </button>
+                    ` : ''}
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+        async function loadStatistikData() {
+            showLoading();
+            try {
+                const response = await apiCall('/admin/penelitian/statistik');
+                const stats = response.data || {};
+                
+                // Update stat cards
+                document.getElementById('totalPengajuanStats').textContent = stats.total?.semua || 0;
+                document.getElementById('totalPenelitianStats').textContent = stats.total?.penelitian || 0;
+                document.getElementById('totalPengabdianStats').textContent = stats.total?.pengabdian || 0;
+                
+                document.getElementById('totalReviewStats').textContent = stats.dalam_review?.total || 0;
+                document.getElementById('reviewAdminStats').textContent = stats.dalam_review?.admin || 0;
+                document.getElementById('reviewSubstansiStats').textContent = stats.dalam_review?.substansi || 0;
+                
+                document.getElementById('totalDanaStats').textContent = formatCurrency(stats.dana?.total || 0);
+                document.getElementById('danaPenelitianStats').textContent = formatCurrency(stats.dana?.penelitian || 0);
+                document.getElementById('danaPengabdianStats').textContent = formatCurrency(stats.dana?.pengabdian || 0);
+                
+                document.getElementById('totalLuaranStats').textContent = stats.luaran?.total || 0;
+                document.getElementById('publikasiStats').textContent = stats.luaran?.publikasi || 0;
+                document.getElementById('hakiStats').textContent = stats.luaran?.haki || 0;
+                
+                // Update charts
+                setTimeout(updateCharts, 100);
+                
+                // Load dosen summary
+                await loadDosenSummary();
+            } catch (error) {
+                console.error('Error loading statistics:', error);
+                showNotification('Gagal memuat statistik', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function loadDosenSummary() {
+            try {
+                const response = await apiCall('/admin/penelitian/ringkasan-dosen');
+                const data = response.data || [];
+                
+                const tbody = document.getElementById('dosenSummaryBody');
+                
+                let html = '';
+                data.forEach((item, index) => {
+                    html += `
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-4 py-3">${index + 1}</td>
+                            <td class="px-4 py-3 font-medium">${item.nama_lengkap}</td>
+                            <td class="px-4 py-3">${item.nidn || '-'}</td>
+                            <td class="px-4 py-3">${item.nama_fakultas || '-'}</td>
+                            <td class="px-4 py-3">${item.jumlah_penelitian || 0}</td>
+                            <td class="px-4 py-3">${item.jumlah_pengabdian || 0}</td>
+                            <td class="px-4 py-3">${formatCurrency(item.total_dana || 0)}</td>
+                            <td class="px-4 py-3">${item.jumlah_luaran || 0}</td>
+                            <td class="px-4 py-3 text-center">
+                                <button onclick="viewDosenDetail('${item.id_user}')" class="text-blue-600 hover:text-blue-900">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                tbody.innerHTML = html;
+            } catch (error) {
+                console.error('Error loading dosen summary:', error);
+            }
+        }
+
+        // ==================== DETAIL VIEW ====================
+
+        async function viewDetail(jenis, id) {
+            showLoading();
+            try {
+                const response = await apiCall(`/admin/penelitian/${jenis}/${id}`);
+                const item = response.data;
+                
+                const badge = getStatusBadge(item.status);
+                
+                document.getElementById('detailModalTitle').textContent = `Detail ${jenis === 'penelitian' ? 'Penelitian' : 'Pengabdian'}`;
+                
+                let anggotaHtml = '';
+                if (item.anggota_penelitian || item.anggota_pengabdian) {
+                    const anggota = item.anggota_penelitian || item.anggota_pengabdian || [];
+                    anggotaHtml = anggota.map(a => `
+                        <div class="flex items-center space-x-2 p-2 bg-gray-50 rounded">
+                            <img src="${a.user?.foto_profil_url || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(a.user?.nama_lengkap || '')}" 
+                                 class="h-8 w-8 rounded-full">
+                            <div>
+                                <p class="font-medium">${a.user?.nama_lengkap}</p>
+                                <p class="text-xs text-gray-500">${a.peran}</p>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+                
+                let dokumenHtml = '';
+                if (item.file_proposal_url) {
+                    dokumenHtml += `
+                        <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                            <span><i class="fas fa-file-pdf text-red-500 mr-2"></i>Proposal</span>
+                            <a href="${item.file_proposal_url}" target="_blank" class="text-blue-600 hover:text-blue-800">
+                                <i class="fas fa-download"></i>
+                            </a>
+                        </div>
+                    `;
+                }
+                
+                if (item.file_laporan_kemajuan_url) {
+                    dokumenHtml += `
+                        <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                            <span><i class="fas fa-file-pdf text-red-500 mr-2"></i>Laporan Kemajuan</span>
+                            <a href="${item.file_laporan_kemajuan_url}" target="_blank" class="text-blue-600 hover:text-blue-800">
+                                <i class="fas fa-download"></i>
+                            </a>
+                        </div>
+                    `;
+                }
+                
+                if (item.file_laporan_akhir_url) {
+                    dokumenHtml += `
+                        <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                            <span><i class="fas fa-file-pdf text-red-500 mr-2"></i>Laporan Akhir</span>
+                            <a href="${item.file_laporan_akhir_url}" target="_blank" class="text-blue-600 hover:text-blue-800">
+                                <i class="fas fa-download"></i>
+                            </a>
+                        </div>
+                    `;
+                }
+                
+                document.getElementById('detailModalContent').innerHTML = `
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-start">
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold ${badge.class}">${badge.text}</span>
+                            <span class="text-sm text-gray-500">ID: #${id}</span>
+                        </div>
+
+                        <div>
+                            <h4 class="font-semibold text-gray-700">Informasi Pengajuan</h4>
+                            <div class="grid grid-cols-2 gap-4 mt-2">
+                                <div>
+                                    <p class="text-sm text-gray-500">Jenis</p>
+                                    <p class="font-medium">${jenis === 'penelitian' ? 'Penelitian' : 'Pengabdian'}</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-500">Skema</p>
+                                    <p class="font-medium">${(item.skema_penelitian || item.skema_pengabdian || '').replace(/_/g, ' ')}</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-500">Tahun</p>
+                                    <p class="font-medium">${item.tahun}</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-500">Dana Diajukan</p>
+                                    <p class="font-medium text-green-600">${formatCurrency(item.dana_diajukan || 0)}</p>
+                                </div>
+                                ${item.dana_disetujui ? `
+                                <div>
+                                    <p class="text-sm text-gray-500">Dana Disetujui</p>
+                                    <p class="font-medium text-green-600">${formatCurrency(item.dana_disetujui)}</p>
+                                </div>
+                                ` : ''}
+                                ${item.lokasi ? `
+                                <div>
+                                    <p class="text-sm text-gray-500">Lokasi</p>
+                                    <p class="font-medium">${item.lokasi}</p>
+                                </div>
+                                ` : ''}
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-semibold text-gray-700">Judul</h4>
+                            <p class="text-gray-600 mt-1">${item.judul}</p>
+                        </div>
+
+                        <div>
+                            <h4 class="font-semibold text-gray-700">Ketua</h4>
+                            <p class="text-gray-600 mt-1">${item.ketua?.nama_lengkap || '-'}</p>
+                            <p class="text-sm text-gray-500">NIDN: ${item.ketua?.nidn || '-'}</p>
+                        </div>
+
+                        ${anggotaHtml ? `
+                        <div>
+                            <h4 class="font-semibold text-gray-700 mb-2">Anggota</h4>
+                            <div class="space-y-2">
+                                ${anggotaHtml}
+                            </div>
+                        </div>
+                        ` : ''}
+
+                        <div>
+                            <h4 class="font-semibold text-gray-700">Tanggal Pengajuan</h4>
+                            <p class="text-gray-600">${formatDate(item.created_at)}</p>
+                        </div>
+
+                        ${dokumenHtml ? `
+                        <div class="border-t pt-4">
+                            <h4 class="font-semibold text-gray-700 mb-3">Dokumen</h4>
+                            <div class="space-y-2">
+                                ${dokumenHtml}
+                            </div>
+                        </div>
+                        ` : ''}
+
+                        <div class="flex justify-end space-x-3 pt-4 border-t">
+                            <button onclick="openReviewModal('${jenis}', '${id}')" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+                                <i class="fas fa-check-circle mr-2"></i>Review
+                            </button>
+                            <button onclick="closeDetailModal()" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300">
+                                Tutup
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                document.getElementById('detailModal').classList.remove('hidden');
+            } catch (error) {
+                showNotification('Gagal memuat detail: ' + error.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // ==================== REVIEW FUNCTIONS ====================
+
+        function openReviewModal(jenis, id, tipe = 'admin') {
+            document.getElementById('reviewSubmissionId').value = id;
+            document.getElementById('reviewJenis').value = jenis;
+            document.getElementById('reviewTipe').value = tipe;
+            document.getElementById('reviewModalTitle').textContent = tipe === 'admin' ? 'Review Administrasi' : 'Review Substansi';
+            document.getElementById('reviewForm').reset();
+            document.getElementById('reviewModal').classList.remove('hidden');
+        }
+
+        async function submitReview() {
+    const id = document.getElementById('reviewSubmissionId').value;
+    const jenis = document.getElementById('reviewJenis').value;
+    const tipe = document.getElementById('reviewTipe').value;
+    const status = document.getElementById('reviewStatus').value; // Ini akan bernilai 'diterima', 'revisi', atau 'ditolak'
+    const notes = document.getElementById('reviewNotes').value;
+    const fileInput = document.getElementById('fileReview');
+
+    console.log('=== SUBMIT REVIEW CALLED ===');
+    console.log('ID:', id);
+    console.log('Jenis:', jenis);
+    console.log('Tipe:', tipe);
+    console.log('Status:', status); // Sekarang nilainya sesuai dengan enum database
+    console.log('Notes:', notes);
+
+    if (!status) {
+        showNotification('Pilih status review terlebih dahulu', 'error');
+        return;
+    }
+
+    showLoading();
+    try {
+        const formData = new FormData();
+        formData.append('status_review', status); // Langsung pakai status dari select
+        formData.append('catatan', notes);
+        formData.append('tipe_review', tipe);
+        
+        if (fileInput.files[0]) {
+            formData.append('file_review', fileInput.files[0]);
+        }
+
+        const response = await apiCall(`/admin/penelitian/review/${jenis}/${id}`, {
+            method: 'POST',
+            body: formData,
+            headers: {}
+        });
+
+        console.log('Response:', response);
+        showNotification('Review berhasil disimpan', 'success');
+        closeReviewModal();
+        
+        // Refresh data
+        await loadReviewData();
+        await loadAllSubmissions(currentPage.semua);
+    } catch (error) {
+        console.error('Error detail:', error);
+        showNotification('Gagal menyimpan review: ' + error.message, 'error');
+    } finally {
+        hideLoading();
+    }
+}
+        // ==================== SKEMA FUNCTIONS ====================
+
+        async function saveSkema() {
+            const skemaId = document.getElementById('skemaId').value;
+            const data = {
+                kode_skema: document.getElementById('skemaKode').value,
+                nama_skema: document.getElementById('skemaNama').value,
+                jenis: document.getElementById('skemaJenis').value,
+                min_dana: parseInt(document.getElementById('skemaMinDana').value),
+                max_dana: parseInt(document.getElementById('skemaMaxDana').value),
+                durasi_min: parseInt(document.getElementById('skemaDurasiMin').value),
+                durasi_max: parseInt(document.getElementById('skemaDurasiMax').value),
+                deskripsi: document.getElementById('skemaDeskripsi').value,
+                persyaratan: document.getElementById('skemaPersyaratan').value,
+                luaran_wajib: document.getElementById('skemaLuaran').value,
+                status: document.getElementById('skemaStatus').checked ? 'aktif' : 'nonaktif'
+            };
+
+            showLoading();
+            try {
+                if (skemaId) {
+                    await apiCall(`/admin/penelitian/skema/${skemaId}`, {
+                        method: 'PUT',
+                        body: data
+                    });
+                    showNotification('Skema berhasil diupdate', 'success');
+                } else {
+                    await apiCall('/admin/penelitian/skema', {
+                        method: 'POST',
+                        body: data
+                    });
+                    showNotification('Skema berhasil ditambahkan', 'success');
+                }
+                
+                closeSkemaModal();
+                await loadSkemaData();
+            } catch (error) {
+                showNotification('Gagal menyimpan skema: ' + error.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function editSkema(id) {
+            showLoading();
+            try {
+                const response = await apiCall(`/admin/penelitian/skema/${id}`);
+                const skema = response.data;
+                
+                document.getElementById('skemaId').value = skema.id_skema;
+                document.getElementById('skemaKode').value = skema.kode_skema;
+                document.getElementById('skemaNama').value = skema.nama_skema;
+                document.getElementById('skemaJenis').value = skema.jenis;
+                document.getElementById('skemaMinDana').value = skema.min_dana;
+                document.getElementById('skemaMaxDana').value = skema.max_dana;
+                document.getElementById('skemaDurasiMin').value = skema.durasi_min;
+                document.getElementById('skemaDurasiMax').value = skema.durasi_max;
+                document.getElementById('skemaDeskripsi').value = skema.deskripsi || '';
+                document.getElementById('skemaPersyaratan').value = skema.persyaratan || '';
+                document.getElementById('skemaLuaran').value = skema.luaran_wajib || '';
+                document.getElementById('skemaStatus').checked = skema.status === 'aktif';
+                
+                document.getElementById('skemaModal').classList.remove('hidden');
+            } catch (error) {
+                showNotification('Gagal memuat data skema: ' + error.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function deleteSkema(id) {
+            showConfirmation('Apakah Anda yakin ingin menghapus skema ini?', async () => {
+                showLoading();
+                try {
+                    await apiCall(`/admin/penelitian/skema/${id}`, {
+                        method: 'DELETE'
+                    });
+                    showNotification('Skema berhasil dihapus', 'success');
+                    await loadSkemaData();
+                } catch (error) {
+                    showNotification('Gagal menghapus skema: ' + error.message, 'error');
+                } finally {
+                    hideLoading();
+                }
+            });
+        }
+
+        // ==================== PENELITIAN FUNCTIONS ====================
+
+        function openAddPenelitianModal() {
+            document.getElementById('penelitianForm').reset();
+            document.getElementById('penelitianId').value = '';
+            document.getElementById('penelitianModalTitle').textContent = 'Tambah Penelitian Baru';
+            document.getElementById('anggotaContainer').innerHTML = '';
+            document.getElementById('penelitianModal').classList.remove('hidden');
+        }
+
+        async function editPenelitian(id) {
+            showLoading();
+            try {
+                const response = await apiCall(`/admin/penelitian/penelitian/${id}`);
+                const data = response.data;
+                
+                document.getElementById('penelitianId').value = data.id_penelitian;
+                document.getElementById('penelitianJudul').value = data.judul;
+                document.getElementById('penelitianSkema').value = data.skema_penelitian;
+                document.getElementById('penelitianSumberDana').value = data.sumber_dana || '';
+                document.getElementById('penelitianTahun').value = data.tahun;
+                document.getElementById('penelitianDanaDiajukan').value = data.dana_diajukan || 0;
+                
+                // Load anggota
+                const anggotaContainer = document.getElementById('anggotaContainer');
+                anggotaContainer.innerHTML = '';
+                if (data.anggota_penelitian) {
+                    data.anggota_penelitian.forEach(anggota => {
+                        tambahAnggota(anggota.user?.id_user, anggota.peran);
+                    });
+                }
+                
+                document.getElementById('penelitianModalTitle').textContent = 'Edit Penelitian';
+                document.getElementById('penelitianModal').classList.remove('hidden');
+            } catch (error) {
+                showNotification('Gagal memuat data penelitian: ' + error.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function tambahAnggota(userId = '', peran = '') {
+            const container = document.getElementById('anggotaContainer');
+            const index = container.children.length;
+            
+            const div = document.createElement('div');
+            div.className = 'grid grid-cols-2 gap-4 mt-2';
+            div.innerHTML = `
+                <div>
+                    <input type="text" placeholder="ID User" class="anggota-user-id w-full px-3 py-2 border border-gray-300 rounded-lg" value="${userId}">
+                </div>
+                <div class="flex gap-2">
+                    <input type="text" placeholder="Peran" class="anggota-peran w-full px-3 py-2 border border-gray-300 rounded-lg" value="${peran}">
+                    <button type="button" onclick="this.parentElement.parentElement.remove()" class="text-red-600 hover:text-red-800">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `;
+            container.appendChild(div);
+        }
+
+        document.getElementById('penelitianForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('penelitianId').value;
+            const formData = new FormData();
+            
+            formData.append('judul', document.getElementById('penelitianJudul').value);
+            formData.append('skema_penelitian', document.getElementById('penelitianSkema').value);
+            formData.append('sumber_dana', document.getElementById('penelitianSumberDana').value);
+            formData.append('tahun', document.getElementById('penelitianTahun').value);
+            formData.append('dana_diajukan', document.getElementById('penelitianDanaDiajukan').value);
+            
+            // Ambil anggota
+            const anggota = [];
+            document.querySelectorAll('#anggotaContainer .grid').forEach(row => {
+                const userId = row.querySelector('.anggota-user-id')?.value;
+                const peran = row.querySelector('.anggota-peran')?.value;
+                if (userId) {
+                    anggota.push({ id_user: userId, peran: peran || 'anggota' });
+                }
+            });
+            formData.append('anggota', JSON.stringify(anggota));
+            
+            const fileProposal = document.getElementById('fileProposal').files[0];
+            if (fileProposal) {
+                formData.append('file_proposal', fileProposal);
+            }
+            
+            showLoading();
+            try {
+                if (id) {
+                    await apiCall(`/admin/penelitian/penelitian/${id}`, {
+                        method: 'PUT',
+                        body: formData,
+                        headers: {}
+                    });
+                    showNotification('Penelitian berhasil diupdate', 'success');
+                } else {
+                    await apiCall('/admin/penelitian/penelitian', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {}
+                    });
+                    showNotification('Penelitian berhasil ditambahkan', 'success');
+                }
+                
+                closePenelitianModal();
+                await loadAllSubmissions(currentPage.semua);
+                await loadPenelitianData(currentPage.penelitian);
+            } catch (error) {
+                showNotification('Gagal menyimpan penelitian: ' + error.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        });
+
+        // ==================== PENGABDIAN FUNCTIONS ====================
+
+        function openAddPengabdianModal() {
+            document.getElementById('pengabdianForm').reset();
+            document.getElementById('pengabdianId').value = '';
+            document.getElementById('pengabdianModalTitle').textContent = 'Tambah Pengabdian Baru';
+            document.getElementById('pengabdianAnggotaContainer').innerHTML = '';
+            document.getElementById('pengabdianModal').classList.remove('hidden');
+        }
+
+        async function editPengabdian(id) {
+            showLoading();
+            try {
+                const response = await apiCall(`/admin/penelitian/pengabdian/${id}`);
+                const data = response.data;
+                
+                document.getElementById('pengabdianId').value = data.id_pengabdian;
+                document.getElementById('pengabdianJudul').value = data.judul;
+                document.getElementById('pengabdianSkema').value = data.skema_pengabdian;
+                document.getElementById('pengabdianLokasi').value = data.lokasi || '';
+                document.getElementById('pengabdianTahun').value = data.tahun;
+                document.getElementById('pengabdianDanaDiajukan').value = data.dana_diajukan || 0;
+                
+                // Load anggota
+                const anggotaContainer = document.getElementById('pengabdianAnggotaContainer');
+                anggotaContainer.innerHTML = '';
+                if (data.anggota_pengabdian) {
+                    data.anggota_pengabdian.forEach(anggota => {
+                        tambahAnggotaPengabdian(anggota.user?.id_user, anggota.peran);
+                    });
+                }
+                
+                document.getElementById('pengabdianModalTitle').textContent = 'Edit Pengabdian';
+                document.getElementById('pengabdianModal').classList.remove('hidden');
+            } catch (error) {
+                showNotification('Gagal memuat data pengabdian: ' + error.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function tambahAnggotaPengabdian(userId = '', peran = '') {
+            const container = document.getElementById('pengabdianAnggotaContainer');
+            const index = container.children.length;
+            
+            const div = document.createElement('div');
+            div.className = 'grid grid-cols-2 gap-4 mt-2';
+            div.innerHTML = `
+                <div>
+                    <input type="text" placeholder="ID User" class="anggota-user-id w-full px-3 py-2 border border-gray-300 rounded-lg" value="${userId}">
+                </div>
+                <div class="flex gap-2">
+                    <input type="text" placeholder="Peran" class="anggota-peran w-full px-3 py-2 border border-gray-300 rounded-lg" value="${peran}">
+                    <button type="button" onclick="this.parentElement.parentElement.remove()" class="text-red-600 hover:text-red-800">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `;
+            container.appendChild(div);
+        }
+
+        document.getElementById('pengabdianForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('pengabdianId').value;
+            const formData = new FormData();
+            
+            formData.append('judul', document.getElementById('pengabdianJudul').value);
+            formData.append('skema_pengabdian', document.getElementById('pengabdianSkema').value);
+            formData.append('lokasi', document.getElementById('pengabdianLokasi').value);
+            formData.append('tahun', document.getElementById('pengabdianTahun').value);
+            formData.append('dana_diajukan', document.getElementById('pengabdianDanaDiajukan').value);
+            
+            // Ambil anggota
+            const anggota = [];
+            document.querySelectorAll('#pengabdianAnggotaContainer .grid').forEach(row => {
+                const userId = row.querySelector('.anggota-user-id')?.value;
+                const peran = row.querySelector('.anggota-peran')?.value;
+                if (userId) {
+                    anggota.push({ id_user: userId, peran: peran || 'anggota' });
+                }
+            });
+            formData.append('anggota', JSON.stringify(anggota));
+            
+            const fileProposal = document.getElementById('pengabdianFileProposal').files[0];
+            if (fileProposal) {
+                formData.append('file_proposal', fileProposal);
+            }
+            
+            showLoading();
+            try {
+                if (id) {
+                    await apiCall(`/admin/penelitian/pengabdian/${id}`, {
+                        method: 'PUT',
+                        body: formData,
+                        headers: {}
+                    });
+                    showNotification('Pengabdian berhasil diupdate', 'success');
+                } else {
+                    await apiCall('/admin/penelitian/pengabdian', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {}
+                    });
+                    showNotification('Pengabdian berhasil ditambahkan', 'success');
+                }
+                
+                closePengabdianModal();
+                await loadAllSubmissions(currentPage.semua);
+                await loadPengabdianData(currentPage.pengabdian);
+            } catch (error) {
+                showNotification('Gagal menyimpan pengabdian: ' + error.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        });
+
+        // ==================== DELETE FUNCTIONS ====================
+
+        async function deleteSubmission(jenis, id) {
+            showConfirmation(`Apakah Anda yakin ingin menghapus ${jenis} ini?`, async () => {
+                showLoading();
+                try {
+                    await apiCall(`/admin/penelitian/${jenis}/${id}`, {
+                        method: 'DELETE'
+                    });
+                    showNotification(`${jenis} berhasil dihapus`, 'success');
+                    
+                    // Refresh data
+                    await loadAllSubmissions(currentPage.semua);
+                    if (jenis === 'penelitian') {
+                        await loadPenelitianData(currentPage.penelitian);
+                    } else {
+                        await loadPengabdianData(currentPage.pengabdian);
+                    }
+                } catch (error) {
+                    showNotification('Gagal menghapus: ' + error.message, 'error');
+                } finally {
+                    hideLoading();
+                }
+            });
+        }
+
+        // ==================== UTILITY FUNCTIONS ====================
+
         function showSection(sectionId, event) {
-            // Hide all sections
             document.querySelectorAll('.content-section').forEach(section => {
                 section.classList.remove('active');
             });
             
-            // Show selected section
             document.getElementById(sectionId).classList.add('active');
             
-            // Update tab active state
             document.querySelectorAll('.section-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
             
-            // Add active class to clicked tab
             if (event && event.target) {
                 event.target.classList.add('active');
             }
             
-            // Load section data if needed
+            // Load data sesuai section
             switch(sectionId) {
                 case 'semua-section':
-                    if (document.getElementById('semuaTableBody').children.length <= 1) {
-                        loadAllSubmissions();
-                    }
+                    loadAllSubmissions(currentPage.semua);
                     break;
                 case 'penelitian-section':
-                    if (document.getElementById('penelitianTableBody').children.length <= 1) {
-                        loadPenelitianData();
-                    }
+                    loadPenelitianData(currentPage.penelitian);
                     break;
                 case 'pengabdian-section':
-                    if (document.getElementById('pengabdianTableBody').children.length <= 1) {
-                        loadPengabdianData();
-                    }
+                    loadPengabdianData(currentPage.pengabdian);
                     break;
                 case 'review-section':
-                    if (document.getElementById('reviewAdminList').children.length === 0) {
-                        loadReviewData();
-                    }
+                    loadReviewData();
                     break;
                 case 'statistik-section':
-                    if (!statusChart || !fakultasChart) {
-                        loadStatistikData();
-                    } else {
-                        updateStatistikNumbers();
-                    }
+                    loadStatistikData();
                     break;
                 case 'skema-section':
-                    if (document.getElementById('skemaTableBody').children.length <= 1) {
-                        loadSkemaData();
-                    }
+                    loadSkemaData();
                     break;
             }
         }
 
-        // Loading functions
         function showLoading() {
             document.getElementById('loadingOverlay').classList.remove('hidden');
         }
@@ -1021,7 +2318,6 @@
             document.getElementById('loadingOverlay').classList.add('hidden');
         }
 
-        // Notification functions
         function showNotification(message, type = 'success') {
             Swal.fire({
                 icon: type,
@@ -1047,23 +2343,14 @@
             });
         }
 
-        // Toggle functions
         function toggleNotifications() {
-            const dropdown = document.getElementById('notificationDropdown');
-            dropdown.classList.toggle('hidden');
+            document.getElementById('notificationDropdown').classList.toggle('hidden');
         }
 
         function toggleUserMenu() {
-            const dropdown = document.getElementById('userDropdown');
-            dropdown.classList.toggle('hidden');
+            document.getElementById('userDropdown').classList.toggle('hidden');
         }
 
-        function markAllAsRead() {
-            document.getElementById('notificationBadge').textContent = '0';
-            showNotification('Semua notifikasi telah dibaca');
-        }
-
-        // Logout functions
         function handleLogout() {
             document.getElementById('confirmLogoutModal').classList.remove('hidden');
         }
@@ -1075,12 +2362,11 @@
         function performLogout() {
             localStorage.removeItem('token');
             localStorage.removeItem('user');
-            window.location.href = 'login.html';
+            window.location.href = '../login.html';
         }
 
-        // Format functions
         function formatCurrency(amount) {
-            if (!amount) return '-';
+            if (!amount) return 'Rp 0';
             return 'Rp ' + new Intl.NumberFormat('id-ID').format(amount);
         }
 
@@ -1090,997 +2376,98 @@
             return new Date(dateString).toLocaleDateString('id-ID', options);
         }
 
+        function formatRelativeTime(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+            
+            if (diffMins < 1) return 'Baru saja';
+            if (diffMins < 60) return `${diffMins} menit lalu`;
+            if (diffHours < 24) return `${diffHours} jam lalu`;
+            if (diffDays < 7) return `${diffDays} hari lalu`;
+            return formatDate(dateString);
+        }
+
         function getStatusBadge(status) {
-            const badges = {
-                'draft': { class: 'badge-draft', text: 'Draft' },
-                'submitted': { class: 'badge-submitted', text: 'Terkirim' },
-                'review': { class: 'badge-review', text: 'Review Admin' },
-                'review_content': { class: 'badge-review_content', text: 'Review Substansi' },
-                'revision': { class: 'badge-revision', text: 'Perlu Revisi' },
-                'approved': { class: 'badge-approved', text: 'Disetujui' },
-                'rejected': { class: 'badge-rejected', text: 'Ditolak' },
-                'completed': { class: 'badge-completed', text: 'Selesai' }
-            };
-            return badges[status] || badges.submitted;
-        }
-
-        // Mock Data
-        const submissions = [
-            {
-                id: 1,
-                jenis: 'penelitian',
-                judul: 'Pengembangan Sistem Deteksi Dini Penyakit Tanaman Padi Berbasis AI',
-                pengusul: 'Dr. Ahmad Fauzi, M.T.',
-                nidn: '1234567890',
-                fakultas: 'Teknik',
-                skema: 'penelitian_terapan',
-                tahun: 2024,
-                dana: 150000000,
-                status: 'review',
-                tanggalPengajuan: '2024-01-15'
-            },
-            {
-                id: 2,
-                jenis: 'penelitian',
-                judul: 'Analisis Big Data untuk Prediksi Kebijakan Publik',
-                pengusul: 'Dr. Ahmad Fauzi, M.T.',
-                nidn: '1234567890',
-                fakultas: 'Teknik',
-                skema: 'penelitian_dasar',
-                tahun: 2024,
-                dana: 85000000,
-                status: 'revision',
-                tanggalPengajuan: '2024-02-01'
-            },
-            {
-                id: 3,
-                jenis: 'pengabdian',
-                judul: 'Pelatihan Digital Marketing untuk UMKM Bekasi',
-                pengusul: 'Dr. Ratna Dewi, M.Si',
-                nidn: '1234567891',
-                fakultas: 'Ekonomi',
-                skema: 'pengabdian_masyarakat',
-                tahun: 2024,
-                dana: 75000000,
-                status: 'approved',
-                tanggalPengajuan: '2024-02-15'
-            },
-            {
-                id: 4,
-                jenis: 'penelitian',
-                judul: 'Rancang Bangun Sistem IoT untuk Smart Farming',
-                pengusul: 'Prof. Bambang Suharto',
-                nidn: '1234567892',
-                fakultas: 'Teknik',
-                skema: 'penelitian_pengembangan',
-                tahun: 2023,
-                dana: 120000000,
-                status: 'completed',
-                tanggalPengajuan: '2023-03-10'
-            }
-        ];
-
-        const skemaData = [
-            {
-                id: 1,
-                kode: 'PD-001',
-                nama: 'Penelitian Dasar',
-                jenis: 'penelitian',
-                minDana: 50000000,
-                maxDana: 100000000,
-                durasiMin: 6,
-                durasiMax: 12,
-                status: 'aktif'
-            },
-            {
-                id: 2,
-                kode: 'PT-002',
-                nama: 'Penelitian Terapan',
-                jenis: 'penelitian',
-                minDana: 75000000,
-                maxDana: 150000000,
-                durasiMin: 8,
-                durasiMax: 12,
-                status: 'aktif'
-            },
-            {
-                id: 3,
-                kode: 'PM-003',
-                nama: 'Pengabdian Masyarakat',
-                jenis: 'pengabdian',
-                minDana: 40000000,
-                maxDana: 80000000,
-                durasiMin: 4,
-                durasiMax: 8,
-                status: 'aktif'
-            }
-        ];
-
-        const dosenSummary = [
-            {
-                no: 1,
-                nama: 'Dr. Ahmad Fauzi, M.T.',
-                nidn: '1234567890',
-                fakultas: 'Teknik Informatika',
-                penelitian: 3,
-                pengabdian: 1,
-                totalDana: 355000000,
-                publikasi: 4,
-                haki: 2
-            },
-            {
-                no: 2,
-                nama: 'Dr. Ratna Dewi, M.Si',
-                nidn: '1234567891',
-                fakultas: 'Manajemen',
-                penelitian: 1,
-                pengabdian: 2,
-                totalDana: 165000000,
-                publikasi: 2,
-                haki: 1
-            },
-            {
-                no: 3,
-                nama: 'Prof. Bambang Suharto',
-                nidn: '1234567892',
-                fakultas: 'Teknik Elektro',
-                penelitian: 4,
-                pengabdian: 1,
-                totalDana: 520000000,
-                publikasi: 8,
-                haki: 3
-            }
-        ];
-
-        // Load All Submissions
-        function loadAllSubmissions() {
-            const tbody = document.getElementById('semuaTableBody');
-            
-            let html = '';
-            submissions.forEach((item, index) => {
-                const badge = getStatusBadge(item.status);
-                html += `
-                    <tr class="hover:bg-gray-50">
-                        <td class="px-4 py-3">${index + 1}</td>
-                        <td class="px-4 py-3">
-                            <span class="px-2 py-1 rounded text-xs font-semibold ${item.jenis === 'penelitian' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}">
-                                ${item.jenis === 'penelitian' ? 'Penelitian' : 'Pengabdian'}
-                            </span>
-                        </td>
-                        <td class="px-4 py-3">${item.judul}</td>
-                        <td class="px-4 py-3">
-                            <div class="font-medium">${item.pengusul}</div>
-                            <div class="text-xs text-gray-500">${item.nidn}</div>
-                        </td>
-                        <td class="px-4 py-3">${item.skema.replace(/_/g, ' ')}</td>
-                        <td class="px-4 py-3">${item.tahun}</td>
-                        <td class="px-4 py-3">${formatCurrency(item.dana)}</td>
-                        <td class="px-4 py-3">
-                            <span class="px-2 py-1 rounded text-xs font-semibold ${badge.class}">${badge.text}</span>
-                        </td>
-                        <td class="px-4 py-3 text-center">
-                            <button onclick="viewDetail(${item.id})" class="text-blue-600 hover:text-blue-900 mr-2" title="Detail">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button onclick="openReviewModal(${item.id})" class="text-green-600 hover:text-green-900 mr-2" title="Review">
-                                <i class="fas fa-check-circle"></i>
-                            </button>
-                            <button onclick="downloadProposal(${item.id})" class="text-purple-600 hover:text-purple-900 mr-2" title="Download Proposal">
-                                <i class="fas fa-download"></i>
-                            </button>
-                            <button onclick="deleteSubmission(${item.id})" class="text-red-600 hover:text-red-900" title="Hapus">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            });
-            
-            tbody.innerHTML = html;
-            document.getElementById('semuaPaginationInfo').innerHTML = 'Menampilkan 1-4 dari 4 data';
-        }
-
-        // Load Penelitian Data
-        function loadPenelitianData() {
-            const tbody = document.getElementById('penelitianTableBody');
-            const penelitian = submissions.filter(s => s.jenis === 'penelitian');
-            
-            let html = '';
-            penelitian.forEach((item, index) => {
-                const badge = getStatusBadge(item.status);
-                html += `
-                    <tr class="hover:bg-gray-50">
-                        <td class="px-4 py-3">${index + 1}</td>
-                        <td class="px-4 py-3">${item.judul}</td>
-                        <td class="px-4 py-3">${item.pengusul}</td>
-                        <td class="px-4 py-3">${item.skema.replace(/_/g, ' ')}</td>
-                        <td class="px-4 py-3">${formatCurrency(item.dana)}</td>
-                        <td class="px-4 py-3">
-                            <span class="px-2 py-1 rounded text-xs font-semibold ${badge.class}">${badge.text}</span>
-                        </td>
-                        <td class="px-4 py-3 text-center">
-                            <button onclick="viewDetail(${item.id})" class="text-blue-600 hover:text-blue-900 mr-2">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button onclick="openReviewModal(${item.id})" class="text-green-600 hover:text-green-900">
-                                <i class="fas fa-check-circle"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            });
-            
-            tbody.innerHTML = html || '<tr><td colspan="7" class="text-center py-4">Tidak ada data penelitian</td></tr>';
-        }
-
-        // Load Pengabdian Data
-        function loadPengabdianData() {
-            const tbody = document.getElementById('pengabdianTableBody');
-            const pengabdian = submissions.filter(s => s.jenis === 'pengabdian');
-            
-            let html = '';
-            pengabdian.forEach((item, index) => {
-                const badge = getStatusBadge(item.status);
-                html += `
-                    <tr class="hover:bg-gray-50">
-                        <td class="px-4 py-3">${index + 1}</td>
-                        <td class="px-4 py-3">${item.judul}</td>
-                        <td class="px-4 py-3">${item.pengusul}</td>
-                        <td class="px-4 py-3">${item.skema.replace(/_/g, ' ')}</td>
-                        <td class="px-4 py-3">${formatCurrency(item.dana)}</td>
-                        <td class="px-4 py-3">
-                            <span class="px-2 py-1 rounded text-xs font-semibold ${badge.class}">${badge.text}</span>
-                        </td>
-                        <td class="px-4 py-3 text-center">
-                            <button onclick="viewDetail(${item.id})" class="text-blue-600 hover:text-blue-900 mr-2">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button onclick="openReviewModal(${item.id})" class="text-green-600 hover:text-green-900">
-                                <i class="fas fa-check-circle"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            });
-            
-            tbody.innerHTML = html || '<tr><td colspan="7" class="text-center py-4">Tidak ada data pengabdian</td></tr>';
-        }
-
-        // Load Review Data
-        function loadReviewData() {
-            // Review Admin List
-            const reviewAdmin = document.getElementById('reviewAdminList');
-            reviewAdmin.innerHTML = `
-                <div class="p-3 border rounded-lg hover:bg-gray-50">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="font-medium">Dr. Ahmad Fauzi, M.T.</p>
-                            <p class="text-sm text-gray-600">Pengembangan Sistem Deteksi Dini...</p>
-                            <p class="text-xs text-gray-500">Pengajuan: 15 Jan 2024</p>
-                        </div>
-                        <button onclick="openReviewModal(1)" class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700">
-                            Review
-                        </button>
-                    </div>
-                </div>
-                <div class="p-3 border rounded-lg hover:bg-gray-50">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="font-medium">Dr. Ratna Dewi, M.Si</p>
-                            <p class="text-sm text-gray-600">Pelatihan Digital Marketing untuk UMKM...</p>
-                            <p class="text-xs text-gray-500">Pengajuan: 15 Feb 2024</p>
-                        </div>
-                        <button onclick="openReviewModal(3)" class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700">
-                            Review
-                        </button>
-                    </div>
-                </div>
-            `;
-
-            // Review Substansi List
-            const reviewSubstansi = document.getElementById('reviewSubstansiList');
-            reviewSubstansi.innerHTML = `
-                <div class="p-3 border rounded-lg hover:bg-gray-50">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="font-medium">Prof. Bambang Suharto</p>
-                            <p class="text-sm text-gray-600">Rancang Bangun Sistem IoT untuk Smart Farming</p>
-                            <p class="text-xs text-gray-500">Selesai review admin: 15 Mar 2023</p>
-                        </div>
-                        <button onclick="openReviewModal(4, 'substansi')" class="bg-purple-600 text-white px-3 py-1 rounded text-sm hover:bg-purple-700">
-                            Review
-                        </button>
-                    </div>
-                </div>
-            `;
-
-            // Revision List
-            const revisionList = document.getElementById('revisionList');
-            revisionList.innerHTML = `
-                <div class="p-3 border rounded-lg hover:bg-gray-50">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="font-medium">Dr. Ahmad Fauzi, M.T.</p>
-                            <p class="text-sm text-gray-600">Analisis Big Data untuk Prediksi Kebijakan Publik</p>
-                            <p class="text-xs text-orange-600">Revisi diminta: 10 Feb 2024</p>
-                        </div>
-                        <span class="bg-orange-100 text-orange-800 px-2 py-1 rounded text-xs">Menunggu 7 hari</span>
-                    </div>
-                </div>
-            `;
-        }
-
-        // Load Statistik Data
-function loadStatistikData() {
-    showLoading();
-    
-    try {
-        // Update statistik numbers
-        document.getElementById('totalPengajuanStats').textContent = '24';
-        document.getElementById('totalPenelitianStats').textContent = '15';
-        document.getElementById('totalPengabdianStats').textContent = '9';
-        document.getElementById('totalReviewStats').textContent = '8';
-        document.getElementById('reviewAdminStats').textContent = '3';
-        document.getElementById('reviewSubstansiStats').textContent = '5';
-        document.getElementById('totalDanaStats').textContent = 'Rp 4.3 M';
-        document.getElementById('danaPenelitianStats').textContent = 'Rp 3.2 M';
-        document.getElementById('danaPengabdianStats').textContent = 'Rp 1.1 M';
-        document.getElementById('totalLuaranStats').textContent = '45';
-        document.getElementById('publikasiStats').textContent = '28';
-        document.getElementById('hakiStats').textContent = '17';
-
-        // Update charts with setTimeout to ensure DOM is ready
-        setTimeout(() => {
-            updateCharts();
-        }, 100);
-
-        // Load dosen summary
-        loadDosenSummary();
-    } catch (error) {
-        console.error('Error loading statistics:', error);
-    } finally {
-        hideLoading();
-    }
+    const badges = {
+        'draft': { class: 'badge-draft', text: 'Draft' },
+        'submit': { class: 'badge-submitted', text: 'Terkirim' }, // Ganti dari 'submitted'
+        'review': { class: 'badge-review', text: 'Review Admin' },
+        'review_content': { class: 'badge-review_content', text: 'Review Substansi' },
+        'revisi': { class: 'badge-revision', text: 'Perlu Revisi' }, // Ganti dari 'revision'
+        'diterima': { class: 'badge-approved', text: 'Disetujui' }, // Ganti dari 'approved'
+        'ditolak': { class: 'badge-rejected', text: 'Ditolak' }, // Ganti dari 'rejected'
+        'completed': { class: 'badge-completed', text: 'Selesai' }
+    };
+    return badges[status] || { class: 'badge-draft', text: status };
 }
-
-// Update Charts - Perbaikan
-function updateCharts() {
-    // Destroy existing charts
-    if (statusChart) {
-        statusChart.destroy();
-        statusChart = null;
-    }
-    if (fakultasChart) {
-        fakultasChart.destroy();
-        fakultasChart = null;
-    }
-    
-    // Get canvas elements
-    const statusCanvas = document.getElementById('statusChart');
-    const fakultasCanvas = document.getElementById('fakultasChart');
-    
-    if (!statusCanvas || !fakultasCanvas) return;
-    
-    // Set canvas dimensions
-    statusCanvas.style.width = '100%';
-    statusCanvas.style.height = '300px';
-    fakultasCanvas.style.width = '100%';
-    fakultasCanvas.style.height = '300px';
-    
-    // Buat chart baru dengan maintainAspectRatio: false
-    statusChart = new Chart(statusCanvas, {
-        type: 'doughnut',
-        data: {
-            labels: ['Draft', 'Review Admin', 'Review Substansi', 'Revisi', 'Disetujui', 'Selesai'],
-            datasets: [{
-                data: [3, 3, 5, 2, 8, 3],
-                backgroundColor: ['#6b7280', '#f59e0b', '#f59e0b', '#ef4444', '#10b981', '#8b5cf6'],
-                borderWidth: 0
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false, // Penting: allow chart to fill container
-            plugins: {
-                legend: {
-                    position: 'bottom',
-                    labels: {
-                        boxWidth: 12,
-                        padding: 15
-                    }
-                }
-            },
-            layout: {
-                padding: {
-                    top: 10,
-                    bottom: 10
-                }
-            }
-        }
-    });
-
-    fakultasChart = new Chart(fakultasCanvas, {
-        type: 'bar',
-        data: {
-            labels: ['Teknik', 'Ekonomi', 'Hukum', 'FISIP', 'Kedokteran'],
-            datasets: [
-                {
-                    label: 'Penelitian',
-                    data: [8, 3, 2, 1, 1],
-                    backgroundColor: '#3b82f6',
-                    borderRadius: 6
-                },
-                {
-                    label: 'Pengabdian',
-                    data: [4, 3, 1, 1, 0],
-                    backgroundColor: '#10b981',
-                    borderRadius: 6
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false, // Penting: allow chart to fill container
-            plugins: {
-                legend: {
-                    position: 'top',
-                    labels: {
-                        boxWidth: 12,
-                        padding: 15
-                    }
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        stepSize: 2,
-                        callback: function(value) {
-                            return value;
-                        }
-                    },
-                    grid: {
-                        display: true,
-                        color: 'rgba(0,0,0,0.05)'
-                    }
-                },
-                x: {
-                    grid: {
-                        display: false
-                    }
-                }
-            },
-            layout: {
-                padding: {
-                    top: 10,
-                    bottom: 10
-                }
-            }
-        }
-    });
-}
-
-// Panggil updateCharts saat window resize
-window.addEventListener('resize', function() {
-    if (document.getElementById('statistik-section').classList.contains('active')) {
-        updateCharts();
-    }
-});
-        // Update Statistik Numbers only
-        function updateStatistikNumbers() {
-            document.getElementById('totalPengajuanStats').textContent = '24';
-            document.getElementById('totalPenelitianStats').textContent = '15';
-            document.getElementById('totalPengabdianStats').textContent = '9';
-            document.getElementById('totalReviewStats').textContent = '8';
-            document.getElementById('reviewAdminStats').textContent = '3';
-            document.getElementById('reviewSubstansiStats').textContent = '5';
-            document.getElementById('totalDanaStats').textContent = 'Rp 4.3 M';
-            document.getElementById('danaPenelitianStats').textContent = 'Rp 3.2 M';
-            document.getElementById('danaPengabdianStats').textContent = 'Rp 1.1 M';
-            document.getElementById('totalLuaranStats').textContent = '45';
-            document.getElementById('publikasiStats').textContent = '28';
-            document.getElementById('hakiStats').textContent = '17';
-        }
-
-        // Update Charts
-        function updateCharts() {
-            const ctxStatus = document.getElementById('statusChart').getContext('2d');
-            const ctxFakultas = document.getElementById('fakultasChart').getContext('2d');
-            
-            // Hancurkan chart yang sudah ada sebelum membuat baru
-            if (statusChart) {
-                statusChart.destroy();
-            }
-            if (fakultasChart) {
-                fakultasChart.destroy();
-            }
-            
-            // Buat chart baru
-            statusChart = new Chart(ctxStatus, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Draft', 'Review Admin', 'Review Substansi', 'Revisi', 'Disetujui', 'Selesai'],
-                    datasets: [{
-                        data: [3, 3, 5, 2, 8, 3],
-                        backgroundColor: ['#6b7280', '#f59e0b', '#f59e0b', '#ef4444', '#10b981', '#8b5cf6'],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
-                        }
-                    }
-                }
-            });
-
-            fakultasChart = new Chart(ctxFakultas, {
-                type: 'bar',
-                data: {
-                    labels: ['Teknik', 'Ekonomi', 'Hukum', 'FISIP', 'Kedokteran'],
-                    datasets: [
-                        {
-                            label: 'Penelitian',
-                            data: [8, 3, 2, 1, 1],
-                            backgroundColor: '#3b82f6'
-                        },
-                        {
-                            label: 'Pengabdian',
-                            data: [4, 3, 1, 1, 0],
-                            backgroundColor: '#10b981'
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top'
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                stepSize: 2
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        // Load Dosen Summary
-        function loadDosenSummary() {
-            const tbody = document.getElementById('dosenSummaryBody');
-            
-            let html = '';
-            dosenSummary.forEach(item => {
-                html += `
-                    <tr class="hover:bg-gray-50">
-                        <td class="px-4 py-3">${item.no}</td>
-                        <td class="px-4 py-3 font-medium">${item.nama}</td>
-                        <td class="px-4 py-3">${item.nidn}</td>
-                        <td class="px-4 py-3">${item.fakultas}</td>
-                        <td class="px-4 py-3">${item.penelitian}</td>
-                        <td class="px-4 py-3">${item.pengabdian}</td>
-                        <td class="px-4 py-3">${formatCurrency(item.totalDana)}</td>
-                        <td class="px-4 py-3">${item.publikasi}</td>
-                        <td class="px-4 py-3 text-center">
-                            <button onclick="viewDosenDetail('${item.nidn}')" class="text-blue-600 hover:text-blue-900">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            });
-            
-            tbody.innerHTML = html;
-        }
-
-        // Load Skema Data
-        function loadSkemaData() {
-            const tbody = document.getElementById('skemaTableBody');
-            
-            let html = '';
-            skemaData.forEach((item, index) => {
-                html += `
-                    <tr class="hover:bg-gray-50">
-                        <td class="px-4 py-3">${index + 1}</td>
-                        <td class="px-4 py-3">${item.kode}</td>
-                        <td class="px-4 py-3 font-medium">${item.nama}</td>
-                        <td class="px-4 py-3">
-                            <span class="px-2 py-1 rounded text-xs font-semibold ${item.jenis === 'penelitian' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}">
-                                ${item.jenis === 'penelitian' ? 'Penelitian' : 'Pengabdian'}
-                            </span>
-                        </td>
-                        <td class="px-4 py-3">${formatCurrency(item.minDana)}</td>
-                        <td class="px-4 py-3">${formatCurrency(item.maxDana)}</td>
-                        <td class="px-4 py-3">${item.durasiMin} - ${item.durasiMax}</td>
-                        <td class="px-4 py-3">
-                            <span class="px-2 py-1 rounded text-xs font-semibold bg-green-100 text-green-800">${item.status}</span>
-                        </td>
-                        <td class="px-4 py-3 text-center">
-                            <button onclick="editSkema(${item.id})" class="text-green-600 hover:text-green-900 mr-2">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button onclick="deleteSkema(${item.id})" class="text-red-600 hover:text-red-900">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            });
-            
-            tbody.innerHTML = html;
-        }
-
-        // Modal functions
-        function viewDetail(id) {
-            const submission = submissions.find(s => s.id === id);
-            if (!submission) return;
-
-            const badge = getStatusBadge(submission.status);
-            
-            document.getElementById('detailModalTitle').textContent = 'Detail Pengajuan';
-            document.getElementById('detailModalContent').innerHTML = `
-                <div class="space-y-4">
-                    <div class="flex justify-between items-start">
-                        <span class="px-3 py-1 rounded-full text-xs font-semibold ${badge.class}">${badge.text}</span>
-                        <span class="text-sm text-gray-500">ID: #${submission.id}</span>
-                    </div>
-
-                    <div>
-                        <h4 class="font-semibold text-gray-700">Informasi Pengajuan</h4>
-                        <div class="grid grid-cols-2 gap-4 mt-2">
-                            <div>
-                                <p class="text-sm text-gray-500">Jenis</p>
-                                <p class="font-medium">${submission.jenis === 'penelitian' ? 'Penelitian' : 'Pengabdian'}</p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-500">Skema</p>
-                                <p class="font-medium">${submission.skema.replace(/_/g, ' ')}</p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-500">Tahun</p>
-                                <p class="font-medium">${submission.tahun}</p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-500">Dana</p>
-                                <p class="font-medium text-green-600">${formatCurrency(submission.dana)}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <h4 class="font-semibold text-gray-700">Judul</h4>
-                        <p class="text-gray-600 mt-1">${submission.judul}</p>
-                    </div>
-
-                    <div>
-                        <h4 class="font-semibold text-gray-700">Pengusul</h4>
-                        <p class="text-gray-600 mt-1">${submission.pengusul}</p>
-                        <p class="text-sm text-gray-500">NIDN: ${submission.nidn}</p>
-                    </div>
-
-                    <div>
-                        <h4 class="font-semibold text-gray-700">Tanggal Pengajuan</h4>
-                        <p class="text-gray-600">${formatDate(submission.tanggalPengajuan)}</p>
-                    </div>
-
-                    <div class="border-t pt-4">
-                        <h4 class="font-semibold text-gray-700 mb-3">Dokumen</h4>
-                        <div class="space-y-2">
-                            <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
-                                <span><i class="fas fa-file-pdf text-red-500 mr-2"></i>Proposal.pdf</span>
-                                <button onclick="downloadFile('proposal_${submission.id}.pdf')" class="text-blue-600 hover:text-blue-800">
-                                    <i class="fas fa-download"></i>
-                                </button>
-                            </div>
-                            <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
-                                <span><i class="fas fa-file-pdf text-red-500 mr-2"></i>CV_Tim.pdf</span>
-                                <button onclick="downloadFile('cv_${submission.id}.pdf')" class="text-blue-600 hover:text-blue-800">
-                                    <i class="fas fa-download"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flex justify-end space-x-3 pt-4 border-t">
-                        <button onclick="openReviewModal(${submission.id})" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
-                            <i class="fas fa-check-circle mr-2"></i>Review
-                        </button>
-                        <button onclick="closeDetailModal()" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300">
-                            Tutup
-                        </button>
-                    </div>
-                </div>
-            `;
-
-            document.getElementById('detailModal').classList.remove('hidden');
-        }
-
-        function closeDetailModal() {
-            document.getElementById('detailModal').classList.add('hidden');
-        }
-
-        function openReviewModal(id, type = 'admin') {
-            document.getElementById('reviewSubmissionId').value = id;
-            document.getElementById('reviewType').value = type;
-            document.getElementById('reviewModalTitle').textContent = type === 'admin' ? 'Review Administrasi' : 'Review Substansi';
-            document.getElementById('reviewForm').reset();
-            document.getElementById('reviewModal').classList.remove('hidden');
-        }
-
-        function closeReviewModal() {
-            document.getElementById('reviewModal').classList.add('hidden');
-        }
-
-        function submitReview() {
-            const id = document.getElementById('reviewSubmissionId').value;
-            const status = document.getElementById('reviewStatus').value;
-            const notes = document.getElementById('reviewNotes').value;
-
-            if (!status) {
-                showNotification('Pilih status review terlebih dahulu', 'error');
-                return;
-            }
-
-            showNotification('Review berhasil disimpan', 'success');
-            closeReviewModal();
-        }
-
-        function openAddSkemaModal() {
-            document.getElementById('skemaForm').reset();
-            document.getElementById('skemaModal').classList.remove('hidden');
-        }
-
-        function closeSkemaModal() {
-            document.getElementById('skemaModal').classList.add('hidden');
-        }
-
-        function saveSkema() {
-            showNotification('Skema berhasil ditambahkan', 'success');
-            closeSkemaModal();
-            loadSkemaData();
-        }
-
-        function editSkema(id) {
-            showNotification('Fitur edit dalam pengembangan', 'info');
-        }
-
-        function deleteSkema(id) {
-            showConfirmation('Apakah Anda yakin ingin menghapus skema ini?', () => {
-                showNotification('Skema berhasil dihapus', 'success');
-            });
-        }
-
-        // Other functions
-        function exportData() {
-            showNotification('Data sedang diekspor', 'success');
-        }
-
-        function downloadProposal(id) {
-            showNotification('Mengunduh proposal...', 'success');
-        }
-
-        function downloadFile(filename) {
-            showNotification(`Mengunduh file: ${filename}`, 'success');
-        }
-
-        function deleteSubmission(id) {
-            showConfirmation('Apakah Anda yakin ingin menghapus pengajuan ini?', () => {
-                showNotification('Pengajuan berhasil dihapus', 'success');
-            });
-        }
-
-        function viewDosenDetail(nidn) {
-            showNotification('Melihat detail dosen', 'info');
-        }
-
-        function changePage(section, direction) {
-            showNotification('Fitur pagination dalam pengembangan', 'info');
-        }
 
         function updateFileName(input, elementId) {
             const fileName = input.files[0] ? input.files[0].name : 'Tidak ada file dipilih';
             document.getElementById(elementId).textContent = fileName;
         }
 
-        // Filter functions
-        function filterAllSubmissions() {
-            const searchTerm = document.getElementById('searchSemua').value.toLowerCase();
-            const statusFilter = document.getElementById('filterStatusSemua').value;
-            const tahunFilter = document.getElementById('filterTahunSemua').value;
+        function closeDetailModal() {
+            document.getElementById('detailModal').classList.add('hidden');
+        }
+
+        function closeReviewModal() {
+            document.getElementById('reviewModal').classList.add('hidden');
+        }
+
+        function closePenelitianModal() {
+            document.getElementById('penelitianModal').classList.add('hidden');
+        }
+
+        function closePengabdianModal() {
+            document.getElementById('pengabdianModal').classList.add('hidden');
+        }
+
+        function closeSkemaModal() {
+            document.getElementById('skemaModal').classList.add('hidden');
+        }
+
+        function changePage(section, direction) {
+            let newPage = currentPage[section];
             
-            let filtered = submissions;
-            
-            if (searchTerm) {
-                filtered = filtered.filter(s => 
-                    s.judul.toLowerCase().includes(searchTerm) || 
-                    s.pengusul.toLowerCase().includes(searchTerm) ||
-                    s.nidn.includes(searchTerm)
-                );
-            }
-            
-            if (statusFilter) {
-                filtered = filtered.filter(s => s.status === statusFilter);
-            }
-            
-            if (tahunFilter) {
-                filtered = filtered.filter(s => s.tahun.toString() === tahunFilter);
-            }
-            
-            const tbody = document.getElementById('semuaTableBody');
-            
-            if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="9" class="text-center py-8 text-gray-500">Tidak ada data ditemukan</td></tr>';
+            if (direction === 'next' && newPage < totalPages[section]) {
+                newPage++;
+            } else if (direction === 'prev' && newPage > 1) {
+                newPage--;
+            } else {
                 return;
             }
             
-            let html = '';
-            filtered.forEach((item, index) => {
-                const badge = getStatusBadge(item.status);
-                html += `
-                    <tr class="hover:bg-gray-50">
-                        <td class="px-4 py-3">${index + 1}</td>
-                        <td class="px-4 py-3">
-                            <span class="px-2 py-1 rounded text-xs font-semibold ${item.jenis === 'penelitian' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}">
-                                ${item.jenis === 'penelitian' ? 'Penelitian' : 'Pengabdian'}
-                            </span>
-                        </td>
-                        <td class="px-4 py-3">${item.judul}</td>
-                        <td class="px-4 py-3">
-                            <div class="font-medium">${item.pengusul}</div>
-                            <div class="text-xs text-gray-500">${item.nidn}</div>
-                        </td>
-                        <td class="px-4 py-3">${item.skema.replace(/_/g, ' ')}</td>
-                        <td class="px-4 py-3">${item.tahun}</td>
-                        <td class="px-4 py-3">${formatCurrency(item.dana)}</td>
-                        <td class="px-4 py-3">
-                            <span class="px-2 py-1 rounded text-xs font-semibold ${badge.class}">${badge.text}</span>
-                        </td>
-                        <td class="px-4 py-3 text-center">
-                            <button onclick="viewDetail(${item.id})" class="text-blue-600 hover:text-blue-900 mr-2">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button onclick="openReviewModal(${item.id})" class="text-green-600 hover:text-green-900 mr-2">
-                                <i class="fas fa-check-circle"></i>
-                            </button>
-                            <button onclick="downloadProposal(${item.id})" class="text-purple-600 hover:text-purple-900 mr-2">
-                                <i class="fas fa-download"></i>
-                            </button>
-                            <button onclick="deleteSubmission(${item.id})" class="text-red-600 hover:text-red-900">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            });
+            currentPage[section] = newPage;
             
-            tbody.innerHTML = html;
-            document.getElementById('semuaPaginationInfo').innerHTML = `Menampilkan 1-${filtered.length} dari ${filtered.length} data`;
+            switch(section) {
+                case 'semua':
+                    loadAllSubmissions(newPage);
+                    break;
+                case 'penelitian':
+                    loadPenelitianData(newPage);
+                    break;
+                case 'pengabdian':
+                    loadPengabdianData(newPage);
+                    break;
+            }
+        }
+
+        function filterAllSubmissions() {
+            loadAllSubmissions(1);
         }
 
         function filterPenelitian() {
-            const searchTerm = document.getElementById('searchPenelitian').value.toLowerCase();
-            const statusFilter = document.getElementById('filterStatusPenelitian').value;
-            const skemaFilter = document.getElementById('filterSkemaPenelitian').value;
-            
-            let filtered = submissions.filter(s => s.jenis === 'penelitian');
-            
-            if (searchTerm) {
-                filtered = filtered.filter(s => 
-                    s.judul.toLowerCase().includes(searchTerm) || 
-                    s.pengusul.toLowerCase().includes(searchTerm)
-                );
-            }
-            
-            if (statusFilter) {
-                filtered = filtered.filter(s => s.status === statusFilter);
-            }
-            
-            if (skemaFilter) {
-                filtered = filtered.filter(s => s.skema === skemaFilter);
-            }
-            
-            const tbody = document.getElementById('penelitianTableBody');
-            
-            if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4">Tidak ada data penelitian</td></tr>';
-                return;
-            }
-            
-            let html = '';
-            filtered.forEach((item, index) => {
-                const badge = getStatusBadge(item.status);
-                html += `
-                    <tr class="hover:bg-gray-50">
-                        <td class="px-4 py-3">${index + 1}</td>
-                        <td class="px-4 py-3">${item.judul}</td>
-                        <td class="px-4 py-3">${item.pengusul}</td>
-                        <td class="px-4 py-3">${item.skema.replace(/_/g, ' ')}</td>
-                        <td class="px-4 py-3">${formatCurrency(item.dana)}</td>
-                        <td class="px-4 py-3">
-                            <span class="px-2 py-1 rounded text-xs font-semibold ${badge.class}">${badge.text}</span>
-                        </td>
-                        <td class="px-4 py-3 text-center">
-                            <button onclick="viewDetail(${item.id})" class="text-blue-600 hover:text-blue-900 mr-2">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button onclick="openReviewModal(${item.id})" class="text-green-600 hover:text-green-900">
-                                <i class="fas fa-check-circle"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            });
-            
-            tbody.innerHTML = html;
+            loadPenelitianData(1);
         }
 
         function filterPengabdian() {
-            const searchTerm = document.getElementById('searchPengabdian').value.toLowerCase();
-            const statusFilter = document.getElementById('filterStatusPengabdian').value;
-            const skemaFilter = document.getElementById('filterSkemaPengabdian').value;
-            
-            let filtered = submissions.filter(s => s.jenis === 'pengabdian');
-            
-            if (searchTerm) {
-                filtered = filtered.filter(s => 
-                    s.judul.toLowerCase().includes(searchTerm) || 
-                    s.pengusul.toLowerCase().includes(searchTerm)
-                );
-            }
-            
-            if (statusFilter) {
-                filtered = filtered.filter(s => s.status === statusFilter);
-            }
-            
-            if (skemaFilter) {
-                filtered = filtered.filter(s => s.skema === skemaFilter);
-            }
-            
-            const tbody = document.getElementById('pengabdianTableBody');
-            
-            if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4">Tidak ada data pengabdian</td></tr>';
-                return;
-            }
-            
-            let html = '';
-            filtered.forEach((item, index) => {
-                const badge = getStatusBadge(item.status);
-                html += `
-                    <tr class="hover:bg-gray-50">
-                        <td class="px-4 py-3">${index + 1}</td>
-                        <td class="px-4 py-3">${item.judul}</td>
-                        <td class="px-4 py-3">${item.pengusul}</td>
-                        <td class="px-4 py-3">${item.skema.replace(/_/g, ' ')}</td>
-                        <td class="px-4 py-3">${formatCurrency(item.dana)}</td>
-                        <td class="px-4 py-3">
-                            <span class="px-2 py-1 rounded text-xs font-semibold ${badge.class}">${badge.text}</span>
-                        </td>
-                        <td class="px-4 py-3 text-center">
-                            <button onclick="viewDetail(${item.id})" class="text-blue-600 hover:text-blue-900 mr-2">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button onclick="openReviewModal(${item.id})" class="text-green-600 hover:text-green-900">
-                                <i class="fas fa-check-circle"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            });
-            
-            tbody.innerHTML = html;
+            loadPengabdianData(1);
         }
 
-        // Debounce function
         function debounce(func, wait) {
             let timeout;
             return function executedFunction(...args) {
@@ -2093,79 +2480,151 @@ window.addEventListener('resize', function() {
             };
         }
 
-        // Initialize Page
-        document.addEventListener('DOMContentLoaded', function() {
-            // Load initial data
-            loadAllSubmissions();
-            loadPenelitianData();
-            loadPengabdianData();
-            loadReviewData();
-            loadStatistikData();
-            loadSkemaData();
+        function downloadProposal(jenis, id) {
+            window.open(`${API_BASE_URL}/uploads/${jenis}/${id}/proposal`, '_blank');
+        }
 
-            // Close dropdowns when clicking outside
-            document.addEventListener('click', function(event) {
-                if (!event.target.closest('.relative')) {
-                    document.getElementById('notificationDropdown').classList.add('hidden');
-                    document.getElementById('userDropdown').classList.add('hidden');
+        function exportData() {
+            showNotification('Fitur export dalam pengembangan', 'info');
+        }
+
+        function viewDosenDetail(id) {
+            showNotification('Fitur detail dosen dalam pengembangan', 'info');
+        }
+
+        // ==================== CHARTS ====================
+
+        function updateCharts() {
+            const statusCanvas = document.getElementById('statusChart');
+            const fakultasCanvas = document.getElementById('fakultasChart');
+            
+            if (!statusCanvas || !fakultasCanvas) return;
+            
+            if (statusChart) statusChart.destroy();
+            if (fakultasChart) fakultasChart.destroy();
+            
+            statusChart = new Chart(statusCanvas, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Draft', 'Review Admin', 'Review Substansi', 'Revisi', 'Disetujui', 'Selesai'],
+                    datasets: [{
+                        data: [0, 0, 0, 0, 0, 0],
+                        backgroundColor: ['#6b7280', '#f59e0b', '#f59e0b', '#ef4444', '#10b981', '#8b5cf6'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { boxWidth: 12, padding: 15 }
+                        }
+                    }
                 }
             });
 
-            // Debounce search inputs
-            const searchInputs = [
-                { id: 'searchSemua', handler: filterAllSubmissions },
-                { id: 'searchPenelitian', handler: filterPenelitian },
-                { id: 'searchPengabdian', handler: filterPengabdian }
-            ];
-            
-            searchInputs.forEach(item => {
-                const input = document.getElementById(item.id);
-                if (input) {
-                    input.addEventListener('input', debounce(item.handler, 500));
+            fakultasChart = new Chart(fakultasCanvas, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [
+                        {
+                            label: 'Penelitian',
+                            data: [],
+                            backgroundColor: '#3b82f6',
+                            borderRadius: 6
+                        },
+                        {
+                            label: 'Pengabdian',
+                            data: [],
+                            backgroundColor: '#10b981',
+                            borderRadius: 6
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: { boxWidth: 12, padding: 15 }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 2 },
+                            grid: { display: true, color: 'rgba(0,0,0,0.05)' }
+                        },
+                        x: { grid: { display: false } }
+                    }
                 }
             });
+        }
 
-            // Filter change listeners
-            document.getElementById('filterStatusSemua')?.addEventListener('change', function() {
-                filterAllSubmissions();
-            });
-            document.getElementById('filterTahunSemua')?.addEventListener('change', function() {
-                filterAllSubmissions();
-            });
-            document.getElementById('filterStatusPenelitian')?.addEventListener('change', function() {
-                filterPenelitian();
-            });
-            document.getElementById('filterSkemaPenelitian')?.addEventListener('change', function() {
-                filterPenelitian();
-            });
-            document.getElementById('filterStatusPengabdian')?.addEventListener('change', function() {
-                filterPengabdian();
-            });
-            document.getElementById('filterSkemaPengabdian')?.addEventListener('change', function() {
-                filterPengabdian();
-            });
-        });
+        // ==================== INITIALIZATION ====================
 
-        // Close modals when clicking outside
-        window.onclick = function(event) {
-            const detailModal = document.getElementById('detailModal');
-            const reviewModal = document.getElementById('reviewModal');
-            const skemaModal = document.getElementById('skemaModal');
-            const logoutModal = document.getElementById('confirmLogoutModal');
-            
-            if (event.target === detailModal) {
-                closeDetailModal();
-            }
-            if (event.target === reviewModal) {
-                closeReviewModal();
-            }
-            if (event.target === skemaModal) {
-                closeSkemaModal();
-            }
-            if (event.target === logoutModal) {
-                closeLogoutModal();
-            }
-        };
-    </script>
+document.addEventListener('DOMContentLoaded', function() {
+    checkAuth();
+    
+    // Load initial data
+    loadAllSubmissions(1);
+    loadSkemaData();
+
+    // HAPUS atau COMMENT baris ini:
+    // setInterval(loadNotifications, 30000);
+    
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', function(event) {
+        if (!event.target.closest('.relative')) {
+            document.getElementById('notificationDropdown').classList.add('hidden');
+            document.getElementById('userDropdown').classList.add('hidden');
+        }
+    });
+
+    // Debounce search inputs
+    const searchInputs = [
+        { id: 'searchSemua', handler: filterAllSubmissions },
+        { id: 'searchPenelitian', handler: filterPenelitian },
+        { id: 'searchPengabdian', handler: filterPengabdian }
+    ];
+    
+    searchInputs.forEach(item => {
+        const input = document.getElementById(item.id);
+        if (input) {
+            input.addEventListener('input', debounce(item.handler, 500));
+        }
+    });
+
+    // Filter change listeners
+    document.getElementById('filterStatusSemua')?.addEventListener('change', filterAllSubmissions);
+    document.getElementById('filterTahunSemua')?.addEventListener('change', filterAllSubmissions);
+    document.getElementById('filterStatusPenelitian')?.addEventListener('change', filterPenelitian);
+    document.getElementById('filterSkemaPenelitian')?.addEventListener('change', filterPenelitian);
+    document.getElementById('filterStatusPengabdian')?.addEventListener('change', filterPengabdian);
+    document.getElementById('filterSkemaPengabdian')?.addEventListener('change', filterPengabdian);
+});
+
+// Close modals when clicking outside
+window.onclick = function(event) {
+    const detailModal = document.getElementById('detailModal');
+    const reviewModal = document.getElementById('reviewModal');
+    const skemaModal = document.getElementById('skemaModal');
+    const penelitianModal = document.getElementById('penelitianModal');
+    const pengabdianModal = document.getElementById('pengabdianModal');
+    const logoutModal = document.getElementById('confirmLogoutModal');
+    
+    if (event.target === detailModal) closeDetailModal();
+    if (event.target === reviewModal) closeReviewModal();
+    if (event.target === skemaModal) closeSkemaModal();
+    if (event.target === penelitianModal) closePenelitianModal();
+    if (event.target === pengabdianModal) closePengabdianModal();
+    if (event.target === logoutModal) closeLogoutModal();
+};
+
+   </script>
 </body>
 </html>
