@@ -36,6 +36,8 @@ const mahasiswaKKNRoutes = require('./routes/mahasiswa/kknRoutes');
 const penelitianRoutes = require('./routes/admin/penelitianRoutes');
 const dosenPenelitianRoutes = require('./routes/dosen/penelitianRoutes');
 const mahasiswaFakultasRoutes = require('./routes/mahasiswa/fakultasRoutes');
+const perusahaanMagangRoutes = require('./routes/admin/perusahaanMagangRoutes');
+const magangLuaranRoutes = require('./routes/admin/magangLuaranRoutes');
 
 
 // Middleware
@@ -80,6 +82,9 @@ app.use('/api/admin/penelitian', penelitianRoutes);
 app.use('/api/dosen/penelitian', dosenPenelitianRoutes);
 app.use('/api/dosen/penelitian', dosenPenelitianRoutes);
 app.use('/api/mahasiswa', mahasiswaFakultasRoutes);
+app.use('/api/admin/magang/perusahaan', perusahaanMagangRoutes);
+app.use('/api/admin/magang/luaran', magangLuaranRoutes);
+
 
 
 app.use((err, req, res, next) => {

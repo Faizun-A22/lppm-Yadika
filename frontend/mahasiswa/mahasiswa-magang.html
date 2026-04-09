@@ -265,7 +265,7 @@
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
             <!-- Logo and Brand -->
             <a href="mahasiswa-dashboard.html" class="flex items-center space-x-3">
-                <img src="../images/logoyadika.png" alt="Logo LPPM ITB Yadika" class="h-10 w-10">
+                <img src="yadika.png" alt="Logo LPPM ITB Yadika" class="h-10 w-10">
                 <div>
                     <h1 class="text-xl font-bold gradient-text">Portal Mahasiswa</h1>
                     <p class="text-xs text-gray-500">LPPM ITB Yadika</p>
@@ -456,6 +456,18 @@
                         </table>
                     </div>
                 </div>
+                 <div class="flex items-center justify-between mt-4 pt-4 border-t border-gray-200">
+        <div class="text-sm text-gray-500" id="riwayatPaginationInfo"></div>
+        <div class="flex space-x-2">
+            <button onclick="changeRiwayatPage('prev')" class="px-3 py-1 border rounded-lg hover:bg-gray-50">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <span id="riwayatCurrentPage" class="px-3 py-1">1</span>
+            <button onclick="changeRiwayatPage('next')" class="px-3 py-1 border rounded-lg hover:bg-gray-50">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
             </div>
 
             <!-- ========== SECTION: PENDAFTARAN MAGANG ========== -->
@@ -695,6 +707,18 @@
                         </table>
                     </div>
                 </div>
+                <div class="flex items-center justify-between mt-4 pt-4 border-t border-gray-200">
+        <div class="text-sm text-gray-500" id="perusahaanPaginationInfo"></div>
+        <div class="flex space-x-2">
+            <button onclick="changePerusahaanPage('prev')" class="px-3 py-1 border rounded-lg hover:bg-gray-50">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <span id="perusahaanCurrentPage" class="px-3 py-1">1</span>
+            <button onclick="changePerusahaanPage('next')" class="px-3 py-1 border rounded-lg hover:bg-gray-50">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
             </div>
 
             <!-- ========== SECTION: LUARAN WAJIB ========== -->
@@ -788,29 +812,46 @@
                 </div>
                 
                 <!-- Daftar Luaran yang sudah diupload -->
-                <div class="mt-6 bg-white rounded-xl shadow-lg p-6" data-aos="fade-up">
-                    <h3 class="text-lg font-bold text-gray-800 mb-4">Riwayat Upload Luaran</h3>
-                    
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Jenis Luaran</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tanggal Upload</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="luaranMagangTable" class="divide-y divide-gray-200">
-                                <tr>
-                                    <td colspan="4" class="px-6 py-4 text-center text-gray-500">
-                                        <i class="fas fa-spinner fa-spin mr-2"></i>Memuat data...
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                <!-- Luaran Magang Section -->
+<div class="mt-6 bg-white rounded-xl shadow-lg p-6">
+    <h3 class="text-lg font-bold text-gray-800 mb-4">Riwayat Upload Luaran</h3>
+    
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Jenis Luaran</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tanggal Upload</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="luaranMagangTable" class="divide-y divide-gray-200">
+                <!-- Data akan diisi oleh JavaScript -->
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- ========== PAGINATION DILETAKAN DI SINI ========== -->
+    <div class="flex items-center justify-between mt-4 pt-4 border-t border-gray-200">
+        <div class="text-sm text-gray-500" id="luaranPaginationInfo">
+            Menampilkan 1 - 10 dari 20 data
+        </div>
+        <div class="flex space-x-2">
+            <button onclick="changeLuaranPage('prev')" 
+                    class="px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+                    id="luaranPrevBtn">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <span id="luaranCurrentPage" class="px-3 py-1 text-gray-700">1</span>
+            <button onclick="changeLuaranPage('next')" 
+                    class="px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+                    id="luaranNextBtn">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+</div>
             </div>
         </div>
     </main>
@@ -1249,7 +1290,6 @@
 
             const formData = new FormData();
             formData.append('program_studi', document.getElementById('magangStudyProgram').value);
-            formData.append('no_hp', document.getElementById('magangPhone').value);
             formData.append('domisili', document.getElementById('magangDomicile').value);
             formData.append('semester', document.getElementById('magangSemester').value);
             formData.append('krs_file', krsFile);
@@ -1530,10 +1570,10 @@
         }
 
         updateStepper();
+
         loadTimelineData();
         
         if (magangData.registrasi) {
-            document.getElementById('magangPhone').value = magangData.registrasi.no_hp || '';
             document.getElementById('magangDomicile').value = magangData.registrasi.domisili || '';
             document.getElementById('magangSemester').value = magangData.registrasi.semester || '';
             

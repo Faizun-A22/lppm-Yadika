@@ -18,86 +18,70 @@
         .nav-link:hover::after, .nav-link.active::after { width: 100%; left: 0; }
         .nav-link.active { color: #3B82F6; font-weight: 600; }
         
-        /* Pastikan header menggunakan struktur yang benar */
-header nav {
-    max-width: 100%;
-}
+        header nav {
+            max-width: 100%;
+        }
 
-/* Untuk responsive di layar kecil */
-@media (max-width: 1200px) {
-    .flex-1 {
-        overflow-x: auto;
-        padding-bottom: 5px;
-        -webkit-overflow-scrolling: touch;
-    }
-    
-    .flex-1::-webkit-scrollbar {
-        height: 3px;
-    }
-    
-    .flex-1::-webkit-scrollbar-thumb {
-        background: #ccc;
-        border-radius: 3px;
-    }
-}
+        @media (max-width: 1200px) {
+            .flex-1 {
+                overflow-x: auto;
+                padding-bottom: 5px;
+                -webkit-overflow-scrolling: touch;
+            }
+            .flex-1::-webkit-scrollbar {
+                height: 3px;
+            }
+            .flex-1::-webkit-scrollbar-thumb {
+                background: #ccc;
+                border-radius: 3px;
+            }
+        }
 
-        /* Status Badges */
         .badge-pending { background-color: #fef3c7; color: #92400e; padding: 4px 8px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
         .badge-approved { background-color: #d1fae5; color: #065f46; padding: 4px 8px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
         .badge-rejected { background-color: #fee2e2; color: #991b1b; padding: 4px 8px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
         .badge-verified { background-color: #dbeafe; color: #1e40af; padding: 4px 8px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
         
-        /* Modal Styles */
         .modal-content { border-radius: 16px; border: none; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
         .modal-header { border-bottom: 1px solid #e5e7eb; padding: 1.5rem; }
         .modal-body { padding: 1.5rem; }
         .modal-footer { border-top: 1px solid #e5e7eb; padding: 1.5rem; }
         
-        /* Table Styles */
         .table th { font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; }
         .table td { vertical-align: middle; }
         .btn-group-sm>.btn, .btn-sm { padding: 0.25rem 0.5rem; font-size: 0.75rem; }
         
-        /* Card Stats */
         .stat-card { transition: all 0.3s ease; border: none; border-radius: 16px; }
         .stat-card:hover { transform: translateY(-5px); box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
         
-        /* Search Box */
         .search-box { position: relative; }
         .search-box input { padding-left: 40px; border-radius: 30px; border: 1px solid #e5e7eb; }
         .search-box i { position: absolute; left: 15px; top: 12px; color: #9ca3af; }
         
-        /* Section Navigation */
         .section-tabs { border-bottom: 1px solid #e5e7eb; margin-bottom: 2rem; }
         .section-tab { padding: 0.75rem 1.5rem; font-weight: 600; color: #6b7280; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.3s ease; }
         .section-tab:hover { color: #3B82F6; }
         .section-tab.active { color: #3B82F6; border-bottom-color: #3B82F6; }
         
-        /* Content Sections */
         .content-section { display: none; }
         .content-section.active { display: block; }
         
-        /* File Preview */
         .file-preview { padding: 10px; background-color: #f9fafb; border-radius: 8px; margin-top: 5px; }
         .file-preview a { color: #3B82F6; text-decoration: none; }
         .file-preview a:hover { text-decoration: underline; }
         
-        /* Loading Spinner */
         .loading-spinner { text-align: center; padding: 40px; }
         .loading-spinner i { font-size: 2rem; color: #3B82F6; }
         
-        /* Empty State */
         .empty-state { text-align: center; padding: 40px; color: #9ca3af; }
         .empty-state i { font-size: 3rem; margin-bottom: 1rem; }
         
-        /* Alert Messages */
         .alert { border-radius: 12px; border: none; padding: 1rem 1.5rem; margin-bottom: 1.5rem; }
         .alert-success { background-color: #d1fae5; color: #065f46; }
         .alert-danger { background-color: #fee2e2; color: #991b1b; }
         .alert-warning { background-color: #fef3c7; color: #92400e; }
         .alert-info { background-color: #dbeafe; color: #1e40af; }
 
-        /* Loading Overlay */
         .loading-overlay {
             position: fixed;
             top: 0;
@@ -123,7 +107,6 @@ header nav {
             100% { transform: rotate(360deg); }
         }
 
-        /* Action Buttons */
         .action-btn {
             padding: 6px 10px;
             border-radius: 8px;
@@ -133,12 +116,10 @@ header nav {
             transform: translateY(-2px);
         }
         
-        /* Hidden class */
         .hidden {
             display: none !important;
         }
         
-        /* Form validation styles */
         .input-error {
             border-color: #ef4444 !important;
         }
@@ -148,11 +129,18 @@ header nav {
             margin-top: 0.25rem;
         }
 
-        /* Chart Container */
         .chart-container {
             position: relative;
             height: 250px;
             width: 100%;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
         }
     </style>
 </head>
@@ -166,92 +154,83 @@ header nav {
     </div>
 
     <header class="fixed top-0 left-0 right-0 bg-white shadow-md z-50">
-    <nav class="w-full px-6 py-4 flex justify-between items-center">
-        <!-- Logo and Brand -->
-        <a href="admin-dashboard.html" class="flex items-center space-x-3 flex-shrink-0">
-            <img src="yadika.png" alt="Logo" class="h-10 w-10">
-            <div>
-                <h1 class="text-xl font-bold gradient-text">LPPM Admin</h1>
-                <p class="text-xs text-gray-500">ITB Yadika</p>
+        <nav class="w-full px-6 py-4 flex justify-between items-center">
+            <a href="admin-dashboard.html" class="flex items-center space-x-3 flex-shrink-0">
+                <img src="yadika.png" alt="Logo" class="h-10 w-10">
+                <div>
+                    <h1 class="text-xl font-bold gradient-text">LPPM Admin</h1>
+                    <p class="text-xs text-gray-500">ITB Yadika</p>
+                </div>
+            </a>
+
+            <div class="flex-1 flex items-center justify-center space-x-6">
+                <a href="admin-dashboard.html" class="nav-link text-gray-700 hover:text-blue-600 whitespace-nowrap">
+                    <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+                </a>
+                <a href="manage-kegiatan.html" class="nav-link text-gray-700 hover:text-blue-600 whitespace-nowrap">
+                    <i class="fas fa-calendar-alt mr-2"></i>Kegiatan & berita
+                </a>
+                <a href="manage-repository.html" class="nav-link text-gray-700 hover:text-blue-600 whitespace-nowrap">
+                    <i class="fas fa-book mr-2"></i>Repository
+                </a>
+                <a href="admin_penelitian.html" class="nav-link text-gray-700 hover:text-blue-600 whitespace-nowrap">
+                    <i class="fas fa-briefcase mr-2"></i>penelitian & Pengabdian
+                </a>
+                <a href="manage-magang-kkn.html" class="nav-link active text-gray-700 hover:text-blue-600 whitespace-nowrap">
+                    <i class="fas fa-briefcase mr-2"></i>Magang & KKN
+                </a>
             </div>
-        </a>
 
-        <!-- Navigation Links - Full width dengan flex-grow -->
-        <div class="flex-1 flex items-center justify-center space-x-6">
-            <a href="admin-dashboard.html" class="nav-link text-gray-700 hover:text-blue-600 whitespace-nowrap">
-                <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
-            </a>
-            <a href="manage-kegiatan.html" class="nav-link text-gray-700 hover:text-blue-600 whitespace-nowrap">
-                <i class="fas fa-calendar-alt mr-2"></i>Kegiatan & berita
-            </a>
-            <a href="manage-repository.html" class="nav-link text-gray-700 hover:text-blue-600 whitespace-nowrap">
-                <i class="fas fa-book mr-2"></i>Repository
-            </a>
-            <a href="admin_penelitian.html" class="nav-link text-gray-700 hover:text-blue-600 whitespace-nowrap">
-                <i class="fas fa-briefcase mr-2"></i>penelitian & Pengabdian
-            </a>
-            <a href="manage-magang-kkn.html" class="nav-link text-gray-700 hover:text-blue-600 whitespace-nowrap">
-                <i class="fas fa-briefcase mr-2"></i>Magang & KKN
-            </a>
-        </div>
+            <div class="flex items-center space-x-4 flex-shrink-0">
+                <div class="relative">
+                    <button onclick="toggleNotifications()" class="text-gray-600 hover:text-blue-600 relative">
+                        <i class="fas fa-bell text-xl"></i>
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center" id="notificationBadge">0</span>
+                    </button>
+                    <div id="notificationDropdown" class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl hidden z-50">
+                        <div class="p-4 border-b">
+                            <h4 class="font-semibold">Notifikasi</h4>
+                        </div>
+                        <div class="max-h-96 overflow-y-auto" id="notificationList">
+                            <div class="p-4 text-center text-gray-500">Tidak ada notifikasi</div>
+                        </div>
+                        <div class="p-3 border-t text-center">
+                            <button onclick="markAllAsRead()" class="text-sm text-blue-600 hover:text-blue-800">
+                                Tandai semua telah dibaca
+                            </button>
+                        </div>
+                    </div>
+                </div>
 
-        <!-- User Profile / Notifications -->
-        <div class="flex items-center space-x-4 flex-shrink-0">
-            <!-- Notification Bell -->
-            <div class="relative">
-                <button onclick="toggleNotifications()" class="text-gray-600 hover:text-blue-600 relative">
-                    <i class="fas fa-bell text-xl"></i>
-                    <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center" id="notificationBadge">3</span>
-                </button>
-                <!-- Notification Dropdown -->
-                <div id="notificationDropdown" class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl hidden z-50">
-                    <div class="p-4 border-b">
-                        <h4 class="font-semibold">Notifikasi</h4>
-                    </div>
-                    <div class="max-h-96 overflow-y-auto" id="notificationList">
-                        <!-- Notifications will be loaded here -->
-                    </div>
-                    <div class="p-3 border-t text-center">
-                        <button onclick="markAllAsRead()" class="text-sm text-blue-600 hover:text-blue-800">
-                            Tandai semua telah dibaca
+                <div class="relative">
+                    <button onclick="toggleUserMenu()" class="flex items-center space-x-2 focus:outline-none">
+                        <img src="https://ui-avatars.com/api/?name=Admin+LPPM&background=3B82F6&color=fff" alt="Profile" class="h-8 w-8 rounded-full">
+                        <span class="text-sm text-gray-600 hidden sm:block" id="userName">Admin LPPM</span>
+                        <i class="fas fa-chevron-down text-xs text-gray-500"></i>
+                    </button>
+                    <div id="userDropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl hidden z-50">
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-user mr-2"></i> Profil
+                        </a>
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-cog mr-2"></i> Pengaturan
+                        </a>
+                        <hr class="my-1">
+                        <button onclick="handleLogout()" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                            <i class="fas fa-sign-out-alt mr-2"></i> Logout
                         </button>
                     </div>
                 </div>
             </div>
+        </nav>
+    </header>
 
-            <!-- User Menu -->
-            <div class="relative">
-                <button onclick="toggleUserMenu()" class="flex items-center space-x-2 focus:outline-none">
-                    <img src="https://ui-avatars.com/api/?name=Admin+LPPM&background=3B82F6&color=fff" alt="Profile" class="h-8 w-8 rounded-full">
-                    <span class="text-sm text-gray-600 hidden sm:block" id="userName">Admin LPPM</span>
-                    <i class="fas fa-chevron-down text-xs text-gray-500"></i>
-                </button>
-                <!-- User Dropdown -->
-                <div id="userDropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl hidden z-50">
-                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                        <i class="fas fa-user mr-2"></i> Profil
-                    </a>
-                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                        <i class="fas fa-cog mr-2"></i> Pengaturan
-                    </a>
-                    <hr class="my-1">
-                    <button onclick="handleLogout()" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
-                        <i class="fas fa-sign-out-alt mr-2"></i> Logout
-                    </button>
-                </div>
-            </div>
-        </div>
-    </nav>
-</header>
-
-    <!-- Main Content -->
     <main class="pt-20">
         <div class="container mx-auto px-6 py-8">
-            <!-- Page Title Section -->
             <div class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between" data-aos="fade-down">
                 <div>
                     <h2 class="text-3xl font-bold text-gray-800">Kelola Magang & KKN</h2>
-                    <p class="text-gray-600">Kelola program, registrasi, dan luaran mahasiswa.</p>
+                    <p class="text-gray-600">Kelola program, desa, perusahaan, registrasi, dan luaran mahasiswa.</p>
                 </div>
                 <div class="mt-4 md:mt-0 flex space-x-3">
                     <button onclick="openAddProgramModal()" class="bg-gradient-to-r from-green-500 to-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:shadow-lg transition-all duration-300">
@@ -263,10 +242,10 @@ header nav {
                 </div>
             </div>
 
-            <!-- Section Tabs -->
             <div class="section-tabs flex overflow-x-auto" data-aos="fade-up">
                 <div class="section-tab active" onclick="showSection('program-section')">Program</div>
                 <div class="section-tab" onclick="showSection('desa-section')">Desa KKN</div>
+                <div class="section-tab" onclick="showSection('perusahaan-section')">Perusahaan Magang</div>
                 <div class="section-tab" onclick="showSection('registrations-section')">Registrasi</div>
                 <div class="section-tab" onclick="showSection('luaran-section')">Luaran Wajib</div>
                 <div class="section-tab" onclick="showSection('stats-section')">Statistik</div>
@@ -386,6 +365,67 @@ header nav {
                 </div>
             </section>
 
+            <!-- Perusahaan Magang Section -->
+            <section id="perusahaan-section" class="content-section" data-aos="fade-up">
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="p-4 border-b border-gray-200 flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+                        <div class="relative flex-1 max-w-md">
+                            <input type="text" id="searchPerusahaan" placeholder="Cari perusahaan / mahasiswa..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                        </div>
+                        <div class="flex space-x-2">
+                            <select id="filterStatusPerusahaan" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                                <option value="">Semua Status</option>
+                                <option value="pending">Pending</option>
+                                <option value="approved">Disetujui</option>
+                                <option value="rejected">Ditolak</option>
+                                <option value="verified">Terverifikasi</option>
+                            </select>
+                            <button onclick="loadPerusahaanData()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-responsive overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50 text-gray-700">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">No</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">NIM</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Nama Mahasiswa</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Nama Perusahaan</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Bidang</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Posisi</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Durasi</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Periode</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Status</th>
+                                    <th class="px-4 py-3 text-center text-xs font-medium uppercase">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="perusahaanTableBody" class="divide-y divide-gray-200">
+                                <tr>
+                                    <td colspan="10" class="text-center py-8 text-gray-500">
+                                        <i class="fas fa-spinner fa-spin mr-2"></i> Memuat data...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+                        <div class="text-sm text-gray-500" id="perusahaanPaginationInfo"></div>
+                        <div class="flex space-x-2">
+                            <button onclick="changePerusahaanPage('prev')" class="px-3 py-1 border rounded-lg hover:bg-gray-50">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <span id="perusahaanCurrentPage" class="px-3 py-1">1</span>
+                            <button onclick="changePerusahaanPage('next')" class="px-3 py-1 border rounded-lg hover:bg-gray-50">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- Registrations Section -->
             <section id="registrations-section" class="content-section" data-aos="fade-up">
                 <div class="bg-white rounded-xl shadow-lg overflow-hidden">
@@ -413,7 +453,6 @@ header nav {
                         </div>
                     </div>
                     
-                    <!-- KKN Registrations Table -->
                     <div class="p-4">
                         <h3 class="text-lg font-semibold mb-4">Registrasi KKN</h3>
                         <div class="table-responsive overflow-x-auto">
@@ -440,7 +479,6 @@ header nav {
                         </div>
                     </div>
 
-                    <!-- Magang Registrations Table -->
                     <div class="p-4 border-t border-gray-200">
                         <h3 class="text-lg font-semibold mb-4">Registrasi Magang</h3>
                         <div class="table-responsive overflow-x-auto">
@@ -519,13 +557,74 @@ header nav {
                         </table>
                     </div>
                 </div>
+
+                <!-- Luaran Magang Section -->
+                <!-- Luaran Magang Section -->
+<div class="mt-8">
+    <h3 class="text-lg font-semibold mb-4">Luaran Wajib Magang</h3>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+        <select id="filterStatusLuaranMagang" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+            <option value="">Semua Status</option>
+            <option value="pending">Pending</option>
+            <option value="approved">Disetujui</option>
+            <option value="rejected">Ditolak</option>
+            <option value="verified">Terverifikasi</option>
+        </select>
+        <div class="relative">
+            <input type="text" id="searchLuaranMagang" placeholder="Cari NIM/Judul..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+        </div>
+        <button onclick="loadLuaranMagangData()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+            <i class="fas fa-search mr-2"></i> Cari
+        </button>
+        <button onclick="loadLuaranMagangData()" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+            <i class="fas fa-sync-alt mr-2"></i> Refresh
+        </button>
+    </div>
+    <div class="table-responsive overflow-x-auto">
+        <table class="w-full">
+            <thead class="bg-gray-50 text-gray-700">
+                <tr>
+                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">No</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">NIM</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Nama Mahasiswa</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Perusahaan</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Judul Proyek</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Link Poster</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Link Laporan</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">File MOU</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Status</th>
+                    <th class="px-4 py-3 text-center text-xs font-medium uppercase">Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="luaranMagangTableBody" class="divide-y divide-gray-200">
+                <tr>
+                    <td colspan="10" class="text-center py-8 text-gray-500">
+                        <i class="fas fa-spinner fa-spin mr-2"></i> Memuat data...
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- PAGINATION LUARAN MAGANG -->
+    <div class="px-6 py-4 border-t border-gray-200 flex items-center justify-between mt-4 bg-white rounded-b-xl">
+        <div class="text-sm text-gray-500" id="luaranMagangPaginationInfo"></div>
+        <div class="flex space-x-2">
+            <button onclick="changeLuaranMagangPage('prev')" class="px-3 py-1 border rounded-lg hover:bg-gray-50">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <span id="luaranMagangCurrentPage" class="px-3 py-1">1</span>
+            <button onclick="changeLuaranMagangPage('next')" class="px-3 py-1 border rounded-lg hover:bg-gray-50">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+</div>
             </section>
 
             <!-- Stats Section -->
             <section id="stats-section" class="content-section" data-aos="fade-up">
-                <!-- Statistics Cards -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                    <!-- Total KKN Card -->
                     <div class="stat-card bg-gradient-to-br from-blue-500 to-blue-600 text-white p-5 rounded-xl shadow-lg">
                         <div class="flex justify-between items-center">
                             <div>
@@ -540,7 +639,6 @@ header nav {
                         </div>
                     </div>
 
-                    <!-- Total Magang Card -->
                     <div class="stat-card bg-gradient-to-br from-green-500 to-green-600 text-white p-5 rounded-xl shadow-lg">
                         <div class="flex justify-between items-center">
                             <div>
@@ -555,7 +653,6 @@ header nav {
                         </div>
                     </div>
 
-                    <!-- Desa Card -->
                     <div class="stat-card bg-gradient-to-br from-purple-500 to-purple-600 text-white p-5 rounded-xl shadow-lg">
                         <div class="flex justify-between items-center">
                             <div>
@@ -570,7 +667,6 @@ header nav {
                         </div>
                     </div>
 
-                    <!-- Program Card -->
                     <div class="stat-card bg-gradient-to-br from-orange-500 to-orange-600 text-white p-5 rounded-xl shadow-lg">
                         <div class="flex justify-between items-center">
                             <div>
@@ -586,11 +682,9 @@ header nav {
                     </div>
                 </div>
 
-                <!-- Charts Section -->
                 <div class="bg-white rounded-xl shadow-lg p-5 mb-6">
                     <h4 class="text-lg font-semibold mb-4 text-gray-800 border-b pb-2">Grafik Status Registrasi</h4>
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <!-- Chart KKN -->
                         <div class="bg-gray-50 rounded-lg p-4">
                             <h5 class="text-md font-medium text-gray-700 mb-3 flex items-center">
                                 <i class="fas fa-chart-pie text-blue-500 mr-2"></i>
@@ -600,8 +694,6 @@ header nav {
                                 <canvas id="kknChart"></canvas>
                             </div>
                         </div>
-
-                        <!-- Chart Magang -->
                         <div class="bg-gray-50 rounded-lg p-4">
                             <h5 class="text-md font-medium text-gray-700 mb-3 flex items-center">
                                 <i class="fas fa-chart-pie text-green-500 mr-2"></i>
@@ -614,11 +706,9 @@ header nav {
                     </div>
                 </div>
 
-                <!-- Statistik Detail -->
                 <div class="bg-white rounded-xl shadow-lg p-5">
                     <h4 class="text-lg font-semibold mb-4 text-gray-800 border-b pb-2">Statistik Detail</h4>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <!-- KKN Statistics -->
                         <div class="border rounded-lg p-4">
                             <h5 class="font-medium text-blue-600 mb-3 flex items-center">
                                 <i class="fas fa-university mr-2"></i>
@@ -648,7 +738,6 @@ header nav {
                             </div>
                         </div>
 
-                        <!-- Magang Statistics -->
                         <div class="border rounded-lg p-4">
                             <h5 class="font-medium text-green-600 mb-3 flex items-center">
                                 <i class="fas fa-briefcase mr-2"></i>
@@ -694,12 +783,10 @@ header nav {
             </div>
             <form id="programForm" class="p-6" onsubmit="saveProgram(event)">
                 <input type="hidden" id="programId">
-                
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2">Nama Program <span class="text-red-500">*</span></label>
                     <input type="text" id="programName" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500" required>
                 </div>
-                
                 <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
                         <label class="block text-gray-700 text-sm font-bold mb-2">Jenis <span class="text-red-500">*</span></label>
@@ -714,17 +801,14 @@ header nav {
                         <input type="number" id="programQuota" min="1" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500" required>
                     </div>
                 </div>
-                
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2">Periode <span class="text-red-500">*</span></label>
                     <input type="text" id="programPeriode" placeholder="Contoh: Jan - Mar 2024" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500" required>
                 </div>
-                
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2">Deskripsi</label>
                     <textarea id="programDescription" rows="3" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500"></textarea>
                 </div>
-                
                 <div class="flex justify-end space-x-3">
                     <button type="button" onclick="closeProgramModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
                         Batal
@@ -737,6 +821,42 @@ header nav {
         </div>
     </div>
 
+    <!-- Modal Verifikasi Luaran Magang -->
+<div id="verifikasiLuaranMagangModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50 flex items-center justify-center">
+    <div class="relative bg-white rounded-lg shadow-xl w-11/12 md:w-3/4 lg:w-1/2">
+        <div class="flex justify-between items-center p-6 border-b">
+            <h3 class="text-xl font-bold text-gray-900">Verifikasi Luaran Magang</h3>
+            <button onclick="closeVerifikasiLuaranMagangModal()" class="text-gray-400 hover:text-gray-600">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        <form id="verifikasiLuaranMagangForm" class="p-6" onsubmit="submitVerifikasiLuaranMagang(event)">
+            <input type="hidden" id="verifikasiLuaranMagangId">
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2">Status Verifikasi <span class="text-red-500">*</span></label>
+                <select id="verifikasiLuaranMagangStatus" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500" required>
+                    <option value="pending">Pending</option>
+                    <option value="approved">Disetujui</option>
+                    <option value="rejected">Ditolak</option>
+                    <option value="verified">Terverifikasi</option>
+                </select>
+            </div>
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2">Catatan</label>
+                <textarea id="verifikasiLuaranMagangCatatan" rows="3" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500" placeholder="Berikan catatan jika diperlukan..."></textarea>
+            </div>
+            <div class="flex justify-end space-x-3">
+                <button type="button" onclick="closeVerifikasiLuaranMagangModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
+                    Batal
+                </button>
+                <button type="submit" class="px-4 py-2 bg-gradient-to-r from-green-500 to-blue-600 text-white rounded-lg hover:shadow-lg transition">
+                    Simpan Verifikasi
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
     <!-- Modal Desa -->
     <div id="desaModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50 flex items-center justify-center">
         <div class="relative bg-white rounded-lg shadow-xl w-11/12 md:w-3/4 lg:w-1/2 max-h-[90vh] overflow-y-auto">
@@ -748,7 +868,6 @@ header nav {
             </div>
             <form id="desaForm" class="p-6" onsubmit="saveDesa(event)">
                 <input type="hidden" id="desaId">
-                
                 <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
                         <label class="block text-gray-700 text-sm font-bold mb-2">Nama Desa <span class="text-red-500">*</span></label>
@@ -759,7 +878,6 @@ header nav {
                         <input type="text" id="desaKecamatan" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500">
                     </div>
                 </div>
-                
                 <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
                         <label class="block text-gray-700 text-sm font-bold mb-2">Kabupaten <span class="text-red-500">*</span></label>
@@ -774,7 +892,6 @@ header nav {
                     <label class="block text-gray-700 text-sm font-bold mb-2">Kuota <span class="text-red-500">*</span></label>
                     <input type="number" id="desaKuota" min="1" value="30" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500" required>
                 </div>
-                
                 <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
                         <label class="block text-gray-700 text-sm font-bold mb-2">Pembimbing Lapangan</label>
@@ -786,17 +903,14 @@ header nav {
                                oninput="this.value = this.value.replace(/[^0-9]/g, '')" maxlength="15">
                     </div>
                 </div>
-                
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2">Alamat</label>
                     <textarea id="desaAlamat" rows="2" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500"></textarea>
                 </div>
-                
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2">Deskripsi</label>
                     <textarea id="desaDeskripsi" rows="2" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500"></textarea>
                 </div>
-                
                 <div class="flex justify-end space-x-3">
                     <button type="button" onclick="closeDesaModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
                         Batal
@@ -809,7 +923,7 @@ header nav {
         </div>
     </div>
 
-    <!-- Modal Detail -->
+    <!-- Modal Detail Umum -->
     <div id="detailModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50 flex items-center justify-center">
         <div class="relative bg-white rounded-lg shadow-xl w-11/12 md:w-3/4 lg:w-1/2 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center p-6 border-b">
@@ -818,9 +932,7 @@ header nav {
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
-            <div class="p-6" id="detailModalContent">
-                <!-- Content will be loaded here -->
-            </div>
+            <div class="p-6" id="detailModalContent"></div>
             <div class="flex justify-end p-6 border-t">
                 <button onclick="closeDetailModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
                     Tutup
@@ -829,7 +941,7 @@ header nav {
         </div>
     </div>
 
-    <!-- Modal Status -->
+    <!-- Modal Status Registrasi -->
     <div id="statusModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50 flex items-center justify-center">
         <div class="relative bg-white rounded-lg shadow-xl w-11/12 md:w-3/4 lg:w-1/2">
             <div class="flex justify-between items-center p-6 border-b">
@@ -841,7 +953,6 @@ header nav {
             <form id="statusForm" class="p-6" onsubmit="updateRegistrationStatus(event)">
                 <input type="hidden" id="statusId">
                 <input type="hidden" id="statusType">
-                
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2">Status <span class="text-red-500">*</span></label>
                     <select id="newStatus" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500" required>
@@ -851,18 +962,70 @@ header nav {
                         <option value="verified">Terverifikasi</option>
                     </select>
                 </div>
-                
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2">Catatan</label>
                     <textarea id="statusCatatan" rows="3" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500" placeholder="Berikan catatan jika diperlukan..."></textarea>
                 </div>
-                
                 <div class="flex justify-end space-x-3">
                     <button type="button" onclick="closeStatusModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
                         Batal
                     </button>
                     <button type="submit" class="px-4 py-2 bg-gradient-to-r from-green-500 to-blue-600 text-white rounded-lg hover:shadow-lg transition">
                         Simpan Perubahan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Detail Perusahaan -->
+    <div id="perusahaanDetailModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50 flex items-center justify-center">
+        <div class="relative bg-white rounded-lg shadow-xl w-11/12 md:w-3/4 lg:w-1/2 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center p-6 border-b">
+                <h3 class="text-xl font-bold text-gray-900">Detail Perusahaan Magang</h3>
+                <button onclick="closePerusahaanDetailModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6" id="perusahaanDetailContent"></div>
+            <div class="flex justify-end p-6 border-t">
+                <button onclick="closePerusahaanDetailModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Verifikasi Perusahaan -->
+    <div id="verifikasiPerusahaanModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50 flex items-center justify-center">
+        <div class="relative bg-white rounded-lg shadow-xl w-11/12 md:w-3/4 lg:w-1/2">
+            <div class="flex justify-between items-center p-6 border-b">
+                <h3 class="text-xl font-bold text-gray-900">Verifikasi Data Perusahaan</h3>
+                <button onclick="closeVerifikasiPerusahaanModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form id="verifikasiPerusahaanForm" class="p-6" onsubmit="submitVerifikasiPerusahaan(event)">
+                <input type="hidden" id="verifikasiPerusahaanId">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Status Verifikasi <span class="text-red-500">*</span></label>
+                    <select id="verifikasiPerusahaanStatus" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500" required>
+                        <option value="pending">Pending</option>
+                        <option value="approved">Disetujui</option>
+                        <option value="rejected">Ditolak</option>
+                        <option value="verified">Terverifikasi</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Catatan</label>
+                    <textarea id="verifikasiPerusahaanCatatan" rows="3" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500" placeholder="Berikan catatan jika diperlukan..."></textarea>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeVerifikasiPerusahaanModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
+                        Batal
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-gradient-to-r from-green-500 to-blue-600 text-white rounded-lg hover:shadow-lg transition">
+                        Simpan Verifikasi
                     </button>
                 </div>
             </form>
@@ -880,7 +1043,6 @@ header nav {
             </div>
             <form id="verificationForm" class="p-6" onsubmit="submitVerification(event)">
                 <input type="hidden" id="verificationId">
-                
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2">Status Verifikasi <span class="text-red-500">*</span></label>
                     <select id="verificationStatus" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500" required>
@@ -888,12 +1050,10 @@ header nav {
                         <option value="rejected">Ditolak</option>
                     </select>
                 </div>
-                
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2">Catatan</label>
                     <textarea id="verificationNotes" rows="3" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500" placeholder="Berikan catatan jika diperlukan..."></textarea>
                 </div>
-                
                 <div class="flex justify-end space-x-3">
                     <button type="button" onclick="closeVerificationModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
                         Batal
@@ -906,27 +1066,6 @@ header nav {
         </div>
     </div>
 
-    <!-- Modal Konfirmasi Logout -->
-    <div id="confirmLogoutModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50 flex items-center justify-center">
-        <div class="relative bg-white rounded-lg shadow-xl w-11/12 md:w-1/3">
-            <div class="p-6">
-                <div class="text-center">
-                    <i class="fas fa-exclamation-triangle text-yellow-500 text-5xl mb-4"></i>
-                    <h3 class="text-lg font-bold text-gray-900 mb-2">Konfirmasi Logout</h3>
-                    <p class="text-gray-600 mb-6">Apakah Anda yakin ingin logout?</p>
-                    <div class="flex justify-center space-x-3">
-                        <button onclick="closeLogoutModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
-                            Batal
-                        </button>
-                        <button onclick="performLogout()" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
-                            Logout
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
@@ -934,594 +1073,451 @@ header nav {
     
     <script>
         // ==================== INITIALIZATION ====================
-        AOS.init({ duration: 800, once: true });
+AOS.init({ duration: 800, once: true });
 
-        // API Base URL
-        const API_BASE_URL = 'http://localhost:3000/api';
+const API_BASE_URL = 'http://localhost:3000/api';
 
-        // Global Variables
-        let currentProgramPage = 1;
-        let currentDesaPage = 1;
-        let kknChart, magangChart;
-        let selectedType = '';
-        let selectedId = '';
+let currentProgramPage = 1;
+let currentDesaPage = 1;
+let currentPerusahaanPage = 1;
+let currentLuaranMagangPage = 1;
+let kknChart, magangChart;
+let selectedType = '';
+let selectedId = '';
 
-        // ==================== AUTHENTICATION & LOGOUT ====================
-        let token = localStorage.getItem('token');
-        if (!token) {
-            window.location.href = '../login.html';
-        }
+// ==================== AUTHENTICATION ====================
+let token = localStorage.getItem('token');
+if (!token) {
+    window.location.href = '../login.html';
+}
 
-        const user = JSON.parse(localStorage.getItem('user') || '{}');
-        document.getElementById('userName').textContent = user.nama_lengkap || 'Admin LPPM';
+const user = JSON.parse(localStorage.getItem('user') || '{}');
+document.getElementById('userName').textContent = user.nama_lengkap || 'Admin LPPM';
 
-        const getHeaders = () => {
-            return {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            };
-        };
+const getHeaders = () => {
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+    };
+};
 
-        // Handle logout function
-        function handleLogout() {
-            Swal.fire({
-                title: 'Konfirmasi Logout',
-                text: 'Apakah Anda yakin ingin logout?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Ya, Logout',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    performLogout();
-                }
-            });
-        }
-
-        function performLogout() {
+function handleLogout() {
+    Swal.fire({
+        title: 'Konfirmasi Logout',
+        text: 'Apakah Anda yakin ingin logout?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Ya, Logout',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
             localStorage.removeItem('token');
             localStorage.removeItem('user');
             window.location.href = '../login.html';
         }
-
-        // ==================== UTILITY FUNCTIONS ====================
-        function showLoading() {
-            document.getElementById('loadingOverlay').classList.remove('hidden');
-        }
-
-        function hideLoading() {
-            document.getElementById('loadingOverlay').classList.add('hidden');
-        }
-
-        function showAlert(message, type = 'success') {
-            Swal.fire({
-                icon: type,
-                title: type === 'success' ? 'Berhasil' : type === 'error' ? 'Gagal' : 'Informasi',
-                text: message,
-                timer: 2000,
-                showConfirmButton: false
-            });
-        }
-
-        function formatDate(dateString) {
-            if (!dateString) return '-';
-            const date = new Date(dateString);
-            return date.toLocaleDateString('id-ID', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            });
-        }
-
-        function formatDateTime(dateString) {
-            if (!dateString) return '-';
-            const date = new Date(dateString);
-            return date.toLocaleDateString('id-ID', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-        }
-
-        function getStatusBadgeClass(status) {
-            const classes = {
-                'pending': 'badge-pending',
-                'approved': 'badge-approved',
-                'rejected': 'badge-rejected',
-                'verified': 'badge-verified'
-            };
-            return classes[status] || 'badge-pending';
-        }
-
-        function getStatusText(status) {
-            const texts = {
-                'pending': 'Pending',
-                'approved': 'Disetujui',
-                'rejected': 'Ditolak',
-                'verified': 'Terverifikasi'
-            };
-            return texts[status] || status;
-        }
-
-        // Fungsi untuk generate UUID (untuk keperluan frontend jika diperlukan)
-        function generateUUID() {
-            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-                var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-                return v.toString(16);
-            });
-        }
-
-        // ==================== SECTION NAVIGATION ====================
-        function showSection(sectionId) {
-            document.querySelectorAll('.content-section').forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            document.getElementById(sectionId).classList.add('active');
-            
-            document.querySelectorAll('.section-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            // Find the clicked tab and add active class
-            const tabs = document.querySelectorAll('.section-tab');
-            for (let tab of tabs) {
-                if (tab.textContent.trim().toLowerCase().includes(sectionId.replace('-section', ''))) {
-                    tab.classList.add('active');
-                    break;
-                }
-            }
-            
-            switch(sectionId) {
-                case 'program-section':
-                    loadProgramData();
-                    break;
-                case 'desa-section':
-                    loadDesaData();
-                    break;
-                case 'registrations-section':
-                    loadRegistrationData();
-                    loadDesaFilterOptions();
-                    break;
-                case 'luaran-section':
-                    loadLuaranData();
-                    loadDesaLuaranOptions();
-                    break;
-                case 'stats-section':
-                    loadStatsData();
-                    break;
-            }
-        }
-
-        // ==================== PROGRAM FUNCTIONS ====================
-        async function loadProgramData() {
-            showLoading();
-            const search = document.getElementById('searchProgram').value;
-            const jenis = document.getElementById('filterJenisProgram').value;
-            
-            try {
-                const response = await fetch(`${API_BASE_URL}/admin/programs?page=${currentProgramPage}&limit=10&search=${search}&jenis=${jenis}`, {
-                    headers: getHeaders()
-                });
-                const result = await response.json();
-                
-                if (result.success) {
-                    renderProgramTable(result.data);
-                    if (result.pagination) {
-                        updateProgramPagination(result.pagination);
-                    }
-                } else {
-                    showAlert(result.message, 'error');
-                }
-            } catch (error) {
-                console.error('Error loading programs:', error);
-                showAlert('Gagal memuat data program', 'error');
-            } finally {
-                hideLoading();
-            }
-        }
-
-        function renderProgramTable(programs) {
-            const tbody = document.getElementById('programTableBody');
-            
-            if (!programs || programs.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="7" class="text-center py-8 text-gray-500">
-                            <i class="fas fa-folder-open text-4xl mb-3"></i><br>
-                            Tidak ada data program
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-            
-            tbody.innerHTML = programs.map(program => `
-                <tr class="hover:bg-gray-50 transition-colors">
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm font-medium text-gray-900">${program.nama_program}</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${program.jenis === 'magang' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}">
-                            ${program.jenis === 'magang' ? 'Magang' : 'KKN'}
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${program.periode || '-'}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${program.kuota}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${program.pendaftar || 0}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${program.status === 'aktif' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">
-                            ${program.status === 'aktif' ? 'Aktif' : 'Tidak Aktif'}
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
-                        <button onclick="editProgram('${program.id_program}')" class="text-green-600 hover:text-green-900 mr-3 action-btn" title="Edit">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button onclick="toggleProgramStatus('${program.id_program}')" class="text-yellow-600 hover:text-yellow-900 mr-3 action-btn" title="${program.status === 'aktif' ? 'Nonaktifkan' : 'Aktifkan'}">
-                            <i class="fas ${program.status === 'aktif' ? 'fa-ban' : 'fa-check-circle'}"></i>
-                        </button>
-                        <button onclick="deleteProgram('${program.id_program}')" class="text-red-600 hover:text-red-900 action-btn" title="Hapus">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function updateProgramPagination(pagination) {
-            const from = ((pagination.currentPage - 1) * pagination.itemsPerPage) + 1;
-            const to = Math.min(pagination.currentPage * pagination.itemsPerPage, pagination.totalItems);
-            document.getElementById('programPaginationInfo').innerHTML = 
-                `Menampilkan ${from} - ${to} dari ${pagination.totalItems} data`;
-            document.getElementById('programCurrentPage').textContent = pagination.currentPage;
-        }
-
-        function changeProgramPage(direction) {
-            if (direction === 'prev' && currentProgramPage > 1) {
-                currentProgramPage--;
-            } else if (direction === 'next') {
-                currentProgramPage++;
-            }
-            loadProgramData();
-        }
-
-        function openAddProgramModal() {
-            document.getElementById('programModalTitle').textContent = 'Buka Program Baru';
-            document.getElementById('programForm').reset();
-            document.getElementById('programId').value = '';
-            document.getElementById('programModal').classList.remove('hidden');
-        }
-
-        function closeProgramModal() {
-            document.getElementById('programModal').classList.add('hidden');
-        }
-
-        async function saveProgram(event) {
-            event.preventDefault();
-            showLoading();
-            
-            const programId = document.getElementById('programId').value;
-            const programData = {
-                nama_program: document.getElementById('programName').value,
-                jenis: document.getElementById('programType').value,
-                kuota: parseInt(document.getElementById('programQuota').value),
-                periode: document.getElementById('programPeriode').value,
-                deskripsi: document.getElementById('programDescription').value
-            };
-            
-            try {
-                const url = programId ? `${API_BASE_URL}/admin/programs/${programId}` : `${API_BASE_URL}/admin/programs`;
-                const method = programId ? 'PUT' : 'POST';
-                
-                const response = await fetch(url, {
-                    method: method,
-                    headers: getHeaders(),
-                    body: JSON.stringify(programData)
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    showAlert(programId ? 'Program berhasil diupdate' : 'Program berhasil ditambahkan', 'success');
-                    closeProgramModal();
-                    loadProgramData();
-                } else {
-                    showAlert(result.message, 'error');
-                }
-            } catch (error) {
-                console.error('Error saving program:', error);
-                showAlert('Gagal menyimpan program', 'error');
-            } finally {
-                hideLoading();
-            }
-        }
-
-        async function editProgram(id) {
-            showLoading();
-            try {
-                const response = await fetch(`${API_BASE_URL}/admin/programs/${id}`, {
-                    headers: getHeaders()
-                });
-                const result = await response.json();
-                
-                if (result.success) {
-                    document.getElementById('programId').value = result.data.id_program;
-                    document.getElementById('programName').value = result.data.nama_program;
-                    document.getElementById('programType').value = result.data.jenis;
-                    document.getElementById('programQuota').value = result.data.kuota;
-                    document.getElementById('programPeriode').value = result.data.periode;
-                    document.getElementById('programDescription').value = result.data.deskripsi || '';
-                    
-                    document.getElementById('programModalTitle').textContent = 'Edit Program';
-                    document.getElementById('programModal').classList.remove('hidden');
-                }
-            } catch (error) {
-                console.error('Error loading program:', error);
-                showAlert('Gagal memuat data program', 'error');
-            } finally {
-                hideLoading();
-            }
-        }
-
-        async function toggleProgramStatus(id) {
-            showLoading();
-            try {
-                const response = await fetch(`${API_BASE_URL}/admin/programs/${id}/status`, {
-                    method: 'PATCH',
-                    headers: getHeaders()
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    showAlert('Status program berhasil diubah', 'success');
-                    loadProgramData();
-                } else {
-                    showAlert(result.message, 'error');
-                }
-            } catch (error) {
-                console.error('Error toggling status:', error);
-                showAlert('Gagal mengubah status program', 'error');
-            } finally {
-                hideLoading();
-            }
-        }
-
-        async function deleteProgram(id) {
-            const result = await Swal.fire({
-                title: 'Konfirmasi Hapus',
-                text: 'Apakah Anda yakin ingin menghapus program ini?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Ya, Hapus',
-                cancelButtonText: 'Batal'
-            });
-            
-            if (!result.isConfirmed) return;
-            
-            showLoading();
-            try {
-                const response = await fetch(`${API_BASE_URL}/admin/programs/${id}`, {
-                    method: 'DELETE',
-                    headers: getHeaders()
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    showAlert('Program berhasil dihapus', 'success');
-                    loadProgramData();
-                } else {
-                    showAlert(result.message, 'error');
-                }
-            } catch (error) {
-                console.error('Error deleting program:', error);
-                showAlert('Gagal menghapus program', 'error');
-            } finally {
-                hideLoading();
-            }
-        }
-
-        // ==================== DESA FUNCTIONS ====================
-        async function loadDesaData() {
-            showLoading();
-            const search = document.getElementById('searchDesa').value;
-            const kabupaten = document.getElementById('filterKabupaten').value;
-            const status = document.getElementById('filterStatusDesa').value;
-            
-            try {
-                const response = await fetch(`${API_BASE_URL}/admin/desa-kkn?page=${currentDesaPage}&limit=10&search=${search}&kabupaten=${kabupaten}&status=${status}`, {
-                    headers: getHeaders()
-                });
-                const result = await response.json();
-                
-                if (result.success) {
-                    renderDesaTable(result.data);
-                    if (result.pagination) {
-                        updateDesaPagination(result.pagination);
-                    }
-                    loadKabupatenFilter(result.data);
-                } else {
-                    showAlert(result.message, 'error');
-                }
-            } catch (error) {
-                console.error('Error loading desa:', error);
-                showAlert('Gagal memuat data desa', 'error');
-            } finally {
-                hideLoading();
-            }
-        }
-
-        function renderDesaTable(desaList) {
-            const tbody = document.getElementById('desaTableBody');
-            
-            if (!desaList || desaList.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="9" class="text-center py-8 text-gray-500">
-                            <i class="fas fa-map-marker-alt text-4xl mb-3"></i><br>
-                            Tidak ada data desa
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-            
-            tbody.innerHTML = desaList.map(desa => `
-                <tr class="hover:bg-gray-50 transition-colors">
-                    <td class="px-4 py-3 whitespace-nowrap">
-                        <div class="text-sm font-medium text-gray-900">${desa.nama_desa}</div>
-                    </td>
-                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">${desa.kecamatan || '-'}</td>
-                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">${desa.kabupaten}</td>
-                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">${desa.provinsi}</td>
-                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">${desa.kuota}</td>
-                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-                        <span class="${desa.kuota_terisi >= desa.kuota ? 'text-red-600 font-semibold' : 'text-green-600'}">
-                            ${desa.kuota_terisi || 0}/${desa.kuota}
-                        </span>
-                    </td>
-                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-                        ${desa.nama_pembimbing_lapangan || '-'}
-                    </td>
-                    <td class="px-4 py-3 whitespace-nowrap">
-                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${desa.status === 'aktif' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">
-                            ${desa.status === 'aktif' ? 'Aktif' : 'Nonaktif'}
-                        </span>
-                    </td>
-                    <td class="px-4 py-3 whitespace-nowrap text-center text-sm font-medium">
-                        <button onclick="viewDesaDetail('${desa.id_desa}')" class="text-blue-600 hover:text-blue-900 mr-2 action-btn" title="Lihat Detail">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <button onclick="editDesa('${desa.id_desa}')" class="text-green-600 hover:text-green-900 mr-2 action-btn" title="Edit">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button onclick="toggleDesaStatus('${desa.id_desa}')" class="text-yellow-600 hover:text-yellow-900 mr-2 action-btn" title="${desa.status === 'aktif' ? 'Nonaktifkan' : 'Aktifkan'}">
-                            <i class="fas ${desa.status === 'aktif' ? 'fa-ban' : 'fa-check-circle'}"></i>
-                        </button>
-                        <button onclick="deleteDesa('${desa.id_desa}')" class="text-red-600 hover:text-red-900 action-btn" title="Hapus">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function loadKabupatenFilter(desaList) {
-            const filterSelect = document.getElementById('filterKabupaten');
-            const kabupatenSet = new Set();
-            
-            desaList.forEach(desa => {
-                if (desa.kabupaten) kabupatenSet.add(desa.kabupaten);
-            });
-            
-            filterSelect.innerHTML = '<option value="">Semua Kabupaten</option>';
-            [...kabupatenSet].sort().forEach(kab => {
-                filterSelect.innerHTML += `<option value="${kab}">${kab}</option>`;
-            });
-        }
-
-        function updateDesaPagination(pagination) {
-            const from = ((pagination.currentPage - 1) * pagination.itemsPerPage) + 1;
-            const to = Math.min(pagination.currentPage * pagination.itemsPerPage, pagination.totalItems);
-            document.getElementById('desaPaginationInfo').innerHTML = 
-                `Menampilkan ${from} - ${to} dari ${pagination.totalItems} data`;
-            document.getElementById('desaCurrentPage').textContent = pagination.currentPage;
-        }
-
-        function changeDesaPage(direction) {
-            if (direction === 'prev' && currentDesaPage > 1) {
-                currentDesaPage--;
-            } else if (direction === 'next') {
-                currentDesaPage++;
-            }
-            loadDesaData();
-        }
-
-      function openAddDesaModal() {
-    document.getElementById('desaModalTitle').textContent = 'Tambah Desa KKN';
-    document.getElementById('desaForm').reset();
-    document.getElementById('desaId').value = '';
-    // HAPUS BARIS YANG MENGAKSES idDosenPembimbing
-    document.getElementById('desaModal').classList.remove('hidden');
+    });
 }
 
-        function closeDesaModal() {
-            document.getElementById('desaModal').classList.add('hidden');
-        }
+// ==================== UTILITY FUNCTIONS ====================
+function showLoading() {
+    document.getElementById('loadingOverlay').classList.remove('hidden');
+}
 
-        async function saveDesa(event) {
-    event.preventDefault();
-    showLoading();
-    
-    const desaId = document.getElementById('desaId').value;
-    
-    // Ambil nilai kuota
-    const kuotaInput = document.getElementById('desaKuota');
-    const kuota = kuotaInput ? parseInt(kuotaInput.value) : 30; // Default 30 jika tidak ada
-    
-    const desaData = {
-        nama_desa: document.getElementById('desaName').value,
-        kecamatan: document.getElementById('desaKecamatan').value || null,
-        kabupaten: document.getElementById('desaKabupaten').value,
-        provinsi: document.getElementById('desaProvinsi').value,
-        kuota: kuota, // TAMBAHKAN INI
-        nama_pembimbing_lapangan: document.getElementById('desaPembimbingLapangan').value || null,
-        kontak_pembimbing_lapangan: document.getElementById('desaKontakPembimbing').value.replace(/\D/g, '') || null,
-        alamat: document.getElementById('desaAlamat').value || null,
-        deskripsi: document.getElementById('desaDeskripsi').value || null
+function hideLoading() {
+    document.getElementById('loadingOverlay').classList.add('hidden');
+}
+
+function showAlert(message, type = 'success') {
+    Swal.fire({
+        icon: type,
+        title: type === 'success' ? 'Berhasil' : type === 'error' ? 'Gagal' : 'Informasi',
+        text: message,
+        timer: 2000,
+        showConfirmButton: false
+    });
+}
+
+function formatDate(dateString) {
+    if (!dateString) return '-';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('id-ID', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+}
+
+function formatDateTime(dateString) {
+    if (!dateString) return '-';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('id-ID', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+}
+
+function getStatusBadgeClass(status) {
+    const classes = {
+        'pending': 'badge-pending',
+        'approved': 'badge-approved',
+        'rejected': 'badge-rejected',
+        'verified': 'badge-verified'
     };
+    return classes[status] || 'badge-pending';
+}
+
+function getStatusText(status) {
+    const texts = {
+        'pending': 'Pending',
+        'approved': 'Disetujui',
+        'rejected': 'Ditolak',
+        'verified': 'Terverifikasi'
+    };
+    return texts[status] || status;
+}
+
+// ==================== SECTION NAVIGATION ====================
+function showSection(sectionId) {
+    document.querySelectorAll('.content-section').forEach(section => {
+        section.classList.remove('active');
+    });
+    document.getElementById(sectionId).classList.add('active');
     
-    console.log('Data yang dikirim:', desaData);
+    document.querySelectorAll('.section-tab').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    
+    const tabs = document.querySelectorAll('.section-tab');
+    for (let tab of tabs) {
+        if (tab.textContent.trim().toLowerCase().includes(sectionId.replace('-section', ''))) {
+            tab.classList.add('active');
+            break;
+        }
+    }
+    
+    switch(sectionId) {
+        case 'program-section':
+            loadProgramData();
+            break;
+        case 'desa-section':
+            loadDesaData();
+            break;
+        case 'perusahaan-section':
+            loadPerusahaanData();
+            break;
+        case 'registrations-section':
+            loadRegistrationData();
+            loadDesaFilterOptions();
+            break;
+        case 'luaran-section':
+            loadLuaranData();
+            loadLuaranMagangData();
+            loadDesaLuaranOptions();
+            break;
+        case 'stats-section':
+            loadStatsData();
+            break;
+    }
+}
+
+// ==================== PROGRAM FUNCTIONS ====================
+async function loadProgramData() {
+    showLoading();
+    const search = document.getElementById('searchProgram').value;
+    const jenis = document.getElementById('filterJenisProgram').value;
     
     try {
-        const url = desaId ? `${API_BASE_URL}/admin/desa-kkn/${desaId}` : `${API_BASE_URL}/admin/desa-kkn`;
-        const method = desaId ? 'PUT' : 'POST';
-        
-        const response = await fetch(url, {
-            method: method,
-            headers: getHeaders(),
-            body: JSON.stringify(desaData)
+        const response = await fetch(`${API_BASE_URL}/admin/programs?page=${currentProgramPage}&limit=10&search=${search}&jenis=${jenis}`, {
+            headers: getHeaders()
         });
-        
         const result = await response.json();
-        console.log('Response dari server:', result);
         
         if (result.success) {
-            showAlert(desaId ? 'Desa berhasil diupdate' : 'Desa berhasil ditambahkan', 'success');
-            closeDesaModal();
-            loadDesaData();
-        } else {
-            let errorMessage = result.message || 'Gagal menyimpan data';
-            if (result.errors) {
-                errorMessage = result.errors.map(err => err.message).join('\n');
+            renderProgramTable(result.data);
+            if (result.pagination) {
+                updateProgramPagination(result.pagination);
             }
-            showAlert(errorMessage, 'error');
+        } else {
+            showAlert(result.message, 'error');
         }
     } catch (error) {
-        console.error('Error saving desa:', error);
-        showAlert('Gagal menyimpan desa: ' + error.message, 'error');
+        console.error('Error loading programs:', error);
+        showAlert('Gagal memuat data program', 'error');
     } finally {
         hideLoading();
     }
 }
 
+function renderProgramTable(programs) {
+    const tbody = document.getElementById('programTableBody');
+    if (!programs || programs.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center py-8 text-gray-500">Tidak ada data program</td></tr>';
+        return;
+    }
+    tbody.innerHTML = programs.map(program => `
+        <tr class="hover:bg-gray-50 transition-colors">
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${program.nama_program}</td>
+            <td class="px-6 py-4 whitespace-nowrap"><span class="px-2 py-1 text-xs font-semibold rounded-full ${program.jenis === 'magang' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}">${program.jenis === 'magang' ? 'Magang' : 'KKN'}</span></td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${program.periode || '-'}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${program.kuota}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${program.pendaftar || 0}</td>
+            <td class="px-6 py-4 whitespace-nowrap"><span class="px-2 py-1 text-xs font-semibold rounded-full ${program.status === 'aktif' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">${program.status === 'aktif' ? 'Aktif' : 'Tidak Aktif'}</span></td>
+            <td class="px-6 py-4 whitespace-nowrap text-center">
+                <button onclick="editProgram('${program.id_program}')" class="text-green-600 hover:text-green-900 mr-2 action-btn"><i class="fas fa-edit"></i></button>
+                <button onclick="toggleProgramStatus('${program.id_program}')" class="text-yellow-600 hover:text-yellow-900 mr-2 action-btn"><i class="fas ${program.status === 'aktif' ? 'fa-ban' : 'fa-check-circle'}"></i></button>
+                <button onclick="deleteProgram('${program.id_program}')" class="text-red-600 hover:text-red-900 action-btn"><i class="fas fa-trash"></i></button>
+            </td>
+        </tr>
+    `).join('');
+}
 
-    async function editDesa(id) {
+function updateProgramPagination(pagination) {
+    const from = ((pagination.currentPage - 1) * pagination.itemsPerPage) + 1;
+    const to = Math.min(pagination.currentPage * pagination.itemsPerPage, pagination.totalItems);
+    document.getElementById('programPaginationInfo').innerHTML = `Menampilkan ${from} - ${to} dari ${pagination.totalItems} data`;
+    document.getElementById('programCurrentPage').textContent = pagination.currentPage;
+}
+
+function changeProgramPage(direction) {
+    if (direction === 'prev' && currentProgramPage > 1) currentProgramPage--;
+    else if (direction === 'next') currentProgramPage++;
+    loadProgramData();
+}
+
+function openAddProgramModal() {
+    document.getElementById('programModalTitle').textContent = 'Buka Program Baru';
+    document.getElementById('programForm').reset();
+    document.getElementById('programId').value = '';
+    document.getElementById('programModal').classList.remove('hidden');
+}
+
+function closeProgramModal() {
+    document.getElementById('programModal').classList.add('hidden');
+}
+
+async function saveProgram(event) {
+    event.preventDefault();
+    showLoading();
+    const programId = document.getElementById('programId').value;
+    const programData = {
+        nama_program: document.getElementById('programName').value,
+        jenis: document.getElementById('programType').value,
+        kuota: parseInt(document.getElementById('programQuota').value),
+        periode: document.getElementById('programPeriode').value,
+        deskripsi: document.getElementById('programDescription').value
+    };
+    try {
+        const url = programId ? `${API_BASE_URL}/admin/programs/${programId}` : `${API_BASE_URL}/admin/programs`;
+        const method = programId ? 'PUT' : 'POST';
+        const response = await fetch(url, { method, headers: getHeaders(), body: JSON.stringify(programData) });
+        const result = await response.json();
+        if (result.success) {
+            showAlert(programId ? 'Program berhasil diupdate' : 'Program berhasil ditambahkan', 'success');
+            closeProgramModal();
+            loadProgramData();
+        } else {
+            showAlert(result.message, 'error');
+        }
+    } catch (error) {
+        showAlert('Gagal menyimpan program', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+async function editProgram(id) {
     showLoading();
     try {
-        const response = await fetch(`${API_BASE_URL}/admin/desa-kkn/${id}`, {
-            headers: getHeaders()
-        });
+        const response = await fetch(`${API_BASE_URL}/admin/programs/${id}`, { headers: getHeaders() });
         const result = await response.json();
-        
+        if (result.success) {
+            document.getElementById('programId').value = result.data.id_program;
+            document.getElementById('programName').value = result.data.nama_program;
+            document.getElementById('programType').value = result.data.jenis;
+            document.getElementById('programQuota').value = result.data.kuota;
+            document.getElementById('programPeriode').value = result.data.periode;
+            document.getElementById('programDescription').value = result.data.deskripsi || '';
+            document.getElementById('programModalTitle').textContent = 'Edit Program';
+            document.getElementById('programModal').classList.remove('hidden');
+        }
+    } catch (error) {
+        showAlert('Gagal memuat data program', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+async function toggleProgramStatus(id) {
+    showLoading();
+    try {
+        const response = await fetch(`${API_BASE_URL}/admin/programs/${id}/status`, { method: 'PATCH', headers: getHeaders() });
+        const result = await response.json();
+        if (result.success) {
+            showAlert('Status program berhasil diubah', 'success');
+            loadProgramData();
+        } else {
+            showAlert(result.message, 'error');
+        }
+    } catch (error) {
+        showAlert('Gagal mengubah status program', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+async function deleteProgram(id) {
+    const result = await Swal.fire({
+        title: 'Konfirmasi Hapus',
+        text: 'Apakah Anda yakin ingin menghapus program ini?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        confirmButtonText: 'Ya, Hapus',
+        cancelButtonText: 'Batal'
+    });
+    if (!result.isConfirmed) return;
+    showLoading();
+    try {
+        const response = await fetch(`${API_BASE_URL}/admin/programs/${id}`, { method: 'DELETE', headers: getHeaders() });
+        const result = await response.json();
+        if (result.success) {
+            showAlert('Program berhasil dihapus', 'success');
+            loadProgramData();
+        } else {
+            showAlert(result.message, 'error');
+        }
+    } catch (error) {
+        showAlert('Gagal menghapus program', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// ==================== DESA FUNCTIONS ====================
+async function loadDesaData() {
+    showLoading();
+    const search = document.getElementById('searchDesa').value;
+    const kabupaten = document.getElementById('filterKabupaten').value;
+    const status = document.getElementById('filterStatusDesa').value;
+    try {
+        const response = await fetch(`${API_BASE_URL}/admin/desa-kkn?page=${currentDesaPage}&limit=10&search=${search}&kabupaten=${kabupaten}&status=${status}`, { headers: getHeaders() });
+        const result = await response.json();
+        if (result.success) {
+            renderDesaTable(result.data);
+            if (result.pagination) updateDesaPagination(result.pagination);
+            loadKabupatenFilter(result.data);
+        } else {
+            showAlert(result.message, 'error');
+        }
+    } catch (error) {
+        showAlert('Gagal memuat data desa', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+function renderDesaTable(desaList) {
+    const tbody = document.getElementById('desaTableBody');
+    if (!desaList || desaList.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" class="text-center py-8 text-gray-500">Tidak ada data desa</td></tr>';
+        return;
+    }
+    tbody.innerHTML = desaList.map(desa => `
+        <tr class="hover:bg-gray-50">
+            <td class="px-4 py-3">${desa.nama_desa}</td>
+            <td class="px-4 py-3">${desa.kecamatan || '-'}</td>
+            <td class="px-4 py-3">${desa.kabupaten}</td>
+            <td class="px-4 py-3">${desa.provinsi}</td>
+            <td class="px-4 py-3">${desa.kuota}</td>
+            <td class="px-4 py-3"><span class="${desa.kuota_terisi >= desa.kuota ? 'text-red-600' : 'text-green-600'}">${desa.kuota_terisi || 0}/${desa.kuota}</span></td>
+            <td class="px-4 py-3">${desa.nama_pembimbing_lapangan || '-'}</td>
+            <td class="px-4 py-3"><span class="px-2 py-1 text-xs font-semibold rounded-full ${desa.status === 'aktif' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">${desa.status === 'aktif' ? 'Aktif' : 'Nonaktif'}</span></td>
+            <td class="px-4 py-3 text-center">
+                <button onclick="viewDesaDetail('${desa.id_desa}')" class="text-blue-600 hover:text-blue-900 mr-2 action-btn"><i class="fas fa-eye"></i></button>
+                <button onclick="editDesa('${desa.id_desa}')" class="text-green-600 hover:text-green-900 mr-2 action-btn"><i class="fas fa-edit"></i></button>
+                <button onclick="toggleDesaStatus('${desa.id_desa}')" class="text-yellow-600 hover:text-yellow-900 mr-2 action-btn"><i class="fas ${desa.status === 'aktif' ? 'fa-ban' : 'fa-check-circle'}"></i></button>
+                <button onclick="deleteDesa('${desa.id_desa}')" class="text-red-600 hover:text-red-900 action-btn"><i class="fas fa-trash"></i></button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function loadKabupatenFilter(desaList) {
+    const filterSelect = document.getElementById('filterKabupaten');
+    const kabupatenSet = new Set();
+    desaList.forEach(desa => { if (desa.kabupaten) kabupatenSet.add(desa.kabupaten); });
+    filterSelect.innerHTML = '<option value="">Semua Kabupaten</option>';
+    [...kabupatenSet].sort().forEach(kab => { filterSelect.innerHTML += `<option value="${kab}">${kab}</option>`; });
+}
+
+function updateDesaPagination(pagination) {
+    const from = ((pagination.currentPage - 1) * pagination.itemsPerPage) + 1;
+    const to = Math.min(pagination.currentPage * pagination.itemsPerPage, pagination.totalItems);
+    document.getElementById('desaPaginationInfo').innerHTML = `Menampilkan ${from} - ${to} dari ${pagination.totalItems} data`;
+    document.getElementById('desaCurrentPage').textContent = pagination.currentPage;
+}
+
+function changeDesaPage(direction) {
+    if (direction === 'prev' && currentDesaPage > 1) currentDesaPage--;
+    else if (direction === 'next') currentDesaPage++;
+    loadDesaData();
+}
+
+function openAddDesaModal() {
+    document.getElementById('desaModalTitle').textContent = 'Tambah Desa KKN';
+    document.getElementById('desaForm').reset();
+    document.getElementById('desaId').value = '';
+    document.getElementById('desaModal').classList.remove('hidden');
+}
+
+function closeDesaModal() {
+    document.getElementById('desaModal').classList.add('hidden');
+}
+
+async function saveDesa(event) {
+    event.preventDefault();
+    showLoading();
+    const desaId = document.getElementById('desaId').value;
+    const desaData = {
+        nama_desa: document.getElementById('desaName').value,
+        kecamatan: document.getElementById('desaKecamatan').value || null,
+        kabupaten: document.getElementById('desaKabupaten').value,
+        provinsi: document.getElementById('desaProvinsi').value,
+        kuota: parseInt(document.getElementById('desaKuota').value),
+        nama_pembimbing_lapangan: document.getElementById('desaPembimbingLapangan').value || null,
+        kontak_pembimbing_lapangan: document.getElementById('desaKontakPembimbing').value.replace(/\D/g, '') || null,
+        alamat: document.getElementById('desaAlamat').value || null,
+        deskripsi: document.getElementById('desaDeskripsi').value || null
+    };
+    try {
+        const url = desaId ? `${API_BASE_URL}/admin/desa-kkn/${desaId}` : `${API_BASE_URL}/admin/desa-kkn`;
+        const method = desaId ? 'PUT' : 'POST';
+        const response = await fetch(url, { method, headers: getHeaders(), body: JSON.stringify(desaData) });
+        const result = await response.json();
+        if (result.success) {
+            showAlert(desaId ? 'Desa berhasil diupdate' : 'Desa berhasil ditambahkan', 'success');
+            closeDesaModal();
+            loadDesaData();
+        } else {
+            showAlert(result.message, 'error');
+        }
+    } catch (error) {
+        showAlert('Gagal menyimpan desa', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+async function editDesa(id) {
+    showLoading();
+    try {
+        const response = await fetch(`${API_BASE_URL}/admin/desa-kkn/${id}`, { headers: getHeaders() });
+        const result = await response.json();
         if (result.success) {
             const desa = result.data;
             document.getElementById('desaId').value = desa.id_desa;
@@ -1529,828 +1525,886 @@ header nav {
             document.getElementById('desaKecamatan').value = desa.kecamatan || '';
             document.getElementById('desaKabupaten').value = desa.kabupaten;
             document.getElementById('desaProvinsi').value = desa.provinsi;
-            
-            // TAMBAHKAN INI
-            const kuotaInput = document.getElementById('desaKuota');
-            if (kuotaInput) {
-                kuotaInput.value = desa.kuota || 30;
-            }
-            
+            document.getElementById('desaKuota').value = desa.kuota || 30;
             document.getElementById('desaPembimbingLapangan').value = desa.nama_pembimbing_lapangan || '';
             document.getElementById('desaKontakPembimbing').value = desa.kontak_pembimbing_lapangan || '';
             document.getElementById('desaAlamat').value = desa.alamat || '';
             document.getElementById('desaDeskripsi').value = desa.deskripsi || '';
-            
             document.getElementById('desaModalTitle').textContent = 'Edit Desa KKN';
             document.getElementById('desaModal').classList.remove('hidden');
         }
     } catch (error) {
-        console.error('Error loading desa:', error);
         showAlert('Gagal memuat data desa', 'error');
     } finally {
         hideLoading();
     }
 }
 
-        async function toggleDesaStatus(id) {
-            showLoading();
-            try {
-                const response = await fetch(`${API_BASE_URL}/admin/desa-kkn/${id}/status`, {
-                    method: 'PATCH',
-                    headers: getHeaders()
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    showAlert('Status desa berhasil diubah', 'success');
-                    loadDesaData();
-                } else {
-                    showAlert(result.message, 'error');
-                }
-            } catch (error) {
-                console.error('Error toggling status:', error);
-                showAlert('Gagal mengubah status desa', 'error');
-            } finally {
-                hideLoading();
-            }
+async function toggleDesaStatus(id) {
+    showLoading();
+    try {
+        const response = await fetch(`${API_BASE_URL}/admin/desa-kkn/${id}/status`, { method: 'PATCH', headers: getHeaders() });
+        const result = await response.json();
+        if (result.success) {
+            showAlert('Status desa berhasil diubah', 'success');
+            loadDesaData();
+        } else {
+            showAlert(result.message, 'error');
         }
+    } catch (error) {
+        showAlert('Gagal mengubah status desa', 'error');
+    } finally {
+        hideLoading();
+    }
+}
 
-        async function deleteDesa(id) {
-            // Check if desa has participants
-            try {
-                const checkResponse = await fetch(`${API_BASE_URL}/admin/desa-kkn/${id}`, {
-                    headers: getHeaders()
-                });
-                const checkResult = await checkResponse.json();
-                
-                if (checkResult.success && checkResult.data.kuota_terisi > 0) {
-                    showAlert('Tidak dapat menghapus desa yang masih memiliki peserta', 'error');
-                    return;
-                }
-            } catch (error) {
-                console.error('Error checking desa:', error);
-            }
-            
-            const result = await Swal.fire({
-                title: 'Konfirmasi Hapus',
-                text: 'Apakah Anda yakin ingin menghapus desa ini?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Ya, Hapus',
-                cancelButtonText: 'Batal'
-            });
-            
-            if (!result.isConfirmed) return;
-            
-            showLoading();
-            try {
-                const response = await fetch(`${API_BASE_URL}/admin/desa-kkn/${id}`, {
-                    method: 'DELETE',
-                    headers: getHeaders()
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    showAlert('Desa berhasil dihapus', 'success');
-                    loadDesaData();
-                } else {
-                    showAlert(result.message, 'error');
-                }
-            } catch (error) {
-                console.error('Error deleting desa:', error);
-                showAlert('Gagal menghapus desa', 'error');
-            } finally {
-                hideLoading();
-            }
+async function deleteDesa(id) {
+    const result = await Swal.fire({
+        title: 'Konfirmasi Hapus',
+        text: 'Apakah Anda yakin ingin menghapus desa ini?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        confirmButtonText: 'Ya, Hapus',
+        cancelButtonText: 'Batal'
+    });
+    if (!result.isConfirmed) return;
+    showLoading();
+    try {
+        const response = await fetch(`${API_BASE_URL}/admin/desa-kkn/${id}`, { method: 'DELETE', headers: getHeaders() });
+        const result = await response.json();
+        if (result.success) {
+            showAlert('Desa berhasil dihapus', 'success');
+            loadDesaData();
+        } else {
+            showAlert(result.message, 'error');
         }
+    } catch (error) {
+        showAlert('Gagal menghapus desa', 'error');
+    } finally {
+        hideLoading();
+    }
+}
 
-        async function viewDesaDetail(id) {
-            showLoading();
-            try {
-                const response = await fetch(`${API_BASE_URL}/admin/desa-kkn/${id}`, {
-                    headers: getHeaders()
-                });
-                const result = await response.json();
-                
-                if (result.success) {
-                    const desa = result.data;
-                    let pesertaHtml = '';
-                    
-                    if (desa.peserta && desa.peserta.length > 0) {
-                        pesertaHtml = desa.peserta.map(p => `
-                            <tr>
-                                <td class="px-4 py-2">${p.nim}</td>
-                                <td class="px-4 py-2">${p.nama_lengkap}</td>
-                                <td class="px-4 py-2"><span class="${getStatusBadgeClass(p.status)}">${getStatusText(p.status)}</span></td>
-                                <td class="px-4 py-2">${formatDate(p.tanggal_daftar)}</td>
-                            </tr>
-                        `).join('');
-                    } else {
-                        pesertaHtml = '<tr><td colspan="4" class="text-center py-4">Belum ada peserta</td></tr>';
-                    }
-                    
-                    const dosenInfo = desa.dosen_pembimbing ? 
-                        `${desa.dosen_pembimbing.nama_lengkap} (${desa.dosen_pembimbing.nidn})` : '-';
-                    
-                    const content = `
-                        <div class="grid grid-cols-2 gap-4 mb-4">
-                            <div><strong>Nama Desa:</strong> ${desa.nama_desa}</div>
-                            <div><strong>Kecamatan:</strong> ${desa.kecamatan || '-'}</div>
-                            <div><strong>Kabupaten:</strong> ${desa.kabupaten}</div>
-                            <div><strong>Provinsi:</strong> ${desa.provinsi}</div>
-                            <div><strong>Kuota:</strong> ${desa.kuota}</div>
-                            <div><strong>Terisi:</strong> ${desa.kuota_terisi || 0}</div>
-                            <div><strong>Sisa Kuota:</strong> ${desa.kuota - (desa.kuota_terisi || 0)}</div>
-                            <div><strong>Status:</strong> <span class="px-2 py-1 rounded-full text-xs font-semibold ${desa.status === 'aktif' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">${desa.status === 'aktif' ? 'Aktif' : 'Nonaktif'}</span></div>
-                        </div>
-                        <hr class="my-4">
-                        <h4 class="font-bold mb-2">Informasi Pembimbing:</h4>
-                        <div class="grid grid-cols-2 gap-4 mb-4">
-                            <div><strong>Dosen Pembimbing:</strong> ${dosenInfo}</div>
-                            <div><strong>Pembimbing Lapangan:</strong> ${desa.nama_pembimbing_lapangan || '-'}</div>
-                            <div><strong>Kontak:</strong> ${desa.kontak_pembimbing_lapangan || '-'}</div>
-                        </div>
-                        <hr class="my-4">
-                        <h4 class="font-bold mb-2">Daftar Peserta:</h4>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-sm">
-                                <thead class="bg-gray-50">
-                                    <tr>
-                                        <th class="px-4 py-2 text-left">NIM</th>
-                                        <th class="px-4 py-2 text-left">Nama</th>
-                                        <th class="px-4 py-2 text-left">Status</th>
-                                        <th class="px-4 py-2 text-left">Tanggal Daftar</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${pesertaHtml}
-                                </tbody>
-                            </table>
-                        </div>
-                    `;
-                    
-                    document.getElementById('detailModalContent').innerHTML = content;
-                    document.getElementById('detailModal').classList.remove('hidden');
-                }
-            } catch (error) {
-                console.error('Error viewing detail:', error);
-                showAlert('Gagal memuat detail', 'error');
-            } finally {
-                hideLoading();
-            }
-        }
-
-        // ==================== REGISTRATION FUNCTIONS ====================
-        async function loadDesaFilterOptions() {
-            try {
-                const response = await fetch(`${API_BASE_URL}/admin/desa-kkn/list/aktif`, {
-                    headers: getHeaders()
-                });
-                const result = await response.json();
-                
-                const select = document.getElementById('filterDesaRegistration');
-                select.innerHTML = '<option value="">Semua Desa</option>';
-                
-                if (result.success && result.data) {
-                    result.data.forEach(desa => {
-                        select.innerHTML += `<option value="${desa.id_desa}">${desa.nama_desa}</option>`;
-                    });
-                }
-            } catch (error) {
-                console.error('Error loading desa filters:', error);
-            }
-        }
-
-        async function loadRegistrationData() {
-            showLoading();
-            const search = document.getElementById('searchRegistration').value;
-            const jenis = document.getElementById('filterJenisRegistration').value;
-            const status = document.getElementById('filterStatusRegistration').value;
-            const id_desa = document.getElementById('filterDesaRegistration').value;
-            
-            try {
-                // Load KKN Registrations
-                if (jenis === '' || jenis === 'kkn') {
-                    const kknResponse = await fetch(`${API_BASE_URL}/admin/registrasi-kkn?search=${search}&status=${status}&id_desa=${id_desa}&limit=100`, {
-                        headers: getHeaders()
-                    });
-                    const kknResult = await kknResponse.json();
-                    if (kknResult.success) {
-                        renderKKNRegistrationTable(kknResult.data);
-                    } else {
-                        document.getElementById('kknRegistrationTableBody').innerHTML = `
-                            <tr>
-                                <td colspan="7" class="text-center py-4 text-gray-500">
-                                    Gagal memuat data
-                                </td>
-                            </tr>
-                        `;
-                    }
-                }
-                
-                // Load Magang Registrations
-                if (jenis === '' || jenis === 'magang') {
-                    const magangResponse = await fetch(`${API_BASE_URL}/admin/registrasi-magang?search=${search}&status=${status}&limit=100`, {
-                        headers: getHeaders()
-                    });
-                    const magangResult = await magangResponse.json();
-                    if (magangResult.success) {
-                        renderMagangRegistrationTable(magangResult.data);
-                    } else {
-                        document.getElementById('magangRegistrationTableBody').innerHTML = `
-                            <tr>
-                                <td colspan="7" class="text-center py-4 text-gray-500">
-                                    Gagal memuat data
-                                </td>
-                            </tr>
-                        `;
-                    }
-                }
-            } catch (error) {
-                console.error('Error loading registrations:', error);
-                showAlert('Gagal memuat data registrasi', 'error');
-            } finally {
-                hideLoading();
-            }
-        }
-
-        function renderKKNRegistrationTable(registrations) {
-            const tbody = document.getElementById('kknRegistrationTableBody');
-            
-            if (!registrations || registrations.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="7" class="text-center py-4 text-gray-500">
-                            Tidak ada data registrasi KKN
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-            
-            tbody.innerHTML = registrations.map(reg => `
-                <tr class="hover:bg-gray-50">
-                    <td class="px-4 py-3">${reg.nim}</td>
-                    <td class="px-4 py-3">
-                        <div class="font-medium">${reg.nama_lengkap}</div>
-                    </td>
-                    <td class="px-4 py-3">${reg.program_studi?.nama_prodi || '-'}</td>
-                    <td class="px-4 py-3">${reg.desa_kkn?.nama_desa || '-'}</td>
-                    <td class="px-4 py-3">${formatDate(reg.tanggal_daftar)}</td>
-                    <td class="px-4 py-3">
-                        <span class="${getStatusBadgeClass(reg.status)}">${getStatusText(reg.status)}</span>
-                    </td>
-                    <td class="px-4 py-3 text-center">
-                        <button onclick="viewRegistrationDetail('kkn', '${reg.id_registrasi}')" class="text-blue-600 hover:text-blue-900 mr-2 action-btn" title="Lihat Detail">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <button onclick="openStatusModal('kkn', '${reg.id_registrasi}', '${reg.status}')" class="text-green-600 hover:text-green-900 action-btn" title="Ubah Status">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function renderMagangRegistrationTable(registrations) {
-            const tbody = document.getElementById('magangRegistrationTableBody');
-            
-            if (!registrations || registrations.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="7" class="text-center py-4 text-gray-500">
-                            Tidak ada data registrasi Magang
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-            
-            tbody.innerHTML = registrations.map(reg => `
-                <tr class="hover:bg-gray-50">
-                    <td class="px-4 py-3">${reg.nim}</td>
-                    <td class="px-4 py-3">
-                        <div class="font-medium">${reg.nama_lengkap}</div>
-                    </td>
-                    <td class="px-4 py-3">${reg.program_studi?.nama_prodi || '-'}</td>
-                    <td class="px-4 py-3">${reg.nama_perusahaan || '-'}</td>
-                    <td class="px-4 py-3">${formatDate(reg.created_at)}</td>
-                    <td class="px-4 py-3">
-                        <span class="${getStatusBadgeClass(reg.status)}">${getStatusText(reg.status)}</span>
-                    </td>
-                    <td class="px-4 py-3 text-center">
-                        <button onclick="viewRegistrationDetail('magang', '${reg.id_registrasi}')" class="text-blue-600 hover:text-blue-900 mr-2 action-btn" title="Lihat Detail">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <button onclick="openStatusModal('magang', '${reg.id_registrasi}', '${reg.status}')" class="text-green-600 hover:text-green-900 action-btn" title="Ubah Status">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        async function viewRegistrationDetail(type, id) {
-            showLoading();
-            try {
-                const response = await fetch(`${API_BASE_URL}/admin/registrasi-${type}/${id}`, {
-                    headers: getHeaders()
-                });
-                const result = await response.json();
-                
-                if (result.success) {
-                    const data = result.data;
-                    let content = '';
-                    
-                    if (type === 'kkn') {
-                        content = `
-                            <div class="grid grid-cols-2 gap-4">
-                                <div><strong>NIM:</strong> ${data.nim}</div>
-                                <div><strong>Nama:</strong> ${data.nama_lengkap}</div>
-                                <div><strong>Email:</strong> ${data.email || '-'}</div>
-                                <div><strong>No. HP:</strong> ${data.no_hp || '-'}</div>
-                                <div><strong>Program Studi:</strong> ${data.program_studi?.nama_prodi || '-'}</div>
-                                <div><strong>Desa:</strong> ${data.desa_kkn?.nama_desa || '-'}</div>
-                                <div><strong>Kabupaten:</strong> ${data.desa_kkn?.kabupaten || '-'}</div>
-                                <div><strong>Ukuran Jaket:</strong> ${data.ukuran_jaket || '-'}</div>
-                                <div><strong>Status:</strong> <span class="${getStatusBadgeClass(data.status)}">${getStatusText(data.status)}</span></div>
-                                <div><strong>Tanggal Daftar:</strong> ${formatDateTime(data.tanggal_daftar)}</div>
-                            </div>
-                            <h4 class="font-bold mt-4 mb-2">File Dokumen:</h4>
-                            <div class="grid grid-cols-3 gap-2">
-                                ${data.krs_file ? `<div><a href="${API_BASE_URL}/uploads/${data.krs_file}" target="_blank" class="text-blue-600"><i class="fas fa-file-pdf"></i> KRS</a></div>` : '<div>-</div>'}
-                                ${data.khs_file ? `<div><a href="${API_BASE_URL}/uploads/${data.khs_file}" target="_blank" class="text-blue-600"><i class="fas fa-file-pdf"></i> KHS</a></div>` : '<div>-</div>'}
-                                ${data.payment_file ? `<div><a href="${API_BASE_URL}/uploads/${data.payment_file}" target="_blank" class="text-blue-600"><i class="fas fa-file-pdf"></i> Bukti Bayar</a></div>` : '<div>-</div>'}
-                            </div>
-                        `;
-                    } else {
-                        content = `
-                            <div class="grid grid-cols-2 gap-4">
-                                <div><strong>NIM:</strong> ${data.nim}</div>
-                                <div><strong>Nama:</strong> ${data.nama_lengkap}</div>
-                                <div><strong>Email:</strong> ${data.email || '-'}</div>
-                                <div><strong>No. HP:</strong> ${data.no_hp || '-'}</div>
-                                <div><strong>Program Studi:</strong> ${data.program_studi?.nama_prodi || '-'}</div>
-                                <div><strong>Perusahaan:</strong> ${data.nama_perusahaan || '-'}</div>
-                                <div><strong>Bidang:</strong> ${data.bidang_magang || '-'}</div>
-                                <div><strong>Durasi:</strong> ${data.durasi || '-'} bulan</div>
-                                <div><strong>Alamat Perusahaan:</strong> ${data.alamat_perusahaan || '-'}</div>
-                                <div><strong>Tanggal Mulai:</strong> ${formatDate(data.tanggal_mulai)}</div>
-                                <div><strong>Tanggal Selesai:</strong> ${formatDate(data.tanggal_selesai)}</div>
-                                <div><strong>Status:</strong> <span class="${getStatusBadgeClass(data.status)}">${getStatusText(data.status)}</span></div>
-                                <div><strong>Tanggal Daftar:</strong> ${formatDateTime(data.created_at)}</div>
-                            </div>
-                        `;
-                    }
-                    
-                    document.getElementById('detailModalContent').innerHTML = content;
-                    document.getElementById('detailModal').classList.remove('hidden');
-                }
-            } catch (error) {
-                console.error('Error viewing detail:', error);
-                showAlert('Gagal memuat detail', 'error');
-            } finally {
-                hideLoading();
-            }
-        }
-
-        function openStatusModal(type, id, currentStatus) {
-            selectedType = type;
-            selectedId = id;
-            document.getElementById('statusId').value = id;
-            document.getElementById('statusType').value = type;
-            document.getElementById('newStatus').value = currentStatus;
-            document.getElementById('statusCatatan').value = '';
-            document.getElementById('statusModal').classList.remove('hidden');
-        }
-
-        function closeStatusModal() {
-            document.getElementById('statusModal').classList.add('hidden');
-        }
-
-        async function updateRegistrationStatus(event) {
-            event.preventDefault();
-            showLoading();
-            
-            const type = document.getElementById('statusType').value;
-            const id = document.getElementById('statusId').value;
-            const status = document.getElementById('newStatus').value;
-            const catatan = document.getElementById('statusCatatan').value;
-            
-            try {
-                const response = await fetch(`${API_BASE_URL}/admin/registrasi-${type}/${id}/status`, {
-                    method: 'PUT',
-                    headers: getHeaders(),
-                    body: JSON.stringify({ status, catatan })
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    showAlert(`Status berhasil diubah menjadi ${getStatusText(status)}`, 'success');
-                    closeStatusModal();
-                    loadRegistrationData();
-                    loadStatsData();
-                } else {
-                    showAlert(result.message, 'error');
-                }
-            } catch (error) {
-                console.error('Error updating status:', error);
-                showAlert('Gagal mengupdate status', 'error');
-            } finally {
-                hideLoading();
-            }
-        }
-
-        // ==================== LUARAN FUNCTIONS ====================
-        async function loadDesaLuaranOptions() {
-            try {
-                const response = await fetch(`${API_BASE_URL}/admin/desa-kkn/list/aktif`, {
-                    headers: getHeaders()
-                });
-                const result = await response.json();
-                
-                const select = document.getElementById('filterDesaLuaran');
-                select.innerHTML = '<option value="">Semua Desa</option>';
-                
-                if (result.success && result.data) {
-                    result.data.forEach(desa => {
-                        select.innerHTML += `<option value="${desa.id_desa}">${desa.nama_desa}</option>`;
-                    });
-                }
-            } catch (error) {
-                console.error('Error loading desa luaran:', error);
-            }
-        }
-
-        async function loadLuaranData() {
-            showLoading();
-            const desa = document.getElementById('filterDesaLuaran').value;
-            const status = document.getElementById('filterStatusLuaran').value;
-            const search = document.getElementById('searchLuaran').value;
-            
-            try {
-                const response = await fetch(`${API_BASE_URL}/admin/luaran-kkn?desa=${desa}&status=${status}&search=${search}&limit=100`, {
-                    headers: getHeaders()
-                });
-                const result = await response.json();
-                
-                if (result.success) {
-                    renderLuaranTable(result.data);
-                } else {
-                    showAlert(result.message, 'error');
-                }
-            } catch (error) {
-                console.error('Error loading luaran:', error);
-                showAlert('Gagal memuat data luaran', 'error');
-            } finally {
-                hideLoading();
-            }
-        }
-
-        function renderLuaranTable(data) {
-            const tbody = document.getElementById('luaranTableBody');
-            
-            if (!data || data.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="10" class="text-center py-8 text-gray-500">
-                            <i class="fas fa-file-alt text-4xl mb-3"></i><br>
-                            Tidak ada data luaran
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-            
-            tbody.innerHTML = data.map((item, index) => `
-                <tr class="hover:bg-gray-50">
-                    <td class="px-4 py-3">${index + 1}</td>
-                    <td class="px-4 py-3">${item.nim}</td>
-                    <td class="px-4 py-3">${item.nama_lengkap}</td>
-                    <td class="px-4 py-3">${item.desa_name}</td>
-                    <td class="px-4 py-3">${item.judul_kegiatan}</td>
-                    <td class="px-4 py-3">
-                        ${item.link_video ? 
-                            `<a href="${item.link_video}" target="_blank" class="text-blue-600 hover:text-blue-800"><i class="fab fa-youtube"></i> Lihat</a>` : 
-                            '<span class="text-gray-400">-</span>'}
-                    </td>
-                    <td class="px-4 py-3">
-                        ${item.file_poster ? 
-                            `<a href="${API_BASE_URL}/uploads/${item.file_poster}" target="_blank" class="text-blue-600 hover:text-blue-800"><i class="fas fa-image"></i> Lihat</a>` : 
-                            '<span class="text-gray-400">-</span>'}
-                    </td>
-                    <td class="px-4 py-3">
-                        ${item.file_mou ? 
-                            `<a href="${API_BASE_URL}/uploads/${item.file_mou}" target="_blank" class="text-blue-600 hover:text-blue-800"><i class="fas fa-file-pdf"></i> Download</a>` : 
-                            '<span class="text-gray-400">-</span>'}
-                    </td>
-                    <td class="px-4 py-3">
-                        <span class="${getStatusBadgeClass(item.status)}">${getStatusText(item.status)}</span>
-                    </td>
-                    <td class="px-4 py-3 text-center">
-                        <button onclick="openVerificationModal('${item.id_luaran}')" class="text-blue-600 hover:text-blue-900 action-btn" title="Verifikasi">
-                            <i class="fas fa-check-circle"></i>
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function openVerificationModal(id) {
-            document.getElementById('verificationId').value = id;
-            document.getElementById('verificationForm').reset();
-            document.getElementById('verificationModal').classList.remove('hidden');
-        }
-
-        function closeVerificationModal() {
-            document.getElementById('verificationModal').classList.add('hidden');
-        }
-
-        async function submitVerification(event) {
-            event.preventDefault();
-            showLoading();
-            
-            const id = document.getElementById('verificationId').value;
-            const data = {
-                status: document.getElementById('verificationStatus').value,
-                notes: document.getElementById('verificationNotes').value
-            };
-            
-            try {
-                const response = await fetch(`${API_BASE_URL}/admin/luaran-kkn/${id}/verifikasi`, {
-                    method: 'PUT',
-                    headers: getHeaders(),
-                    body: JSON.stringify(data)
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    showAlert('Verifikasi berhasil disimpan', 'success');
-                    closeVerificationModal();
-                    loadLuaranData();
-                } else {
-                    showAlert(result.message, 'error');
-                }
-            } catch (error) {
-                console.error('Error submitting verification:', error);
-                showAlert('Gagal menyimpan verifikasi', 'error');
-            } finally {
-                hideLoading();
-            }
-        }
-
-        // ==================== STATS FUNCTIONS ====================
-        async function loadStatsData() {
-            showLoading();
-            try {
-                const response = await fetch(`${API_BASE_URL}/admin/dashboard/stats`, {
-                    headers: getHeaders()
-                });
-                const result = await response.json();
-                
-                if (result.success) {
-                    updateStatsCards(result.data);
-                    updateCharts(result.data);
-                }
-            } catch (error) {
-                console.error('Error loading stats:', error);
-            } finally {
-                hideLoading();
-            }
-        }
-
-        function updateStatsCards(data) {
-            // Update cards utama
-            document.getElementById('totalKknStats').textContent = data.kkn?.total || 0;
-            document.getElementById('approvedKknStats').textContent = data.kkn?.approved || 0;
-            document.getElementById('pendingKknStats').textContent = data.kkn?.pending || 0;
-            
-            document.getElementById('totalMagangStats').textContent = data.magang?.total || 0;
-            document.getElementById('approvedMagangStats').textContent = data.magang?.approved || 0;
-            document.getElementById('pendingMagangStats').textContent = data.magang?.pending || 0;
-            
-            document.getElementById('totalDesaStats').textContent = data.villages?.total || 0;
-            document.getElementById('totalKuotaStats').textContent = data.villages?.total_quota || 0;
-            document.getElementById('terisiKuotaStats').textContent = data.villages?.used_quota || 0;
-            
-            document.getElementById('totalProgramStats').textContent = data.programs?.total || 0;
-            document.getElementById('programKknStats').textContent = data.programs?.kkn || 0;
-            document.getElementById('programMagangStats').textContent = data.programs?.magang || 0;
-
-            // Update statistik detail
-            if (document.getElementById('detailTotalKkn')) {
-                document.getElementById('detailTotalKkn').textContent = data.kkn?.total || 0;
-                document.getElementById('detailApprovedKkn').textContent = data.kkn?.approved || 0;
-                document.getElementById('detailPendingKkn').textContent = data.kkn?.pending || 0;
-                document.getElementById('detailRejectedKkn').textContent = data.kkn?.rejected || 0;
-                document.getElementById('detailVerifiedKkn').textContent = data.kkn?.verified || 0;
-                
-                document.getElementById('detailTotalMagang').textContent = data.magang?.total || 0;
-                document.getElementById('detailApprovedMagang').textContent = data.magang?.approved || 0;
-                document.getElementById('detailPendingMagang').textContent = data.magang?.pending || 0;
-                document.getElementById('detailRejectedMagang').textContent = data.magang?.rejected || 0;
-                document.getElementById('detailVerifiedMagang').textContent = data.magang?.verified || 0;
-            }
-        }
-
-        function updateCharts(data) {
-            if (!kknChart) {
-                const kknCtx = document.getElementById('kknChart').getContext('2d');
-                kknChart = new Chart(kknCtx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Disetujui', 'Pending', 'Ditolak', 'Terverifikasi'],
-                        datasets: [{
-                            data: [
-                                data.kkn?.approved || 0,
-                                data.kkn?.pending || 0,
-                                data.kkn?.rejected || 0,
-                                data.kkn?.verified || 0
-                            ],
-                            backgroundColor: ['#10b981', '#f59e0b', '#ef4444', '#3b82f6'],
-                            borderWidth: 0
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: 'bottom'
-                            }
-                        }
-                    }
-                });
+async function viewDesaDetail(id) {
+    showLoading();
+    try {
+        const response = await fetch(`${API_BASE_URL}/admin/desa-kkn/${id}`, { headers: getHeaders() });
+        const result = await response.json();
+        if (result.success) {
+            const desa = result.data;
+            let pesertaHtml = '';
+            if (desa.peserta && desa.peserta.length > 0) {
+                pesertaHtml = desa.peserta.map(p => `<tr><td class="px-4 py-2">${p.nim}</td><td class="px-4 py-2">${p.nama_lengkap}</td><td class="px-4 py-2"><span class="${getStatusBadgeClass(p.status)}">${getStatusText(p.status)}</span></td><td class="px-4 py-2">${formatDate(p.tanggal_daftar)}</td></tr>`).join('');
             } else {
-                kknChart.data.datasets[0].data = [
-                    data.kkn?.approved || 0,
-                    data.kkn?.pending || 0,
-                    data.kkn?.rejected || 0,
-                    data.kkn?.verified || 0
-                ];
-                kknChart.update();
+                pesertaHtml = '<tr><td colspan="4" class="text-center py-4">Belum ada peserta</td></tr>';
             }
+            const content = `
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div><strong>Nama Desa:</strong> ${desa.nama_desa}</div>
+                    <div><strong>Kecamatan:</strong> ${desa.kecamatan || '-'}</div>
+                    <div><strong>Kabupaten:</strong> ${desa.kabupaten}</div>
+                    <div><strong>Provinsi:</strong> ${desa.provinsi}</div>
+                    <div><strong>Kuota:</strong> ${desa.kuota}</div>
+                    <div><strong>Terisi:</strong> ${desa.kuota_terisi || 0}</div>
+                    <div><strong>Sisa Kuota:</strong> ${desa.kuota - (desa.kuota_terisi || 0)}</div>
+                    <div><strong>Status:</strong> <span class="px-2 py-1 rounded-full text-xs font-semibold ${desa.status === 'aktif' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">${desa.status === 'aktif' ? 'Aktif' : 'Nonaktif'}</span></div>
+                </div>
+                <hr class="my-4">
+                <h4 class="font-bold mb-2">Informasi Pembimbing:</h4>
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div><strong>Pembimbing Lapangan:</strong> ${desa.nama_pembimbing_lapangan || '-'}</div>
+                    <div><strong>Kontak:</strong> ${desa.kontak_pembimbing_lapangan || '-'}</div>
+                </div>
+                <hr class="my-4">
+                <h4 class="font-bold mb-2">Daftar Peserta:</h4>
+                <div class="overflow-x-auto"><table class="w-full text-sm"><thead class="bg-gray-50"><tr><th class="px-4 py-2 text-left">NIM</th><th class="px-4 py-2 text-left">Nama</th><th class="px-4 py-2 text-left">Status</th><th class="px-4 py-2 text-left">Tanggal Daftar</th></tr></thead><tbody>${pesertaHtml}</tbody></table></div>
+            `;
+            document.getElementById('detailModalContent').innerHTML = content;
+            document.getElementById('detailModal').classList.remove('hidden');
+        }
+    } catch (error) {
+        showAlert('Gagal memuat detail', 'error');
+    } finally {
+        hideLoading();
+    }
+}
 
-            if (!magangChart) {
-                const magangCtx = document.getElementById('magangChart').getContext('2d');
-                magangChart = new Chart(magangCtx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Disetujui', 'Pending', 'Ditolak', 'Terverifikasi'],
-                        datasets: [{
-                            data: [
-                                data.magang?.approved || 0,
-                                data.magang?.pending || 0,
-                                data.magang?.rejected || 0,
-                                data.magang?.verified || 0
-                            ],
-                            backgroundColor: ['#10b981', '#f59e0b', '#ef4444', '#3b82f6'],
-                            borderWidth: 0
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: 'bottom'
-                            }
-                        }
-                    }
-                });
-            } else {
-                magangChart.data.datasets[0].data = [
-                    data.magang?.approved || 0,
-                    data.magang?.pending || 0,
-                    data.magang?.rejected || 0,
-                    data.magang?.verified || 0
-                ];
-                magangChart.update();
+// ==================== PERUSAHAAN FUNCTIONS ====================
+async function loadPerusahaanData() {
+    showLoading();
+    const search = document.getElementById('searchPerusahaan').value;
+    const status = document.getElementById('filterStatusPerusahaan').value;
+    try {
+        const response = await fetch(`${API_BASE_URL}/admin/magang/perusahaan?page=${currentPerusahaanPage}&limit=10&search=${search}&status=${status}`, {
+            headers: getHeaders()
+        });
+        const result = await response.json();
+        if (result.success) {
+            renderPerusahaanTable(result.data);
+            if (result.pagination) {
+                updatePerusahaanPagination(result.pagination);
             }
+        } else {
+            showAlert(result.message, 'error');
         }
+    } catch (error) {
+        console.error('Error loading perusahaan:', error);
+        showAlert('Gagal memuat data perusahaan', 'error');
+    } finally {
+        hideLoading();
+    }
+}
 
-        // ==================== NOTIFICATION FUNCTIONS ====================
-        function toggleNotifications() {
-            const dropdown = document.getElementById('notificationDropdown');
-            dropdown.classList.toggle('hidden');
-        }
+function renderPerusahaanTable(perusahaanList) {
+    const tbody = document.getElementById('perusahaanTableBody');
+    if (!perusahaanList || perusahaanList.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="10" class="text-center py-8 text-gray-500">Tidak ada data perusahaan</td></tr>';
+        return;
+    }
+    tbody.innerHTML = perusahaanList.map((perusahaan, index) => {
+        const periode = perusahaan.tanggal_mulai && perusahaan.tanggal_selesai
+            ? `${formatDate(perusahaan.tanggal_mulai)} - ${formatDate(perusahaan.tanggal_selesai)}`
+            : '-';
+        return `
+            <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3">${((currentPerusahaanPage - 1) * 10) + index + 1}</td>
+                <td class="px-4 py-3">${perusahaan.nim || '-'}</td>
+                <td class="px-4 py-3"><div class="font-medium">${perusahaan.nama_lengkap || '-'}</div><div class="text-xs text-gray-500">${perusahaan.email || '-'}</div></td>
+                <td class="px-4 py-3 font-medium">${perusahaan.nama_perusahaan}</td>
+                <td class="px-4 py-3">${perusahaan.bidang_magang}</td>
+                <td class="px-4 py-3">${perusahaan.posisi}</td>
+                <td class="px-4 py-3">${perusahaan.durasi} bulan</td>
+                <td class="px-4 py-3">${periode}</td>
+                <td class="px-4 py-3"><span class="${getStatusBadgeClass(perusahaan.status)}">${getStatusText(perusahaan.status)}</span></td>
+                <td class="px-4 py-3 text-center">
+                    <button onclick="viewPerusahaanDetail('${perusahaan.id_perusahaan}')" class="text-blue-600 hover:text-blue-900 mr-2 action-btn" title="Lihat Detail"><i class="fas fa-eye"></i></button>
+                    <button onclick="openVerifikasiPerusahaanModal('${perusahaan.id_perusahaan}', '${perusahaan.status}')" class="text-green-600 hover:text-green-900 action-btn" title="Verifikasi"><i class="fas fa-check-circle"></i></button>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
 
-        function toggleUserMenu() {
-            const dropdown = document.getElementById('userDropdown');
-            dropdown.classList.toggle('hidden');
-        }
+function updatePerusahaanPagination(pagination) {
+    const from = ((pagination.currentPage - 1) * pagination.itemsPerPage) + 1;
+    const to = Math.min(pagination.currentPage * pagination.itemsPerPage, pagination.totalItems);
+    document.getElementById('perusahaanPaginationInfo').innerHTML = `Menampilkan ${from} - ${to} dari ${pagination.totalItems} data`;
+    document.getElementById('perusahaanCurrentPage').textContent = pagination.currentPage;
+}
 
-        function markAllAsRead() {
-            document.getElementById('notificationBadge').textContent = '0';
-            document.getElementById('notificationList').innerHTML = `
-                <div class="p-4 text-center text-gray-500">
-                    Tidak ada notifikasi
+function changePerusahaanPage(direction) {
+    if (direction === 'prev' && currentPerusahaanPage > 1) currentPerusahaanPage--;
+    else if (direction === 'next') currentPerusahaanPage++;
+    loadPerusahaanData();
+}
+
+async function viewPerusahaanDetail(id) {
+    showLoading();
+    try {
+        const response = await fetch(`${API_BASE_URL}/admin/magang/perusahaan/${id}`, { headers: getHeaders() });
+        const result = await response.json();
+        if (result.success) {
+            const data = result.data;
+            const content = `
+                <div class="grid grid-cols-2 gap-4">
+                    <div><strong>NIM:</strong> ${data.nim || '-'}</div>
+                    <div><strong>Nama Mahasiswa:</strong> ${data.nama_lengkap || '-'}</div>
+                    <div><strong>Email:</strong> ${data.email || '-'}</div>
+                    <div><strong>No. HP:</strong> ${data.no_hp || '-'}</div>
+                    <div><strong>Program Studi:</strong> ${data.program_studi || '-'}</div>
+                    <div><strong>Semester:</strong> ${data.semester || '-'}</div>
+                    <div><strong>Domisili:</strong> ${data.domisili || '-'}</div>
+                </div>
+                <hr class="my-4">
+                <h4 class="font-bold mb-2">Data Perusahaan:</h4>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><strong>Nama Perusahaan:</strong> ${data.nama_perusahaan}</div>
+                    <div><strong>Bidang Magang:</strong> ${data.bidang_magang}</div>
+                    <div><strong>Posisi:</strong> ${data.posisi}</div>
+                    <div><strong>Durasi:</strong> ${data.durasi} bulan</div>
+                    <div><strong>Tanggal Mulai:</strong> ${formatDate(data.tanggal_mulai)}</div>
+                    <div><strong>Tanggal Selesai:</strong> ${formatDate(data.tanggal_selesai)}</div>
+                    <div><strong>Alamat Perusahaan:</strong> ${data.alamat_perusahaan}</div>
+                </div>
+                <hr class="my-4">
+                <h4 class="font-bold mb-2">Data Pembimbing:</h4>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><strong>Nama Pembimbing:</strong> ${data.nama_pembimbing}</div>
+                    <div><strong>Kontak:</strong> ${data.kontak_pembimbing}</div>
+                    <div><strong>Email:</strong> ${data.email_pembimbing || '-'}</div>
+                    <div><strong>Jabatan:</strong> ${data.jabatan_pembimbing || '-'}</div>
+                </div>
+                <hr class="my-4">
+                <h4 class="font-bold mb-2">Dokumen:</h4>
+                <div class="grid grid-cols-2 gap-2">
+                    ${data.surat_keterangan ? `<div><a href="${API_BASE_URL}/uploads/${data.surat_keterangan}" target="_blank" class="text-blue-600"><i class="fas fa-file-pdf"></i> Surat Keterangan</a></div>` : '<div>-</div>'}
+                    ${data.struktur_organisasi ? `<div><a href="${API_BASE_URL}/uploads/${data.struktur_organisasi}" target="_blank" class="text-blue-600"><i class="fas fa-file-pdf"></i> Struktur Organisasi</a></div>` : '<div>-</div>'}
+                </div>
+                <hr class="my-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div><strong>Status:</strong> <span class="${getStatusBadgeClass(data.status)}">${getStatusText(data.status)}</span></div>
+                    <div><strong>Tanggal Dibuat:</strong> ${formatDateTime(data.created_at)}</div>
+                    ${data.catatan ? `<div class="col-span-2"><strong>Catatan:</strong> ${data.catatan}</div>` : ''}
                 </div>
             `;
+            document.getElementById('perusahaanDetailContent').innerHTML = content;
+            document.getElementById('perusahaanDetailModal').classList.remove('hidden');
         }
+    } catch (error) {
+        showAlert('Gagal memuat detail', 'error');
+    } finally {
+        hideLoading();
+    }
+}
 
-        // ==================== MODAL CLOSE FUNCTIONS ====================
-        function closeDetailModal() {
-            document.getElementById('detailModal').classList.add('hidden');
-        }
+function openVerifikasiPerusahaanModal(id, currentStatus) {
+    document.getElementById('verifikasiPerusahaanId').value = id;
+    document.getElementById('verifikasiPerusahaanStatus').value = currentStatus;
+    document.getElementById('verifikasiPerusahaanCatatan').value = '';
+    document.getElementById('verifikasiPerusahaanModal').classList.remove('hidden');
+}
 
-        function closeLogoutModal() {
-            document.getElementById('confirmLogoutModal').classList.add('hidden');
-        }
+function closeVerifikasiPerusahaanModal() {
+    document.getElementById('verifikasiPerusahaanModal').classList.add('hidden');
+}
 
-        // ==================== EVENT LISTENERS ====================
-        document.addEventListener('DOMContentLoaded', function() {
-            AOS.init();
-            
-            // Set user name from localStorage
-            const user = JSON.parse(localStorage.getItem('user') || '{}');
-            document.getElementById('userName').textContent = user.nama_lengkap || 'Admin LPPM';
-            
-            // Load initial data
-            loadProgramData();
-            loadStatsData();
-            
-            // Search listeners
-            document.getElementById('searchProgram').addEventListener('input', debounce(loadProgramData, 500));
-            document.getElementById('filterJenisProgram').addEventListener('change', loadProgramData);
-            
-            document.getElementById('searchDesa').addEventListener('input', debounce(loadDesaData, 500));
-            document.getElementById('filterKabupaten').addEventListener('change', loadDesaData);
-            document.getElementById('filterStatusDesa').addEventListener('change', loadDesaData);
-            
-            document.getElementById('searchRegistration').addEventListener('input', debounce(loadRegistrationData, 500));
-            document.getElementById('filterJenisRegistration').addEventListener('change', loadRegistrationData);
-            document.getElementById('filterDesaRegistration').addEventListener('change', loadRegistrationData);
-            document.getElementById('filterStatusRegistration').addEventListener('change', loadRegistrationData);
-            
-            document.getElementById('searchLuaran').addEventListener('input', debounce(loadLuaranData, 500));
-            
-            // Close modals when clicking outside
-            document.getElementById('programModal').addEventListener('click', (e) => {
-                if (e.target === document.getElementById('programModal')) {
-                    closeProgramModal();
-                }
-            });
-            
-            document.getElementById('desaModal').addEventListener('click', (e) => {
-                if (e.target === document.getElementById('desaModal')) {
-                    closeDesaModal();
-                }
-            });
-            
-            document.getElementById('detailModal').addEventListener('click', (e) => {
-                if (e.target === document.getElementById('detailModal')) {
-                    closeDetailModal();
-                }
-            });
-            
-            document.getElementById('statusModal').addEventListener('click', (e) => {
-                if (e.target === document.getElementById('statusModal')) {
-                    closeStatusModal();
-                }
-            });
-            
-            document.getElementById('verificationModal').addEventListener('click', (e) => {
-                if (e.target === document.getElementById('verificationModal')) {
-                    closeVerificationModal();
-                }
-            });
-            
-            document.getElementById('confirmLogoutModal').addEventListener('click', (e) => {
-                if (e.target === document.getElementById('confirmLogoutModal')) {
-                    closeLogoutModal();
-                }
-            });
+function closePerusahaanDetailModal() {
+    document.getElementById('perusahaanDetailModal').classList.add('hidden');
+}
 
-            // Close user menu when clicking outside
-            document.addEventListener('click', function(event) {
-                const userMenu = document.getElementById('userDropdown');
-                const userButton = event.target.closest('button');
-                if (!userButton || !userButton.querySelector('.fa-chevron-down')) {
-                    if (!userMenu.classList.contains('hidden')) {
-                        userMenu.classList.add('hidden');
-                    }
-                }
-            });
+async function submitVerifikasiPerusahaan(event) {
+    event.preventDefault();
+    showLoading();
+    const id = document.getElementById('verifikasiPerusahaanId').value;
+    const data = {
+        status: document.getElementById('verifikasiPerusahaanStatus').value,
+        catatan: document.getElementById('verifikasiPerusahaanCatatan').value
+    };
+    try {
+        const response = await fetch(`${API_BASE_URL}/admin/magang/perusahaan/${id}/verifikasi`, {
+            method: 'PUT',
+            headers: getHeaders(),
+            body: JSON.stringify(data)
         });
-
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
+        const result = await response.json();
+        if (result.success) {
+            showAlert('Verifikasi perusahaan berhasil disimpan', 'success');
+            closeVerifikasiPerusahaanModal();
+            loadPerusahaanData();
+        } else {
+            showAlert(result.message, 'error');
         }
+    } catch (error) {
+        showAlert('Gagal menyimpan verifikasi', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// ==================== REGISTRATION FUNCTIONS ====================
+async function loadDesaFilterOptions() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/admin/desa-kkn/list/aktif`, { headers: getHeaders() });
+        const result = await response.json();
+        const select = document.getElementById('filterDesaRegistration');
+        select.innerHTML = '<option value="">Semua Desa</option>';
+        if (result.success && result.data) {
+            result.data.forEach(desa => { select.innerHTML += `<option value="${desa.id_desa}">${desa.nama_desa}</option>`; });
+        }
+    } catch (error) { console.error('Error loading desa filters:', error); }
+}
+
+async function loadRegistrationData() {
+    showLoading();
+    const search = document.getElementById('searchRegistration').value;
+    const jenis = document.getElementById('filterJenisRegistration').value;
+    const status = document.getElementById('filterStatusRegistration').value;
+    const id_desa = document.getElementById('filterDesaRegistration').value;
+    try {
+        if (jenis === '' || jenis === 'kkn') {
+            const kknResponse = await fetch(`${API_BASE_URL}/admin/registrasi-kkn?search=${search}&status=${status}&id_desa=${id_desa}&limit=100`, { headers: getHeaders() });
+            const kknResult = await kknResponse.json();
+            if (kknResult.success) {
+                renderKKNRegistrationTable(kknResult.data);
+            } else {
+                document.getElementById('kknRegistrationTableBody').innerHTML = '<tr><td colspan="7" class="text-center py-4 text-gray-500">Gagal memuat数据</td></tr>';
+            }
+        }
+        if (jenis === '' || jenis === 'magang') {
+            const magangResponse = await fetch(`${API_BASE_URL}/admin/registrasi-magang?search=${search}&status=${status}&limit=100`, { headers: getHeaders() });
+            const magangResult = await magangResponse.json();
+            if (magangResult.success) {
+                renderMagangRegistrationTable(magangResult.data);
+            } else {
+                document.getElementById('magangRegistrationTableBody').innerHTML = '<tr><td colspan="7" class="text-center py-4 text-gray-500">Gagal memuat数据</td></tr>';
+            }
+        }
+    } catch (error) {
+        showAlert('Gagal memuat data registrasi', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+function renderKKNRegistrationTable(registrations) {
+    const tbody = document.getElementById('kknRegistrationTableBody');
+    if (!registrations || registrations.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-gray-500">Tidak ada data registrasi KKN</td></tr>';
+        return;
+    }
+    tbody.innerHTML = registrations.map(reg => `
+        <tr class="hover:bg-gray-50">
+            <td class="px-4 py-3">${reg.nim}</td>
+            <td class="px-4 py-3"><div class="font-medium">${reg.nama_lengkap}</div></td>
+            <td class="px-4 py-3">${reg.program_studi?.nama_prodi || '-'}</td>
+            <td class="px-4 py-3">${reg.desa_kkn?.nama_desa || '-'}</td>
+            <td class="px-4 py-3">${formatDate(reg.tanggal_daftar)}</td>
+            <td class="px-4 py-3"><span class="${getStatusBadgeClass(reg.status)}">${getStatusText(reg.status)}</span></td>
+            <td class="px-4 py-3 text-center">
+                <button onclick="viewRegistrationDetail('kkn', '${reg.id_registrasi}')" class="text-blue-600 hover:text-blue-900 mr-2 action-btn"><i class="fas fa-eye"></i></button>
+                <button onclick="openStatusModal('kkn', '${reg.id_registrasi}', '${reg.status}')" class="text-green-600 hover:text-green-900 action-btn"><i class="fas fa-edit"></i></button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function renderMagangRegistrationTable(registrations) {
+    const tbody = document.getElementById('magangRegistrationTableBody');
+    if (!registrations || registrations.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-gray-500">Tidak ada data registrasi Magang</td></tr>';
+        return;
+    }
+    tbody.innerHTML = registrations.map(reg => `
+        <tr class="hover:bg-gray-50">
+            <td class="px-4 py-3">${reg.nim}</td>
+            <td class="px-4 py-3"><div class="font-medium">${reg.nama_lengkap}</div></td>
+            <td class="px-4 py-3">${reg.program_studi?.nama_prodi || '-'}</td>
+            <td class="px-4 py-3">${reg.nama_perusahaan || '-'}</td>
+            <td class="px-4 py-3">${formatDate(reg.created_at)}</td>
+            <td class="px-4 py-3"><span class="${getStatusBadgeClass(reg.status)}">${getStatusText(reg.status)}</span></td>
+            <td class="px-4 py-3 text-center">
+                <button onclick="viewRegistrationDetail('magang', '${reg.id_registrasi}')" class="text-blue-600 hover:text-blue-900 mr-2 action-btn"><i class="fas fa-eye"></i></button>
+                <button onclick="openStatusModal('magang', '${reg.id_registrasi}', '${reg.status}')" class="text-green-600 hover:text-green-900 action-btn"><i class="fas fa-edit"></i></button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+async function viewRegistrationDetail(type, id) {
+    showLoading();
+    try {
+        const response = await fetch(`${API_BASE_URL}/admin/registrasi-${type}/${id}`, { headers: getHeaders() });
+        const result = await response.json();
+        if (result.success) {
+            const data = result.data;
+            let content = '';
+            if (type === 'kkn') {
+                content = `
+                    <div class="grid grid-cols-2 gap-4">
+                        <div><strong>NIM:</strong> ${data.nim}</div>
+                        <div><strong>Nama:</strong> ${data.nama_lengkap}</div>
+                        <div><strong>Email:</strong> ${data.email || '-'}</div>
+                        <div><strong>No. HP:</strong> ${data.no_hp || '-'}</div>
+                        <div><strong>Program Studi:</strong> ${data.program_studi?.nama_prodi || '-'}</div>
+                        <div><strong>Desa:</strong> ${data.desa_kkn?.nama_desa || '-'}</div>
+                        <div><strong>Kabupaten:</strong> ${data.desa_kkn?.kabupaten || '-'}</div>
+                        <div><strong>Ukuran Jaket:</strong> ${data.ukuran_jaket || '-'}</div>
+                        <div><strong>Status:</strong> <span class="${getStatusBadgeClass(data.status)}">${getStatusText(data.status)}</span></div>
+                        <div><strong>Tanggal Daftar:</strong> ${formatDateTime(data.tanggal_daftar)}</div>
+                    </div>
+                    <h4 class="font-bold mt-4 mb-2">File Dokumen:</h4>
+                    <div class="grid grid-cols-3 gap-2">
+                        ${data.krs_file ? `<div><a href="${API_BASE_URL}/uploads/${data.krs_file}" target="_blank" class="text-blue-600"><i class="fas fa-file-pdf"></i> KRS</a></div>` : '<div>-</div>'}
+                        ${data.khs_file ? `<div><a href="${API_BASE_URL}/uploads/${data.khs_file}" target="_blank" class="text-blue-600"><i class="fas fa-file-pdf"></i> KHS</a></div>` : '<div>-</div>'}
+                        ${data.payment_file ? `<div><a href="${API_BASE_URL}/uploads/${data.payment_file}" target="_blank" class="text-blue-600"><i class="fas fa-file-pdf"></i> Bukti Bayar</a></div>` : '<div>-</div>'}
+                    </div>
+                `;
+            } else {
+                content = `
+                    <div class="grid grid-cols-2 gap-4">
+                        <div><strong>NIM:</strong> ${data.nim}</div>
+                        <div><strong>Nama:</strong> ${data.nama_lengkap}</div>
+                        <div><strong>Email:</strong> ${data.email || '-'}</div>
+                        <div><strong>No. HP:</strong> ${data.no_hp || '-'}</div>
+                        <div><strong>Program Studi:</strong> ${data.program_studi?.nama_prodi || '-'}</div>
+                        <div><strong>Perusahaan:</strong> ${data.nama_perusahaan || '-'}</div>
+                        <div><strong>Bidang:</strong> ${data.bidang_magang || '-'}</div>
+                        <div><strong>Durasi:</strong> ${data.durasi || '-'} bulan</div>
+                        <div><strong>Alamat Perusahaan:</strong> ${data.alamat_perusahaan || '-'}</div>
+                        <div><strong>Tanggal Mulai:</strong> ${formatDate(data.tanggal_mulai)}</div>
+                        <div><strong>Tanggal Selesai:</strong> ${formatDate(data.tanggal_selesai)}</div>
+                        <div><strong>Status:</strong> <span class="${getStatusBadgeClass(data.status)}">${getStatusText(data.status)}</span></div>
+                        <div><strong>Tanggal Daftar:</strong> ${formatDateTime(data.created_at)}</div>
+                    </div>
+                `;
+            }
+            document.getElementById('detailModalContent').innerHTML = content;
+            document.getElementById('detailModal').classList.remove('hidden');
+        }
+    } catch (error) {
+        showAlert('Gagal memuat detail', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+function openStatusModal(type, id, currentStatus) {
+    selectedType = type;
+    selectedId = id;
+    document.getElementById('statusId').value = id;
+    document.getElementById('statusType').value = type;
+    document.getElementById('newStatus').value = currentStatus;
+    document.getElementById('statusCatatan').value = '';
+    document.getElementById('statusModal').classList.remove('hidden');
+}
+
+function closeStatusModal() {
+    document.getElementById('statusModal').classList.add('hidden');
+}
+
+async function updateRegistrationStatus(event) {
+    event.preventDefault();
+    showLoading();
+    const type = document.getElementById('statusType').value;
+    const id = document.getElementById('statusId').value;
+    const status = document.getElementById('newStatus').value;
+    const catatan = document.getElementById('statusCatatan').value;
+    try {
+        const response = await fetch(`${API_BASE_URL}/admin/registrasi-${type}/${id}/status`, {
+            method: 'PUT',
+            headers: getHeaders(),
+            body: JSON.stringify({ status, catatan })
+        });
+        const result = await response.json();
+        if (result.success) {
+            showAlert(`Status berhasil diubah menjadi ${getStatusText(status)}`, 'success');
+            closeStatusModal();
+            loadRegistrationData();
+            loadStatsData();
+        } else {
+            showAlert(result.message, 'error');
+        }
+    } catch (error) {
+        showAlert('Gagal mengupdate status', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// ==================== LUARAN KKN FUNCTIONS ====================
+async function loadDesaLuaranOptions() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/admin/desa-kkn/list/aktif`, { headers: getHeaders() });
+        const result = await response.json();
+        const select = document.getElementById('filterDesaLuaran');
+        select.innerHTML = '<option value="">Semua Desa</option>';
+        if (result.success && result.data) {
+            result.data.forEach(desa => { select.innerHTML += `<option value="${desa.id_desa}">${desa.nama_desa}</option>`; });
+        }
+    } catch (error) { console.error('Error loading desa luaran:', error); }
+}
+
+async function loadLuaranData() {
+    showLoading();
+    const desa = document.getElementById('filterDesaLuaran').value;
+    const status = document.getElementById('filterStatusLuaran').value;
+    const search = document.getElementById('searchLuaran').value;
+    try {
+        const response = await fetch(`${API_BASE_URL}/admin/luaran-kkn?desa=${desa}&status=${status}&search=${search}&limit=100`, { headers: getHeaders() });
+        const result = await response.json();
+        if (result.success) {
+            renderLuaranTable(result.data);
+        } else {
+            showAlert(result.message, 'error');
+        }
+    } catch (error) {
+        showAlert('Gagal memuat data luaran', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+function renderLuaranTable(data) {
+    const tbody = document.getElementById('luaranTableBody');
+    if (!data || data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="10" class="text-center py-8 text-gray-500">Tidak ada data luaran</td></tr>';
+        return;
+    }
+    tbody.innerHTML = data.map((item, index) => `
+        <tr class="hover:bg-gray-50">
+            <td class="px-4 py-3">${index + 1}</td>
+            <td class="px-4 py-3">${item.nim}</td>
+            <td class="px-4 py-3">${item.nama_lengkap}</td>
+            <td class="px-4 py-3">${item.desa_name}</td>
+            <td class="px-4 py-3">${item.judul_kegiatan}</td>
+            <td class="px-4 py-3">${item.link_video ? `<a href="${item.link_video}" target="_blank" class="text-blue-600"><i class="fab fa-youtube"></i> Lihat</a>` : '<span class="text-gray-400">-</span>'}</td>
+            <td class="px-4 py-3">${item.file_poster ? `<a href="${API_BASE_URL}/uploads/${item.file_poster}" target="_blank" class="text-blue-600"><i class="fas fa-image"></i> Lihat</a>` : '<span class="text-gray-400">-</span>'}</td>
+            <td class="px-4 py-3">${item.file_mou ? `<a href="${API_BASE_URL}/uploads/${item.file_mou}" target="_blank" class="text-blue-600"><i class="fas fa-file-pdf"></i> Download</a>` : '<span class="text-gray-400">-</span>'}</td>
+            <td class="px-4 py-3"><span class="${getStatusBadgeClass(item.status)}">${getStatusText(item.status)}</span></td>
+            <td class="px-4 py-3 text-center"><button onclick="openVerificationModal('${item.id_luaran}')" class="text-blue-600 hover:text-blue-900 action-btn"><i class="fas fa-check-circle"></i></button></td>
+        </tr>
+    `).join('');
+}
+
+function openVerificationModal(id) {
+    document.getElementById('verificationId').value = id;
+    document.getElementById('verificationForm').reset();
+    document.getElementById('verificationModal').classList.remove('hidden');
+}
+
+function closeVerificationModal() {
+    document.getElementById('verificationModal').classList.add('hidden');
+}
+
+async function submitVerification(event) {
+    event.preventDefault();
+    showLoading();
+    const id = document.getElementById('verificationId').value;
+    const data = {
+        status: document.getElementById('verificationStatus').value,
+        notes: document.getElementById('verificationNotes').value
+    };
+    try {
+        const response = await fetch(`${API_BASE_URL}/admin/luaran-kkn/${id}/verifikasi`, {
+            method: 'PUT',
+            headers: getHeaders(),
+            body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        if (result.success) {
+            showAlert('Verifikasi berhasil disimpan', 'success');
+            closeVerificationModal();
+            loadLuaranData();
+        } else {
+            showAlert(result.message, 'error');
+        }
+    } catch (error) {
+        showAlert('Gagal menyimpan verifikasi', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// ==================== LUARAN MAGANG FUNCTIONS ====================
+
+// Variabel untuk pagination luaran magang
+
+
+async function loadLuaranMagangData() {
+    showLoading();
+    const status = document.getElementById('filterStatusLuaranMagang').value;
+    const search = document.getElementById('searchLuaranMagang').value;
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}/admin/magang/luaran?page=${currentLuaranMagangPage}&limit=10&status=${status}&search=${search}`, {
+            headers: getHeaders()
+        });
+        const result = await response.json();
+        
+        if (result.success) {
+            renderLuaranMagangTable(result.data);
+            if (result.pagination) {
+                updateLuaranMagangPagination(result.pagination);
+            }
+        } else {
+            showAlert(result.message, 'error');
+        }
+    } catch (error) {
+        console.error('Error loading luaran magang:', error);
+        showAlert('Gagal memuat data luaran magang', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+function renderLuaranMagangTable(data) {
+    const tbody = document.getElementById('luaranMagangTableBody');
+    if (!data || data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="10" class="text-center py-8 text-gray-500">Tidak ada data luaran magang</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = data.map((item, index) => `
+        <tr class="hover:bg-gray-50">
+            <td class="px-4 py-3">${((currentLuaranMagangPage - 1) * 10) + index + 1}</td>
+            <td class="px-4 py-3">${item.nim || '-'}</td>
+            <td class="px-4 py-3">${item.nama_lengkap || '-'}</td>
+            <td class="px-4 py-3">${item.nama_perusahaan || '-'}</td>
+            <td class="px-4 py-3">${item.judul_proyek || '-'}</td>
+            <td class="px-4 py-3">${item.link_poster ? `<a href="${item.link_poster}" target="_blank" class="text-blue-600"><i class="fab fa-google-drive"></i> Lihat</a>` : '<span class="text-gray-400">-</span>'}</td>
+            <td class="px-4 py-3">${item.link_laporan ? `<a href="${item.link_laporan}" target="_blank" class="text-blue-600"><i class="fab fa-google-drive"></i> Lihat</a>` : '<span class="text-gray-400">-</span>'}</td>
+            <td class="px-4 py-3">${item.file_mou ? `<a href="${API_BASE_URL}/uploads/${item.file_mou}" target="_blank" class="text-blue-600"><i class="fas fa-file-pdf"></i> Download</a>` : '<span class="text-gray-400">-</span>'}</td>
+            <td class="px-4 py-3"><span class="${getStatusBadgeClass(item.status)}">${getStatusText(item.status)}</span></td>
+            <td class="px-4 py-3 text-center">
+                <button onclick="viewLuaranMagangDetail('${item.id_luaran}')" class="text-blue-600 hover:text-blue-900 mr-2 action-btn" title="Lihat Detail">
+                    <i class="fas fa-eye"></i>
+                </button>
+                <button onclick="openVerifikasiLuaranMagangModal('${item.id_luaran}', '${item.status}')" class="text-green-600 hover:text-green-900 action-btn" title="Verifikasi">
+                    <i class="fas fa-check-circle"></i>
+                </button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function updateLuaranMagangPagination(pagination) {
+    const from = ((pagination.currentPage - 1) * pagination.itemsPerPage) + 1;
+    const to = Math.min(pagination.currentPage * pagination.itemsPerPage, pagination.totalItems);
+    document.getElementById('luaranMagangPaginationInfo').innerHTML = `Menampilkan ${from} - ${to} dari ${pagination.totalItems} data`;
+    document.getElementById('luaranMagangCurrentPage').textContent = pagination.currentPage;
+    currentLuaranMagangPage = pagination.currentPage;
+}
+
+function changeLuaranMagangPage(direction) {
+    if (direction === 'prev' && currentLuaranMagangPage > 1) {
+        currentLuaranMagangPage--;
+    } else if (direction === 'next') {
+        currentLuaranMagangPage++;
+    }
+    loadLuaranMagangData();
+}
+
+async function viewLuaranMagangDetail(id) {
+    showLoading();
+    try {
+        const response = await fetch(`${API_BASE_URL}/admin/magang/luaran/${id}`, { headers: getHeaders() });
+        const result = await response.json();
+        
+        if (result.success) {
+            const data = result.data;
+            const content = `
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div><strong>NIM:</strong> ${data.nim || '-'}</div>
+                    <div><strong>Nama Mahasiswa:</strong> ${data.nama_lengkap || '-'}</div>
+                    <div><strong>Email:</strong> ${data.email || '-'}</div>
+                    <div><strong>Program Studi:</strong> ${data.program_studi || '-'}</div>
+                    <div><strong>Semester:</strong> ${data.semester || '-'}</div>
+                </div>
+                <hr class="my-4">
+                <h4 class="font-bold mb-2">Data Perusahaan:</h4>
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div><strong>Nama Perusahaan:</strong> ${data.nama_perusahaan || '-'}</div>
+                    <div><strong>Bidang Magang:</strong> ${data.bidang_magang || '-'}</div>
+                    <div><strong>Posisi:</strong> ${data.posisi || '-'}</div>
+                    <div><strong>Durasi:</strong> ${data.durasi || '-'} bulan</div>
+                    <div><strong>Tanggal Mulai:</strong> ${formatDate(data.tanggal_mulai)}</div>
+                    <div><strong>Tanggal Selesai:</strong> ${formatDate(data.tanggal_selesai)}</div>
+                </div>
+                <hr class="my-4">
+                <h4 class="font-bold mb-2">Data Luaran:</h4>
+                <div class="grid grid-cols-1 gap-4 mb-4">
+                    <div><strong>Judul Proyek:</strong> ${data.judul_proyek || '-'}</div>
+                    <div><strong>Deskripsi Pekerjaan:</strong> ${data.deskripsi_pekerjaan || '-'}</div>
+                    <div><strong>Link Poster Presentasi:</strong> ${data.link_poster ? `<a href="${data.link_poster}" target="_blank" class="text-blue-600">${data.link_poster}</a>` : '-'}</div>
+                    <div><strong>Link Laporan Magang:</strong> ${data.link_laporan ? `<a href="${data.link_laporan}" target="_blank" class="text-blue-600">${data.link_laporan}</a>` : '-'}</div>
+                    <div><strong>Link Foto Kegiatan:</strong> ${data.link_foto ? `<a href="${data.link_foto}" target="_blank" class="text-blue-600">${data.link_foto}</a>` : '-'}</div>
+                </div>
+                <hr class="my-4">
+                <h4 class="font-bold mb-2">File Dokumen:</h4>
+                <div class="grid grid-cols-3 gap-2 mb-4">
+                    ${data.file_mou ? `<div><a href="${API_BASE_URL}/uploads/${data.file_mou}" target="_blank" class="text-blue-600"><i class="fas fa-file-pdf"></i> File MOU</a></div>` : '<div>-</div>'}
+                    ${data.file_sertifikat ? `<div><a href="${API_BASE_URL}/uploads/${data.file_sertifikat}" target="_blank" class="text-blue-600"><i class="fas fa-file-pdf"></i> Sertifikat Magang</a></div>` : '<div>-</div>'}
+                    ${data.file_logbook ? `<div><a href="${API_BASE_URL}/uploads/${data.file_logbook}" target="_blank" class="text-blue-600"><i class="fas fa-file-pdf"></i> Logbook Magang</a></div>` : '<div>-</div>'}
+                </div>
+                <hr class="my-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div><strong>Status:</strong> <span class="${getStatusBadgeClass(data.status)}">${getStatusText(data.status)}</span></div>
+                    <div><strong>Tanggal Dibuat:</strong> ${formatDateTime(data.created_at)}</div>
+                    ${data.catatan ? `<div class="col-span-2"><strong>Catatan:</strong> ${data.catatan}</div>` : ''}
+                </div>
+            `;
+            document.getElementById('detailModalContent').innerHTML = content;
+            document.getElementById('detailModal').classList.remove('hidden');
+        }
+    } catch (error) {
+        console.error('Error viewing detail:', error);
+        showAlert('Gagal memuat detail', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+function openVerifikasiLuaranMagangModal(id, currentStatus) {
+    document.getElementById('verifikasiLuaranMagangId').value = id;
+    document.getElementById('verifikasiLuaranMagangStatus').value = currentStatus;
+    document.getElementById('verifikasiLuaranMagangCatatan').value = '';
+    document.getElementById('verifikasiLuaranMagangModal').classList.remove('hidden');
+}
+
+function closeVerifikasiLuaranMagangModal() {
+    document.getElementById('verifikasiLuaranMagangModal').classList.add('hidden');
+}
+
+async function submitVerifikasiLuaranMagang(event) {
+    event.preventDefault();
+    showLoading();
+    
+    const id = document.getElementById('verifikasiLuaranMagangId').value;
+    const data = {
+        status: document.getElementById('verifikasiLuaranMagangStatus').value,
+        catatan: document.getElementById('verifikasiLuaranMagangCatatan').value
+    };
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}/admin/magang/luaran/${id}/verifikasi`, {
+            method: 'PUT',
+            headers: getHeaders(),
+            body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        
+        if (result.success) {
+            showAlert('Verifikasi luaran magang berhasil disimpan', 'success');
+            closeVerifikasiLuaranMagangModal();
+            loadLuaranMagangData();
+        } else {
+            showAlert(result.message, 'error');
+        }
+    } catch (error) {
+        console.error('Error saving verification:', error);
+        showAlert('Gagal menyimpan verifikasi', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// ==================== STATS FUNCTIONS ====================
+async function loadStatsData() {
+    showLoading();
+    try {
+        const response = await fetch(`${API_BASE_URL}/admin/dashboard/stats`, { headers: getHeaders() });
+        const result = await response.json();
+        if (result.success) {
+            updateStatsCards(result.data);
+            updateCharts(result.data);
+        }
+    } catch (error) {
+        console.error('Error loading stats:', error);
+    } finally {
+        hideLoading();
+    }
+}
+
+function updateStatsCards(data) {
+    document.getElementById('totalKknStats').textContent = data.kkn?.total || 0;
+    document.getElementById('approvedKknStats').textContent = data.kkn?.approved || 0;
+    document.getElementById('pendingKknStats').textContent = data.kkn?.pending || 0;
+    document.getElementById('totalMagangStats').textContent = data.magang?.total || 0;
+    document.getElementById('approvedMagangStats').textContent = data.magang?.approved || 0;
+    document.getElementById('pendingMagangStats').textContent = data.magang?.pending || 0;
+    document.getElementById('totalDesaStats').textContent = data.villages?.total || 0;
+    document.getElementById('totalKuotaStats').textContent = data.villages?.total_quota || 0;
+    document.getElementById('terisiKuotaStats').textContent = data.villages?.used_quota || 0;
+    document.getElementById('totalProgramStats').textContent = data.programs?.total || 0;
+    document.getElementById('programKknStats').textContent = data.programs?.kkn || 0;
+    document.getElementById('programMagangStats').textContent = data.programs?.magang || 0;
+
+    document.getElementById('detailTotalKkn').textContent = data.kkn?.total || 0;
+    document.getElementById('detailApprovedKkn').textContent = data.kkn?.approved || 0;
+    document.getElementById('detailPendingKkn').textContent = data.kkn?.pending || 0;
+    document.getElementById('detailRejectedKkn').textContent = data.kkn?.rejected || 0;
+    document.getElementById('detailVerifiedKkn').textContent = data.kkn?.verified || 0;
+    document.getElementById('detailTotalMagang').textContent = data.magang?.total || 0;
+    document.getElementById('detailApprovedMagang').textContent = data.magang?.approved || 0;
+    document.getElementById('detailPendingMagang').textContent = data.magang?.pending || 0;
+    document.getElementById('detailRejectedMagang').textContent = data.magang?.rejected || 0;
+    document.getElementById('detailVerifiedMagang').textContent = data.magang?.verified || 0;
+}
+
+function updateCharts(data) {
+    if (!kknChart) {
+        const kknCtx = document.getElementById('kknChart').getContext('2d');
+        kknChart = new Chart(kknCtx, {
+            type: 'doughnut',
+            data: { labels: ['Disetujui', 'Pending', 'Ditolak', 'Terverifikasi'], datasets: [{ data: [data.kkn?.approved || 0, data.kkn?.pending || 0, data.kkn?.rejected || 0, data.kkn?.verified || 0], backgroundColor: ['#10b981', '#f59e0b', '#ef4444', '#3b82f6'], borderWidth: 0 }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+        });
+    } else {
+        kknChart.data.datasets[0].data = [data.kkn?.approved || 0, data.kkn?.pending || 0, data.kkn?.rejected || 0, data.kkn?.verified || 0];
+        kknChart.update();
+    }
+    if (!magangChart) {
+        const magangCtx = document.getElementById('magangChart').getContext('2d');
+        magangChart = new Chart(magangCtx, {
+            type: 'doughnut',
+            data: { labels: ['Disetujui', 'Pending', 'Ditolak', 'Terverifikasi'], datasets: [{ data: [data.magang?.approved || 0, data.magang?.pending || 0, data.magang?.rejected || 0, data.magang?.verified || 0], backgroundColor: ['#10b981', '#f59e0b', '#ef4444', '#3b82f6'], borderWidth: 0 }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+        });
+    } else {
+        magangChart.data.datasets[0].data = [data.magang?.approved || 0, data.magang?.pending || 0, data.magang?.rejected || 0, data.magang?.verified || 0];
+        magangChart.update();
+    }
+}
+
+// ==================== NOTIFICATION FUNCTIONS ====================
+function toggleNotifications() { 
+    document.getElementById('notificationDropdown').classList.toggle('hidden'); 
+}
+
+function toggleUserMenu() { 
+    document.getElementById('userDropdown').classList.toggle('hidden'); 
+}
+
+function markAllAsRead() { 
+    document.getElementById('notificationBadge').textContent = '0'; 
+    document.getElementById('notificationList').innerHTML = '<div class="p-4 text-center text-gray-500">Tidak ada notifikasi</div>'; 
+}
+
+// ==================== MODAL CLOSE FUNCTIONS ====================
+function closeDetailModal() { 
+    document.getElementById('detailModal').classList.add('hidden'); 
+}
+
+// ==================== EVENT LISTENERS ====================
+document.addEventListener('DOMContentLoaded', function() {
+    AOS.init();
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    document.getElementById('userName').textContent = user.nama_lengkap || 'Admin LPPM';
+    loadProgramData();
+    loadStatsData();
+
+    document.getElementById('searchProgram').addEventListener('input', debounce(loadProgramData, 500));
+    document.getElementById('filterJenisProgram').addEventListener('change', loadProgramData);
+    document.getElementById('searchDesa').addEventListener('input', debounce(loadDesaData, 500));
+    document.getElementById('filterKabupaten').addEventListener('change', loadDesaData);
+    document.getElementById('filterStatusDesa').addEventListener('change', loadDesaData);
+    document.getElementById('searchPerusahaan').addEventListener('input', debounce(loadPerusahaanData, 500));
+    document.getElementById('filterStatusPerusahaan').addEventListener('change', loadPerusahaanData);
+    document.getElementById('searchRegistration').addEventListener('input', debounce(loadRegistrationData, 500));
+    document.getElementById('filterJenisRegistration').addEventListener('change', loadRegistrationData);
+    document.getElementById('filterDesaRegistration').addEventListener('change', loadRegistrationData);
+    document.getElementById('filterStatusRegistration').addEventListener('change', loadRegistrationData);
+    document.getElementById('searchLuaran').addEventListener('input', debounce(loadLuaranData, 500));
+    document.getElementById('searchLuaranMagang').addEventListener('input', debounce(loadLuaranMagangData, 500));
+    document.getElementById('filterStatusLuaranMagang').addEventListener('change', loadLuaranMagangData);
+
+    document.getElementById('programModal').addEventListener('click', (e) => { if (e.target === document.getElementById('programModal')) closeProgramModal(); });
+    document.getElementById('desaModal').addEventListener('click', (e) => { if (e.target === document.getElementById('desaModal')) closeDesaModal(); });
+    document.getElementById('detailModal').addEventListener('click', (e) => { if (e.target === document.getElementById('detailModal')) closeDetailModal(); });
+    document.getElementById('statusModal').addEventListener('click', (e) => { if (e.target === document.getElementById('statusModal')) closeStatusModal(); });
+    document.getElementById('verifikasiPerusahaanModal').addEventListener('click', (e) => { if (e.target === document.getElementById('verifikasiPerusahaanModal')) closeVerifikasiPerusahaanModal(); });
+    document.getElementById('perusahaanDetailModal').addEventListener('click', (e) => { if (e.target === document.getElementById('perusahaanDetailModal')) closePerusahaanDetailModal(); });
+    document.getElementById('verificationModal').addEventListener('click', (e) => { if (e.target === document.getElementById('verificationModal')) closeVerificationModal(); });
+    document.getElementById('verifikasiLuaranMagangModal').addEventListener('click', (e) => { if (e.target === document.getElementById('verifikasiLuaranMagangModal')) closeVerifikasiLuaranMagangModal(); });
+
+    document.addEventListener('click', function(event) {
+        const userMenu = document.getElementById('userDropdown');
+        const userButton = event.target.closest('button');
+        if (!userButton || !userButton.querySelector('.fa-chevron-down')) {
+            if (!userMenu.classList.contains('hidden')) userMenu.classList.add('hidden');
+        }
+    });
+});
+
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => { clearTimeout(timeout); func(...args); };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
     </script>
 </body>
 </html>
