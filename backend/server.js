@@ -38,7 +38,8 @@ const dosenPenelitianRoutes = require('./routes/dosen/penelitianRoutes');
 const mahasiswaFakultasRoutes = require('./routes/mahasiswa/fakultasRoutes');
 const perusahaanMagangRoutes = require('./routes/admin/perusahaanMagangRoutes');
 const magangLuaranRoutes = require('./routes/admin/magangLuaranRoutes');
-
+const repositoryRoutes = require('./routes/repositoryRoutes');
+const beritaRoutes = require('./routes/beritaRoutes');
 
 // Middleware
 app.use(helmet({
@@ -84,8 +85,8 @@ app.use('/api/dosen/penelitian', dosenPenelitianRoutes);
 app.use('/api/mahasiswa', mahasiswaFakultasRoutes);
 app.use('/api/admin/magang/perusahaan', perusahaanMagangRoutes);
 app.use('/api/admin/magang/luaran', magangLuaranRoutes);
-
-
+app.use('/api/repository', repositoryRoutes);
+app.use('/api/berita-umum', beritaRoutes);
 
 app.use((err, req, res, next) => {
     console.error(err.stack);

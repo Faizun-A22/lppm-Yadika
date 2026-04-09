@@ -18,29 +18,6 @@
                         'accent': '#BE185D',
                         'dark': '#111827',
                         'light': '#F9FAFB',
-                        'news-blue': '#0066CC',
-                        'news-red': '#E53935',
-                    },
-                    animation: {
-                        'float-slow': 'float 6s ease-in-out infinite',
-                        'float-medium': 'float 4s ease-in-out infinite',
-                        'float-fast': 'float 3s ease-in-out infinite',
-                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                        'gradient': 'gradient 8s ease infinite',
-                    },
-                    keyframes: {
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-20px)' },
-                        },
-                        gradient: {
-                            '0%, 100%': { backgroundPosition: '0% 50%' },
-                            '50%': { backgroundPosition: '100% 50%' },
-                        },
-                    },
-                    backgroundImage: {
-                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-                        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
                     },
                 },
             },
@@ -75,34 +52,13 @@
         
         .footer-gradient {
             background: linear-gradient(135deg, #1F2937 0%, #111827 100%);
-            position: relative;
-            overflow: hidden;
         }
         
-        .footer-gradient::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-        }
-        
-        /* FIX: Buat seluruh card clickable */
         .news-card {
             transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            cursor: pointer !important;
+            cursor: pointer;
         }
         
-        /* FIX: Hapus pseudo-element yang mengganggu */
-        .news-card::before {
-            display: none;
-        }
-        
-        /* FIX: Efek hover yang lebih baik */
         .news-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 20px 40px rgba(0,0,0,0.15);
@@ -116,37 +72,12 @@
             transition: color 0.3s ease;
         }
         
-        /* FIX: Semua link di dalam card clickable */
-        .news-card a {
-            cursor: pointer !important;
-            text-decoration: none;
-        }
-        
-        .news-card a:hover {
-            text-decoration: underline;
-        }
-        
         .category-badge {
             font-size: 0.7rem;
             padding: 0.2rem 0.6rem;
             border-radius: 0.2rem;
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .breaking-news {
-            animation: pulse 2s infinite;
-        }
-        
-        .breaking-news::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background: #E53935;
         }
         
         .tab-active {
@@ -174,26 +105,43 @@
             fill: #F9FAFB;
         }
         
-        .smooth-scroll {
-            scroll-behavior: smooth;
+        .featured-news {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            cursor: pointer;
+            height: 100%;
         }
         
-        .backdrop-blur-md {
-            backdrop-filter: blur(12px);
+        .featured-news:hover {
+            transform: scale(1.02);
+            transition: transform 0.3s ease;
         }
         
-        .trending-badge {
+        .featured-news-content {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            background: #E53935;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            text-transform: uppercase;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
             z-index: 2;
+        }
+        
+        .featured-news-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 10px;
+        }
+        
+        .featured-news-meta {
+            display: flex;
+            align-items: center;
+            color: rgba(255,255,255,0.8);
+            font-size: 0.9rem;
+            gap: 15px;
         }
         
         .image-overlay {
@@ -226,7 +174,6 @@
         
         .sidebar-card:hover {
             transform: translateX(5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
         
         .tag-cloud {
@@ -242,7 +189,7 @@
             font-size: 0.8rem;
             color: #4B5563;
             transition: all 0.2s ease;
-            cursor: pointer !important;
+            cursor: pointer;
         }
         
         .tag:hover {
@@ -265,68 +212,8 @@
             transform: translateY(-50%);
         }
         
-        .load-more-btn {
-            background: linear-gradient(135deg, #1E40AF 0%, #6B21A8 100%);
-            color: white;
-            padding: 12px 30px;
-            border-radius: 30px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            display: inline-block;
-        }
-        
-        .load-more-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(30, 64, 175, 0.3);
-        }
-        
-        .featured-news {
-            position: relative;
-            overflow: hidden;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            cursor: pointer;
-        }
-        
-        .featured-news:hover {
-            transform: scale(1.02);
-            transition: transform 0.3s ease;
-        }
-        
-        .featured-news-content {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 20px;
-            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
-            z-index: 2;
-        }
-        
-        .featured-news-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: white;
-            margin-bottom: 10px;
-        }
-        
-        .featured-news-meta {
-            display: flex;
-            align-items: center;
-            color: rgba(255,255,255,0.8);
-            font-size: 0.9rem;
-        }
-        
-        .featured-news-meta i {
-            margin-right: 5px;
-        }
-        
-        .featured-news-meta span {
-            margin-right: 15px;
-        }
-        
         .loading-spinner {
-            border: 4px solid rgba(255, 255, 255, 0.3);
+            border: 4px solid #f3f3f3;
             border-radius: 50%;
             border-top: 4px solid #1E40AF;
             width: 40px;
@@ -359,11 +246,11 @@
         .pagination {
             display: flex;
             justify-content: center;
+            gap: 8px;
             margin-top: 30px;
         }
         
         .pagination button {
-            margin: 0 5px;
             padding: 8px 12px;
             border-radius: 4px;
             background: white;
@@ -373,7 +260,7 @@
             transition: all 0.2s ease;
         }
         
-        .pagination button:hover {
+        .pagination button:hover:not(:disabled) {
             background: #F3F4F6;
         }
         
@@ -400,22 +287,26 @@
             color: #D1D5DB;
         }
         
-        /* Debug styles for image loading */
-        .debug-image {
-            border: 2px solid red;
+        .category-link {
+            cursor: pointer;
         }
         
-        .image-error {
-            background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #666;
-            font-size: 14px;
+        .filter-btn {
+            cursor: pointer;
         }
         
-        .image-error::before {
-            content: "📷 Gambar tidak tersedia";
+        .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
     </style>
 </head>
@@ -440,16 +331,14 @@
     <nav class="bg-white shadow-md sticky top-0 z-50">
         <div class="container mx-auto px-4">
             <div class="flex justify-between items-center py-4">
-                <!-- Logo Kampus -->
                 <div class="flex items-center space-x-3">
-                    <img src="https://picsum.photos/seed/logoyadika/48/48.jpg" alt="Logo ITB Yadika" class="h-12 w-12 object-contain rounded-lg">
+                    <img src="yadika.png" alt="Logo ITB Yadika" class="h-12 w-12 object-contain rounded-lg">
                     <div>
                         <span class="text-xl font-bold gradient-text">LPPM ITB Yadika</span>
                         <p class="text-xs text-gray-600">Lembaga Penelitian & Pengabdian Masyarakat</p>
                     </div>
                 </div>
                 
-                <!-- Menu Desktop -->
                 <div class="hidden lg:flex items-center space-x-6">
                     <a href="index.html" class="text-gray-700 hover:text-blue-600 transition font-medium">Dashboard</a>
                     <a href="berita.html" class="text-blue-600 font-medium tab-active pb-1">Berita & Kegiatan</a>
@@ -460,21 +349,17 @@
                     </a>
                 </div>
                 
-                <!-- Menu Mobile Button -->
                 <button id="menu-mobile-button" class="lg:hidden text-gray-700 focus:outline-none">
                     <i class="bi bi-list text-2xl"></i>
                 </button>
             </div>
             
-            <!-- Menu Mobile -->
             <div id="menu-mobile" class="hidden lg:hidden pb-4">
                 <a href="index.html" class="block py-2 text-gray-700 hover:text-blue-600 transition">Dashboard</a>
                 <a href="berita.html" class="block py-2 text-blue-600 font-medium">Berita & Kegiatan</a>
                 <a href="magang-kkn.html" class="block py-2 text-gray-700 hover:text-blue-600 transition">Magang & KKN</a>
                 <a href="repository.html" class="block py-2 text-gray-700 hover:text-blue-600 transition">Repository</a>
-                <a href="login.html" class="block mt-2 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition text-center">
-                    <i class="bi bi-box-arrow-in-right mr-2"></i>Login
-                </a>
+                <a href="login.html" class="block mt-2 bg-blue-600 text-white px-4 py-2 rounded-md text-center">Login</a>
             </div>
         </div>
     </nav>
@@ -483,7 +368,7 @@
     <div class="bg-red-600 text-white py-2 overflow-hidden">
         <div class="container mx-auto px-4 flex items-center">
             <span class="bg-white text-red-600 px-3 py-1 rounded-md font-bold text-sm mr-4">BREAKING</span>
-            <div class="breaking-news-text overflow-hidden whitespace-nowrap">
+            <div class="overflow-hidden whitespace-nowrap">
                 <span id="breaking-news-text" class="inline-block animate-pulse">Memuat berita terbaru...</span>
             </div>
         </div>
@@ -492,19 +377,16 @@
     <!-- Hero Section -->
     <section class="relative hero-gradient text-white py-16 md:py-20 overflow-hidden">
         <div class="container mx-auto px-4 relative z-10">
-            <div class="text-center" data-aos="fade-up" data-aos-duration="800">
-                <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-                    Berita & <span class="gradient-text">Kegiatan</span>
-                </h1>
+            <div class="text-center" data-aos="fade-up">
+                <h1 class="text-4xl md:text-5xl font-bold mb-6">Berita & <span class="gradient-text">Kegiatan</span></h1>
                 <p class="text-lg md:text-xl mb-8 text-blue-100 max-w-3xl mx-auto">
                     Informasi terbaru seputar penelitian, pengabdian masyarakat, dan kegiatan LPPM ITB Yadika Pasuruan
                 </p>
                 
-                <!-- Search Box -->
                 <div class="max-w-2xl mx-auto mb-8">
                     <div class="search-box">
                         <i class="bi bi-search"></i>
-                        <input type="text" id="search-input" placeholder="Cari berita..." class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <input type="text" id="search-input" placeholder="Cari berita..." class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800">
                     </div>
                 </div>
                 
@@ -531,7 +413,6 @@
             </div>
         </div>
         
-        <!-- Wave Shape Divider -->
         <div class="custom-shape-divider-bottom-1690903031">
             <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
                 <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="shape-fill"></path>
@@ -543,7 +424,6 @@
     <section class="py-8 bg-white">
         <div class="container mx-auto px-4">
             <div id="featured-news-container" class="grid md:grid-cols-2 gap-8">
-                <!-- Featured news will be loaded here -->
                 <div class="loading-spinner"></div>
             </div>
         </div>
@@ -555,7 +435,7 @@
             <div class="flex justify-between items-center mb-8">
                 <h2 class="text-2xl font-bold text-gray-800">Berita Terbaru</h2>
                 <div class="flex space-x-2">
-                    <button id="grid-view-btn" class="px-4 py-2 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition">
+                    <button id="grid-view-btn" class="px-4 py-2 bg-blue-500 text-white rounded-md transition">
                         <i class="bi bi-grid-3x3-gap"></i>
                     </button>
                     <button id="list-view-btn" class="px-4 py-2 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition">
@@ -565,20 +445,13 @@
             </div>
             
             <div class="grid lg:grid-cols-3 gap-8">
-                <!-- Main Content -->
                 <div class="lg:col-span-2">
                     <div id="berita-container" class="grid gap-8">
-                        <!-- Loading state -->
                         <div class="loading-spinner"></div>
                     </div>
-
-                    <!-- Pagination -->
-                    <div id="pagination" class="pagination">
-                        <!-- Pagination will be loaded here -->
-                    </div>
+                    <div id="pagination" class="pagination"></div>
                 </div>
 
-                <!-- Sidebar -->
                 <div class="lg:col-span-1">
                     <!-- Trending News -->
                     <div class="bg-white p-6 rounded-lg shadow-md mb-6" data-aos="fade-left">
@@ -586,7 +459,6 @@
                             <i class="bi bi-fire text-red-500 mr-2"></i> Trending News
                         </h3>
                         <ul id="trending-news" class="space-y-4">
-                            <!-- Trending news will be loaded here -->
                             <div class="loading-spinner"></div>
                         </ul>
                     </div>
@@ -594,69 +466,16 @@
                     <!-- Categories -->
                     <div class="bg-white p-6 rounded-lg shadow-md mb-6" data-aos="fade-left" data-aos-delay="100">
                         <h3 class="text-xl font-bold mb-4 text-gray-800">Kategori</h3>
-                        <ul class="space-y-2">
-                            <li>
-                                <a href="#" class="flex items-center justify-between p-2 rounded-lg hover:bg-blue-50 transition category-link" data-category="semua">
-                                    <span class="flex items-center">
-                                        <i class="bi bi-grid-3x3-gap mr-2 text-gray-600"></i>
-                                        Semua
-                                    </span>
-                                    <span id="count-semua" class="bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs">0</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="flex items-center justify-between p-2 rounded-lg hover:bg-blue-50 transition category-link" data-category="politik">
-                                    <span class="flex items-center">
-                                        <i class="bi bi-building mr-2 text-blue-600"></i>
-                                        Politik
-                                    </span>
-                                    <span id="count-politik" class="bg-blue-100 text-blue-600 px-2 py-1 rounded-full text-xs">0</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="flex items-center justify-between p-2 rounded-lg hover:bg-blue-50 transition category-link" data-category="ekonomi">
-                                    <span class="flex items-center">
-                                        <i class="bi bi-currency-dollar mr-2 text-purple-600"></i>
-                                        Ekonomi
-                                    </span>
-                                    <span id="count-ekonomi" class="bg-purple-100 text-purple-600 px-2 py-1 rounded-full text-xs">0</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="flex items-center justify-between p-2 rounded-lg hover:bg-blue-50 transition category-link" data-category="pendidikan">
-                                    <span class="flex items-center">
-                                        <i class="bi bi-book mr-2 text-green-600"></i>
-                                        Pendidikan
-                                    </span>
-                                    <span id="count-pendidikan" class="bg-green-100 text-green-600 px-2 py-1 rounded-full text-xs">0</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="flex items-center justify-between p-2 rounded-lg hover:bg-blue-50 transition category-link" data-category="kesehatan">
-                                    <span class="flex items-center">
-                                        <i class="bi bi-heart-pulse mr-2 text-red-600"></i>
-                                        Kesehatan
-                                    </span>
-                                    <span id="count-kesehatan" class="bg-red-100 text-red-600 px-2 py-1 rounded-full text-xs">0</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="flex items-center justify-between p-2 rounded-lg hover:bg-blue-50 transition category-link" data-category="teknologi">
-                                    <span class="flex items-center">
-                                        <i class="bi bi-cpu mr-2 text-indigo-600"></i>
-                                        Teknologi
-                                    </span>
-                                    <span id="count-teknologi" class="bg-indigo-100 text-indigo-600 px-2 py-1 rounded-full text-xs">0</span>
-                                </a>
-                            </li>
+                        <ul class="space-y-2" id="categories-list">
+                            <!-- Categories will be populated here -->
                         </ul>
                     </div>
 
                     <!-- Newsletter -->
-                    <div class="bg-gradient-to-r from-blue-500 to-purple-600 p-6 rounded-lg shadow-md mb-6 text-white" data-aos="fade-left" data-aos-delay="200">
+                    <div class="bg-gradient-to-r from-blue-500 to-purple-600 p-6 rounded-lg shadow-md mb-6 text-white">
                         <h3 class="text-xl font-bold mb-4">Newsletter</h3>
                         <p class="mb-4 text-sm">Dapatkan berita terbaru dari LPPM ITB Yadika langsung di inbox Anda</p>
-                        <form class="newsletter-form">
+                        <form class="newsletter-form" id="newsletter-form">
                             <input type="email" placeholder="Email Anda" class="w-full px-4 py-2 rounded-md text-gray-800 focus:outline-none">
                             <button type="submit" class="bg-white text-blue-600 px-3 py-1 rounded-md text-sm font-medium hover:bg-gray-100 transition">
                                 <i class="bi bi-send"></i>
@@ -665,10 +484,10 @@
                     </div>
 
                     <!-- Tags -->
-                    <div class="bg-white p-6 rounded-lg shadow-md" data-aos="fade-left" data-aos-delay="300">
+                    <div class="bg-white p-6 rounded-lg shadow-md">
                         <h3 class="text-xl font-bold mb-4 text-gray-800">Tags Populer</h3>
                         <div id="tag-cloud" class="tag-cloud">
-                            <!-- Tags will be loaded here -->
+                            <div class="loading-spinner"></div>
                         </div>
                     </div>
                 </div>
@@ -677,656 +496,453 @@
     </section>
 
     <!-- Footer -->
-    <footer class="footer-gradient text-white py-12 relative overflow-hidden">
+    <footer class="footer-gradient text-white py-12">
         <div class="container mx-auto px-4">
             <div class="grid md:grid-cols-4 gap-8">
-                <div data-aos="fade-up">
+                <div>
                     <div class="flex items-center space-x-2 mb-4">
-                        <img src="https://picsum.photos/seed/logoyadika/40/40.jpg" alt="Logo ITB Yadika" class="h-10 w-10 object-contain rounded-lg">
-                        <span class="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">LPPM ITB Yadika</span>
+                        <img src="https://picsum.photos/seed/logoyadika/40/40.jpg" alt="Logo" class="h-10 w-10 rounded-lg">
+                        <span class="text-xl font-bold">LPPM ITB Yadika</span>
                     </div>
-                    <p class="text-gray-400 mb-4">Lembaga Penelitian dan Pengabdian Masyarakat ITB Yadika Pasuruan.</p>
-                    <div class="flex space-x-4">
-                        <a href="#" class="text-gray-400 hover:text-white text-xl transition">
-                            <i class="bi bi-facebook"></i>
-                        </a>
-                        <a href="#" class="text-gray-400 hover:text-white text-xl transition">
-                            <i class="bi bi-instagram"></i>
-                        </a>
-                        <a href="#" class="text-gray-400 hover:text-white text-xl transition">
-                            <i class="bi bi-twitter-x"></i>
-                        </a>
-                        <a href="#" class="text-gray-400 hover:text-white text-xl transition">
-                            <i class="bi bi-youtube"></i>
-                        </a>
-                    </div>
+                    <p class="text-gray-400">Lembaga Penelitian dan Pengabdian Masyarakat ITB Yadika Pasuruan.</p>
                 </div>
-                
-                <div data-aos="fade-up" data-aos-delay="100">
+                <div>
                     <h3 class="text-xl font-semibold mb-4">Menu Utama</h3>
-                    <ul class="space-y-2">
-                        <li><a href="index.html" class="text-gray-400 hover:text-white transition flex items-center">
-                            <i class="bi bi-chevron-right mr-2 text-xs"></i>Dashboard</a></li>
-                        <li><a href="berita.html" class="text-gray-400 hover:text-white transition flex items-center">
-                            <i class="bi bi-chevron-right mr-2 text-xs"></i>Berita & Kegiatan</a></li>
-                        <li><a href="magang-kkn.html" class="text-gray-400 hover:text-white transition flex items-center">
-                            <i class="bi bi-chevron-right mr-2 text-xs"></i>Magang & KKN</a></li>
-                        <li><a href="repository.html" class="text-gray-400 hover:text-white transition flex items-center">
-                            <i class="bi bi-chevron-right mr-2 text-xs"></i>Repository</a></li>
-                        <li><a href="login.html" class="text-gray-400 hover:text-white transition flex items-center">
-                            <i class="bi bi-chevron-right mr-2 text-xs"></i>Login</a></li>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="index.html" class="hover:text-white transition">Dashboard</a></li>
+                        <li><a href="berita.html" class="hover:text-white transition">Berita & Kegiatan</a></li>
+                        <li><a href="magang-kkn.html" class="hover:text-white transition">Magang & KKN</a></li>
+                        <li><a href="repository.html" class="hover:text-white transition">Repository</a></li>
                     </ul>
                 </div>
-                
-                <div data-aos="fade-up" data-aos-delay="200">
+                <div>
                     <h3 class="text-xl font-semibold mb-4">Layanan</h3>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-white transition flex items-center">
-                            <i class="bi bi-chevron-right mr-2 text-xs"></i>Penelitian</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition flex items-center">
-                            <i class="bi bi-chevron-right mr-2 text-xs"></i>Pengabdian</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition flex items-center">
-                            <i class="bi bi-chevron-right mr-2 text-xs"></i>Kerjasama</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition flex items-center">
-                            <i class="bi bi-chevron-right mr-2 text-xs"></i>Publikasi</a></li>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition">Penelitian</a></li>
+                        <li><a href="#" class="hover:text-white transition">Pengabdian</a></li>
+                        <li><a href="#" class="hover:text-white transition">Publikasi</a></li>
                     </ul>
                 </div>
-                
-                <div data-aos="fade-up" data-aos-delay="300">
+                <div>
                     <h3 class="text-xl font-semibold mb-4">Kontak</h3>
                     <ul class="space-y-2 text-gray-400">
-                        <li class="flex items-center">
-                            <i class="bi bi-geo-alt mr-2"></i>
-                            JL. Salem No. 03, Bangil
-                        </li>
-                        <li class="flex items-center">
-                            <i class="bi bi-telephone mr-2"></i>
-                            +62 896 2992 7242
-                        </li>
-                        <li class="flex items-center">
-                            <i class="bi bi-envelope mr-2"></i>
-                            lppm@itbyadika.ac.id
-                        </li>
+                        <li>JL. Salem No. 03, Bangil</li>
+                        <li>+62 896 2992 7242</li>
+                        <li>lppm@itbyadika.ac.id</li>
                     </ul>
                 </div>
             </div>
-            
-            <div class="border-t border-gray-700 mt-12 pt-8 text-center text-gray-400" data-aos="fade-up">
-                <p>&copy; 2023 LPPM ITB Yadika Pasuruan. All rights reserved.</p>
+            <div class="border-t border-gray-700 mt-12 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 LPPM ITB Yadika Pasuruan. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
-    <!-- Back to Top Button -->
-    <button id="back-to-top" class="fixed bottom-8 right-8 bg-blue-600 text-white p-4 rounded-full shadow-lg opacity-0 invisible transition-all duration-300 hover:bg-blue-700 hover:shadow-xl">
+    <button id="back-to-top" class="fixed bottom-8 right-8 bg-blue-600 text-white p-4 rounded-full shadow-lg opacity-0 invisible transition-all duration-300 hover:bg-blue-700">
         <i class="bi bi-arrow-up"></i>
     </button>
 
-    <!-- JavaScript -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        // Initialize AOS
-        AOS.init({
-            duration: 800,
-            once: true,
-            disable: 'mobile'
-        });
+        AOS.init({ duration: 800, once: true });
         
         // API Configuration
-        const API_BASE_URL = 'http://localhost:5000/api';
-        const IMAGE_BASE_URL = 'http://localhost:5000'; // Base URL untuk gambar
+        const API_BASE_URL = 'http://localhost:3000/api';
+        const IMAGE_BASE_URL = 'http://localhost:3000';
         
-        // Global variables
-        let allBerita = [];
-        let filteredBerita = [];
+        // State
         let currentPage = 1;
-        const itemsPerPage = 5;
         let currentFilter = 'semua';
-        let currentSearchTerm = '';
-        let viewMode = 'grid'; // grid or list
+        let currentSearch = '';
+        let viewMode = 'grid';
+        let totalPages = 1;
+        let categoriesCount = {};
         
         // DOM Elements
         const beritaContainer = document.getElementById('berita-container');
-        const featuredNewsContainer = document.getElementById('featured-news-container');
-        const trendingNewsContainer = document.getElementById('trending-news');
+        const featuredContainer = document.getElementById('featured-news-container');
+        const trendingContainer = document.getElementById('trending-news');
         const paginationContainer = document.getElementById('pagination');
         const searchInput = document.getElementById('search-input');
-        const filterBtns = document.querySelectorAll('.filter-btn');
-        const categoryLinks = document.querySelectorAll('.category-link');
-        const gridViewBtn = document.getElementById('grid-view-btn');
-        const listViewBtn = document.getElementById('list-view-btn');
-        const backToTopButton = document.getElementById('back-to-top');
-        const menuMobileButton = document.getElementById('menu-mobile-button');
-        const menuMobile = document.getElementById('menu-mobile');
-        const currentDateElement = document.getElementById('current-date');
         const breakingNewsText = document.getElementById('breaking-news-text');
         const tagCloud = document.getElementById('tag-cloud');
+        const categoriesList = document.getElementById('categories-list');
         
-        // Initialize the page
-        document.addEventListener('DOMContentLoaded', function() {
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
             setCurrentDate();
-            fetchAllBerita();
+            loadBerita();
+            loadFeaturedBerita();
+            loadTrendingBerita();
+            loadCategories();
+            loadPopularTags();
             setupEventListeners();
         });
         
-        // Set current date
         function setCurrentDate() {
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const today = new Date();
-            currentDateElement.innerHTML = `<i class="bi bi-calendar3 mr-1"></i> ${today.toLocaleDateString('id-ID', options)}`;
+            document.getElementById('current-date').innerHTML = `<i class="bi bi-calendar3 mr-1"></i> ${new Date().toLocaleDateString('id-ID', options)}`;
         }
         
-        // Setup event listeners
         function setupEventListeners() {
-            // Mobile menu toggle
-            menuMobileButton.addEventListener('click', function() {
-                menuMobile.classList.toggle('hidden');
+            // Mobile menu
+            document.getElementById('menu-mobile-button').addEventListener('click', () => {
+                document.getElementById('menu-mobile').classList.toggle('hidden');
             });
             
-            // Back to top button
-            window.addEventListener('scroll', function() {
+            // Back to top
+            const backBtn = document.getElementById('back-to-top');
+            window.addEventListener('scroll', () => {
                 if (window.pageYOffset > 300) {
-                    backToTopButton.classList.remove('opacity-0', 'invisible');
-                    backToTopButton.classList.add('opacity-100', 'visible');
+                    backBtn.classList.remove('opacity-0', 'invisible');
+                    backBtn.classList.add('opacity-100', 'visible');
                 } else {
-                    backToTopButton.classList.add('opacity-0', 'invisible');
-                    backToTopButton.classList.remove('opacity-100', 'visible');
+                    backBtn.classList.add('opacity-0', 'invisible');
+                    backBtn.classList.remove('opacity-100', 'visible');
                 }
             });
+            backBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
             
-            backToTopButton.addEventListener('click', function() {
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
-            });
-            
-            // Search functionality
-            searchInput.addEventListener('input', function() {
-                currentSearchTerm = this.value.toLowerCase();
+            // Search
+            searchInput.addEventListener('input', (e) => {
+                currentSearch = e.target.value;
                 currentPage = 1;
-                filterAndDisplayBerita();
+                loadBerita();
             });
             
             // Filter buttons
-            filterBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    setActiveFilter(this.dataset.filter);
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    setActiveFilter(btn.dataset.filter);
                 });
             });
             
-            // Category links
-            categoryLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    setActiveFilter(this.dataset.category);
-                });
-            });
+            // View mode
+            document.getElementById('grid-view-btn').addEventListener('click', () => setViewMode('grid'));
+            document.getElementById('list-view-btn').addEventListener('click', () => setViewMode('list'));
             
-            // View mode buttons
-            gridViewBtn.addEventListener('click', function() {
-                setViewMode('grid');
-            });
-            
-            listViewBtn.addEventListener('click', function() {
-                setViewMode('list');
-            });
-            
-            // Newsletter form
-            document.querySelector('.newsletter-form').addEventListener('submit', function(e) {
+            // Newsletter
+            document.getElementById('newsletter-form').addEventListener('submit', (e) => {
                 e.preventDefault();
-                const email = this.querySelector('input[type="email"]').value;
+                const email = e.target.querySelector('input').value;
                 if (email) {
-                    showNotification('Terima kasih! Anda telah berlangganan newsletter kami.', 'success');
-                    this.reset();
+                    alert('Terima kasih telah berlangganan newsletter kami!');
+                    e.target.reset();
                 }
             });
         }
         
-        // Fetch all berita from API
-        async function fetchAllBerita() {
+        async function loadBerita() {
             try {
-                showLoadingState();
-                console.log('Fetching berita from:', `${API_BASE_URL}/berita-umum`);
+                showLoading(beritaContainer);
                 
-                const response = await fetch(`${API_BASE_URL}/berita-umum`);
+                let url = `${API_BASE_URL}/berita-umum/public?page=${currentPage}&limit=6`;
+                if (currentFilter !== 'semua') url += `&kategori=${currentFilter}`;
+                if (currentSearch) url += `&search=${encodeURIComponent(currentSearch)}`;
                 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                const response = await fetch(url);
+                const result = await response.json();
+                
+                if (result.success) {
+                    totalPages = result.pagination.totalPages;
+                    renderBerita(result.data);
+                    renderPagination();
+                } else {
+                    throw new Error(result.message);
                 }
-                
-                const data = await response.json();
-                console.log('Berita data received:', data);
-                
-                allBerita = data.filter(berita => berita.status === 'published'); // Only show published berita
-                filteredBerita = [...allBerita];
-                
-                hideLoadingState();
-                updateBreakingNews();
-                displayFeaturedNews();
-                displayTrendingNews();
-                updateCategoryCounts();
-                generateTags();
-                filterAndDisplayBerita();
             } catch (error) {
-                console.error('Error fetching berita:', error);
-                hideLoadingState();
-                showErrorState();
-            }
-        }
-        
-        // Function to get correct image URL
-        function getImageUrl(thumbnailUrl, fallbackSeed) {
-            // Debug log
-            console.log('Processing thumbnail URL:', thumbnailUrl);
-            
-            if (!thumbnailUrl) {
-                console.log('No thumbnail URL, using fallback');
-                return `https://picsum.photos/seed/${fallbackSeed}/800/500.jpg`;
-            }
-            
-            // If thumbnailUrl already includes full URL
-            if (thumbnailUrl.startsWith('http')) {
-                console.log('Full URL detected:', thumbnailUrl);
-                return thumbnailUrl;
-            }
-            
-            // If thumbnailUrl starts with /uploads
-            if (thumbnailUrl.startsWith('/uploads')) {
-                const fullUrl = `${IMAGE_BASE_URL}${thumbnailUrl}`;
-                console.log('Constructed URL from /uploads:', fullUrl);
-                return fullUrl;
-            }
-            
-            // If thumbnailUrl is just a filename
-            if (thumbnailUrl.includes('.')) {
-                const fullUrl = `${IMAGE_BASE_URL}/uploads/berita-umum/${thumbnailUrl}`;
-                console.log('Constructed URL from filename:', fullUrl);
-                return fullUrl;
-            }
-            
-            // Fallback
-            console.log('Using fallback image');
-            return `https://picsum.photos/seed/${fallbackSeed}/800/500.jpg`;
-        }
-        
-        // Show loading state
-        function showLoadingState() {
-            beritaContainer.innerHTML = '<div class="loading-spinner"></div>';
-            featuredNewsContainer.innerHTML = '<div class="loading-spinner"></div>';
-            trendingNewsContainer.innerHTML = '<div class="loading-spinner"></div>';
-        }
-        
-        // Hide loading state
-        function hideLoadingState() {
-            // Loading will be replaced by actual content
-        }
-        
-        // Show error state
-        function showErrorState() {
-            beritaContainer.innerHTML = `
-                <div class="no-results">
-                    <i class="bi bi-exclamation-triangle"></i>
-                    <h3>Terjadi kesalahan</h3>
-                    <p>Gagal memuat berita. Silakan coba lagi nanti.</p>
-                    <button onclick="fetchAllBerita()" class="mt-4 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
-                        <i class="bi bi-arrow-clockwise mr-2"></i>Coba Lagi
-                    </button>
-                </div>
-            `;
-            featuredNewsContainer.innerHTML = '';
-            trendingNewsContainer.innerHTML = '';
-        }
-        
-        // Update breaking news
-        function updateBreakingNews() {
-            if (allBerita.length > 0) {
-                const latestBerita = allBerita[0];
-                breakingNewsText.textContent = latestBerita.judul;
-            }
-        }
-        
-        // Display featured news
-        function displayFeaturedNews() {
-            if (filteredBerita.length === 0) {
-                featuredNewsContainer.innerHTML = '<p class="text-center text-gray-500">Tidak ada berita tersedia</p>';
-                return;
-            }
-            
-            const featuredBerita = filteredBerita.slice(0, 3);
-            let html = '';
-            
-            // Main featured news
-            if (featuredBerita.length > 0) {
-                const mainFeatured = featuredBerita[0];
-                const thumbnailUrl = getImageUrl(mainFeatured.thumbnail_url, `berita${mainFeatured.id}`);
-                
-                html += `
-                    <div class="featured-news" data-aos="fade-up" onclick="viewBeritaDetail(${mainFeatured.id})">
-                        <div class="image-overlay">
-                            <img src="${thumbnailUrl}" 
-                                 alt="${mainFeatured.judul}" 
-                                 class="w-full h-96 object-cover"
-                                 onerror="this.onerror=null; this.src='https://picsum.photos/seed/berita${mainFeatured.id}/800/500.jpg'; console.error('Image failed to load:', '${thumbnailUrl}');">
-                        </div>
-                        <div class="featured-news-content">
-                            <span class="bg-red-600 text-white px-2 py-1 rounded text-xs font-semibold">FEATURED</span>
-                            <h2 class="featured-news-title">${mainFeatured.judul}</h2>
-                            <div class="featured-news-meta">
-                                <span><i class="bi bi-person"></i> ${mainFeatured.penulis}</span>
-                                <span><i class="bi bi-calendar3"></i> ${formatDate(mainFeatured.tanggal_publikasi)}</span>
-                            </div>
-                        </div>
+                console.error('Error loading berita:', error);
+                beritaContainer.innerHTML = `
+                    <div class="no-results">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <h3>Gagal memuat berita</h3>
+                        <button onclick="loadBerita()" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg">Coba Lagi</button>
                     </div>
                 `;
             }
-            
-            // Side featured news
-            if (featuredBerita.length > 1) {
-                html += '<div class="grid grid-rows-2 gap-4">';
+        }
+        
+        async function loadFeaturedBerita() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/berita-umum/featured?limit=3`);
+                const result = await response.json();
                 
-                for (let i = 1; i < Math.min(3, featuredBerita.length); i++) {
-                    const sideFeatured = featuredBerita[i];
-                    const thumbnailUrl = getImageUrl(sideFeatured.thumbnail_url, `berita${sideFeatured.id}`);
+                if (result.success && result.data.length > 0) {
+                    renderFeaturedNews(result.data);
+                }
+            } catch (error) {
+                console.error('Error loading featured:', error);
+                featuredContainer.innerHTML = '<p class="text-center text-gray-500">Tidak ada berita unggulan</p>';
+            }
+        }
+        
+        async function loadTrendingBerita() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/berita-umum/trending?limit=5`);
+                const result = await response.json();
+                
+                if (result.success && result.data.length > 0) {
+                    renderTrendingNews(result.data);
+                    
+                    // Set breaking news
+                    if (result.data[0]) {
+                        breakingNewsText.textContent = result.data[0].judul;
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading trending:', error);
+                trendingContainer.innerHTML = '<li class="text-center text-gray-500">Tidak ada berita trending</li>';
+            }
+        }
+        
+        async function loadCategories() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/berita-umum/statistics`);
+                const result = await response.json();
+                
+                if (result.success && result.data.kategori_stats) {
+                    categoriesCount = {};
+                    result.data.kategori_stats.forEach(cat => {
+                        categoriesCount[cat.kategori] = cat.total;
+                    });
+                    renderCategories();
+                }
+            } catch (error) {
+                console.error('Error loading categories:', error);
+            }
+        }
+        
+        async function loadPopularTags() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/berita-umum/popular-tags?limit=10`);
+                const result = await response.json();
+                
+                if (result.success && result.data.length > 0) {
+                    renderTags(result.data);
+                }
+            } catch (error) {
+                console.error('Error loading tags:', error);
+                tagCloud.innerHTML = '<p class="text-gray-500">Tidak ada tags</p>';
+            }
+        }
+        
+        function renderBerita(beritaList) {
+            if (!beritaList || beritaList.length === 0) {
+                beritaContainer.innerHTML = `
+                    <div class="no-results">
+                        <i class="bi bi-inbox"></i>
+                        <h3>Tidak ada berita ditemukan</h3>
+                        <p>Coba gunakan kata kunci yang berbeda</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const html = beritaList.map((berita, index) => {
+                const imageUrl = berita.gambar_thumbnail 
+                    ? `${IMAGE_BASE_URL}${berita.gambar_thumbnail}` 
+                    : `https://picsum.photos/seed/berita${berita.id_berita}/400/250.jpg`;
+                
+                const categoryColor = getCategoryColor(berita.kategori);
+                const date = new Date(berita.tanggal_publish).toLocaleDateString('id-ID', {
+                    year: 'numeric', month: 'long', day: 'numeric'
+                });
+                
+                if (viewMode === 'grid') {
+                    return `
+                        <article class="bg-white rounded-lg shadow-md overflow-hidden news-card" onclick="viewDetail('${berita.id_berita}')">
+                            <img src="${imageUrl}" alt="${berita.judul}" class="w-full h-48 object-cover">
+                            <div class="p-6">
+                                <div class="flex items-center gap-2 mb-3">
+                                    <span class="category-badge ${categoryColor}">${berita.kategori}</span>
+                                    <span class="text-sm text-gray-500"><i class="bi bi-calendar3 mr-1"></i>${date}</span>
+                                </div>
+                                <h3 class="text-xl font-semibold mb-2 text-gray-800 news-title line-clamp-2">${escapeHtml(berita.judul)}</h3>
+                                <p class="text-gray-600 mb-4 line-clamp-3">${escapeHtml(berita.isi_berita.substring(0, 150))}...</p>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(berita.penulis)}&background=1E40AF&color=fff" class="w-8 h-8 rounded-full mr-2">
+                                        <span class="text-sm text-gray-600">${escapeHtml(berita.penulis)}</span>
+                                    </div>
+                                    <span class="text-sm text-gray-500"><i class="bi bi-eye"></i> ${berita.views || 0}</span>
+                                </div>
+                            </div>
+                        </article>
+                    `;
+                } else {
+                    return `
+                        <article class="bg-white rounded-lg shadow-md overflow-hidden news-card flex" onclick="viewDetail('${berita.id_berita}')">
+                            <img src="${imageUrl}" alt="${berita.judul}" class="w-1/3 h-48 object-cover">
+                            <div class="w-2/3 p-6">
+                                <div class="flex items-center gap-2 mb-3">
+                                    <span class="category-badge ${categoryColor}">${berita.kategori}</span>
+                                    <span class="text-sm text-gray-500"><i class="bi bi-calendar3 mr-1"></i>${date}</span>
+                                </div>
+                                <h3 class="text-xl font-semibold mb-2 text-gray-800 news-title line-clamp-2">${escapeHtml(berita.judul)}</h3>
+                                <p class="text-gray-600 mb-4 line-clamp-2">${escapeHtml(berita.isi_berita.substring(0, 120))}...</p>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(berita.penulis)}&background=1E40AF&color=fff" class="w-8 h-8 rounded-full mr-2">
+                                        <span class="text-sm text-gray-600">${escapeHtml(berita.penulis)}</span>
+                                    </div>
+                                    <span class="text-sm text-gray-500"><i class="bi bi-eye"></i> ${berita.views || 0}</span>
+                                </div>
+                            </div>
+                        </article>
+                    `;
+                }
+            }).join('');
+            
+            beritaContainer.innerHTML = `<div class="${viewMode === 'grid' ? 'grid gap-8' : 'space-y-6'}">${html}</div>`;
+        }
+        
+        function renderFeaturedNews(featuredList) {
+            if (!featuredList.length) {
+                featuredContainer.innerHTML = '<p class="text-center text-gray-500">Tidak ada berita unggulan</p>';
+                return;
+            }
+            
+            const main = featuredList[0];
+            const mainImage = main.gambar_thumbnail ? `${IMAGE_BASE_URL}${main.gambar_thumbnail}` : `https://picsum.photos/seed/featured${main.id_berita}/800/500.jpg`;
+            const mainDate = new Date(main.tanggal_publish).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+            
+            let html = `
+                <div class="featured-news" onclick="viewDetail('${main.id_berita}')">
+                    <div class="image-overlay">
+                        <img src="${mainImage}" alt="${main.judul}" class="w-full h-96 object-cover">
+                    </div>
+                    <div class="featured-news-content">
+                        <span class="bg-red-600 text-white px-2 py-1 rounded text-xs font-semibold">FEATURED</span>
+                        <h2 class="featured-news-title">${escapeHtml(main.judul)}</h2>
+                        <div class="featured-news-meta">
+                            <span><i class="bi bi-person"></i> ${escapeHtml(main.penulis)}</span>
+                            <span><i class="bi bi-calendar3"></i> ${mainDate}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            if (featuredList.length > 1) {
+                html += '<div class="grid grid-rows-2 gap-4">';
+                for (let i = 1; i < Math.min(3, featuredList.length); i++) {
+                    const item = featuredList[i];
+                    const itemImage = item.gambar_thumbnail ? `${IMAGE_BASE_URL}${item.gambar_thumbnail}` : `https://picsum.photos/seed/featured${item.id_berita}/400/250.jpg`;
+                    const itemDate = new Date(item.tanggal_publish).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
                     
                     html += `
-                        <div class="featured-news" data-aos="fade-up" data-aos-delay="${i * 100}" onclick="viewBeritaDetail(${sideFeatured.id})">
+                        <div class="featured-news" onclick="viewDetail('${item.id_berita}')">
                             <div class="image-overlay">
-                                <img src="${thumbnailUrl}" 
-                                     alt="${sideFeatured.judul}" 
-                                     class="w-full h-48 object-cover"
-                                     onerror="this.onerror=null; this.src='https://picsum.photos/seed/berita${sideFeatured.id}/400/250.jpg'; console.error('Image failed to load:', '${thumbnailUrl}');">
+                                <img src="${itemImage}" alt="${item.judul}" class="w-full h-48 object-cover">
                             </div>
                             <div class="featured-news-content">
-                                <h3 class="text-lg font-bold text-white">${sideFeatured.judul}</h3>
+                                <h3 class="text-lg font-bold text-white line-clamp-2">${escapeHtml(item.judul)}</h3>
                                 <div class="featured-news-meta">
-                                    <span><i class="bi bi-calendar3"></i> ${formatDate(sideFeatured.tanggal_publikasi)}</span>
+                                    <span><i class="bi bi-calendar3"></i> ${itemDate}</span>
                                 </div>
                             </div>
                         </div>
                     `;
                 }
-                
                 html += '</div>';
             }
             
-            featuredNewsContainer.innerHTML = html;
+            featuredContainer.innerHTML = html;
         }
         
-        // Display trending news
-        function displayTrendingNews() {
-            if (filteredBerita.length === 0) {
-                trendingNewsContainer.innerHTML = '<p class="text-center text-gray-500">Tidak ada berita trending</p>';
-                return;
-            }
+        function renderTrendingNews(trendingList) {
+            const html = trendingList.map((item, index) => `
+                <li class="flex items-start space-x-3 sidebar-card" onclick="viewDetail('${item.id_berita}')">
+                    <span class="${index < 3 ? 'bg-red-500' : 'bg-gray-300'} text-white w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold">${index + 1}</span>
+                    <div class="flex-1">
+                        <a href="#" class="text-gray-700 hover:text-blue-600 transition font-medium text-sm line-clamp-2" onclick="event.stopPropagation(); viewDetail('${item.id_berita}')">
+                            ${escapeHtml(item.judul)}
+                        </a>
+                        <p class="text-xs text-gray-500 mt-1">${new Date(item.tanggal_publish).toLocaleDateString('id-ID')}</p>
+                    </div>
+                </li>
+            `).join('');
             
-            const trendingBerita = filteredBerita.slice(0, 5);
-            let html = '';
+            trendingContainer.innerHTML = html;
+        }
+        
+        function renderCategories() {
+            const categories = [
+                { key: 'semua', name: 'Semua', icon: 'bi-grid-3x3-gap', color: 'gray' },
+                { key: 'politik', name: 'Politik', icon: 'bi-building', color: 'blue' },
+                { key: 'ekonomi', name: 'Ekonomi', icon: 'bi-currency-dollar', color: 'purple' },
+                { key: 'pendidikan', name: 'Pendidikan', icon: 'bi-book', color: 'green' },
+                { key: 'kesehatan', name: 'Kesehatan', icon: 'bi-heart-pulse', color: 'red' },
+                { key: 'teknologi', name: 'Teknologi', icon: 'bi-cpu', color: 'indigo' }
+            ];
             
-            trendingBerita.forEach((berita, index) => {
-                const badgeClass = index < 3 ? 'bg-red-500 text-white' : 'bg-gray-300 text-white';
-                html += `
-                    <li class="flex items-start space-x-3 sidebar-card" onclick="viewBeritaDetail(${berita.id})">
-                        <span class="${badgeClass} w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold">${index + 1}</span>
-                        <div>
-                            <a href="#" class="text-gray-700 hover:text-blue-600 transition font-medium text-sm" onclick="event.stopPropagation(); viewBeritaDetail(${berita.id})">
-                                ${berita.judul}
-                            </a>
-                            <p class="text-xs text-gray-500 mt-1">${formatDate(berita.tanggal_publikasi)}</p>
-                        </div>
+            const totalBerita = Object.values(categoriesCount).reduce((a, b) => a + b, 0);
+            
+            const html = categories.map(cat => {
+                const count = cat.key === 'semua' ? totalBerita : (categoriesCount[cat.key] || 0);
+                const colorClasses = {
+                    blue: 'text-blue-600',
+                    purple: 'text-purple-600',
+                    green: 'text-green-600',
+                    red: 'text-red-600',
+                    indigo: 'text-indigo-600',
+                    gray: 'text-gray-600'
+                };
+                
+                return `
+                    <li>
+                        <a href="#" class="flex items-center justify-between p-2 rounded-lg hover:bg-blue-50 transition category-link" data-category="${cat.key}">
+                            <span class="flex items-center">
+                                <i class="bi ${cat.icon} mr-2 ${colorClasses[cat.color]}"></i>
+                                ${cat.name}
+                            </span>
+                            <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs">${count}</span>
+                        </a>
                     </li>
                 `;
-            });
+            }).join('');
             
-            trendingNewsContainer.innerHTML = html;
-        }
-        
-        // Update category counts
-        function updateCategoryCounts() {
-            const categories = ['politik', 'ekonomi', 'pendidikan', 'kesehatan', 'teknologi'];
+            categoriesList.innerHTML = html;
             
-            document.getElementById('count-semua').textContent = allBerita.length;
-            
-            categories.forEach(category => {
-                const count = allBerita.filter(berita => berita.kategori === category).length;
-                const countElement = document.getElementById(`count-${category}`);
-                if (countElement) {
-                    countElement.textContent = count;
-                }
-            });
-        }
-        
-        // Generate tags
-        function generateTags() {
-            // Extract keywords from berita titles and content
-            const keywords = new Set();
-            
-            allBerita.forEach(berita => {
-                // Extract words from title
-                const titleWords = berita.judul.toLowerCase().split(/\s+/);
-                titleWords.forEach(word => {
-                    if (word.length > 3) {
-                        keywords.add(word);
-                    }
+            // Add event listeners to category links
+            document.querySelectorAll('.category-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    setActiveFilter(link.dataset.category);
                 });
-                
-                // Add category as tag
-                if (berita.kategori) {
-                    keywords.add(berita.kategori);
-                }
             });
-            
-            // Convert to array and limit to 10 most common
-            const tagArray = Array.from(keywords).slice(0, 10);
-            
-            // Generate HTML
-            let html = '';
-            tagArray.forEach(tag => {
-                html += `<span class="tag" onclick="searchByTag('${tag}')">${tag}</span>`;
-            });
+        }
+        
+        function renderTags(tags) {
+            const html = tags.map(tag => `
+                <span class="tag" onclick="searchByTag('${escapeHtml(tag.tag)}')">${escapeHtml(tag.tag)}</span>
+            `).join('');
             
             tagCloud.innerHTML = html;
         }
         
-        // Filter and display berita
-        function filterAndDisplayBerita() {
-            // Apply filter
-            if (currentFilter === 'semua') {
-                filteredBerita = [...allBerita];
-            } else {
-                filteredBerita = allBerita.filter(berita => berita.kategori === currentFilter);
-            }
-            
-            // Apply search
-            if (currentSearchTerm) {
-                filteredBerita = filteredBerita.filter(berita => {
-                    const titleMatch = berita.judul.toLowerCase().includes(currentSearchTerm);
-                    const contentMatch = berita.konten.toLowerCase().includes(currentSearchTerm);
-                    const authorMatch = berita.penulis.toLowerCase().includes(currentSearchTerm);
-                    return titleMatch || contentMatch || authorMatch;
-                });
-            }
-            
-            // Update UI
-            displayFeaturedNews();
-            displayTrendingNews();
-            displayBerita();
-            setupPagination();
-        }
-        
-        // Display berita
-        function displayBerita() {
-            if (filteredBerita.length === 0) {
-                beritaContainer.innerHTML = `
-                    <div class="no-results">
-                        <i class="bi bi-search"></i>
-                        <h3>Tidak ada berita ditemukan</h3>
-                        <p>Coba gunakan kata kunci yang berbeda atau reset filter</p>
-                        <button onclick="resetFilters()" class="mt-4 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
-                            Reset Filter
-                        </button>
-                    </div>
-                `;
-                return;
-            }
-            
-            // Calculate pagination
-            const startIndex = (currentPage - 1) * itemsPerPage;
-            const endIndex = startIndex + itemsPerPage;
-            const paginatedBerita = filteredBerita.slice(startIndex, endIndex);
-            
-            // Generate HTML
-            let html = '';
-            
-            if (viewMode === 'grid') {
-                html = '<div class="grid gap-8">';
-            } else {
-                html = '<div class="space-y-6">';
-            }
-            
-            paginatedBerita.forEach((berita, index) => {
-                const thumbnailUrl = getImageUrl(berita.thumbnail_url, `berita${berita.id}`);
-                const categoryColor = getCategoryColor(berita.kategori);
-                
-                if (viewMode === 'grid') {
-                    html += `
-                        <article class="berita-item bg-white rounded-lg shadow-md overflow-hidden news-card" data-category="${berita.kategori}" data-aos="fade-up" data-aos-delay="${index * 100}" onclick="viewBeritaDetail(${berita.id})">
-                            <div class="md:flex">
-                                <div class="md:w-1/3">
-                                    <div class="image-overlay h-48 md:h-full">
-                                        <img src="${thumbnailUrl}" 
-                                             alt="${berita.judul}" 
-                                             class="w-full h-full object-cover"
-                                             onerror="this.onerror=null; this.src='https://picsum.photos/seed/berita${berita.id}/400/300.jpg'; console.error('Image failed to load:', '${thumbnailUrl}');">
-                                    </div>
-                                </div>
-                                <div class="md:w-2/3 p-6">
-                                    <div class="flex items-center mb-3">
-                                        <span class="category-badge ${categoryColor}">${berita.kategori}</span>
-                                        <span class="text-gray-500 text-sm ml-3">
-                                            <i class="bi bi-calendar3 mr-1"></i>${formatDate(berita.tanggal_publikasi)}
-                                        </span>
-                                    </div>
-                                    <h3 class="text-xl font-semibold mb-3 text-gray-800 news-title">
-                                        <a href="#" class="hover:text-blue-600 transition" onclick="event.stopPropagation(); viewBeritaDetail(${berita.id})">${berita.judul}</a>
-                                    </h3>
-                                    <p class="text-gray-600 mb-4">${truncateText(berita.konten, 150)}</p>
-                                    <div class="flex items-center justify-between">
-                                        <div class="flex items-center">
-                                            <img src="https://picsum.photos/seed/author${berita.id}/40/40.jpg" class="author-image mr-2" alt="Penulis">
-                                            <span class="text-sm text-gray-600">${berita.penulis}</span>
-                                        </div>
-                                        <div class="flex items-center space-x-3 text-gray-500">
-                                            <span class="text-sm"><i class="bi bi-eye"></i> ${Math.floor(Math.random() * 1000) + 100}</span>
-                                            <a href="#" class="text-blue-500 hover:text-blue-600 font-medium" onclick="event.stopPropagation(); viewBeritaDetail(${berita.id})">
-                                                Baca Selengkapnya
-                                                <i class="bi bi-arrow-right ml-1"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </article>
-                    `;
-                } else {
-                    html += `
-                        <article class="berita-item bg-white rounded-lg shadow-md overflow-hidden news-card flex" data-category="${berita.kategori}" data-aos="fade-up" data-aos-delay="${index * 100}" onclick="viewBeritaDetail(${berita.id})">
-                            <div class="w-1/4">
-                                <div class="image-overlay h-full">
-                                    <img src="${thumbnailUrl}" 
-                                         alt="${berita.judul}" 
-                                         class="w-full h-full object-cover"
-                                         onerror="this.onerror=null; this.src='https://picsum.photos/seed/berita${berita.id}/400/300.jpg'; console.error('Image failed to load:', '${thumbnailUrl}');">
-                                </div>
-                            </div>
-                            <div class="w-3/4 p-6">
-                                <div class="flex items-center mb-3">
-                                    <span class="category-badge ${categoryColor}">${berita.kategori}</span>
-                                    <span class="text-gray-500 text-sm ml-3">
-                                        <i class="bi bi-calendar3 mr-1"></i>${formatDate(berita.tanggal_publikasi)}
-                                    </span>
-                                </div>
-                                <h3 class="text-xl font-semibold mb-3 text-gray-800 news-title">
-                                    <a href="#" class="hover:text-blue-600 transition" onclick="event.stopPropagation(); viewBeritaDetail(${berita.id})">${berita.judul}</a>
-                                </h3>
-                                <p class="text-gray-600 mb-4">${truncateText(berita.konten, 200)}</p>
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center">
-                                        <img src="https://picsum.photos/seed/author${berita.id}/40/40.jpg" class="author-image mr-2" alt="Penulis">
-                                        <span class="text-sm text-gray-600">${berita.penulis}</span>
-                                    </div>
-                                    <div class="flex items-center space-x-3 text-gray-500">
-                                        <span class="text-sm"><i class="bi bi-eye"></i> ${Math.floor(Math.random() * 1000) + 100}</span>
-                                        <a href="#" class="text-blue-500 hover:text-blue-600 font-medium" onclick="event.stopPropagation(); viewBeritaDetail(${berita.id})">
-                                            Baca Selengkapnya
-                                            <i class="bi bi-arrow-right ml-1"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </article>
-                    `;
-                }
-            });
-            
-            html += '</div>';
-            beritaContainer.innerHTML = html;
-        }
-        
-        // Setup pagination
-        function setupPagination() {
-            const totalPages = Math.ceil(filteredBerita.length / itemsPerPage);
-            
+        function renderPagination() {
             if (totalPages <= 1) {
                 paginationContainer.innerHTML = '';
                 return;
             }
             
             let html = '';
+            html += `<button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}><i class="bi bi-chevron-left"></i></button>`;
             
-            // Previous button
-            html += `
-                <button ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(${currentPage - 1})">
-                    <i class="bi bi-chevron-left"></i>
-                </button>
-            `;
-            
-            // Page numbers
-            for (let i = 1; i <= totalPages; i++) {
-                if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
-                    html += `
-                        <button class="${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</button>
-                    `;
-                } else if (i === currentPage - 2 || i === currentPage + 2) {
-                    html += `<button disabled>...</button>`;
-                }
+            for (let i = 1; i <= Math.min(totalPages, 5); i++) {
+                html += `<button class="${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
             }
             
-            // Next button
-            html += `
-                <button ${currentPage === totalPages ? 'disabled' : ''} onclick="changePage(${currentPage + 1})">
-                    <i class="bi bi-chevron-right"></i>
-                </button>
-            `;
+            html += `<button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}><i class="bi bi-chevron-right"></i></button>`;
             
             paginationContainer.innerHTML = html;
         }
         
-        // Change page
-        function changePage(page) {
-            currentPage = page;
-            displayBerita();
-            setupPagination();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-        
-        // Set active filter
         function setActiveFilter(filter) {
             currentFilter = filter;
             currentPage = 1;
             
-            // Update button styles
-            filterBtns.forEach(btn => {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
                 if (btn.dataset.filter === filter) {
                     btn.classList.remove('bg-white/20', 'text-white');
                     btn.classList.add('bg-white', 'text-blue-600');
@@ -1336,61 +952,50 @@
                 }
             });
             
-            filterAndDisplayBerita();
+            loadBerita();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
         
-        // Set view mode
         function setViewMode(mode) {
             viewMode = mode;
+            const gridBtn = document.getElementById('grid-view-btn');
+            const listBtn = document.getElementById('list-view-btn');
             
             if (mode === 'grid') {
-                gridViewBtn.classList.add('bg-blue-500', 'text-white');
-                gridViewBtn.classList.remove('bg-white', 'border-gray-300');
-                listViewBtn.classList.remove('bg-blue-500', 'text-white');
-                listViewBtn.classList.add('bg-white', 'border-gray-300');
+                gridBtn.classList.add('bg-blue-500', 'text-white');
+                gridBtn.classList.remove('bg-white', 'border-gray-300');
+                listBtn.classList.remove('bg-blue-500', 'text-white');
+                listBtn.classList.add('bg-white', 'border-gray-300');
             } else {
-                listViewBtn.classList.add('bg-blue-500', 'text-white');
-                listViewBtn.classList.remove('bg-white', 'border-gray-300');
-                gridViewBtn.classList.remove('bg-blue-500', 'text-white');
-                gridViewBtn.classList.add('bg-white', 'border-gray-300');
+                listBtn.classList.add('bg-blue-500', 'text-white');
+                listBtn.classList.remove('bg-white', 'border-gray-300');
+                gridBtn.classList.remove('bg-blue-500', 'text-white');
+                gridBtn.classList.add('bg-white', 'border-gray-300');
             }
             
-            displayBerita();
+            loadBerita();
         }
         
-        // View berita detail
-        function viewBeritaDetail(id) {
-            console.log('Navigating to berita detail with ID:', id);
-            // Navigate to detail page
+        function changePage(page) {
+            if (page < 1 || page > totalPages) return;
+            currentPage = page;
+            loadBerita();
+            window.scrollTo({ top: 300, behavior: 'smooth' });
+        }
+        
+        function viewDetail(id) {
             window.location.href = `berita-detail.html?id=${id}`;
         }
         
-        // Search by tag
         function searchByTag(tag) {
             searchInput.value = tag;
-            currentSearchTerm = tag.toLowerCase();
+            currentSearch = tag;
             currentPage = 1;
-            filterAndDisplayBerita();
+            loadBerita();
         }
         
-        // Reset filters
-        function resetFilters() {
-            searchInput.value = '';
-            currentSearchTerm = '';
-            currentFilter = 'semua';
-            currentPage = 1;
-            setActiveFilter('semua');
-        }
-        
-        // Helper functions
-        function formatDate(dateString) {
-            const options = { year: 'numeric', month: 'long', day: 'numeric' };
-            return new Date(dateString).toLocaleDateString('id-ID', options);
-        }
-        
-        function truncateText(text, maxLength) {
-            if (text.length <= maxLength) return text;
-            return text.substring(0, maxLength) + '...';
+        function showLoading(container) {
+            container.innerHTML = '<div class="loading-spinner"></div>';
         }
         
         function getCategoryColor(category) {
@@ -1404,30 +1009,11 @@
             return colors[category] || 'bg-gray-100 text-gray-600';
         }
         
-        function showNotification(message, type = 'info') {
-            // Create notification element
-            const notification = document.createElement('div');
-            notification.className = `fixed top-20 right-4 px-6 py-3 rounded-lg shadow-lg z-50 animate__animated animate__fadeInRight`;
-            
-            // Set color based on type
-            if (type === 'success') {
-                notification.classList.add('bg-green-500', 'text-white');
-            } else if (type === 'error') {
-                notification.classList.add('bg-red-500', 'text-white');
-            } else {
-                notification.classList.add('bg-blue-500', 'text-white');
-            }
-            
-            notification.textContent = message;
-            document.body.appendChild(notification);
-            
-            // Remove after 3 seconds
-            setTimeout(() => {
-                notification.classList.add('animate__fadeOutRight');
-                setTimeout(() => {
-                    document.body.removeChild(notification);
-                }, 1000);
-            }, 3000);
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
     </script>
 </body>
