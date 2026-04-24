@@ -41,6 +41,7 @@ const magangLuaranRoutes = require('./routes/admin/magangLuaranRoutes');
 const repositoryRoutes = require('./routes/repositoryRoutes');
 const beritaRoutes = require('./routes/beritaRoutes');
 
+const { authenticateToken } = require('./middleware/auth'); 
 // Middleware
 app.use(helmet({
     crossOriginResourcePolicy: { policy: "cross-origin" }
@@ -55,6 +56,7 @@ app.use(morgan('dev'));
 
 // Static files untuk upload
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/api/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Routes
 app.use('/api', fakultasRoutes);
@@ -88,6 +90,7 @@ app.use('/api/admin/magang/luaran', magangLuaranRoutes);
 app.use('/api/repository', repositoryRoutes);
 app.use('/api/berita-umum', beritaRoutes);
 
+
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(err.status || 500).json({
@@ -108,5 +111,4 @@ app.use((req, res) => {
 // Start server
 app.listen(PORT, () => {
     console.log(`🚀 Server running on port ${PORT}`);
-    console.log(`📝 Environment: ${process.env.NODE_ENV}`);
 });

@@ -480,65 +480,60 @@ const checkRegistrationStatus = async (req, res) => {
     }
 };
 
+// controllers/dosen/kegiatanController.js (tambahan)
+
 /**
  * Get kegiatan statistics
  */
 const getKegiatanStats = async (req, res) => {
     try {
-        // Get counts by status - PERBAIKAN: tanpa menggunakan group()
+        const userId = req.user.id_user;
+        
+        // Get total kegiatan
+        const { count: totalKegiatan, error: totalError } = await supabase
+            .from('kegiatan')
+            .select('*', { count: 'exact', head: true });
+        
+        if (totalError) throw totalError;
+        
+        // Get kegiatan by status
         const { data: statusData, error: statusError } = await supabase
             .from('kegiatan')
             .select('status_kegiatan');
-
+        
         if (statusError) throw statusError;
-
-        // Hitung manual per status
+        
         const statusCount = {};
         statusData.forEach(item => {
             statusCount[item.status_kegiatan] = (statusCount[item.status_kegiatan] || 0) + 1;
         });
-
-        const formattedStatusStats = Object.keys(statusCount).map(status => ({
-            status_kegiatan: status,
-            count: statusCount[status]
-        }));
-
-        // Get counts by jenis - PERBAIKAN: tanpa menggunakan group()
+        
+        // Get kegiatan by jenis
         const { data: jenisData, error: jenisError } = await supabase
             .from('kegiatan')
             .select('jenis_kegiatan');
-
+        
         if (jenisError) throw jenisError;
-
-        // Hitung manual per jenis
+        
         const jenisCount = {};
         jenisData.forEach(item => {
             jenisCount[item.jenis_kegiatan] = (jenisCount[item.jenis_kegiatan] || 0) + 1;
         });
-
-        const formattedJenisStats = Object.keys(jenisCount).map(jenis => ({
-            jenis_kegiatan: jenis,
-            count: jenisCount[jenis]
-        }));
-
-        // Get total pendaftar by status
-        const { data: pendaftarData, error: pendaftarError } = await supabase
+        
+        // Get user registrations
+        const { data: registrations, error: regError } = await supabase
             .from('pendaftar_kegiatan')
-            .select('status_pendaftaran');
-
-        if (pendaftarError) throw pendaftarError;
-
-        // Hitung manual per status pendaftaran
-        const pendaftarCount = {};
-        pendaftarData.forEach(item => {
-            pendaftarCount[item.status_pendaftaran] = (pendaftarCount[item.status_pendaftaran] || 0) + 1;
-        });
-
-        const formattedPendaftarStats = Object.keys(pendaftarCount).map(status => ({
-            status_pendaftaran: status,
-            count: pendaftarCount[status]
-        }));
-
+            .select('status_pendaftaran')
+            .eq('id_user', userId);
+        
+        if (regError) throw regError;
+        
+        const regCount = {
+            menunggu: registrations.filter(r => r.status_pendaftaran === 'menunggu').length,
+            diterima: registrations.filter(r => r.status_pendaftaran === 'diterima').length,
+            ditolak: registrations.filter(r => r.status_pendaftaran === 'ditolak').length
+        };
+        
         // Get upcoming kegiatan
         const { data: upcoming, error: upcomingError } = await supabase
             .from('kegiatan')
@@ -547,15 +542,16 @@ const getKegiatanStats = async (req, res) => {
             .gte('tanggal_mulai', new Date().toISOString())
             .order('tanggal_mulai', { ascending: true })
             .limit(5);
-
+        
         if (upcomingError) throw upcomingError;
-
+        
         res.json({
             success: true,
             data: {
-                by_status: formattedStatusStats,
-                by_jenis: formattedJenisStats,
-                pendaftar: formattedPendaftarStats,
+                total: totalKegiatan || 0,
+                by_status: Object.entries(statusCount).map(([status, count]) => ({ status_kegiatan: status, count })),
+                by_jenis: Object.entries(jenisCount).map(([jenis, count]) => ({ jenis_kegiatan: jenis, count })),
+                registrasi_saya: regCount,
                 upcoming: upcoming.map(item => ({
                     id: item.id_kegiatan,
                     nama_kegiatan: item.nama_kegiatan,
@@ -564,7 +560,6 @@ const getKegiatanStats = async (req, res) => {
                 }))
             }
         });
-
     } catch (error) {
         console.error('Error in getKegiatanStats:', error);
         res.status(500).json({

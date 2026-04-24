@@ -51,19 +51,6 @@ exports.getProfile = async (req, res) => {
             .eq('id_user', userId)
             .single();
 
-        // Query untuk mengambil jabatan fungsional
-        const { data: jabatan, error: jabatanError } = await supabase
-            .from('dosen_jabatan')
-            .select(`
-                *,
-                jabatan_fungsional:jabatan_fungsional (*)
-            `)
-            .eq('id_user', userId)
-            .eq('status', 'aktif')
-            .order('tanggal_mulai', { ascending: false })
-            .limit(1)
-            .single();
-
         // Query untuk mengambil riwayat pendidikan
         const { data: pendidikan, error: pendidikanError } = await supabase
             .from('dosen_pendidikan')
@@ -78,7 +65,7 @@ exports.getProfile = async (req, res) => {
             .eq('id_user', userId)
             .single();
 
-        // Format response
+        // Format response (tanpa jabatan)
         const formattedProfile = {
             id_user: profile.id_user,
             nama_lengkap: profile.nama_lengkap,
@@ -95,7 +82,6 @@ exports.getProfile = async (req, res) => {
             id_fakultas: profile.program_studi?.fakultas?.id_fakultas,
             nama_fakultas: profile.program_studi?.fakultas?.nama_fakultas,
             info_pribadi: dosenInfo || null,
-            jabatan_saat_ini: jabatan || null,
             riwayat_pendidikan: pendidikan || [],
             researcher_ids: researcherIds || {
                 scholar_id: '',
@@ -121,7 +107,7 @@ exports.getProfile = async (req, res) => {
 };
 
 // ===========================================
-// UPDATE PROFILE DOSEN
+// UPDATE PROFILE DOSEN (TANPA JABATAN)
 // ===========================================
 exports.updateProfile = async (req, res) => {
     try {
@@ -137,7 +123,8 @@ exports.updateProfile = async (req, res) => {
             scholar_id,
             orcid,
             scopus_id,
-            sinta_id
+            sinta_id,
+            id_prodi
         } = req.body;
 
         // Validasi input
@@ -149,29 +136,32 @@ exports.updateProfile = async (req, res) => {
         }
 
         // Update tabel users
+        const updateData = {
+            nama_lengkap: nama_lengkap,
+            no_hp: no_hp,
+            updated_at: new Date()
+        };
+        
+        if (id_prodi && id_prodi !== '') {
+            updateData.id_prodi = id_prodi;
+        }
+
         const { error: userError } = await supabase
             .from('users')
-            .update({
-                nama_lengkap: nama_lengkap,
-                no_hp: no_hp,
-                updated_at: new Date()
-            })
+            .update(updateData)
             .eq('id_user', userId)
             .eq('role', 'dosen');
 
         if (userError) throw userError;
 
-        // Cek apakah data dosen_info sudah ada
+        // Update atau insert dosen_info
         const { data: existingInfo, error: checkError } = await supabase
             .from('dosen_info')
             .select('id_info')
             .eq('id_user', userId)
             .single();
 
-        if (checkError && checkError.code !== 'PGRST116') throw checkError;
-
         if (existingInfo) {
-            // Update data yang sudah ada
             const { error: updateError } = await supabase
                 .from('dosen_info')
                 .update({
@@ -183,10 +173,8 @@ exports.updateProfile = async (req, res) => {
                     updated_at: new Date()
                 })
                 .eq('id_user', userId);
-
             if (updateError) throw updateError;
         } else {
-            // Insert data baru
             const { error: insertError } = await supabase
                 .from('dosen_info')
                 .insert([{
@@ -197,7 +185,6 @@ exports.updateProfile = async (req, res) => {
                     agama: agama || null,
                     alamat: alamat || null
                 }]);
-
             if (insertError) throw insertError;
         }
 
@@ -207,8 +194,6 @@ exports.updateProfile = async (req, res) => {
             .select('id_researcher')
             .eq('id_user', userId)
             .single();
-
-        if (checkResearcherError && checkResearcherError.code !== 'PGRST116') throw checkResearcherError;
 
         if (existingResearcher) {
             const { error: updateResearcherError } = await supabase
@@ -221,7 +206,6 @@ exports.updateProfile = async (req, res) => {
                     updated_at: new Date()
                 })
                 .eq('id_user', userId);
-
             if (updateResearcherError) throw updateResearcherError;
         } else {
             const { error: insertResearcherError } = await supabase
@@ -233,7 +217,6 @@ exports.updateProfile = async (req, res) => {
                     scopus_id: scopus_id || null,
                     sinta_id: sinta_id || null
                 }]);
-
             if (insertResearcherError) throw insertResearcherError;
         }
 
@@ -246,21 +229,60 @@ exports.updateProfile = async (req, res) => {
             }]);
 
         // Ambil data terbaru
-        const updatedProfile = await exports.getProfile(req, res, true);
+        const { data: updatedUser, error: userDataError } = await supabase
+            .from('users')
+            .select(`
+                id_user,
+                nama_lengkap,
+                email,
+                nidn,
+                no_hp,
+                foto_profil,
+                program_studi:program_studi!users_id_prodi_fkey (
+                    id_prodi,
+                    nama_prodi,
+                    fakultas:fakultas!program_studi_id_fakultas_fkey (
+                        id_fakultas,
+                        nama_fakultas
+                    )
+                )
+            `)
+            .eq('id_user', userId)
+            .single();
+
+        const { data: updatedInfo } = await supabase
+            .from('dosen_info')
+            .select('*')
+            .eq('id_user', userId)
+            .single();
+
+        const { data: updatedResearcher } = await supabase
+            .from('dosen_researcher_id')
+            .select('*')
+            .eq('id_user', userId)
+            .single();
+
+        const formattedProfile = {
+            ...updatedUser,
+            info_pribadi: updatedInfo || null,
+            researcher_ids: updatedResearcher || {}
+        };
 
         res.json({
             success: true,
             message: 'Profil berhasil diperbarui',
-            data: updatedProfile
+            data: formattedProfile
         });
 
     } catch (error) {
         console.error('Error updateProfile:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Terjadi kesalahan server',
-            error: process.env.NODE_ENV === 'development' ? error.message : undefined
-        });
+        if (!res.headersSent) {
+            res.status(500).json({
+                success: false,
+                message: 'Terjadi kesalahan server',
+                error: process.env.NODE_ENV === 'development' ? error.message : undefined
+            });
+        }
     }
 };
 
@@ -363,9 +385,6 @@ exports.getStatistik = async (req, res) => {
 
         if (penulisError) throw penulisError;
 
-        // Hitung HKI (jika ada tabelnya)
-        // Sementara menggunakan data dummy
-
         res.json({
             success: true,
             data: {
@@ -373,7 +392,7 @@ exports.getStatistik = async (req, res) => {
                 pengabdian: (pengabdianCount || 0) + (anggotaPengabdian?.length || 0),
                 publikasi: (jurnalCount || 0) + (penulisJurnal?.length || 0),
                 mahasiswa_bimbingan: await getMahasiswaBimbinganCount(userId),
-                hki: 4 // Data dummy, sesuaikan dengan tabel HKI jika ada
+                hki: 0
             }
         });
 
@@ -598,104 +617,6 @@ exports.deleteRiwayatPendidikan = async (req, res) => {
 };
 
 // ===========================================
-// GET RIWAYAT JABATAN
-// ===========================================
-exports.getRiwayatJabatan = async (req, res) => {
-    try {
-        const userId = req.user.id_user;
-
-        const { data: jabatan, error } = await supabase
-            .from('dosen_jabatan')
-            .select(`
-                *,
-                jabatan_fungsional:jabatan_fungsional (*)
-            `)
-            .eq('id_user', userId)
-            .order('tanggal_mulai', { ascending: false });
-
-        if (error) throw error;
-
-        res.json({
-            success: true,
-            data: jabatan
-        });
-
-    } catch (error) {
-        console.error('Error getRiwayatJabatan:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Terjadi kesalahan server',
-            error: process.env.NODE_ENV === 'development' ? error.message : undefined
-        });
-    }
-};
-
-// ===========================================
-// TAMBAH RIWAYAT JABATAN
-// ===========================================
-exports.addRiwayatJabatan = async (req, res) => {
-    try {
-        const userId = req.user.id_user;
-        const {
-            id_jabatan_fungsional,
-            nomor_sk,
-            tanggal_sk,
-            tanggal_mulai,
-            tanggal_selesai,
-            status,
-            keterangan
-        } = req.body;
-
-        // Validasi
-        if (!id_jabatan_fungsional || !nomor_sk || !tanggal_mulai) {
-            return res.status(400).json({
-                success: false,
-                message: 'Jabatan, nomor SK, dan tanggal mulai harus diisi'
-            });
-        }
-
-        const { data, error } = await supabase
-            .from('dosen_jabatan')
-            .insert([{
-                id_user: userId,
-                id_jabatan_fungsional,
-                nomor_sk,
-                tanggal_sk: tanggal_sk || null,
-                tanggal_mulai,
-                tanggal_selesai: tanggal_selesai || null,
-                status: status || 'aktif',
-                keterangan: keterangan || null
-            }])
-            .select()
-            .single();
-
-        if (error) throw error;
-
-        // Log aktivitas
-        await supabase
-            .from('log_aktivitas')
-            .insert([{
-                id_user: userId,
-                aktivitas: `Menambah riwayat jabatan`
-            }]);
-
-        res.json({
-            success: true,
-            message: 'Riwayat jabatan berhasil ditambahkan',
-            data
-        });
-
-    } catch (error) {
-        console.error('Error addRiwayatJabatan:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Terjadi kesalahan server',
-            error: process.env.NODE_ENV === 'development' ? error.message : undefined
-        });
-    }
-};
-
-// ===========================================
 // UBAH PASSWORD
 // ===========================================
 exports.changePassword = async (req, res) => {
@@ -802,11 +723,14 @@ exports.getPublikasiTerbaru = async (req, res) => {
                 jenis_jurnal:jenis_jurnal (*)
             `)
             .eq('penulis_utama', userId)
-            .eq('status', 'publish')
+            .eq('status', 'diterima')
             .order('tanggal_publish', { ascending: false })
             .limit(limit);
 
-        if (errorUtama) throw errorUtama;
+        if (errorUtama) {
+            console.error('Error jurnalUtama:', errorUtama);
+            throw errorUtama;
+        }
 
         // Cari jurnal sebagai penulis
         const { data: jurnalPenulis, error: errorPenulis } = await supabase
@@ -825,34 +749,45 @@ exports.getPublikasiTerbaru = async (req, res) => {
                     jenis_jurnal:jenis_jurnal (*)
                 )
             `)
-            .eq('id_user', userId)
-            .eq('jurnal.status', 'publish')
-            .order('jurnal.tanggal_publish', { ascending: false })
-            .limit(limit);
+            .eq('id_user', userId);
 
-        if (errorPenulis) throw errorPenulis;
+        if (errorPenulis) {
+            console.error('Error jurnalPenulis:', errorPenulis);
+            throw errorPenulis;
+        }
 
-        // Gabungkan dan format
-        const publikasi = [
-            ...jurnalUtama.map(j => ({
+        // Filter jurnal penulis yang statusnya 'diterima'
+        const jurnalPenulisFiltered = (jurnalPenulis || [])
+            .filter(jp => jp.jurnal && jp.jurnal.status === 'diterima')
+            .map(jp => ({
+                id: jp.jurnal.id_jurnal,
+                judul: jp.jurnal.judul,
+                abstrak: jp.jurnal.abstrak,
+                tanggal: jp.jurnal.tanggal_publish || jp.jurnal.created_at,
+                jenis: jp.jurnal.jenis_jurnal?.nama_jurnal || 'Jurnal',
+                peran: jp.peran || 'Penulis'
+            }));
+
+        // Format jurnal utama
+        const jurnalUtamaFormatted = (jurnalUtama || [])
+            .filter(j => j.status === 'diterima')
+            .map(j => ({
                 id: j.id_jurnal,
                 judul: j.judul,
                 abstrak: j.abstrak,
                 tanggal: j.tanggal_publish || j.created_at,
                 jenis: j.jenis_jurnal?.nama_jurnal || 'Jurnal',
                 peran: 'Penulis Utama'
-            })),
-            ...jurnalPenulis.map(j => ({
-                id: j.id_jurnal,
-                judul: j.jurnal?.judul,
-                abstrak: j.jurnal?.abstrak,
-                tanggal: j.jurnal?.tanggal_publish || j.jurnal?.created_at,
-                jenis: j.jurnal?.jenis_jurnal?.nama_jurnal || 'Jurnal',
-                peran: j.peran || 'Penulis'
-            }))
-        ]
-        .sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal))
-        .slice(0, limit);
+            }));
+
+        // Gabungkan dan urutkan berdasarkan tanggal
+        const publikasi = [...jurnalUtamaFormatted, ...jurnalPenulisFiltered]
+            .sort((a, b) => {
+                const dateA = a.tanggal ? new Date(a.tanggal) : new Date(0);
+                const dateB = b.tanggal ? new Date(b.tanggal) : new Date(0);
+                return dateB - dateA;
+            })
+            .slice(0, parseInt(limit));
 
         res.json({
             success: true,

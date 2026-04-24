@@ -4,8 +4,8 @@ const { deleteFile } = require('../../middleware/upload');
 
 class KKNService {
     constructor() {
-        this.tableRegistrasi = 'registrasi_kkn';
-        this.tableLuaran = 'luaran_kkn';
+         this.tableRegistrasi = 'kkn_registration';
+        this.tableLuaran = 'kkn_outputs'; 
         this.tableDesa = 'desa_kkn';
         this.tableUsers = 'users';
         this.tableProgramStudi = 'program_studi';

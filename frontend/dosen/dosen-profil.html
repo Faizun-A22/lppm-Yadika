@@ -104,6 +104,55 @@
             transform: translateY(-2px);
             box-shadow: 0 10px 25px -5px rgba(139, 92, 246, 0.4);
         }
+
+
+         .nav-link-modern {
+        position: relative;
+        transition: all 0.2s ease;
+    }
+    
+    .nav-link-modern.active {
+        background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
+        color: white !important;
+    }
+    
+    .nav-link-modern.active i {
+        color: white !important;
+    }
+    
+    .nav-link-modern:not(.active):hover {
+        transform: translateY(-1px);
+    }
+    
+    /* Dropdown Animation */
+    #userDropdown {
+        transform-origin: top right;
+        animation: dropdownFade 0.2s ease;
+    }
+    
+    @keyframes dropdownFade {
+        from {
+            opacity: 0;
+            transform: scale(0.95) translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+    }
+    
+    /* Active link indicator */
+    .nav-link-modern.active::before {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 20px;
+        height: 2px;
+        background: white;
+        border-radius: 2px;
+    }
     </style>
 </head>
 <body class="bg-gray-50 font-sans antialiased">
@@ -115,50 +164,104 @@
         </div>
     </div>
 
-    <!-- Header / Navigation Bar -->
-    <header class="fixed top-0 left-0 right-0 bg-white shadow-md z-50">
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <!-- Logo and Brand -->
-            <a href="dosen-dashboard.html" class="flex items-center space-x-3">
-                <img src="yadika.png" alt="Logo LPPM ITB Yadika" class="h-10 w-10 rounded">
-                <div>
-                    <h1 class="text-xl font-bold gradient-text">Portal Dosen</h1>
-                    <p class="text-xs text-gray-500">LPPM ITB Yadika</p>
-                </div>
-            </a>
-            
-            <!-- Navigation Menu -->
-            <div class="hidden md:flex items-center space-x-8">
-                <a href="dosen-dashboard.html" class="nav-link text-gray-700 hover:text-blue-600">
-                    <i class="fas fa-home mr-2"></i>Dashboard
-                </a>
-                <a href="dosen-berita.html" class="nav-link text-gray-700 hover:text-blue-600">
-                    <i class="fas fa-newspaper mr-2"></i>Berita
-                </a>
-                <a href="dosen-penelitian-pengabdian.html" class="nav-link text-gray-700 hover:text-blue-600">
-                    <i class="fas fa-flask mr-2"></i>Penelitian & Pengabdian
-                </a>
-                <a href="dosen-repository.html" class="nav-link text-gray-700 hover:text-blue-600">
-                    <i class="fas fa-archive mr-2"></i>Repository
-                </a>
-                <a href="dosen-profil.html" class="nav-link active text-gray-700 hover:text-blue-600">
-                    <i class="fas fa-user-circle mr-2"></i>Profil Saya
-                </a>
+    <header class="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-md shadow-sm z-50 border-b border-gray-100">
+    <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+        <!-- Logo and Brand -->
+        <a href="dosen-dashboard.html" class="flex items-center space-x-3 group">
+            <div class="relative">
+                <img src="yadika.png" alt="Logo LPPM ITB Yadika" class="h-10 w-10 rounded-xl shadow-sm transition-transform group-hover:scale-105">
+                <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl opacity-0 group-hover:opacity-20 transition"></div>
             </div>
-            
-            <!-- User Info & Logout -->
-            <div class="flex items-center space-x-4">
-                <div class="hidden md:block text-right">
-                    <p class="text-sm font-semibold text-gray-700" id="userNameDisplay">Loading...</p>
-                    <p class="text-xs text-gray-500" id="userNidnDisplay">-</p>
-                </div>
-                <button onclick="handleLogout()" class="flex items-center space-x-2 p-2 rounded-lg text-red-600 hover:bg-red-50 transition">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span class="hidden sm:inline">Logout</span>
+            <div>
+                <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                    Portal Dosen
+                </h1>
+                <p class="text-xs text-gray-400">LPPM ITB Yadika</p>
+            </div>
+        </a>
+        
+        <!-- Desktop Navigation Menu -->
+        <div class="hidden md:flex items-center space-x-1">
+            <a href="dosen-dashboard.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                <i class="fas fa-home text-gray-400 group-hover:text-blue-500 transition"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="dosen-berita.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                <i class="fas fa-newspaper text-gray-400 group-hover:text-blue-500 transition"></i>
+                <span>Berita</span>
+            </a>
+            <a href="dosen-penelitian-pengabdian.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                <i class="fas fa-flask text-gray-400 group-hover:text-blue-500 transition"></i>
+                <span>Penelitian</span>
+            </a>
+            <a href="dosen-repository.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                <i class="fas fa-archive text-gray-400 group-hover:text-blue-500 transition"></i>
+                <span>Repository</span>
+            </a>
+            <a href="dosen-profil.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2 active">
+                <i class="fas fa-user-circle text-gray-400 group-hover:text-blue-500 transition"></i>
+                <span>Profil</span>
+            </a>
+        </div>
+        
+        <!-- User Info & Actions -->
+        <div class="flex items-center gap-4">
+            <!-- Notifications Dropdown -->
+            <div class="relative">
+                <button id="notificationBtn" class="relative p-2 rounded-lg text-gray-500 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200">
+                    <i class="fas fa-bell text-lg"></i>
+                    <span id="notificationBadge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full hidden"></span>
                 </button>
             </div>
-        </nav>
-    </header>
+            
+            <!-- User Profile Dropdown -->
+            <div class="relative">
+                <button id="userMenuBtn" class="flex items-center gap-3 p-1.5 rounded-xl hover:bg-gray-50 transition-all duration-200 border border-transparent hover:border-gray-200">
+                    <div class="relative">
+                        <img id="navAvatar" src="" alt="Avatar" class="w-9 h-9 rounded-full object-cover ring-2 ring-gray-200">
+                        <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full ring-2 ring-white"></div>
+                    </div>
+                    <div class="hidden md:block text-left">
+                        <p class="text-sm font-semibold text-gray-800" id="navUserName">Loading...</p>
+                        <p class="text-xs text-gray-400" id="navUserRole">Dosen</p>
+                    </div>
+                    <i class="fas fa-chevron-down text-xs text-gray-400 hidden md:block"></i>
+                </button>
+                
+                <!-- Dropdown Menu -->
+                <div id="userDropdown" class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hidden transition-all duration-200 z-50">
+                    <!-- Header with user info -->
+                    <div class="p-3 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-purple-50">
+                        <div class="flex items-center gap-3">
+                            <img id="dropdownAvatar" src="" alt="Avatar" class="w-10 h-10 rounded-full object-cover">
+                            <div>
+                                <p class="font-semibold text-gray-800 text-sm" id="dropdownUserName">Loading...</p>
+                                <p class="text-xs text-gray-500" id="dropdownUserNidn">-</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Menu Items -->
+                    <div class="p-2">
+                        <a href="dosen-profil.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
+                            <i class="fas fa-user-cog w-5 text-gray-400"></i>
+                            <span>Pengaturan Akun</span>
+                        </a>
+                        <a href="dosen-ubah-password.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
+                            <i class="fas fa-key w-5 text-gray-400"></i>
+                            <span>Ubah Password</span>
+                        </a>
+                        <div class="border-t border-gray-100 my-2"></div>
+                        <button onclick="handleLogout()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-600 hover:bg-red-50 transition text-sm">
+                            <i class="fas fa-sign-out-alt w-5 text-red-400"></i>
+                            <span>Logout</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
 
     <!-- Main Content -->
     <main class="pt-20">
@@ -335,19 +438,7 @@
                                     <select id="prodi" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
                                         <option value="">Pilih Program Studi</option>
                                     </select>
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Jabatan Akademik</label>
-                                    <select id="jabatan" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
-                                        <option value="">Pilih Jabatan</option>
-                                        <option value="Asisten Ahli">Asisten Ahli</option>
-                                        <option value="Lektor">Lektor</option>
-                                        <option value="Lektor Kepala">Lektor Kepala</option>
-                                        <option value="Guru Besar">Guru Besar</option>
-                                    </select>
-                                </div>
-                                
+                                </div>                                
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
                                     <input type="email" id="email" value="" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" readonly>
@@ -528,97 +619,120 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     
     <script>
-        // ===========================================
-        // KONFIGURASI API
-        // ===========================================
-        const API_BASE_URL = 'http://localhost:3000/api';
+    // ===========================================
+    // KONFIGURASI API
+    // ===========================================
+    const API_BASE_URL = 'http://localhost:3000/api';
 
-        // ===========================================
-        // STATE MANAGEMENT
-        // ===========================================
-        let currentUser = null;
-        let dosenProfile = null;
-        let pendidikanList = [];
-        let jabatanList = [];
-        let prodiList = [];
+    // ===========================================
+    // STATE MANAGEMENT
+    // ===========================================
+    let currentUser = null;
+    let dosenProfile = null;
+    let pendidikanList = [];
+    let jabatanList = [];
+    let prodiList = [];
 
-        // ===========================================
-        // FUNGSI UTILITAS
-        // ===========================================
-        function getAuthToken() {
-            return localStorage.getItem('token');
+    // ===========================================
+    // FUNGSI UTILITAS
+    // ===========================================
+    function getAuthToken() {
+        return localStorage.getItem('token');
+    }
+
+    function getAuthHeaders() {
+        return {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${getAuthToken()}`
+        };
+    }
+
+    function showLoading() {
+        const overlay = document.getElementById('loadingOverlay');
+        if (overlay) overlay.classList.remove('hidden');
+    }
+
+    function hideLoading() {
+        const overlay = document.getElementById('loadingOverlay');
+        if (overlay) overlay.classList.add('hidden');
+    }
+
+    function showNotification(message, type = 'success') {
+        Swal.fire({
+            icon: type,
+            title: type === 'success' ? 'Berhasil' : 'Gagal',
+            text: message,
+            timer: 2000,
+            showConfirmButton: false
+        });
+    }
+
+    // ===========================================
+    // CEK AUTHENTIKASI
+    // ===========================================
+    function checkAuth() {
+        const token = getAuthToken();
+        const userStr = localStorage.getItem('user');
+        
+        if (!token || !userStr) {
+            window.location.href = '../login.html';
+            return null;
         }
-
-        function getAuthHeaders() {
-            return {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${getAuthToken()}`
-            };
+        
+        try {
+            const user = JSON.parse(userStr);
+            if (user.role !== 'dosen') {
+                window.location.href = '../login.html';
+                return null;
+            }
+            currentUser = user;
+            return user;
+        } catch (e) {
+            window.location.href = '../login.html';
+            return null;
         }
+    }
 
-        function showLoading() {
-            document.getElementById('loadingOverlay').classList.remove('hidden');
-        }
+    // ===========================================
+    // UPDATE NAVBAR DENGAN DATA PROFIL
+    // ===========================================
+    function updateNavbarUserInfo(profile) {
+        if (!profile) return;
+        
+        const avatarUrl = profile.foto_profil ? `http://localhost:3000/${profile.foto_profil}` : `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.nama_lengkap || 'Dosen')}&background=3B82F6&color=fff&bold=true`;
+        
+        const navAvatar = document.getElementById('navAvatar');
+        const dropdownAvatar = document.getElementById('dropdownAvatar');
+        const navUserName = document.getElementById('navUserName');
+        const dropdownUserName = document.getElementById('dropdownUserName');
+        const dropdownUserNidn = document.getElementById('dropdownUserNidn');
+        
+        if (navAvatar) navAvatar.src = avatarUrl;
+        if (dropdownAvatar) dropdownAvatar.src = avatarUrl;
+        if (navUserName) navUserName.textContent = profile.nama_lengkap || 'Dosen';
+        if (dropdownUserName) dropdownUserName.textContent = profile.nama_lengkap || 'Dosen';
+        if (dropdownUserNidn) dropdownUserNidn.textContent = profile.nidn ? `NIDN: ${profile.nidn}` : '-';
+    }
 
-        function hideLoading() {
-            document.getElementById('loadingOverlay').classList.add('hidden');
-        }
-
-        function showNotification(message, type = 'success') {
-            Swal.fire({
-                icon: type,
-                title: type === 'success' ? 'Berhasil' : 'Gagal',
-                text: message,
-                timer: 2000,
-                showConfirmButton: false
+    // ===========================================
+    // LOAD PROGRAM STUDI
+    // ===========================================
+    async function loadProgramStudi() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/prodi`, {
+                method: 'GET',
+                headers: getAuthHeaders()
             });
-        }
 
-        // ===========================================
-        // CEK AUTHENTIKASI
-        // ===========================================
-        function checkAuth() {
-            const token = getAuthToken();
-            const userStr = localStorage.getItem('user');
+            if (!response.ok) return;
+
+            const result = await response.json();
             
-            if (!token || !userStr) {
-                window.location.href = '../login.html';
-                return null;
-            }
-            
-            try {
-                const user = JSON.parse(userStr);
-                if (user.role !== 'dosen') {
-                    window.location.href = '../login.html';
-                    return null;
-                }
-                currentUser = user;
-                return user;
-            } catch (e) {
-                window.location.href = '../login.html';
-                return null;
-            }
-        }
-
-        // ===========================================
-        // LOAD PROGRAM STUDI
-        // ===========================================
-        async function loadProgramStudi() {
-            try {
-                const response = await fetch(`${API_BASE_URL}/prodi`, {
-                    method: 'GET',
-                    headers: getAuthHeaders()
-                });
-
-                if (!response.ok) return;
-
-                const result = await response.json();
-                
-                if (result.success && result.data) {
-                    prodiList = result.data;
-                    const prodiSelect = document.getElementById('prodi');
+            if (result.success && result.data) {
+                prodiList = result.data;
+                const prodiSelect = document.getElementById('prodi');
+                if (prodiSelect) {
                     prodiSelect.innerHTML = '<option value="">Pilih Program Studi</option>';
-                    
                     prodiList.forEach(prodi => {
                         const option = document.createElement('option');
                         option.value = prodi.id_prodi;
@@ -626,695 +740,800 @@
                         prodiSelect.appendChild(option);
                     });
                 }
-            } catch (error) {
-                console.error('Error loading prodi:', error);
             }
+        } catch (error) {
+            console.error('Error loading prodi:', error);
+        }
+    }
+
+    // ===========================================
+    // LOAD DATA PROFIL
+    // ===========================================
+    async function loadProfileData() {
+        try {
+            showLoading();
+            
+            const response = await fetch(`${API_BASE_URL}/dosen/profil`, {
+                method: 'GET',
+                headers: getAuthHeaders()
+            });
+
+            if (!response.ok) {
+                throw new Error('Gagal memuat data profil');
+            }
+
+            const result = await response.json();
+            
+            if (result.success) {
+                dosenProfile = result.data;
+                
+                // Update navbar dengan data profil
+                updateNavbarUserInfo(dosenProfile);
+                
+                updateProfileUI();
+                
+                // Load data lainnya
+                await Promise.all([
+                    loadStatistics(),
+                    loadPublikasi(),
+                    loadPendidikan(),
+                    loadJabatan()
+                ]);
+            } else {
+                throw new Error(result.message || 'Gagal memuat data profil');
+            }
+
+        } catch (error) {
+            console.error('Error loading profile:', error);
+            showNotification(error.message || 'Gagal memuat data profil', 'error');
+        } finally {
+            hideLoading();
+        }
+    }
+
+    // ===========================================
+    // UPDATE PROFILE UI
+    // ===========================================
+    function updateProfileUI() {
+        if (!dosenProfile) return;
+
+        // Profile card - Gunakan safe check untuk setiap element
+        const profileName = document.getElementById('profileName');
+        if (profileName) profileName.textContent = dosenProfile.nama_lengkap || '-';
+        
+        const profileNidn = document.getElementById('profileNidn');
+        if (profileNidn) profileNidn.textContent = dosenProfile.nidn || '-';
+        
+        const profileProdi = document.getElementById('profileProdi');
+        if (profileProdi) profileProdi.textContent = dosenProfile.nama_prodi || '-';
+        
+        const profileEmail = document.getElementById('profileEmail');
+        if (profileEmail) profileEmail.textContent = dosenProfile.email || '-';
+        
+        const profilePhone = document.getElementById('profilePhone');
+        if (profilePhone) profilePhone.textContent = dosenProfile.no_hp || '-';
+        
+        const profileAddress = document.getElementById('profileAddress');
+        if (profileAddress) profileAddress.textContent = dosenProfile.info_pribadi?.alamat || '-';
+        
+        // Jabatan
+        if (dosenProfile.jabatan_saat_ini) {
+            const profileJabatan = document.getElementById('profileJabatan');
+            if (profileJabatan) profileJabatan.textContent = dosenProfile.jabatan_saat_ini.jabatan_fungsional?.nama_jabatan || 'Lektor';
+            
+            const profilePosition = document.getElementById('profilePosition');
+            if (profilePosition) profilePosition.textContent = dosenProfile.jabatan_saat_ini.jabatan_fungsional?.nama_jabatan || 'Lektor';
+        }
+        
+        // Foto profil
+        const profilePicture = document.getElementById('profilePicture');
+        if (profilePicture && dosenProfile.foto_profil) {
+            profilePicture.src = dosenProfile.foto_profil;
         }
 
-        // ===========================================
-        // LOAD DATA PROFIL
-        // ===========================================
-        async function loadProfileData() {
-            try {
-                showLoading();
-                
-                const response = await fetch(`${API_BASE_URL}/dosen/profil`, {
-                    method: 'GET',
-                    headers: getAuthHeaders()
-                });
-
-                if (!response.ok) {
-                    throw new Error('Gagal memuat data profil');
-                }
-
-                const result = await response.json();
-                
-                if (result.success) {
-                    dosenProfile = result.data;
-                    
-                    // Update header
-                    document.getElementById('userNameDisplay').textContent = dosenProfile.nama_lengkap || '-';
-                    document.getElementById('userNidnDisplay').textContent = dosenProfile.nidn || '-';
-                    
-                    updateProfileUI();
-                    
-                    // Load data lainnya
-                    await Promise.all([
-                        loadStatistics(),
-                        loadPublikasi(),
-                        loadPendidikan(),
-                        loadJabatan()
-                    ]);
-                } else {
-                    throw new Error(result.message || 'Gagal memuat data profil');
-                }
-
-            } catch (error) {
-                console.error('Error loading profile:', error);
-                showNotification(error.message || 'Gagal memuat data profil', 'error');
-            } finally {
-                hideLoading();
-            }
+        // Masa kerja
+        if (dosenProfile.jabatan_saat_ini?.tanggal_mulai) {
+            const tahunMulai = new Date(dosenProfile.jabatan_saat_ini.tanggal_mulai).getFullYear();
+            const tahunSekarang = new Date().getFullYear();
+            const masaKerja = tahunSekarang - tahunMulai;
+            const profileMasaKerja = document.getElementById('profileMasaKerja');
+            if (profileMasaKerja) profileMasaKerja.textContent = `${masaKerja} Tahun`;
         }
 
-        // ===========================================
-        // UPDATE PROFILE UI
-        // ===========================================
-        function updateProfileUI() {
-            if (!dosenProfile) return;
-
-            // Profile card
-            document.getElementById('profileName').textContent = dosenProfile.nama_lengkap || '-';
-            document.getElementById('profileNidn').textContent = dosenProfile.nidn || '-';
-            document.getElementById('profileProdi').textContent = dosenProfile.nama_prodi || '-';
-            document.getElementById('profileEmail').textContent = dosenProfile.email || '-';
-            document.getElementById('profilePhone').textContent = dosenProfile.no_hp || '-';
-            document.getElementById('profileAddress').textContent = dosenProfile.info_pribadi?.alamat || '-';
+        // Researcher IDs
+        if (dosenProfile.researcher_ids) {
+            const profileScholarId = document.getElementById('profileScholarId');
+            if (profileScholarId) profileScholarId.textContent = dosenProfile.researcher_ids.scholar_id || '-';
             
-            // Jabatan
-            if (dosenProfile.jabatan_saat_ini) {
-                document.getElementById('profileJabatan').textContent = 
-                    dosenProfile.jabatan_saat_ini.jabatan_fungsional?.nama_jabatan || 'Lektor';
-                document.getElementById('profilePosition').textContent = 
-                    dosenProfile.jabatan_saat_ini.jabatan_fungsional?.nama_jabatan || 'Lektor';
-            }
+            const profileOrcid = document.getElementById('profileOrcid');
+            if (profileOrcid) profileOrcid.textContent = dosenProfile.researcher_ids.orcid || '-';
             
-            // Foto profil
-            if (dosenProfile.foto_profil) {
-                document.getElementById('profilePicture').src = dosenProfile.foto_profil;
-            }
-
-            // Masa kerja (hitung dari tahun pertama jabatan)
-            if (dosenProfile.jabatan_saat_ini?.tanggal_mulai) {
-                const tahunMulai = new Date(dosenProfile.jabatan_saat_ini.tanggal_mulai).getFullYear();
-                const tahunSekarang = new Date().getFullYear();
-                const masaKerja = tahunSekarang - tahunMulai;
-                document.getElementById('profileMasaKerja').textContent = `${masaKerja} Tahun`;
-            }
-
-            // Researcher IDs
-            if (dosenProfile.researcher_ids) {
-                document.getElementById('profileScholarId').textContent = dosenProfile.researcher_ids.scholar_id || '-';
-                document.getElementById('profileOrcid').textContent = dosenProfile.researcher_ids.orcid || '-';
-                document.getElementById('profileScopusId').textContent = dosenProfile.researcher_ids.scopus_id || '-';
-                document.getElementById('profileSintaId').textContent = dosenProfile.researcher_ids.sinta_id || '-';
-            }
-
-            // Update form fields
-            document.getElementById('fullName').value = dosenProfile.nama_lengkap || '';
-            document.getElementById('nidn').value = dosenProfile.nidn || '';
-            document.getElementById('email').value = dosenProfile.email || '';
-            document.getElementById('phone').value = dosenProfile.no_hp || '';
+            const profileScopusId = document.getElementById('profileScopusId');
+            if (profileScopusId) profileScopusId.textContent = dosenProfile.researcher_ids.scopus_id || '-';
             
-            // Set prodi dropdown
-            if (dosenProfile.id_prodi) {
-                document.getElementById('prodi').value = dosenProfile.id_prodi;
-            }
-            
-            if (dosenProfile.info_pribadi) {
-                document.getElementById('birthPlace').value = dosenProfile.info_pribadi.tempat_lahir || '';
-                document.getElementById('birthDate').value = dosenProfile.info_pribadi.tanggal_lahir || '';
-                document.getElementById('gender').value = dosenProfile.info_pribadi.jenis_kelamin || 'L';
-                document.getElementById('religion').value = dosenProfile.info_pribadi.agama || 'Islam';
-                document.getElementById('address').value = dosenProfile.info_pribadi.alamat || '';
-            }
-            
-            // Researcher IDs in form
-            if (dosenProfile.researcher_ids) {
-                document.getElementById('scholarId').value = dosenProfile.researcher_ids.scholar_id || '';
-                document.getElementById('orcid').value = dosenProfile.researcher_ids.orcid || '';
-                document.getElementById('scopusId').value = dosenProfile.researcher_ids.scopus_id || '';
-                document.getElementById('sintaId').value = dosenProfile.researcher_ids.sinta_id || '';
-            }
+            const profileSintaId = document.getElementById('profileSintaId');
+            if (profileSintaId) profileSintaId.textContent = dosenProfile.researcher_ids.sinta_id || '-';
         }
 
-        // ===========================================
-        // LOAD STATISTIK
-        // ===========================================
-        async function loadStatistics() {
-            try {
-                const response = await fetch(`${API_BASE_URL}/dosen/profil/statistik`, {
-                    method: 'GET',
-                    headers: getAuthHeaders()
-                });
-
-                if (!response.ok) return;
-
-                const result = await response.json();
-                
-                if (result.success && result.data) {
-                    document.getElementById('statPenelitian').textContent = result.data.penelitian || 0;
-                    document.getElementById('statPengabdian').textContent = result.data.pengabdian || 0;
-                    document.getElementById('statPublikasi').textContent = result.data.publikasi || 0;
-                    document.getElementById('statMahasiswa').textContent = result.data.mahasiswa_bimbingan || 0;
-                    document.getElementById('statHKI').textContent = result.data.hki || 0;
-                }
-            } catch (error) {
-                console.error('Error loading statistics:', error);
-            }
+        // Update form fields
+        const fullName = document.getElementById('fullName');
+        if (fullName) fullName.value = dosenProfile.nama_lengkap || '';
+        
+        const nidn = document.getElementById('nidn');
+        if (nidn) nidn.value = dosenProfile.nidn || '';
+        
+        const email = document.getElementById('email');
+        if (email) email.value = dosenProfile.email || '';
+        
+        const phone = document.getElementById('phone');
+        if (phone) phone.value = dosenProfile.no_hp || '';
+        
+        // Set prodi dropdown
+        const prodiSelect = document.getElementById('prodi');
+        if (prodiSelect && dosenProfile.id_prodi) {
+            prodiSelect.value = dosenProfile.id_prodi;
         }
+        
+        if (dosenProfile.info_pribadi) {
+            const birthPlace = document.getElementById('birthPlace');
+            if (birthPlace) birthPlace.value = dosenProfile.info_pribadi.tempat_lahir || '';
+            
+            const birthDate = document.getElementById('birthDate');
+            if (birthDate) birthDate.value = dosenProfile.info_pribadi.tanggal_lahir || '';
+            
+            const gender = document.getElementById('gender');
+            if (gender) gender.value = dosenProfile.info_pribadi.jenis_kelamin || 'L';
+            
+            const religion = document.getElementById('religion');
+            if (religion) religion.value = dosenProfile.info_pribadi.agama || 'Islam';
+            
+            const address = document.getElementById('address');
+            if (address) address.value = dosenProfile.info_pribadi.alamat || '';
+        }
+        
+        // Researcher IDs in form
+        if (dosenProfile.researcher_ids) {
+            const scholarId = document.getElementById('scholarId');
+            if (scholarId) scholarId.value = dosenProfile.researcher_ids.scholar_id || '';
+            
+            const orcid = document.getElementById('orcid');
+            if (orcid) orcid.value = dosenProfile.researcher_ids.orcid || '';
+            
+            const scopusId = document.getElementById('scopusId');
+            if (scopusId) scopusId.value = dosenProfile.researcher_ids.scopus_id || '';
+            
+            const sintaId = document.getElementById('sintaId');
+            if (sintaId) sintaId.value = dosenProfile.researcher_ids.sinta_id || '';
+        }
+    }
 
-        // ===========================================
-        // LOAD PUBLIKASI
-        // ===========================================
-        async function loadPublikasi() {
-            try {
-                const response = await fetch(`${API_BASE_URL}/dosen/profil/publikasi?limit=3`, {
-                    method: 'GET',
-                    headers: getAuthHeaders()
-                });
+    // ===========================================
+    // LOAD STATISTIK
+    // ===========================================
+    async function loadStatistics() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/dosen/profil/statistik`, {
+                method: 'GET',
+                headers: getAuthHeaders()
+            });
 
-                if (!response.ok) return;
+            if (!response.ok) return;
 
-                const result = await response.json();
+            const result = await response.json();
+            
+            if (result.success && result.data) {
+                const statPenelitian = document.getElementById('statPenelitian');
+                if (statPenelitian) statPenelitian.textContent = result.data.penelitian || 0;
                 
-                if (result.success && result.data) {
-                    renderPublikasi(result.data);
-                }
-            } catch (error) {
-                console.error('Error loading publikasi:', error);
-                document.getElementById('recentPublications').innerHTML = `
+                const statPengabdian = document.getElementById('statPengabdian');
+                if (statPengabdian) statPengabdian.textContent = result.data.pengabdian || 0;
+                
+                const statPublikasi = document.getElementById('statPublikasi');
+                if (statPublikasi) statPublikasi.textContent = result.data.publikasi || 0;
+                
+                const statMahasiswa = document.getElementById('statMahasiswa');
+                if (statMahasiswa) statMahasiswa.textContent = result.data.mahasiswa_bimbingan || 0;
+                
+                const statHKI = document.getElementById('statHKI');
+                if (statHKI) statHKI.textContent = result.data.hki || 0;
+            }
+        } catch (error) {
+            console.error('Error loading statistics:', error);
+        }
+    }
+
+    // ===========================================
+    // LOAD PUBLIKASI
+    // ===========================================
+    async function loadPublikasi() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/dosen/profil/publikasi?limit=3`, {
+                method: 'GET',
+                headers: getAuthHeaders()
+            });
+
+            if (!response.ok) return;
+
+            const result = await response.json();
+            
+            if (result.success && result.data) {
+                renderPublikasi(result.data);
+            }
+        } catch (error) {
+            console.error('Error loading publikasi:', error);
+            const recentPublications = document.getElementById('recentPublications');
+            if (recentPublications) {
+                recentPublications.innerHTML = `
                     <div class="text-center text-gray-500 py-4">
                         <i class="fas fa-exclamation-circle mr-2"></i>Gagal memuat data
                     </div>
                 `;
             }
         }
+    }
 
-        // ===========================================
-        // LOAD PENDIDIKAN
-        // ===========================================
-        async function loadPendidikan() {
-            try {
-                const response = await fetch(`${API_BASE_URL}/dosen/profil/pendidikan`, {
-                    method: 'GET',
-                    headers: getAuthHeaders()
-                });
+    // ===========================================
+    // LOAD PENDIDIKAN
+    // ===========================================
+    async function loadPendidikan() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/dosen/profil/pendidikan`, {
+                method: 'GET',
+                headers: getAuthHeaders()
+            });
 
-                if (!response.ok) return;
+            if (!response.ok) return;
 
-                const result = await response.json();
-                
-                if (result.success) {
-                    pendidikanList = result.data || [];
-                    renderPendidikan();
-                }
-            } catch (error) {
-                console.error('Error loading pendidikan:', error);
-                document.getElementById('educationList').innerHTML = `
+            const result = await response.json();
+            
+            if (result.success) {
+                pendidikanList = result.data || [];
+                renderPendidikan();
+            }
+        } catch (error) {
+            console.error('Error loading pendidikan:', error);
+            const educationList = document.getElementById('educationList');
+            if (educationList) {
+                educationList.innerHTML = `
                     <div class="text-center text-gray-500 py-4">
                         <i class="fas fa-exclamation-circle mr-2"></i>Gagal memuat data
                     </div>
                 `;
             }
         }
+    }
 
-        // ===========================================
-        // LOAD JABATAN
-        // ===========================================
-        async function loadJabatan() {
-            try {
-                const response = await fetch(`${API_BASE_URL}/dosen/profil/jabatan`, {
-                    method: 'GET',
-                    headers: getAuthHeaders()
-                });
+    // ===========================================
+    // LOAD JABATAN
+    // ===========================================
+    async function loadJabatan() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/dosen/profil/jabatan`, {
+                method: 'GET',
+                headers: getAuthHeaders()
+            });
 
-                if (!response.ok) return;
+            if (!response.ok) return;
 
-                const result = await response.json();
-                
-                if (result.success) {
-                    jabatanList = result.data || [];
-                    renderJabatan();
-                }
-            } catch (error) {
-                console.error('Error loading jabatan:', error);
-                document.getElementById('positionList').innerHTML = `
+            const result = await response.json();
+            
+            if (result.success) {
+                jabatanList = result.data || [];
+                renderJabatan();
+            }
+        } catch (error) {
+            console.error('Error loading jabatan:', error);
+            const positionList = document.getElementById('positionList');
+            if (positionList) {
+                positionList.innerHTML = `
                     <div class="text-center text-gray-500 py-4">
                         <i class="fas fa-exclamation-circle mr-2"></i>Gagal memuat data
                     </div>
                 `;
             }
         }
+    }
 
-        // ===========================================
-        // RENDER PENDIDIKAN
-        // ===========================================
-        function renderPendidikan() {
-            const container = document.getElementById('educationList');
-            if (!container) return;
+    // ===========================================
+    // RENDER PENDIDIKAN
+    // ===========================================
+    function renderPendidikan() {
+        const container = document.getElementById('educationList');
+        if (!container) return;
 
-            if (pendidikanList.length === 0) {
-                container.innerHTML = '<p class="text-gray-500 text-center py-4">Belum ada riwayat pendidikan</p>';
-                return;
-            }
-
-            const colors = ['purple', 'blue', 'green', 'orange'];
-            
-            container.innerHTML = pendidikanList.map((item, index) => {
-                const color = colors[index % colors.length];
-                const tahun = item.tahun_lulus ? (item.tahun_masuk ? `${item.tahun_masuk}-${item.tahun_lulus}` : item.tahun_lulus) : '-';
-                
-                return `
-                    <div class="border-l-4 border-${color}-500 pl-4">
-                        <h4 class="font-semibold text-gray-800">${item.jenjang || ''} ${item.gelar ? `(${item.gelar})` : ''}</h4>
-                        <p class="text-sm text-gray-600">${item.institusi || '-'} • ${tahun}</p>
-                        ${item.judul_tesis ? `<p class="text-xs text-gray-500">${item.jenjang === 'S3' ? 'Disertasi' : item.jenjang === 'S2' ? 'Tesis' : 'Skripsi'}: ${item.judul_tesis}</p>` : ''}
-                        ${item.bidang_studi ? `<p class="text-xs text-gray-500">Bidang: ${item.bidang_studi}</p>` : ''}
-                    </div>
-                `;
-            }).join('');
+        if (pendidikanList.length === 0) {
+            container.innerHTML = '<p class="text-gray-500 text-center py-4">Belum ada riwayat pendidikan</p>';
+            return;
         }
 
-        // ===========================================
-        // RENDER JABATAN
-        // ===========================================
-        function renderJabatan() {
-            const container = document.getElementById('positionList');
-            if (!container) return;
-
-            if (jabatanList.length === 0) {
-                container.innerHTML = '<p class="text-gray-500 text-center py-4">Belum ada riwayat jabatan</p>';
-                return;
-            }
-
-            const colors = ['purple', 'blue', 'green', 'orange'];
+        const colors = ['purple', 'blue', 'green', 'orange'];
+        
+        container.innerHTML = pendidikanList.map((item, index) => {
+            const color = colors[index % colors.length];
+            const tahun = item.tahun_lulus ? (item.tahun_masuk ? `${item.tahun_masuk}-${item.tahun_lulus}` : item.tahun_lulus) : '-';
             
-            container.innerHTML = jabatanList.map((item, index) => {
-                const color = colors[index % colors.length];
-                const jabatan = item.jabatan_fungsional?.nama_jabatan || 'Jabatan';
-                const tahunMulai = item.tanggal_mulai ? new Date(item.tanggal_mulai).getFullYear() : '';
-                const tahunSelesai = item.tanggal_selesai ? new Date(item.tanggal_selesai).getFullYear() : 'Sekarang';
-                const periode = tahunMulai ? `${tahunMulai} - ${tahunSelesai}` : '-';
-                
-                return `
-                    <div class="border-l-4 border-${color}-500 pl-4">
-                        <h4 class="font-semibold text-gray-800">${jabatan}</h4>
-                        <p class="text-sm text-gray-600">ITB Yadika • ${periode}</p>
-                        <p class="text-xs text-gray-500">SK: ${item.nomor_sk || '-'}</p>
-                        ${item.keterangan ? `<p class="text-xs text-gray-500">${item.keterangan}</p>` : ''}
-                    </div>
-                `;
-            }).join('');
-        }
-
-        // ===========================================
-        // RENDER PUBLIKASI
-        // ===========================================
-        function renderPublikasi(publikasi) {
-            const container = document.getElementById('recentPublications');
-            if (!container) return;
-
-            if (publikasi.length === 0) {
-                container.innerHTML = '<p class="text-gray-500 text-center py-4">Belum ada publikasi</p>';
-                return;
-            }
-
-            container.innerHTML = publikasi.map(item => `
-                <div class="p-3 hover:bg-gray-50 rounded-lg">
-                    <p class="font-medium text-gray-800">${item.judul}</p>
-                    <p class="text-xs text-gray-500">${item.jenis || 'Jurnal'} • ${item.tanggal ? new Date(item.tanggal).getFullYear() : '-'} • ${item.peran || 'Penulis'}</p>
+            return `
+                <div class="border-l-4 border-${color}-500 pl-4">
+                    <h4 class="font-semibold text-gray-800">${item.jenjang || ''} ${item.gelar ? `(${item.gelar})` : ''}</h4>
+                    <p class="text-sm text-gray-600">${item.institusi || '-'} • ${tahun}</p>
+                    ${item.judul_tesis ? `<p class="text-xs text-gray-500">${item.jenjang === 'S3' ? 'Disertasi' : item.jenjang === 'S2' ? 'Tesis' : 'Skripsi'}: ${item.judul_tesis}</p>` : ''}
+                    ${item.bidang_studi ? `<p class="text-xs text-gray-500">Bidang: ${item.bidang_studi}</p>` : ''}
                 </div>
-            `).join('');
+            `;
+        }).join('');
+    }
+
+    // ===========================================
+    // RENDER JABATAN
+    // ===========================================
+    function renderJabatan() {
+        const container = document.getElementById('positionList');
+        if (!container) return;
+
+        if (jabatanList.length === 0) {
+            container.innerHTML = '<p class="text-gray-500 text-center py-4">Belum ada riwayat jabatan</p>';
+            return;
         }
 
-        // ===========================================
-        // SAVE PROFILE
-        // ===========================================
-        window.saveProfile = async function() {
-            const updatedData = {
-                nama_lengkap: document.getElementById('fullName').value,
-                no_hp: document.getElementById('phone').value,
-                tempat_lahir: document.getElementById('birthPlace').value,
-                tanggal_lahir: document.getElementById('birthDate').value,
-                jenis_kelamin: document.getElementById('gender').value,
-                agama: document.getElementById('religion').value,
-                alamat: document.getElementById('address').value,
-                scholar_id: document.getElementById('scholarId').value,
-                orcid: document.getElementById('orcid').value,
-                scopus_id: document.getElementById('scopusId').value,
-                sinta_id: document.getElementById('sintaId').value
-            };
+        const colors = ['purple', 'blue', 'green', 'orange'];
+        
+        container.innerHTML = jabatanList.map((item, index) => {
+            const color = colors[index % colors.length];
+            const jabatan = item.jabatan_fungsional?.nama_jabatan || 'Jabatan';
+            const tahunMulai = item.tanggal_mulai ? new Date(item.tanggal_mulai).getFullYear() : '';
+            const tahunSelesai = item.tanggal_selesai ? new Date(item.tanggal_selesai).getFullYear() : 'Sekarang';
+            const periode = tahunMulai ? `${tahunMulai} - ${tahunSelesai}` : '-';
+            
+            return `
+                <div class="border-l-4 border-${color}-500 pl-4">
+                    <h4 class="font-semibold text-gray-800">${jabatan}</h4>
+                    <p class="text-sm text-gray-600">ITB Yadika • ${periode}</p>
+                    <p class="text-xs text-gray-500">SK: ${item.nomor_sk || '-'}</p>
+                    ${item.keterangan ? `<p class="text-xs text-gray-500">${item.keterangan}</p>` : ''}
+                </div>
+            `;
+        }).join('');
+    }
 
-            try {
-                showLoading();
+    // ===========================================
+    // RENDER PUBLIKASI
+    // ===========================================
+    function renderPublikasi(publikasi) {
+        const container = document.getElementById('recentPublications');
+        if (!container) return;
 
-                const response = await fetch(`${API_BASE_URL}/dosen/profil`, {
-                    method: 'PUT',
-                    headers: getAuthHeaders(),
-                    body: JSON.stringify(updatedData)
-                });
+        if (publikasi.length === 0) {
+            container.innerHTML = '<p class="text-gray-500 text-center py-4">Belum ada publikasi</p>';
+            return;
+        }
 
-                const result = await response.json();
+        container.innerHTML = publikasi.map(item => `
+            <div class="p-3 hover:bg-gray-50 rounded-lg">
+                <p class="font-medium text-gray-800">${item.judul}</p>
+                <p class="text-xs text-gray-500">${item.jenis || 'Jurnal'} • ${item.tanggal ? new Date(item.tanggal).getFullYear() : '-'} • ${item.peran || 'Penulis'}</p>
+            </div>
+        `).join('');
+    }
 
-                if (result.success) {
-                    dosenProfile = result.data;
-                    updateProfileUI();
-                    showNotification('Profil berhasil diperbarui');
-                } else {
-                    throw new Error(result.message);
-                }
-            } catch (error) {
-                console.error('Error updating profile:', error);
-                showNotification(error.message || 'Gagal memperbarui profil', 'error');
-            } finally {
-                hideLoading();
-            }
+    // ===========================================
+    // SAVE PROFILE
+    // ===========================================
+    window.saveProfile = async function() {
+        const updatedData = {
+            nama_lengkap: document.getElementById('fullName')?.value || '',
+            no_hp: document.getElementById('phone')?.value || '',
+            tempat_lahir: document.getElementById('birthPlace')?.value || '',
+            tanggal_lahir: document.getElementById('birthDate')?.value || '',
+            jenis_kelamin: document.getElementById('gender')?.value || '',
+            agama: document.getElementById('religion')?.value || '',
+            alamat: document.getElementById('address')?.value || '',
+            scholar_id: document.getElementById('scholarId')?.value || '',
+            orcid: document.getElementById('orcid')?.value || '',
+            scopus_id: document.getElementById('scopusId')?.value || '',
+            sinta_id: document.getElementById('sintaId')?.value || '',
+            id_prodi: document.getElementById('prodi')?.value || ''
         };
 
-        // ===========================================
-        // UPLOAD FOTO PROFIL
-        // ===========================================
-        window.changeProfilePicture = function() {
-            document.getElementById('profilePicInput').click();
-        };
+        if (!updatedData.nama_lengkap) {
+            showNotification('Nama lengkap harus diisi', 'error');
+            return;
+        }
 
-        window.uploadProfilePicture = async function(input) {
-            const file = input.files[0];
-            if (!file) return;
+        try {
+            showLoading();
 
-            if (file.size > 2 * 1024 * 1024) {
-                showNotification('Ukuran file maksimal 2MB', 'error');
-                return;
-            }
-
-            const formData = new FormData();
-            formData.append('foto', file);
-
-            try {
-                showLoading();
-
-                const response = await fetch(`${API_BASE_URL}/dosen/profil/foto`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${getAuthToken()}`
-                    },
-                    body: formData
-                });
-
-                const result = await response.json();
-
-                if (result.success) {
-                    document.getElementById('profilePicture').src = result.data.foto_profil;
-                    showNotification('Foto profil berhasil diperbarui');
-                } else {
-                    throw new Error(result.message);
-                }
-            } catch (error) {
-                console.error('Error uploading profile picture:', error);
-                showNotification(error.message || 'Gagal mengupload foto', 'error');
-            } finally {
-                hideLoading();
-            }
-        };
-
-        // ===========================================
-        // CHANGE PASSWORD
-        // ===========================================
-        window.changePassword = function() {
-            document.getElementById('passwordModal').classList.remove('hidden');
-        };
-
-        window.closePasswordModal = function() {
-            document.getElementById('passwordModal').classList.add('hidden');
-            document.getElementById('passwordForm').reset();
-        };
-
-        window.updatePassword = async function() {
-            const oldPass = document.getElementById('oldPassword').value;
-            const newPass = document.getElementById('newPassword').value;
-            const confirmPass = document.getElementById('confirmPassword').value;
-
-            if (!oldPass || !newPass || !confirmPass) {
-                showNotification('Semua field harus diisi', 'error');
-                return;
-            }
-
-            if (newPass.length < 8) {
-                showNotification('Password baru minimal 8 karakter', 'error');
-                return;
-            }
-
-            if (newPass !== confirmPass) {
-                showNotification('Konfirmasi password tidak cocok', 'error');
-                return;
-            }
-
-            try {
-                showLoading();
-
-                const response = await fetch(`${API_BASE_URL}/dosen/profil/ubah-password`, {
-                    method: 'POST',
-                    headers: getAuthHeaders(),
-                    body: JSON.stringify({
-                        oldPassword: oldPass,
-                        newPassword: newPass
-                    })
-                });
-
-                const result = await response.json();
-
-                if (result.success) {
-                    closePasswordModal();
-                    showNotification('Password berhasil diperbarui');
-                } else {
-                    throw new Error(result.message);
-                }
-            } catch (error) {
-                console.error('Error changing password:', error);
-                showNotification(error.message || 'Gagal mengubah password', 'error');
-            } finally {
-                hideLoading();
-            }
-        };
-
-        // ===========================================
-        // EXPORT DATA
-        // ===========================================
-        window.exportData = async function() {
-            try {
-                showLoading();
-
-                const response = await fetch(`${API_BASE_URL}/dosen/profil/export`, {
-                    method: 'GET',
-                    headers: getAuthHeaders()
-                });
-
-                if (!response.ok) throw new Error('Gagal mengexport data');
-
-                const result = await response.json();
-
-                if (result.success) {
-                    const blob = new Blob([JSON.stringify(result.data, null, 2)], { type: 'application/json' });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `kinerja-${dosenProfile?.nidn || 'dosen'}.json`;
-                    a.click();
-                    URL.revokeObjectURL(url);
-                    
-                    showNotification('Data kinerja berhasil diexport');
-                } else {
-                    throw new Error(result.message);
-                }
-            } catch (error) {
-                console.error('Error exporting data:', error);
-                showNotification(error.message || 'Gagal mengexport data', 'error');
-            } finally {
-                hideLoading();
-            }
-        };
-
-        // ===========================================
-        // ADD PENDIDIKAN
-        // ===========================================
-        window.addEducation = async function() {
-            const { value: formValues } = await Swal.fire({
-                title: 'Tambah Riwayat Pendidikan',
-                html: `
-                    <select id="swal-jenjang" class="swal2-input">
-                        <option value="S1">S1</option>
-                        <option value="S2">S2</option>
-                        <option value="S3">S3</option>
-                        <option value="Sp-1">Sp-1</option>
-                        <option value="Sp-2">Sp-2</option>
-                    </select>
-                    <input id="swal-institusi" class="swal2-input" placeholder="Institusi">
-                    <input id="swal-tahun-masuk" class="swal2-input" type="number" placeholder="Tahun Masuk">
-                    <input id="swal-tahun-lulus" class="swal2-input" type="number" placeholder="Tahun Lulus" required>
-                    <input id="swal-gelar" class="swal2-input" placeholder="Gelar (contoh: M.T.)">
-                    <input id="swal-bidang" class="swal2-input" placeholder="Bidang Studi">
-                    <textarea id="swal-judul" class="swal2-input" placeholder="Judul Tesis/Disertasi"></textarea>
-                `,
-                focusConfirm: false,
-                showCancelButton: true,
-                confirmButtonText: 'Simpan',
-                cancelButtonText: 'Batal',
-                preConfirm: () => {
-                    return {
-                        jenjang: document.getElementById('swal-jenjang').value,
-                        institusi: document.getElementById('swal-institusi').value,
-                        tahun_masuk: document.getElementById('swal-tahun-masuk').value,
-                        tahun_lulus: document.getElementById('swal-tahun-lulus').value,
-                        gelar: document.getElementById('swal-gelar').value,
-                        bidang_studi: document.getElementById('swal-bidang').value,
-                        judul_tesis: document.getElementById('swal-judul').value
-                    };
-                }
+            const response = await fetch(`${API_BASE_URL}/dosen/profil`, {
+                method: 'PUT',
+                headers: getAuthHeaders(),
+                body: JSON.stringify(updatedData)
             });
 
-            if (formValues) {
-                try {
-                    showLoading();
+            const result = await response.json();
 
-                    const response = await fetch(`${API_BASE_URL}/dosen/profil/pendidikan`, {
-                        method: 'POST',
-                        headers: getAuthHeaders(),
-                        body: JSON.stringify(formValues)
-                    });
-
-                    const result = await response.json();
-
-                    if (result.success) {
-                        await loadPendidikan();
-                        showNotification('Riwayat pendidikan berhasil ditambahkan');
-                    } else {
-                        throw new Error(result.message);
-                    }
-                } catch (error) {
-                    console.error('Error adding education:', error);
-                    showNotification(error.message || 'Gagal menambah riwayat pendidikan', 'error');
-                } finally {
-                    hideLoading();
-                }
+            if (result.success) {
+                dosenProfile = result.data;
+                updateProfileUI();
+                updateNavbarUserInfo(dosenProfile);
+                showNotification('Profil berhasil diperbarui', 'success');
+            } else {
+                throw new Error(result.message);
             }
-        };
+        } catch (error) {
+            console.error('Error updating profile:', error);
+            showNotification(error.message || 'Gagal memperbarui profil', 'error');
+        } finally {
+            hideLoading();
+        }
+    };
 
-        // ===========================================
-        // ADD JABATAN
-        // ===========================================
-        window.addPosition = async function() {
-            // Load daftar jabatan fungsional dari API
-            let jabatanOptions = '';
-            try {
-                const response = await fetch(`${API_BASE_URL}/jabatan-fungsional`, {
-                    method: 'GET',
-                    headers: getAuthHeaders()
-                });
-                const result = await response.json();
-                if (result.success && result.data) {
-                    jabatanOptions = result.data.map(j => 
-                        `<option value="${j.id_jabatan_fungsional}">${j.nama_jabatan}</option>`
-                    ).join('');
-                }
-            } catch (error) {
-                console.error('Error loading jabatan:', error);
-            }
+    // ===========================================
+    // UPLOAD FOTO PROFIL
+    // ===========================================
+    window.changeProfilePicture = function() {
+        const input = document.getElementById('profilePicInput');
+        if (input) input.click();
+    };
 
-            const { value: formValues } = await Swal.fire({
-                title: 'Tambah Riwayat Jabatan',
-                html: `
-                    <select id="swal-jabatan" class="swal2-input">
-                        ${jabatanOptions || '<option value="">Pilih Jabatan</option>'}
-                    </select>
-                    <input id="swal-nomor-sk" class="swal2-input" placeholder="Nomor SK" required>
-                    <input id="swal-tanggal-sk" class="swal2-input" type="date" placeholder="Tanggal SK">
-                    <input id="swal-tanggal-mulai" class="swal2-input" type="date" placeholder="Tanggal Mulai" required>
-                    <input id="swal-tanggal-selesai" class="swal2-input" type="date" placeholder="Tanggal Selesai (kosongkan jika masih aktif)">
-                    <textarea id="swal-keterangan" class="swal2-input" placeholder="Keterangan"></textarea>
-                `,
-                focusConfirm: false,
-                showCancelButton: true,
-                confirmButtonText: 'Simpan',
-                cancelButtonText: 'Batal',
-                preConfirm: () => {
-                    return {
-                        id_jabatan_fungsional: document.getElementById('swal-jabatan').value,
-                        nomor_sk: document.getElementById('swal-nomor-sk').value,
-                        tanggal_sk: document.getElementById('swal-tanggal-sk').value,
-                        tanggal_mulai: document.getElementById('swal-tanggal-mulai').value,
-                        tanggal_selesai: document.getElementById('swal-tanggal-selesai').value || null,
-                        keterangan: document.getElementById('swal-keterangan').value
-                    };
-                }
+    window.uploadProfilePicture = async function(input) {
+        const file = input.files[0];
+        if (!file) return;
+
+        if (file.size > 2 * 1024 * 1024) {
+            showNotification('Ukuran file maksimal 2MB', 'error');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('foto', file);
+
+        try {
+            showLoading();
+
+            const response = await fetch(`${API_BASE_URL}/dosen/profil/foto`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${getAuthToken()}`
+                },
+                body: formData
             });
 
-            if (formValues) {
-                try {
-                    showLoading();
+            const result = await response.json();
 
-                    const response = await fetch(`${API_BASE_URL}/dosen/profil/jabatan`, {
-                        method: 'POST',
-                        headers: getAuthHeaders(),
-                        body: JSON.stringify(formValues)
-                    });
-
-                    const result = await response.json();
-
-                    if (result.success) {
-                        await loadJabatan();
-                        showNotification('Riwayat jabatan berhasil ditambahkan');
-                    } else {
-                        throw new Error(result.message);
-                    }
-                } catch (error) {
-                    console.error('Error adding position:', error);
-                    showNotification(error.message || 'Gagal menambah riwayat jabatan', 'error');
-                } finally {
-                    hideLoading();
-                }
+            if (result.success) {
+                const profilePicture = document.getElementById('profilePicture');
+                if (profilePicture) profilePicture.src = result.data.foto_profil;
+                updateNavbarUserInfo(dosenProfile);
+                showNotification('Foto profil berhasil diperbarui', 'success');
+            } else {
+                throw new Error(result.message);
             }
-        };
+        } catch (error) {
+            console.error('Error uploading profile picture:', error);
+            showNotification(error.message || 'Gagal mengupload foto', 'error');
+        } finally {
+            hideLoading();
+        }
+    };
 
-        // ===========================================
-        // LOGOUT
-        // ===========================================
-        window.handleLogout = function() {
-            Swal.fire({
-                title: 'Konfirmasi Logout',
-                text: 'Apakah Anda yakin ingin logout?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#EF4444',
-                cancelButtonColor: '#6B7280',
-                confirmButtonText: 'Ya, Logout',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('user');
-                    window.location.href = '../login.html';
-                }
+    // ===========================================
+    // CHANGE PASSWORD
+    // ===========================================
+    window.changePassword = function() {
+        const modal = document.getElementById('passwordModal');
+        if (modal) modal.classList.remove('hidden');
+    };
+
+    window.closePasswordModal = function() {
+        const modal = document.getElementById('passwordModal');
+        if (modal) modal.classList.add('hidden');
+        const form = document.getElementById('passwordForm');
+        if (form) form.reset();
+    };
+
+    window.updatePassword = async function() {
+        const oldPass = document.getElementById('oldPassword')?.value;
+        const newPass = document.getElementById('newPassword')?.value;
+        const confirmPass = document.getElementById('confirmPassword')?.value;
+
+        if (!oldPass || !newPass || !confirmPass) {
+            showNotification('Semua field harus diisi', 'error');
+            return;
+        }
+
+        if (newPass.length < 8) {
+            showNotification('Password baru minimal 8 karakter', 'error');
+            return;
+        }
+
+        if (newPass !== confirmPass) {
+            showNotification('Konfirmasi password tidak cocok', 'error');
+            return;
+        }
+
+        try {
+            showLoading();
+
+            const response = await fetch(`${API_BASE_URL}/dosen/profil/ubah-password`, {
+                method: 'POST',
+                headers: getAuthHeaders(),
+                body: JSON.stringify({
+                    oldPassword: oldPass,
+                    newPassword: newPass
+                })
             });
-        };
 
-        // ===========================================
-        // INITIALIZE PAGE
-        // ===========================================
-        document.addEventListener('DOMContentLoaded', async function() {
-            // Initialize AOS
-            AOS.init({ duration: 800, once: true });
+            const result = await response.json();
 
-            // Check authentication
-            const user = checkAuth();
-            if (!user) return;
+            if (result.success) {
+                window.closePasswordModal();
+                showNotification('Password berhasil diperbarui', 'success');
+            } else {
+                throw new Error(result.message);
+            }
+        } catch (error) {
+            console.error('Error changing password:', error);
+            showNotification(error.message || 'Gagal mengubah password', 'error');
+        } finally {
+            hideLoading();
+        }
+    };
 
-            // Load program studi
-            await loadProgramStudi();
+    // ===========================================
+    // EXPORT DATA
+    // ===========================================
+    window.exportData = async function() {
+        try {
+            showLoading();
 
-            // Load profile data
-            await loadProfileData();
+            const response = await fetch(`${API_BASE_URL}/dosen/profil/export`, {
+                method: 'GET',
+                headers: getAuthHeaders()
+            });
+
+            if (!response.ok) throw new Error('Gagal mengexport data');
+
+            const result = await response.json();
+
+            if (result.success) {
+                const blob = new Blob([JSON.stringify(result.data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `kinerja-${dosenProfile?.nidn || 'dosen'}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+                showNotification('Data kinerja berhasil diexport', 'success');
+            } else {
+                throw new Error(result.message);
+            }
+        } catch (error) {
+            console.error('Error exporting data:', error);
+            showNotification(error.message || 'Gagal mengexport data', 'error');
+        } finally {
+            hideLoading();
+        }
+    };
+
+    // ===========================================
+    // ADD PENDIDIKAN
+    // ===========================================
+    window.addEducation = async function() {
+        const { value: formValues } = await Swal.fire({
+            title: 'Tambah Riwayat Pendidikan',
+            html: `
+                <select id="swal-jenjang" class="swal2-input">
+                    <option value="S1">S1</option>
+                    <option value="S2">S2</option>
+                    <option value="S3">S3</option>
+                    <option value="Sp-1">Sp-1</option>
+                    <option value="Sp-2">Sp-2</option>
+                </select>
+                <input id="swal-institusi" class="swal2-input" placeholder="Institusi">
+                <input id="swal-tahun-masuk" class="swal2-input" type="number" placeholder="Tahun Masuk">
+                <input id="swal-tahun-lulus" class="swal2-input" type="number" placeholder="Tahun Lulus" required>
+                <input id="swal-gelar" class="swal2-input" placeholder="Gelar (contoh: M.T.)">
+                <input id="swal-bidang" class="swal2-input" placeholder="Bidang Studi">
+                <textarea id="swal-judul" class="swal2-input" placeholder="Judul Tesis/Disertasi"></textarea>
+            `,
+            focusConfirm: false,
+            showCancelButton: true,
+            confirmButtonText: 'Simpan',
+            cancelButtonText: 'Batal',
+            preConfirm: () => {
+                return {
+                    jenjang: document.getElementById('swal-jenjang').value,
+                    institusi: document.getElementById('swal-institusi').value,
+                    tahun_masuk: document.getElementById('swal-tahun-masuk').value,
+                    tahun_lulus: document.getElementById('swal-tahun-lulus').value,
+                    gelar: document.getElementById('swal-gelar').value,
+                    bidang_studi: document.getElementById('swal-bidang').value,
+                    judul_tesis: document.getElementById('swal-judul').value
+                };
+            }
         });
 
-        // ===========================================
-        // CLOSE MODAL WHEN CLICKING OUTSIDE
-        // ===========================================
-        window.onclick = function(event) {
-            const modal = document.getElementById('passwordModal');
-            if (event.target === modal) {
-                closePasswordModal();
+        if (formValues) {
+            try {
+                showLoading();
+
+                const response = await fetch(`${API_BASE_URL}/dosen/profil/pendidikan`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify(formValues)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    await loadPendidikan();
+                    showNotification('Riwayat pendidikan berhasil ditambahkan', 'success');
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                console.error('Error adding education:', error);
+                showNotification(error.message || 'Gagal menambah riwayat pendidikan', 'error');
+            } finally {
+                hideLoading();
             }
-        };
-    </script>
+        }
+    };
+
+    // ===========================================
+    // ADD JABATAN
+    // ===========================================
+    window.addPosition = async function() {
+        let jabatanOptions = '';
+        try {
+            const response = await fetch(`${API_BASE_URL}/jabatan-fungsional`, {
+                method: 'GET',
+                headers: getAuthHeaders()
+            });
+            const result = await response.json();
+            if (result.success && result.data) {
+                jabatanOptions = result.data.map(j => 
+                    `<option value="${j.id_jabatan_fungsional}">${j.nama_jabatan}</option>`
+                ).join('');
+            }
+        } catch (error) {
+            console.error('Error loading jabatan:', error);
+        }
+
+        const { value: formValues } = await Swal.fire({
+            title: 'Tambah Riwayat Jabatan',
+            html: `
+                <select id="swal-jabatan" class="swal2-input">
+                    ${jabatanOptions || '<option value="">Pilih Jabatan</option>'}
+                </select>
+                <input id="swal-nomor-sk" class="swal2-input" placeholder="Nomor SK" required>
+                <input id="swal-tanggal-sk" class="swal2-input" type="date" placeholder="Tanggal SK">
+                <input id="swal-tanggal-mulai" class="swal2-input" type="date" placeholder="Tanggal Mulai" required>
+                <input id="swal-tanggal-selesai" class="swal2-input" type="date" placeholder="Tanggal Selesai (kosongkan jika masih aktif)">
+                <textarea id="swal-keterangan" class="swal2-input" placeholder="Keterangan"></textarea>
+            `,
+            focusConfirm: false,
+            showCancelButton: true,
+            confirmButtonText: 'Simpan',
+            cancelButtonText: 'Batal',
+            preConfirm: () => {
+                return {
+                    id_jabatan_fungsional: document.getElementById('swal-jabatan').value,
+                    nomor_sk: document.getElementById('swal-nomor-sk').value,
+                    tanggal_sk: document.getElementById('swal-tanggal-sk').value,
+                    tanggal_mulai: document.getElementById('swal-tanggal-mulai').value,
+                    tanggal_selesai: document.getElementById('swal-tanggal-selesai').value || null,
+                    keterangan: document.getElementById('swal-keterangan').value
+                };
+            }
+        });
+
+        if (formValues) {
+            try {
+                showLoading();
+
+                const response = await fetch(`${API_BASE_URL}/dosen/profil/jabatan`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify(formValues)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    await loadJabatan();
+                    showNotification('Riwayat jabatan berhasil ditambahkan', 'success');
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                console.error('Error adding position:', error);
+                showNotification(error.message || 'Gagal menambah riwayat jabatan', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+    };
+
+    // ===========================================
+    // LOGOUT
+    // ===========================================
+    window.handleLogout = function() {
+        Swal.fire({
+            title: 'Konfirmasi Logout',
+            text: 'Apakah Anda yakin ingin logout?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#EF4444',
+            cancelButtonColor: '#6B7280',
+            confirmButtonText: 'Ya, Logout',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = '../login.html';
+            }
+        });
+    };
+
+    // ===========================================
+    // DROPDOWN & NAVBAR INITIALIZATION
+    // ===========================================
+    function initDropdown() {
+        const userMenuBtn = document.getElementById('userMenuBtn');
+        const userDropdown = document.getElementById('userDropdown');
+        
+        if (userMenuBtn && userDropdown) {
+            userMenuBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                userDropdown.classList.toggle('hidden');
+            });
+            
+            document.addEventListener('click', function(e) {
+                if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) {
+                    userDropdown.classList.add('hidden');
+                }
+            });
+        }
+    }
+
+    function setActiveNavLink() {
+        const currentPage = window.location.pathname.split('/').pop();
+        const navLinks = document.querySelectorAll('.nav-link-modern');
+        
+        navLinks.forEach(link => {
+            const href = link.getAttribute('href');
+            if (href === currentPage) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
+    }
+
+    // ===========================================
+    // INITIALIZE
+    // ===========================================
+    document.addEventListener('DOMContentLoaded', async function() {
+        AOS.init({ duration: 800, once: true });
+
+        const user = checkAuth();
+        if (!user) return;
+
+        initDropdown();
+        setActiveNavLink();
+        
+        await loadProgramStudi();
+        await loadProfileData();
+    });
+
+    // CLOSE MODAL WHEN CLICKING OUTSIDE
+    window.onclick = function(event) {
+        const modal = document.getElementById('passwordModal');
+        if (event.target === modal) {
+            window.closePasswordModal();
+        }
+    };
+</script>
 </body>
 </html>

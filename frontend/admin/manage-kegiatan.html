@@ -20,33 +20,54 @@
             -webkit-text-fill-color: transparent; 
             background-clip: text; 
         }
-        
-        .nav-link { 
-            position: relative; 
-            transition: color 0.3s ease; 
-        }
-        
-        .nav-link::after { 
-            content: ''; 
-            position: absolute; 
-            width: 0; 
-            height: 2px; 
-            bottom: -5px; 
-            left: 50%; 
-            background-color: #3B82F6; 
-            transition: all 0.3s ease; 
-        }
-        
-        .nav-link:hover::after, 
-        .nav-link.active::after { 
-            width: 100%; 
-            left: 0; 
-        }
-        
-        .nav-link.active { 
-            color: #3B82F6; 
-            font-weight: 600; 
-        }
+
+.nav-link-modern {
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.nav-link-modern.active {
+    background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
+    color: white !important;
+}
+
+.nav-link-modern.active i {
+    color: white !important;
+}
+
+.nav-link-modern:not(.active):hover {
+    transform: translateY(-1px);
+}
+
+/* Dropdown Animation */
+#userDropdown {
+    transform-origin: top right;
+    animation: dropdownFade 0.2s ease;
+}
+
+@keyframes dropdownFade {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Active link indicator */
+.nav-link-modern.active::before {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 2px;
+    background: white;
+    border-radius: 2px;
+}
 
         /* Tab Styles */
         .tab-button {
@@ -133,84 +154,106 @@
         </div>
     </div>
 
-            <header class="fixed top-0 left-0 right-0 bg-white shadow-md z-50">
-            <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-                <!-- Logo and Brand -->
-                <a href="admin-dashboard.html" class="flex items-center space-x-3">
-                    <img src="yadika.png" alt="Logo" class="h-10 w-10">
-                    <div>
-                        <h1 class="text-xl font-bold gradient-text">LPPM Admin</h1>
-                        <p class="text-xs text-gray-500">ITB Yadika</p>
+<!-- Ganti bagian <header> sampai </header> dengan kode di bawah ini -->
+
+<header class="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-md shadow-sm z-50 border-b border-gray-100">
+    <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+        <!-- Logo and Brand -->
+        <a href="admin-dashboard.html" class="flex items-center space-x-3 group">
+            <div class="relative">
+                <img src="yadika.png" alt="Logo LPPM ITB Yadika" class="h-10 w-10 rounded-xl shadow-sm transition-transform group-hover:scale-105">
+                <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl opacity-0 group-hover:opacity-20 transition"></div>
+            </div>
+            <div>
+                <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                    LPPM Admin
+                </h1>
+                <p class="text-xs text-gray-400">ITB Yadika</p>
+            </div>
+        </a>
+        
+        <!-- Desktop Navigation Menu -->
+        <div class="hidden md:flex items-center space-x-1">
+            <a href="admin-dashboard.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                <i class="fas fa-tachometer-alt text-gray-400 group-hover:text-blue-500 transition"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="manage-kegiatan.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2 active">
+                <i class="fas fa-calendar-alt text-gray-400 group-hover:text-blue-500 transition"></i>
+                <span>Kegiatan & Berita</span>
+            </a>
+            <a href="manage-repository.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                <i class="fas fa-book text-gray-400 group-hover:text-blue-500 transition"></i>
+                <span>Repository</span>
+            </a>
+            <a href="admin_penelitian.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                <i class="fas fa-flask text-gray-400 group-hover:text-blue-500 transition"></i>
+                <span>Penelitian</span>
+            </a>
+            <a href="manage-magang-kkn.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                <i class="fas fa-briefcase text-gray-400 group-hover:text-blue-500 transition"></i>
+                <span>Magang & KKN</span>
+            </a>
+        </div>
+        
+        <!-- User Info & Actions -->
+        <div class="flex items-center gap-4">
+            <!-- Notifications Dropdown -->
+            <div class="relative">
+                <button id="notificationBtn" class="relative p-2 rounded-lg text-gray-500 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200">
+                    <i class="fas fa-bell text-lg"></i>
+                    <span id="notificationBadge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full hidden"></span>
+                </button>
+            </div>
+            
+            <!-- User Profile Dropdown -->
+            <div class="relative">
+                <button id="userMenuBtn" class="flex items-center gap-3 p-1.5 rounded-xl hover:bg-gray-50 transition-all duration-200 border border-transparent hover:border-gray-200">
+                    <div class="relative">
+                        <img id="navAvatar" src="https://ui-avatars.com/api/?name=Admin+LPPM&background=3B82F6&color=fff" alt="Avatar" class="w-9 h-9 rounded-full object-cover ring-2 ring-gray-200">
+                        <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full ring-2 ring-white"></div>
                     </div>
-                </a>
-
-                <!-- Navigation Links -->
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="admin-dashboard.html" class="nav-link text-gray-700 hover:text-blue-600">
-                        <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
-                    </a>
-                    <a href="manage-kegiatan.html" class="nav-link text-gray-700 hover:text-blue-600">
-                        <i class="fas fa-calendar-alt mr-2"></i>Kegiatan & berita
-                    </a>
-                    <a href="manage-repository.html" class="nav-link text-gray-700 hover:text-blue-600">
-                        <i class="fas fa-book mr-2"></i>Repository
-                    </a>
-                    <a href="admin_penelitian.html" class="nav-link text-gray-700 hover:text-blue-600">
-                        <i class="fas fa-briefcase mr-2"></i>penelitian & Pengabdian
-                    </a>
-                    <a href="manage-magang-kkn.html" class="nav-link text-gray-700 hover:text-blue-600">
-                        <i class="fas fa-briefcase mr-2"></i>Magang & KKN
-                    </a>
-                </div>
-
-            <!-- User Profile / Notifications -->
-            <div class="flex items-center space-x-4">
-                <!-- Notification Bell -->
-                <div class="relative">
-                    <button onclick="toggleNotifications()" class="text-gray-600 hover:text-blue-600 relative">
-                        <i class="fas fa-bell text-xl"></i>
-                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center" id="notificationBadge">3</span>
-                    </button>
-                    <!-- Notification Dropdown -->
-                    <div id="notificationDropdown" class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl hidden z-50">
-                        <div class="p-4 border-b">
-                            <h4 class="font-semibold">Notifikasi</h4>
-                        </div>
-                        <div class="max-h-96 overflow-y-auto" id="notificationList">
-                            <!-- Notifications will be loaded here -->
-                        </div>
-                        <div class="p-3 border-t text-center">
-                            <button onclick="markAllAsRead()" class="text-sm text-blue-600 hover:text-blue-800">
-                                Tandai semua telah dibaca
-                            </button>
+                    <div class="hidden md:block text-left">
+                        <p class="text-sm font-semibold text-gray-800" id="navUserName">Loading...</p>
+                        <p class="text-xs text-gray-400" id="navUserRole">Admin</p>
+                    </div>
+                    <i class="fas fa-chevron-down text-xs text-gray-400 hidden md:block"></i>
+                </button>
+                
+                <!-- Dropdown Menu -->
+                <div id="userDropdown" class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hidden transition-all duration-200 z-50">
+                    <!-- Header with user info -->
+                    <div class="p-3 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-purple-50">
+                        <div class="flex items-center gap-3">
+                            <img id="dropdownAvatar" src="https://ui-avatars.com/api/?name=Admin+LPPM&background=3B82F6&color=fff" alt="Avatar" class="w-10 h-10 rounded-full object-cover">
+                            <div>
+                                <p class="font-semibold text-gray-800 text-sm" id="dropdownUserName">Loading...</p>
+                                <p class="text-xs text-gray-500" id="dropdownUserRole">Administrator</p>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <!-- User Menu -->
-                <div class="relative">
-                    <button onclick="toggleUserMenu()" class="flex items-center space-x-2 focus:outline-none">
-                        <img src="https://ui-avatars.com/api/?name=Admin+LPPM&background=3B82F6&color=fff" alt="Profile" class="h-8 w-8 rounded-full">
-                        <span class="text-sm text-gray-600 hidden sm:block" id="userName">Admin LPPM</span>
-                        <i class="fas fa-chevron-down text-xs text-gray-500"></i>
-                    </button>
-                    <!-- User Dropdown -->
-                    <div id="userDropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl hidden z-50">
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            <i class="fas fa-user mr-2"></i> Profil
+                    
+                    <!-- Menu Items -->
+                    <div class="p-2">
+                        <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
+                            <i class="fas fa-user-cog w-5 text-gray-400"></i>
+                            <span>Pengaturan Akun</span>
                         </a>
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            <i class="fas fa-cog mr-2"></i> Pengaturan
+                        <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
+                            <i class="fas fa-key w-5 text-gray-400"></i>
+                            <span>Ubah Password</span>
                         </a>
-                        <hr class="my-1">
-                        <button onclick="handleLogout()" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
-                            <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                        <div class="border-t border-gray-100 my-2"></div>
+                        <button onclick="handleLogout()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-600 hover:bg-red-50 transition text-sm">
+                            <i class="fas fa-sign-out-alt w-5 text-red-400"></i>
+                            <span>Logout</span>
                         </button>
                     </div>
                 </div>
             </div>
-         </nav>
-        </header>
+        </div>
+    </nav>
+</header>
 
     <!-- Main Content -->
     <main class="pt-20">
@@ -1876,6 +1919,76 @@
             const user = JSON.parse(localStorage.getItem('user') || '{}');
             document.getElementById('userName').textContent = user.nama_lengkap || 'Admin LPPM';
         });
+
+        // Tambahkan fungsi-fungsi berikut di dalam tag <script> (setelah fungsi yang sudah ada)
+
+// Fungsi untuk update navbar user info
+function updateNavbarUserInfo() {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const adminName = user.nama_lengkap || 'Admin LPPM';
+    
+    const navUserName = document.getElementById('navUserName');
+    const dropdownUserName = document.getElementById('dropdownUserName');
+    const dropdownUserRole = document.getElementById('dropdownUserRole');
+    
+    if (navUserName) navUserName.textContent = adminName;
+    if (dropdownUserName) dropdownUserName.textContent = adminName;
+    if (dropdownUserRole) dropdownUserRole.textContent = 'Administrator';
+    
+    // Update avatar
+    const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(adminName)}&background=3B82F6&color=fff&bold=true`;
+    const navAvatar = document.getElementById('navAvatar');
+    const dropdownAvatar = document.getElementById('dropdownAvatar');
+    
+    if (navAvatar) navAvatar.src = avatarUrl;
+    if (dropdownAvatar) dropdownAvatar.src = avatarUrl;
+}
+
+// Fungsi untuk inisialisasi dropdown
+function initDropdown() {
+    const userMenuBtn = document.getElementById('userMenuBtn');
+    const userDropdown = document.getElementById('userDropdown');
+    
+    if (userMenuBtn && userDropdown) {
+        userMenuBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            userDropdown.classList.toggle('hidden');
+        });
+        
+        document.addEventListener('click', function(e) {
+            if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) {
+                userDropdown.classList.add('hidden');
+            }
+        });
+    }
+}
+
+// Fungsi untuk set active nav link
+function setActiveNavLink() {
+    const currentPage = window.location.pathname.split('/').pop();
+    const navLinks = document.querySelectorAll('.nav-link-modern');
+    
+    navLinks.forEach(link => {
+        const href = link.getAttribute('href');
+        if (href === currentPage) {
+            link.classList.add('active');
+        } else {
+            link.classList.remove('active');
+        }
+    });
+}
+
+// Update DOMContentLoaded
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize navbar components
+    initDropdown();
+    setActiveNavLink();
+    updateNavbarUserInfo();
+    
+    // Set user name from localStorage
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    document.getElementById('userName').textContent = user.nama_lengkap || 'Admin LPPM';
+});
     </script>
 </body>
 </html>

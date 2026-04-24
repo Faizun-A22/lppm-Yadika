@@ -98,10 +98,6 @@ const searchRepository = async (req, res, next) => {
     }
 };
 
-/**
- * Create new repository entry
- * Hanya user yang terautentikasi bisa upload
- */
 const createRepository = async (req, res, next) => {
     try {
         const errors = validationResult(req);
@@ -115,15 +111,41 @@ const createRepository = async (req, res, next) => {
         const userRole = req.user.role;
         const file = req.file;
         
-        // Parse JSON fields
-        const penulis = req.body.penulis ? JSON.parse(req.body.penulis) : [req.user.nama_lengkap];
-        const kata_kunci = req.body.kata_kunci ? JSON.parse(req.body.kata_kunci) : [];
+        // ===== PERBAIKAN DI SINI =====
+        // Parse penulis dengan aman
+        let penulis = [req.user.nama_lengkap];
+        if (req.body.penulis) {
+            try {
+                const parsed = JSON.parse(req.body.penulis);
+                penulis = Array.isArray(parsed) ? parsed : [req.body.penulis];
+            } catch (e) {
+                // Jika bukan JSON, split by comma
+                penulis = req.body.penulis.split(',').map(p => p.trim()).filter(p => p);
+                if (penulis.length === 0) penulis = [req.user.nama_lengkap];
+            }
+        }
         
-        // Parse additional data based on type
+        // Parse kata_kunci dengan aman
+        let kata_kunci = [];
+        if (req.body.kata_kunci) {
+            try {
+                const parsed = JSON.parse(req.body.kata_kunci);
+                kata_kunci = Array.isArray(parsed) ? parsed : [req.body.kata_kunci];
+            } catch (e) {
+                kata_kunci = req.body.kata_kunci.split(',').map(k => k.trim()).filter(k => k);
+            }
+        }
+        
+        // Parse additional_data
         let additionalData = {};
         if (req.body.additional_data) {
-            additionalData = JSON.parse(req.body.additional_data);
+            try {
+                additionalData = JSON.parse(req.body.additional_data);
+            } catch (e) {
+                additionalData = {};
+            }
         }
+        // ===== SAMPAI SINI =====
 
         const repositoryData = {
             judul: req.body.judul,
@@ -133,7 +155,7 @@ const createRepository = async (req, res, next) => {
             abstrak: req.body.abstrak,
             kata_kunci: kata_kunci,
             visibility: req.body.visibility || 'public',
-            uploaded_by_role: userRole, // Simpan role uploader
+            uploaded_by_role: userRole,
             ...additionalData
         };
 
@@ -153,29 +175,37 @@ const createRepository = async (req, res, next) => {
     }
 };
 
-/**
- * Update repository
- * Hanya pemilik yang bisa update
- */
 const updateRepository = async (req, res, next) => {
     try {
         const { id } = req.params;
         const userId = req.user.id_user;
         const file = req.file;
         
-        // Parse JSON fields if they exist
+        // Parse dengan aman
         let penulis, kata_kunci, additionalData = {};
         
         if (req.body.penulis) {
-            penulis = JSON.parse(req.body.penulis);
+            try {
+                penulis = JSON.parse(req.body.penulis);
+            } catch (e) {
+                penulis = req.body.penulis.split(',').map(p => p.trim()).filter(p => p);
+            }
         }
         
         if (req.body.kata_kunci) {
-            kata_kunci = JSON.parse(req.body.kata_kunci);
+            try {
+                kata_kunci = JSON.parse(req.body.kata_kunci);
+            } catch (e) {
+                kata_kunci = req.body.kata_kunci.split(',').map(k => k.trim()).filter(k => k);
+            }
         }
         
         if (req.body.additional_data) {
-            additionalData = JSON.parse(req.body.additional_data);
+            try {
+                additionalData = JSON.parse(req.body.additional_data);
+            } catch (e) {
+                additionalData = {};
+            }
         }
 
         const updateData = {

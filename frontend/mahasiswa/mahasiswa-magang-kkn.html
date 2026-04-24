@@ -18,33 +18,54 @@
             -webkit-text-fill-color: transparent; 
             background-clip: text; 
         }
-        
-        .nav-link { 
-            position: relative; 
-            transition: color 0.3s ease; 
-        }
-        
-        .nav-link::after { 
-            content: ''; 
-            position: absolute; 
-            width: 0; 
-            height: 2px; 
-            bottom: -5px; 
-            left: 50%; 
-            background-color: #3B82F6; 
-            transition: all 0.3s ease; 
-        }
-        
-        .nav-link:hover::after, 
-        .nav-link.active::after { 
-            width: 100%; 
-            left: 0; 
-        }
-        
-        .nav-link.active { 
-            color: #3B82F6; 
-            font-weight: 600; 
-        }
+
+.nav-link-modern {
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.nav-link-modern.active {
+    background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
+    color: white !important;
+}
+
+.nav-link-modern.active i {
+    color: white !important;
+}
+
+.nav-link-modern:not(.active):hover {
+    transform: translateY(-1px);
+}
+
+/* Dropdown Animation */
+#userDropdown {
+    transform-origin: top right;
+    animation: dropdownFade 0.2s ease;
+}
+
+@keyframes dropdownFade {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Active link indicator */
+.nav-link-modern.active::before {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 2px;
+    background: white;
+    border-radius: 2px;
+}
         
         /* Loading Spinner */
         .loading-spinner {
@@ -160,52 +181,107 @@
             <p class="mt-4 text-gray-600">Memuat data...</p>
         </div>
     </div>
+    
+<!-- Ganti bagian <header> sampai </header> dengan kode di bawah ini -->
 
-    <!-- Header / Navigation Bar -->
-    <header class="fixed top-0 left-0 right-0 bg-white shadow-md z-50">
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <!-- Logo and Brand -->
-            <a href="mahasiswa-dashboard.html" class="flex items-center space-x-3">
-                <img src="yadika.png" alt="Logo LPPM ITB Yadika" class="h-10 w-10">
-                <div>
-                    <h1 class="text-xl font-bold gradient-text">Portal Mahasiswa</h1>
-                    <p class="text-xs text-gray-500">LPPM ITB Yadika</p>
-                </div>
-            </a>
-            
-            <!-- Navigation Menu -->
-            <div class="hidden md:flex items-center space-x-8">
-                <a href="mahasiswa-dashboard.html" class="nav-link text-gray-700 hover:text-blue-600">
-                    <i class="fas fa-home mr-2"></i>Dashboard
-                </a>
-                <a href="mahasiswa-berita.html" class="nav-link text-gray-700 hover:text-blue-600">
-                    <i class="fas fa-newspaper mr-2"></i>Berita
-                </a>
-                <a href="mahasiswa-repository.html" class="nav-link text-gray-700 hover:text-blue-600">
-                    <i class="fas fa-book mr-2"></i>Repository
-                </a>
-                <a href="mahasiswa-magang-kkn.html" class="nav-link active text-gray-700 hover:text-blue-600">
-                    <i class="fas fa-briefcase mr-2"></i>Magang & KKN
-                </a>
-                <a href="mahasiswa-profil.html" class="nav-link text-gray-700 hover:text-blue-600">
-                    <i class="fas fa-user-circle mr-2"></i>Profil Saya
-                </a>
+<header class="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-md shadow-sm z-50 border-b border-gray-100">
+    <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+        <!-- Logo and Brand -->
+        <a href="mahasiswa-dashboard.html" class="flex items-center space-x-3 group">
+            <div class="relative">
+                <img src="yadika.png" alt="Logo LPPM ITB Yadika" class="h-10 w-10 rounded-xl shadow-sm transition-transform group-hover:scale-105">
+                <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl opacity-0 group-hover:opacity-20 transition"></div>
             </div>
-            
-            <!-- User Info & Logout -->
-            <div class="flex items-center space-x-4">
-                <div class="hidden md:block text-right">
-                    <p class="text-sm font-semibold text-gray-700" id="userNameDisplay">Loading...</p>
-                    <p class="text-xs text-gray-500" id="userNimDisplay">-</p>
-                </div>
-                <button onclick="handleLogout()" class="flex items-center space-x-2 p-2 rounded-lg text-red-600 hover:bg-red-50 transition">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span class="hidden sm:inline">Logout</span>
+            <div>
+                <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                    Portal Mahasiswa
+                </h1>
+                <p class="text-xs text-gray-400">LPPM ITB Yadika</p>
+            </div>
+        </a>
+        
+        <!-- Desktop Navigation Menu -->
+        <div class="hidden md:flex items-center space-x-1">
+            <a href="mahasiswa-dashboard.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                <i class="fas fa-home text-gray-400 group-hover:text-blue-500 transition"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="mahasiswa-berita.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                <i class="fas fa-newspaper text-gray-400 group-hover:text-blue-500 transition"></i>
+                <span>Berita</span>
+            </a>
+            <a href="mahasiswa-repository.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                <i class="fas fa-book text-gray-400 group-hover:text-blue-500 transition"></i>
+                <span>Repository</span>
+            </a>
+            <a href="mahasiswa-magang-kkn.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2 active">
+                <i class="fas fa-briefcase text-gray-400 group-hover:text-blue-500 transition"></i>
+                <span>Magang & KKN</span>
+            </a>
+            <a href="mahasiswa-profil.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                <i class="fas fa-user-circle text-gray-400 group-hover:text-blue-500 transition"></i>
+                <span>Profil Saya</span>
+            </a>
+        </div>
+        
+        <!-- User Info & Actions -->
+        <div class="flex items-center gap-4">
+            <!-- Notifications Dropdown -->
+            <div class="relative">
+                <button id="notificationBtn" class="relative p-2 rounded-lg text-gray-500 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200">
+                    <i class="fas fa-bell text-lg"></i>
+                    <span id="notificationBadge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full hidden"></span>
                 </button>
             </div>
-        </nav>
-    </header>
-
+            
+            <!-- User Profile Dropdown -->
+            <div class="relative">
+                <button id="userMenuBtn" class="flex items-center gap-3 p-1.5 rounded-xl hover:bg-gray-50 transition-all duration-200 border border-transparent hover:border-gray-200">
+                    <div class="relative">
+                        <img id="navAvatar" src="" alt="Avatar" class="w-9 h-9 rounded-full object-cover ring-2 ring-gray-200">
+                        <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full ring-2 ring-white"></div>
+                    </div>
+                    <div class="hidden md:block text-left">
+                        <p class="text-sm font-semibold text-gray-800" id="navUserName">Loading...</p>
+                        <p class="text-xs text-gray-400" id="navUserRole">Mahasiswa</p>
+                    </div>
+                    <i class="fas fa-chevron-down text-xs text-gray-400 hidden md:block"></i>
+                </button>
+                
+                <!-- Dropdown Menu -->
+                <div id="userDropdown" class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hidden transition-all duration-200 z-50">
+                    <!-- Header with user info -->
+                    <div class="p-3 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-purple-50">
+                        <div class="flex items-center gap-3">
+                            <img id="dropdownAvatar" src="" alt="Avatar" class="w-10 h-10 rounded-full object-cover">
+                            <div>
+                                <p class="font-semibold text-gray-800 text-sm" id="dropdownUserName">Loading...</p>
+                                <p class="text-xs text-gray-500" id="dropdownUserNim">-</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Menu Items -->
+                    <div class="p-2">
+                        <a href="mahasiswa-profil.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
+                            <i class="fas fa-user-cog w-5 text-gray-400"></i>
+                            <span>Pengaturan Akun</span>
+                        </a>
+                        <a href="mahasiswa-ubah-password.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
+                            <i class="fas fa-key w-5 text-gray-400"></i>
+                            <span>Ubah Password</span>
+                        </a>
+                        <div class="border-t border-gray-100 my-2"></div>
+                        <button onclick="handleLogout()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-600 hover:bg-red-50 transition text-sm">
+                            <i class="fas fa-sign-out-alt w-5 text-red-400"></i>
+                            <span>Logout</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
     <!-- Main Content -->
     <main class="pt-20">
         <div class="container mx-auto px-6 py-8">
@@ -686,6 +762,104 @@
             // Load user's registered programs
             await loadUserRegisteredPrograms();
         });
+
+        // Tambahkan fungsi-fungsi berikut di dalam tag <script> (setelah fungsi yang sudah ada)
+
+// Fungsi untuk update navbar user info
+async function updateNavbarUserInfo() {
+    try {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+        
+        const response = await fetch(`${API_BASE_URL}/api/mahasiswa/profil/basic`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        if (response.ok) {
+            const result = await response.json();
+            const profile = result.data;
+            
+            if (profile) {
+                const avatarUrl = profile.foto_profil ? `${API_BASE_URL}/${profile.foto_profil}` : `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.nama_lengkap || 'Mahasiswa')}&background=3B82F6&color=fff&bold=true`;
+                
+                const navAvatar = document.getElementById('navAvatar');
+                const dropdownAvatar = document.getElementById('dropdownAvatar');
+                const navUserName = document.getElementById('navUserName');
+                const dropdownUserName = document.getElementById('dropdownUserName');
+                const dropdownUserNim = document.getElementById('dropdownUserNim');
+                
+                if (navAvatar) navAvatar.src = avatarUrl;
+                if (dropdownAvatar) dropdownAvatar.src = avatarUrl;
+                if (navUserName) navUserName.textContent = profile.nama_lengkap || 'Mahasiswa';
+                if (dropdownUserName) dropdownUserName.textContent = profile.nama_lengkap || 'Mahasiswa';
+                if (dropdownUserNim) dropdownUserNim.textContent = profile.nim ? `NIM: ${profile.nim}` : '-';
+            }
+        }
+    } catch (error) {
+        console.error('Error loading profile for navbar:', error);
+    }
+}
+
+// Fungsi untuk inisialisasi dropdown
+function initDropdown() {
+    const userMenuBtn = document.getElementById('userMenuBtn');
+    const userDropdown = document.getElementById('userDropdown');
+    
+    if (userMenuBtn && userDropdown) {
+        userMenuBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            userDropdown.classList.toggle('hidden');
+        });
+        
+        document.addEventListener('click', function(e) {
+            if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) {
+                userDropdown.classList.add('hidden');
+            }
+        });
+    }
+}
+
+// Fungsi untuk set active nav link
+function setActiveNavLink() {
+    const currentPage = window.location.pathname.split('/').pop();
+    const navLinks = document.querySelectorAll('.nav-link-modern');
+    
+    navLinks.forEach(link => {
+        const href = link.getAttribute('href');
+        if (href === currentPage) {
+            link.classList.add('active');
+        } else {
+            link.classList.remove('active');
+        }
+    });
+}
+
+// Update fungsi updateUserInfo yang sudah ada
+function updateUserInfo() {
+    const user = getUser();
+    if (user) {
+        const userNameDisplay = document.getElementById('userNameDisplay');
+        const userNimDisplay = document.getElementById('userNimDisplay');
+        
+        if (userNameDisplay) userNameDisplay.textContent = user.name || user.nama_lengkap || 'Mahasiswa';
+        if (userNimDisplay) userNimDisplay.textContent = user.nim || '-';
+    }
+}
+
+// Update DOMContentLoaded
+document.addEventListener('DOMContentLoaded', async function() {
+    // Check authentication first
+    if (!auth.requireRole('mahasiswa')) return;
+    
+    // Initialize navbar components
+    initDropdown();
+    setActiveNavLink();
+    updateUserInfo();
+    await updateNavbarUserInfo();
+    
+    // Load user's registered programs
+    await loadUserRegisteredPrograms();
+});
     </script>
 </body>
 </html>
