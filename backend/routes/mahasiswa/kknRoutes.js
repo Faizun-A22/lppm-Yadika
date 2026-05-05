@@ -1,193 +1,92 @@
-// routes/mahasiswa/kkn.js
+const express = require('express');
+const router = express.Router();
 
-// GET DASHBOARD - perbaiki query
-router.get('/dashboard', async (req, res) => {
-    try {
-        const userId = req.user.id_user;
-        
-        // Ambil data registrasi dari tabel kkn_registration
-        const { data: registrasi, error: regError } = await supabase
-            .from('kkn_registration')  // ← perbaiki nama tabel
-            .select(`
-                *,
-                desa_kkn (
-                    id_desa,
-                    nama_desa,
-                    kabupaten,
-                    kecamatan
-                ),
-                program_studi (
-                    nama_prodi
-                )
-            `)
-            .eq('id_user', userId)
-            .order('created_at', { ascending: false })
-            .limit(1)
-            .single();
+const multer = require('multer');
+const path = require('path');
 
-        if (regError && regError.code !== 'PGRST116') {
-            throw regError;
-        }
+const { authenticateToken } = require('../../middleware/auth');
+const kknController = require('../../controllers/mahasiswa/kknController');
 
-        // Ambil data luaran dari tabel kkn_outputs
-        let luaran = [];
-        if (registrasi) {
-            const { data: luaranData, error: luarError } = await supabase
-                .from('kkn_outputs')  // ← perbaiki nama tabel
-                .select('*')
-                .eq('id_registrasi', registrasi.id_registrasi)
-                .order('created_at', { ascending: false });
-            
-            if (!luarError && luaranData) {
-                luaran = luaranData;
-            }
-        }
-
-        res.json({
-            success: true,
-            data: {
-                registrasi: registrasi || null,
-                luaran: luaran
-            }
-        });
-    } catch (error) {
-        console.error('Error getting dashboard:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Gagal mengambil data dashboard'
-        });
+// ================== MULTER CONFIG ==================
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/');
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + '-' + file.originalname);
     }
 });
 
-// GET LUARAN - perbaiki query
-router.get('/luaran', async (req, res) => {
-    try {
-        const userId = req.user.id_user;
-        
-        const { data: registrasi } = await supabase
-            .from('kkn_registration')  // ← perbaiki
-            .select('id_registrasi')
-            .eq('id_user', userId)
-            .order('created_at', { ascending: false })
-            .limit(1)
-            .single();
+const upload = multer({ storage });
 
-        if (!registrasi) {
-            return res.json({ success: true, data: [] });
-        }
+// ================== MIDDLEWARE ==================
+router.use(authenticateToken);
 
-        const { data, error } = await supabase
-            .from('kkn_outputs')  // ← perbaiki
-            .select('*')
-            .eq('id_registrasi', registrasi.id_registrasi)
-            .order('created_at', { ascending: false });
+// ================== DASHBOARD ==================
+router.get('/dashboard', kknController.getDashboard);
+router.get('/status', kknController.getStatus);
+router.get('/timeline', kknController.getTimeline);
 
-        if (error) throw error;
+// ================== DESA ==================
+router.get('/desa', kknController.getAvailableVillages);
 
-        res.json({
-            success: true,
-            data: data
-        });
-    } catch (error) {
-        console.error('Error getting luaran:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Gagal mengambil data luaran'
-        });
-    }
-});
+// ================== RIWAYAT ==================
+router.get('/riwayat', kknController.getRiwayat);
 
-// POST DAFTAR KKN - perbaiki insert
-router.post('/daftar', upload.fields([
-    { name: 'krs_file', maxCount: 1 },
-    { name: 'khs_file', maxCount: 1 },
-    { name: 'payment_file', maxCount: 1 }
-]), async (req, res) => {
-    try {
-        const userId = req.user.id_user;
-        const files = req.files;
+// ================== PROPOSAL ==================
+router.get('/proposal/status', kknController.getProposalStatus);
+router.get('/proposal/:id', kknController.getProposalDetail);
+router.get('/proposal/:id/review', kknController.getReviewHistory);
 
-        // ... validasi sama ...
+// ================== DAFTAR KKN ==================
+router.post(
+    '/daftar',
+    upload.fields([
+        { name: 'krs_file', maxCount: 1 },
+        { name: 'khs_file', maxCount: 1 },
+        { name: 'payment_file', maxCount: 1 }
+    ]),
+    kknController.daftarKKN
+);
 
-        // Simpan ke tabel kkn_registration
-        const registrasiData = {
-            id_user: userId,
-            id_desa: id_desa,
-            nim: user.nim,
-            nama_lengkap: user.nama_lengkap,
-            email: user.email,
-            id_prodi: id_prodi,
-            no_hp: no_hp,
-            angkatan: parseInt(semester),
-            ukuran_jaket: ukuran_jaket,
-            krs_file: cleanFilePath(files.krs_file[0].path),
-            khs_file: cleanFilePath(files.khs_file[0].path),
-            payment_file: cleanFilePath(files.payment_file[0].path),
-            status: 'pending',
-            tanggal_daftar: new Date(),
-            created_at: new Date(),
-            updated_at: new Date()
-        };
+// ================== PROPOSAL ==================
+router.post(
+    '/proposal',
+    upload.single('file_proposal'),
+    kknController.ajukanProposal
+);
 
-        const { data: result, error } = await supabase
-            .from('kkn_registration')  // ← perbaiki
-            .insert([registrasiData])
-            .select()
-            .single();
+router.post(
+    '/proposal/draft',
+    upload.single('file_proposal'),
+    kknController.simpanDraftProposal
+);
 
-        // ... sisanya sama
-    } catch (error) {
-        // ...
-    }
-});
+router.put(
+    '/proposal/:id',
+    upload.single('file_proposal'),
+    kknController.updateProposal
+);
 
-// POST SIMPAN LUARAN - perbaiki insert
-router.post('/luaran/simpan', upload.single('mou_file'), async (req, res) => {
-    try {
-        const userId = req.user.id_user;
-        const file = req.file;
+router.delete('/proposal/:id', kknController.batalkanProposal);
 
-        // ... validasi ...
+// ================== LUARAN ==================
+router.get('/luaran', kknController.getLuaran);
+router.get('/luaran/:id', kknController.getLuaranDetail);
 
-        // Cari registrasi dari tabel kkn_registration
-        const { data: registrasi } = await supabase
-            .from('kkn_registration')  // ← perbaiki
-            .select('id_registrasi')
-            .eq('id_user', userId)
-            .eq('status', 'approved')
-            .order('created_at', { ascending: false })
-            .limit(1)
-            .single();
+router.post(
+    '/luaran',
+    upload.single('mou_file'),
+    kknController.simpanLuaran
+);
 
-        if (!registrasi) {
-            return res.status(400).json({
-                success: false,
-                message: 'Anda harus terdaftar KKN dengan status approved untuk mengupload luaran'
-            });
-        }
+router.put(
+    '/luaran/:id',
+    upload.single('mou_file'),
+    kknController.updateLuaran
+);
 
-        const luaranData = {
-            id_registrasi: registrasi.id_registrasi,
-            judul_kegiatan: judul_kegiatan,
-            link_video: link_video || null,
-            link_poster: link_poster || null,
-            link_foto: link_foto || null,
-            file_mou: file ? cleanFilePath(file.path) : null,
-            keterangan: keterangan || null,
-            status: 'pending',
-            tanggal_submit: new Date(),
-            created_at: new Date(),
-            updated_at: new Date()
-        };
+router.delete('/luaran/:id', kknController.hapusLuaran);
 
-        const { data: result, error } = await supabase
-            .from('kkn_outputs')  // ← perbaiki
-            .insert([luaranData])
-            .select()
-            .single();
-
-        // ... sisanya sama
-    } catch (error) {
-        // ...
-    }
-});
+// ================== EXPORT ==================
+module.exports = router;

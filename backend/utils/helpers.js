@@ -36,20 +36,56 @@ const formatDate = (date) => {
  * @param {string} filePath - Path file dari database (contoh: "magang/krs/nama-file.jpg")
  * @returns {string|null} - URL lengkap atau null
  */
+// utils/helpers.js
+
+/**
+ * Mendapatkan URL publik untuk file
+ * @param {string} filePath - Path file dari database
+ * @returns {string|null} - URL lengkap atau null
+ */
+
+// utils/helpers.js
+
 const getFileUrl = (filePath) => {
     if (!filePath) return null;
     
-    // Hapus 'uploads/' dari awal path jika ada (untuk berjaga-jaga)
-    let cleanPath = filePath.replace(/^uploads[\/\\]/, '');
+    // Jika filePath sudah berupa URL lengkap, kembalikan langsung
+    if (filePath.startsWith('http://') || filePath.startsWith('https://')) {
+        return filePath;
+    }
+    
+    // Hapus 'uploads/' dari awal path jika ada (karena akan ditambahkan lagi)
+    let cleanPath = filePath;
+    
+    // Hapus 'uploads/' dari awal path
+    if (cleanPath.startsWith('uploads/')) {
+        cleanPath = cleanPath.substring('uploads/'.length);
+    }
+    if (cleanPath.startsWith('uploads\\')) {
+        cleanPath = cleanPath.substring('uploads\\'.length);
+    }
+    
+    // Hapus double 'uploads' di tengah path
+    cleanPath = cleanPath.replace(/^uploads[\/\\]/, '');
+    cleanPath = cleanPath.replace(/[\/\\]uploads[\/\\]/, '/');
     
     // Ganti backslash dengan forward slash
     cleanPath = cleanPath.replace(/\\/g, '/');
     
-    // Pastikan tidak ada 'uploads' ganda
-    cleanPath = cleanPath.replace(/^uploads\//, '');
+    // Encode untuk keamanan URL (tapi jangan encode slash)
+    cleanPath = cleanPath.split('/').map(part => encodeURIComponent(part)).join('/');
     
-    // Gunakan endpoint /api/uploads untuk mengakses file
-    return `http://localhost:3000/api/uploads/${cleanPath}`;
+    // Gunakan base URL dari environment atau default
+    const baseUrl = process.env.API_BASE_URL || 'http://localhost:3000';
+    
+    // Buat URL lengkap (jangan tambahkan /api/uploads/ jika sudah ada)
+    // Pastikan path tidak double
+    const result = `${baseUrl}/api/uploads/${cleanPath}`;
+    
+    console.log('getFileUrl input:', filePath);
+    console.log('getFileUrl output:', result);
+    
+    return result;
 };
 
 const updateMagangStatus = async (supabase, id_magang, status_magang) => {

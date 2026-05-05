@@ -154,44 +154,57 @@ class MagangController {
         }
     }
 
-    /**
-     * Membuat data perusahaan magang
-     */
-    async createPerusahaan(req, res, next) {
-        try {
-            const userId = req.user.id_user;
-            const files = req.files;
-            
-            // Cek apakah sudah registrasi
-            const registrasi = await magangService.getRegistrasi(userId);
-            if (!registrasi) {
-                return res.status(400).json(
-                    formatError('Anda harus mendaftar magang terlebih dahulu')
-                );
-            }
-            
-            const data = {
-                ...req.body,
-                id_registrasi: registrasi.id_registrasi,
-                surat_keterangan: files?.surat_keterangan ? files.surat_keterangan[0] : null,
-                struktur_organisasi: files?.struktur_organisasi ? files.struktur_organisasi[0] : null
-            };
-            
-            const perusahaan = await magangService.createPerusahaan(userId, data);
-            
-            return res.status(201).json(
-                formatResponse('success', 'Data perusahaan berhasil disimpan', perusahaan)
-            );
-        } catch (error) {
-            // Hapus file yang sudah diupload jika terjadi error
-            if (req.files) {
-                Object.values(req.files).flat().forEach(file => {
-                    deleteFile(file.path);
-                });
-            }
-            next(error);
+    // controllers/mahasiswa/magangController.js (contoh untuk perusahaan)
+
+async createPerusahaan(req, res, next) {
+    try {
+        const id_user = req.user.id_user;
+        const files = req.files;
+        
+        // Simpan hanya path relatif, bukan URL lengkap
+        const perusahaanData = {
+            id_user: id_user,
+            id_registrasi: req.body.id_registrasi,
+            nama_perusahaan: req.body.nama_perusahaan,
+            bidang_magang: req.body.bidang_magang,
+            posisi: req.body.posisi,
+            durasi: parseInt(req.body.durasi),
+            tanggal_mulai: req.body.tanggal_mulai,
+            tanggal_selesai: req.body.tanggal_selesai,
+            alamat_perusahaan: req.body.alamat_perusahaan,
+            nama_pembimbing: req.body.nama_pembimbing,
+            kontak_pembimbing: req.body.kontak_pembimbing,
+            email_pembimbing: req.body.email_pembimbing || null,
+            jabatan_pembimbing: req.body.jabatan_pembimbing || null,
+            status: 'pending'
+        };
+        
+        // Simpan hanya path relatif (contoh: "magang/surat_keterangan/nama-file.png")
+        if (files && files.surat_keterangan) {
+            // path dari multer adalah relatif terhadap root project
+            // contoh: "uploads/magang/surat_keterangan/12345-file.png"
+            // kita simpan tanpa "uploads/" prefix
+            const suratPath = files.surat_keterangan[0].path;
+            // Hapus "uploads/" dari path
+            perusahaanData.surat_keterangan = suratPath.replace(/^uploads[\/\\]/, '');
         }
+        
+        if (files && files.struktur_organisasi) {
+            const strukturPath = files.struktur_organisasi[0].path;
+            perusahaanData.struktur_organisasi = strukturPath.replace(/^uploads[\/\\]/, '');
+        }
+        
+        const result = await magangService.createPerusahaan(id_user, perusahaanData);
+        
+        return res.status(201).json({
+            success: true,
+            message: 'Data perusahaan berhasil disimpan',
+            data: result
+        });
+    } catch (error) {
+        next(error);
     }
+}
 
     /**
      * Update data perusahaan magang

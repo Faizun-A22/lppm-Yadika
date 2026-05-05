@@ -543,11 +543,13 @@ async getPerusahaanById(id_perusahaan, id_user) {
     }
 }
 
-/**
- * Membuat data perusahaan
- */
+// services/mahasiswa/magangService.js
+
 async createPerusahaan(id_user, data) {
     try {
+        // Data sudah siap dengan path relatif
+        // Contoh: "magang/surat_keterangan/12345-file.png"
+        
         const perusahaanData = {
             id_user: id_user,
             id_registrasi: data.id_registrasi,
@@ -562,19 +564,21 @@ async createPerusahaan(id_user, data) {
             kontak_pembimbing: data.kontak_pembimbing,
             email_pembimbing: data.email_pembimbing,
             jabatan_pembimbing: data.jabatan_pembimbing,
-            surat_keterangan: data.surat_keterangan?.path || data.surat_keterangan?.filename,
-            struktur_organisasi: data.struktur_organisasi?.path || data.struktur_organisasi?.filename,
-            status: 'pending'
+            surat_keterangan: data.surat_keterangan || null,  // Path relatif
+            struktur_organisasi: data.struktur_organisasi || null,  // Path relatif
+            status: data.status || 'pending',
+            created_at: new Date(),
+            updated_at: new Date()
         };
-
+        
         const { data: result, error } = await supabase
             .from('magang_perusahaan')
             .insert([perusahaanData])
             .select()
             .single();
-
+        
         if (error) throw error;
-
+        
         return result;
     } catch (error) {
         console.error('Error in createPerusahaan:', error);
