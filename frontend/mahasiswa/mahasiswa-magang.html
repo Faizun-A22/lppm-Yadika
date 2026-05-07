@@ -936,13 +936,9 @@
     <script src="../js/auth.js"></script>
     
   <script>
-    // ========== INITIALIZATION ==========
     AOS.init({ duration: 800, once: true });
+    const API_BASE_URL = '/api';
     
-    // ========== CONFIGURATION ==========
-    const API_BASE_URL = 'http://localhost:3000/api';
-    
-    // ========== STATE MANAGEMENT ==========
     let currentUser = null;
     let magangData = {
         registrasi: null,
@@ -952,9 +948,6 @@
     let fakultasList = [];
     let prodiList = [];
     
-    // ========== AUTH & USER FUNCTIONS ==========
-    
-    // Get user from auth
     function getUser() {
         return auth.getUser();
     }
