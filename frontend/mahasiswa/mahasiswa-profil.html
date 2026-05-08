@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <title>Profil Saya - Portal Mahasiswa LPPM ITB Yadika</title>
     
     <!-- CSS External Libraries -->
@@ -20,53 +20,140 @@
             background-clip: text; 
         }
 
-.nav-link-modern {
-    position: relative;
-    transition: all 0.2s ease;
-}
+        /* Navbar Styles - SAMA PERSIS DENGAN DASHBOARD */
+        .navbar-custom {
+            background: linear-gradient(135deg, #1E3A5F 0%, #2D4A6E 50%, #1E3A5F 100%);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
 
-.nav-link-modern.active {
-    background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
-    color: white !important;
-}
+        .nav-link-modern {
+            position: relative;
+            transition: all 0.2s ease;
+            color: rgba(255, 255, 255, 0.8);
+        }
 
-.nav-link-modern.active i {
-    color: white !important;
-}
+        .nav-link-modern:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.15);
+        }
 
-.nav-link-modern:not(.active):hover {
-    transform: translateY(-1px);
-}
+        .nav-link-modern.active {
+            background: rgba(255, 255, 255, 0.25);
+            color: white !important;
+        }
 
-/* Dropdown Animation */
-#userDropdown {
-    transform-origin: top right;
-    animation: dropdownFade 0.2s ease;
-}
+        .nav-link-modern.active i {
+            color: white !important;
+        }
 
-@keyframes dropdownFade {
-    from {
-        opacity: 0;
-        transform: scale(0.95) translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-    }
-}
+        .nav-link-modern.active::before {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 2px;
+            background: white;
+            border-radius: 2px;
+        }
 
-/* Active link indicator */
-.nav-link-modern.active::before {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 20px;
-    height: 2px;
-    background: white;
-    border-radius: 2px;
-}
+        /* Brand text color */
+        .brand-title {
+            color: white;
+        }
+
+        .brand-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Icon buttons */
+        .icon-btn {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .icon-btn:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .user-name {
+            color: white;
+        }
+
+        .user-role {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Dropdown Animation */
+        #userDropdown {
+            transform-origin: top right;
+            animation: dropdownFade 0.2s ease;
+        }
+
+        @keyframes dropdownFade {
+            from { opacity: 0; transform: scale(0.95) translateY(-10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* Mobile Navigation */
+        .mobile-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-nav.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .mobile-nav-container {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 280px;
+            height: 100%;
+            background: white;
+            transform: translateX(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mobile-nav.active .mobile-nav-container {
+            transform: translateX(0);
+        }
+
+        .mobile-nav-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #1E3A5F, #2D4A6E);
+            color: white;
+        }
+
+        .mobile-nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            color: #4B5563;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .mobile-nav-link.active {
+            background: #EFF6FF;
+            color: #3B82F6;
+            border-left-color: #3B82F6;
+        }
 
         /* Loading Spinner */
         .loading-spinner {
@@ -144,204 +231,259 @@
 </head>
 <body class="bg-gray-50 font-sans antialiased">
     <!-- Loading Overlay -->
-    <div id="loadingOverlay" class="fixed inset-0 bg-white bg-opacity-90 z-50 flex items-center justify-center hidden">
-        <div class="text-center">
+    <div id="loadingOverlay" class="fixed inset-0 bg-white/80 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+        <div class="text-center bg-white p-6 rounded-2xl shadow-xl">
             <div class="loading-spinner"></div>
-            <p class="mt-4 text-gray-600">Memuat data...</p>
+            <p class="mt-4 text-gray-600 font-medium">Memuat data...</p>
         </div>
     </div>
 
-    <!-- Ganti bagian <header> sampai </header> dengan kode di bawah ini -->
-
-<header class="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-md shadow-sm z-50 border-b border-gray-100">
-    <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
-        <!-- Logo and Brand -->
-        <a href="mahasiswa-dashboard.html" class="flex items-center space-x-3 group">
-            <div class="relative">
-                <img src="yadika.png" alt="Logo LPPM ITB Yadika" class="h-10 w-10 rounded-xl shadow-sm transition-transform group-hover:scale-105">
-                <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl opacity-0 group-hover:opacity-20 transition"></div>
+    <!-- Mobile Navigation -->
+    <div id="mobileNav" class="mobile-nav">
+        <div class="mobile-nav-container">
+            <div class="mobile-nav-header">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                        <img src="yadika.png" alt="Logo" class="h-8 w-8 rounded-lg bg-white p-1">
+                        <span class="font-bold text-sm">LPPM ITB Yadika</span>
+                    </div>
+                    <button id="closeMobileNav" class="text-white">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <div class="flex items-center gap-3 mt-4 pt-2 border-t border-white/20">
+                    <img id="mobileNavAvatar" src="" alt="Avatar" class="w-10 h-10 rounded-full object-cover ring-2 ring-white/50">
+                    <div>
+                        <p class="font-semibold text-sm" id="mobileNavUserName">Loading...</p>
+                        <p class="text-xs opacity-80">Mahasiswa</p>
+                    </div>
+                </div>
             </div>
-            <div>
-                <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                    Portal Mahasiswa
-                </h1>
-                <p class="text-xs text-gray-400">LPPM ITB Yadika</p>
-            </div>
-        </a>
-        
-        <!-- Desktop Navigation Menu -->
-        <div class="hidden md:flex items-center space-x-1">
-            <a href="mahasiswa-dashboard.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
-                <i class="fas fa-home text-gray-400 group-hover:text-blue-500 transition"></i>
-                <span>Dashboard</span>
-            </a>
-            <a href="mahasiswa-berita.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
-                <i class="fas fa-newspaper text-gray-400 group-hover:text-blue-500 transition"></i>
-                <span>Berita</span>
-            </a>
-            <a href="mahasiswa-repository.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
-                <i class="fas fa-book text-gray-400 group-hover:text-blue-500 transition"></i>
-                <span>Repository</span>
-            </a>
-            <a href="mahasiswa-magang-kkn.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
-                <i class="fas fa-briefcase text-gray-400 group-hover:text-blue-500 transition"></i>
-                <span>Magang & KKN</span>
-            </a>
-            <a href="mahasiswa-profil.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2 active">
-                <i class="fas fa-user-circle text-gray-400 group-hover:text-blue-500 transition"></i>
-                <span>Profil Saya</span>
-            </a>
-        </div>
-        
-        <!-- User Info & Actions -->
-        <div class="flex items-center gap-4">
-            <!-- Notifications Dropdown -->
-            <div class="relative">
-                <button id="notificationBtn" class="relative p-2 rounded-lg text-gray-500 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200">
-                    <i class="fas fa-bell text-lg"></i>
-                    <span id="notificationBadge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full hidden"></span>
+            <div class="flex-1 overflow-y-auto py-4">
+                <a href="mahasiswa-dashboard.html" class="mobile-nav-link">
+                    <i class="fas fa-home w-5"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="mahasiswa-berita.html" class="mobile-nav-link">
+                    <i class="fas fa-newspaper w-5"></i>
+                    <span>Berita</span>
+                </a>
+                <a href="mahasiswa-repository.html" class="mobile-nav-link">
+                    <i class="fas fa-book w-5"></i>
+                    <span>Repository</span>
+                </a>
+                <a href="mahasiswa-magang-kkn.html" class="mobile-nav-link">
+                    <i class="fas fa-briefcase w-5"></i>
+                    <span>Magang & KKN</span>
+                </a>
+                <a href="mahasiswa-profil.html" class="mobile-nav-link active">
+                    <i class="fas fa-user-circle w-5"></i>
+                    <span>Profil Saya</span>
+                </a>
+                <div class="border-t border-gray-100 my-4 mx-4"></div>
+                <a href="mahasiswa-ubah-password.html" class="mobile-nav-link">
+                    <i class="fas fa-key w-5"></i>
+                    <span>Ubah Password</span>
+                </a>
+                <button onclick="handleLogout()" class="mobile-nav-link w-full text-left text-red-600">
+                    <i class="fas fa-sign-out-alt w-5"></i>
+                    <span>Logout</span>
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navbar - SAMA PERSIS DENGAN DASHBOARD -->
+    <header class="fixed top-0 left-0 right-0 navbar-custom z-50">
+        <nav class="container mx-auto px-4 md:px-6 py-3 md:py-4 flex justify-between items-center">
+            <!-- Logo and Brand -->
+            <a href="mahasiswa-dashboard.html" class="flex items-center space-x-3 group">
+                <div class="relative">
+                    <img src="yadika.png" alt="Logo LPPM ITB Yadika" class="h-9 w-9 md:h-10 md:w-10 rounded-lg shadow-sm transition-transform group-hover:scale-105 bg-white p-1">
+                    <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-400 to-purple-400 rounded-lg opacity-0 group-hover:opacity-30 transition"></div>
+                </div>
+                <div>
+                    <h1 class="brand-title text-base md:text-lg font-bold tracking-wide">
+                        LPPM ITB Yadika
+                    </h1>
+                    <p class="brand-subtitle text-xs md:text-sm -mt-0.5">Portal Mahasiswa</p>
+                </div>
+            </a>
+            
+            <!-- Desktop Navigation Menu -->
+            <div class="hidden md:flex items-center space-x-1">
+                <a href="mahasiswa-dashboard.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-home text-sm"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="mahasiswa-berita.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-newspaper text-sm"></i>
+                    <span>Berita</span>
+                </a>
+                <a href="mahasiswa-repository.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-book text-sm"></i>
+                    <span>Repository</span>
+                </a>
+                <a href="mahasiswa-magang-kkn.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-briefcase text-sm"></i>
+                    <span>Magang & KKN</span>
+                </a>
+                <a href="mahasiswa-profil.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2 active">
+                    <i class="fas fa-user-circle text-sm"></i>
+                    <span>Profil Saya</span>
+                </a>
             </div>
             
-            <!-- User Profile Dropdown -->
-            <div class="relative">
-                <button id="userMenuBtn" class="flex items-center gap-3 p-1.5 rounded-xl hover:bg-gray-50 transition-all duration-200 border border-transparent hover:border-gray-200">
-                    <div class="relative">
-                        <img id="navAvatar" src="" alt="Avatar" class="w-9 h-9 rounded-full object-cover ring-2 ring-gray-200">
-                        <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full ring-2 ring-white"></div>
-                    </div>
-                    <div class="hidden md:block text-left">
-                        <p class="text-sm font-semibold text-gray-800" id="navUserName">Loading...</p>
-                        <p class="text-xs text-gray-400" id="navUserRole">Mahasiswa</p>
-                    </div>
-                    <i class="fas fa-chevron-down text-xs text-gray-400 hidden md:block"></i>
-                </button>
+            <!-- User Info & Actions -->
+            <div class="flex items-center gap-2 md:gap-3">
+                <!-- Notifications -->
+                <div class="relative">
+                    <button id="notificationBtn" class="icon-btn relative p-2 rounded-lg transition-all duration-200">
+                        <i class="fas fa-bell text-base md:text-lg"></i>
+                        <span id="notificationBadge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full hidden"></span>
+                    </button>
+                </div>
                 
-                <!-- Dropdown Menu -->
-                <div id="userDropdown" class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hidden transition-all duration-200 z-50">
-                    <!-- Header with user info -->
-                    <div class="p-3 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-purple-50">
-                        <div class="flex items-center gap-3">
-                            <img id="dropdownAvatar" src="" alt="Avatar" class="w-10 h-10 rounded-full object-cover">
-                            <div>
-                                <p class="font-semibold text-gray-800 text-sm" id="dropdownUserName">Loading...</p>
-                                <p class="text-xs text-gray-500" id="dropdownUserNim">-</p>
+                <!-- User Profile Dropdown Desktop -->
+                <div class="relative hidden md:block">
+                    <button id="userMenuBtn" class="flex items-center gap-2 p-1.5 rounded-xl hover:bg-white/10 transition-all duration-200">
+                        <div class="relative">
+                            <img id="navAvatar" src="" alt="Avatar" class="w-8 h-8 rounded-full object-cover ring-2 ring-white/50">
+                            <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full ring-2 ring-white"></div>
+                        </div>
+                        <div class="hidden xl:block text-left">
+                            <p class="user-name text-xs font-semibold" id="navUserName">Loading...</p>
+                            <p class="user-role text-[10px]" id="navUserRole">Mahasiswa</p>
+                        </div>
+                        <i class="fas fa-chevron-down text-[10px] text-white/60 hidden xl:block"></i>
+                    </button>
+                    
+                    <div id="userDropdown" class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hidden z-50">
+                        <div class="p-3 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-purple-50">
+                            <div class="flex items-center gap-3">
+                                <img id="dropdownAvatar" src="" alt="Avatar" class="w-10 h-10 rounded-full object-cover">
+                                <div>
+                                    <p class="font-semibold text-gray-800 text-sm" id="dropdownUserName">Loading...</p>
+                                    <p class="text-xs text-gray-500" id="dropdownUserNim">-</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    
-                    <!-- Menu Items -->
-                    <div class="p-2">
-                        <a href="mahasiswa-profil.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
-                            <i class="fas fa-user-cog w-5 text-gray-400"></i>
-                            <span>Pengaturan Akun</span>
-                        </a>
-                        <a href="mahasiswa-ubah-password.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
-                            <i class="fas fa-key w-5 text-gray-400"></i>
-                            <span>Ubah Password</span>
-                        </a>
-                        <div class="border-t border-gray-100 my-2"></div>
-                        <button onclick="handleLogout()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-600 hover:bg-red-50 transition text-sm">
-                            <i class="fas fa-sign-out-alt w-5 text-red-400"></i>
-                            <span>Logout</span>
-                        </button>
+                        <div class="p-2">
+                            <a href="mahasiswa-profil.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
+                                <i class="fas fa-user-cog w-5 text-gray-400"></i>
+                                <span>Pengaturan Akun</span>
+                            </a>
+                            <a href="mahasiswa-ubah-password.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
+                                <i class="fas fa-key w-5 text-gray-400"></i>
+                                <span>Ubah Password</span>
+                            </a>
+                            <div class="border-t border-gray-100 my-2"></div>
+                            <button onclick="handleLogout()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-600 hover:bg-red-50 transition text-sm">
+                                <i class="fas fa-sign-out-alt w-5 text-red-400"></i>
+                                <span>Logout</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
+
+                <!-- Hamburger Menu Button -->
+                <button id="hamburgerBtn" class="md:hidden icon-btn p-2 rounded-lg transition-all duration-200">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
             </div>
-        </div>
-    </nav>
-</header>
+        </nav>
+    </header>
 
     <!-- Main Content -->
-    <main class="pt-20">
-        <div class="container mx-auto px-6 py-8">
+    <main class="pt-[72px] md:pt-[84px]">
+        <div class="container mx-auto px-4 md:px-6 py-6 md:py-8">
             <!-- Header Section -->
-            <header class="mb-8" data-aos="fade-down">
-                <h2 class="text-3xl font-bold text-gray-800">Profil Saya</h2>
+            <div class="mb-8" data-aos="fade-down">
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-800">Profil Saya</h2>
                 <p class="text-gray-600">Kelola informasi pribadi dan lihat riwayat pendaftaran Anda.</p>
-            </header>
+            </div>
 
             <!-- Statistics Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8" data-aos="fade-up">
-                <div class="stat-card bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white">
-                    <i class="fas fa-file-alt text-3xl mb-2"></i>
-                    <h4 class="text-lg font-semibold">Total Pendaftaran</h4>
-                    <p class="text-3xl font-bold" id="totalApplications">0</p>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-8" data-aos="fade-up">
+                <div class="stat-card bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-3 md:p-6 text-white">
+                    <i class="fas fa-file-alt text-xl md:text-3xl mb-1 md:mb-2"></i>
+                    <h4 class="text-xs md:text-lg font-semibold">Total Pendaftaran</h4>
+                    <p class="text-xl md:text-3xl font-bold" id="totalApplications">0</p>
                 </div>
-                <div class="stat-card bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg p-6 text-white">
-                    <i class="fas fa-check-circle text-3xl mb-2"></i>
-                    <h4 class="text-lg font-semibold">Diterima</h4>
-                    <p class="text-3xl font-bold" id="totalAccepted">0</p>
+                <div class="stat-card bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg p-3 md:p-6 text-white">
+                    <i class="fas fa-check-circle text-xl md:text-3xl mb-1 md:mb-2"></i>
+                    <h4 class="text-xs md:text-lg font-semibold">Diterima</h4>
+                    <p class="text-xl md:text-3xl font-bold" id="totalAccepted">0</p>
                 </div>
-                <div class="stat-card bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl shadow-lg p-6 text-white">
-                    <i class="fas fa-clock text-3xl mb-2"></i>
-                    <h4 class="text-lg font-semibold">Dalam Proses</h4>
-                    <p class="text-3xl font-bold" id="totalPending">0</p>
+                <div class="stat-card bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl shadow-lg p-3 md:p-6 text-white">
+                    <i class="fas fa-clock text-xl md:text-3xl mb-1 md:mb-2"></i>
+                    <h4 class="text-xs md:text-lg font-semibold">Dalam Proses</h4>
+                    <p class="text-xl md:text-3xl font-bold" id="totalPending">0</p>
                 </div>
-                <div class="stat-card bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg p-6 text-white">
-                    <i class="fas fa-check-double text-3xl mb-2"></i>
-                    <h4 class="text-lg font-semibold">Selesai</h4>
-                    <p class="text-3xl font-bold" id="totalCompleted">0</p>
+                <div class="stat-card bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg p-3 md:p-6 text-white">
+                    <i class="fas fa-check-double text-xl md:text-3xl mb-1 md:mb-2"></i>
+                    <h4 class="text-xs md:text-lg font-semibold">Selesai</h4>
+                    <p class="text-xl md:text-3xl font-bold" id="totalCompleted">0</p>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- Profile Card -->
                 <div class="lg:col-span-1" data-aos="fade-right">
-                    <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="bg-white rounded-xl shadow-lg p-5 md:p-6">
                         <!-- Profile Picture with Upload Option -->
                         <div class="text-center mb-6">
                             <div class="profile-pic-container inline-block">
-                                <img id="profilePicture" src="https://i.pravatar.cc/150?img=5" alt="Profile" class="w-28 h-28 rounded-full mx-auto border-4 border-purple-200">
+                                <img id="profilePicture" src="" alt="Profile" class="w-24 h-24 md:w-28 md:h-28 rounded-full mx-auto border-4 border-purple-200 object-cover">
                                 <div class="profile-pic-overlay" onclick="changeProfilePicture()">
-                                    <i class="fas fa-camera text-2xl"></i>
+                                    <i class="fas fa-camera text-xl md:text-2xl"></i>
                                 </div>
                             </div>
                             <input type="file" id="profilePicInput" accept="image/*" class="hidden" onchange="uploadProfilePicture(this)">
-                            <h3 class="text-xl font-bold text-gray-800 mt-3" id="profileName">Ahmad Rizki</h3>
+                            <h3 class="text-lg md:text-xl font-bold text-gray-800 mt-3" id="profileName">-</h3>
                             <p class="text-sm text-gray-600" id="profileRole">Mahasiswa</p>
                         </div>
 
                         <!-- Quick Info -->
                         <div class="bg-gray-50 rounded-lg p-4 mb-4">
-                            <h4 class="font-semibold text-gray-700 mb-3 flex items-center">
+                            <h4 class="font-semibold text-gray-700 mb-3 flex items-center text-sm md:text-base">
                                 <i class="fas fa-id-card mr-2 text-purple-500"></i>Informasi Akun
                             </h4>
-                            <div class="space-y-2 text-sm">
+                            <div class="space-y-2 text-xs md:text-sm">
                                 <p class="flex items-center">
                                     <i class="fas fa-id-card mr-2 text-gray-400 w-4"></i>
-                                    <span class="font-medium text-gray-600 w-24">NIM:</span>
-                                    <span class="text-gray-800" id="profileNim">2021001234</span>
+                                    <span class="font-medium text-gray-600 w-20 md:w-24">NIM:</span>
+                                    <span class="text-gray-800" id="profileNim">-</span>
                                 </p>
                                 <p class="flex items-center">
                                     <i class="fas fa-graduation-cap mr-2 text-gray-400 w-4"></i>
-                                    <span class="font-medium text-gray-600 w-24">Program Studi:</span>
-                                    <span class="text-gray-800" id="profileProdi">Teknik Informatika</span>
+                                    <span class="font-medium text-gray-600 w-20 md:w-24">Program Studi:</span>
+                                    <span class="text-gray-800" id="profileProdi">-</span>
                                 </p>
                                 <p class="flex items-center">
                                     <i class="fas fa-envelope mr-2 text-gray-400 w-4"></i>
-                                    <span class="font-medium text-gray-600 w-24">Email:</span>
-                                    <span class="text-gray-800" id="profileEmail">ahmad.rizki@student.yadika.ac.id</span>
+                                    <span class="font-medium text-gray-600 w-20 md:w-24">Email:</span>
+                                    <span class="text-gray-800 break-all" id="profileEmail">-</span>
                                 </p>
                                 <p class="flex items-center">
                                     <i class="fas fa-phone mr-2 text-gray-400 w-4"></i>
-                                    <span class="font-medium text-gray-600 w-24">Telepon:</span>
+                                    <span class="font-medium text-gray-600 w-20 md:w-24">Telepon:</span>
                                     <span class="text-gray-800" id="profilePhone">-</span>
                                 </p>
                                 <p class="flex items-center">
                                     <i class="fas fa-map-marker-alt mr-2 text-gray-400 w-4"></i>
-                                    <span class="font-medium text-gray-600 w-24">Alamat:</span>
-                                    <span class="text-gray-800" id="profileAddress">-</span>
+                                    <span class="font-medium text-gray-600 w-20 md:w-24">Alamat:</span>
+                                    <span class="text-gray-800 break-all" id="profileAddress">-</span>
                                 </p>
                             </div>
                         </div>
 
                         <!-- Account Actions -->
                         <div class="space-y-2">
-                            <button onclick="changePassword()" class="w-full bg-gray-100 text-gray-700 font-medium py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors flex items-center justify-center">
+                            <button onclick="changePassword()" class="w-full bg-gray-100 text-gray-700 font-medium py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors flex items-center justify-center text-sm">
                                 <i class="fas fa-key mr-2"></i>Ubah Password
                             </button>
-                            <button onclick="downloadData()" class="w-full bg-gray-100 text-gray-700 font-medium py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors flex items-center justify-center">
+                            <button onclick="downloadData()" class="w-full bg-gray-100 text-gray-700 font-medium py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors flex items-center justify-center text-sm">
                                 <i class="fas fa-download mr-2"></i>Download Data Pribadi
                             </button>
                         </div>
@@ -351,8 +493,8 @@
                 <!-- Details & History -->
                 <div class="lg:col-span-2 space-y-6">
                     <!-- Edit Information -->
-                    <div class="bg-white rounded-xl shadow-lg p-6" data-aos="fade-left">
-                        <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                    <div class="bg-white rounded-xl shadow-lg p-5 md:p-6" data-aos="fade-left">
+                        <h3 class="text-lg md:text-xl font-bold text-gray-800 mb-4 flex items-center">
                             <i class="fas fa-user-edit mr-2 text-purple-500"></i>
                             Informasi Pribadi
                         </h3>
@@ -362,39 +504,39 @@
                                 <label class="block text-sm font-medium text-gray-700 mb-1">
                                     <i class="fas fa-user mr-1 text-gray-400"></i>Nama Lengkap
                                 </label>
-                                <input type="text" id="fullName" value="Ahmad Rizki" 
-                                       class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none">
+                                <input type="text" id="fullName" value="" 
+                                       class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none text-sm">
                             </div>
                             
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">
                                     <i class="fas fa-phone mr-1 text-gray-400"></i>Nomor Telepon
                                 </label>
-                                <input type="tel" id="phone" value="0812-3456-7890" 
-                                       class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none">
+                                <input type="tel" id="phone" value="" 
+                                       class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none text-sm">
                             </div>
                             
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">
                                     <i class="fas fa-calendar mr-1 text-gray-400"></i>Tempat Lahir
                                 </label>
-                                <input type="text" id="birthPlace" value="Jakarta" 
-                                       class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none">
+                                <input type="text" id="birthPlace" value="" 
+                                       class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none text-sm">
                             </div>
                             
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">
                                     <i class="fas fa-calendar-alt mr-1 text-gray-400"></i>Tanggal Lahir
                                 </label>
-                                <input type="date" id="birthDate" value="2000-01-01" 
-                                       class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none">
+                                <input type="date" id="birthDate" value="" 
+                                       class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none text-sm">
                             </div>
                             
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">
                                     <i class="fas fa-venus-mars mr-1 text-gray-400"></i>Jenis Kelamin
                                 </label>
-                                <select id="gender" class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none">
+                                <select id="gender" class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none text-sm">
                                     <option value="L">Laki-laki</option>
                                     <option value="P">Perempuan</option>
                                 </select>
@@ -404,7 +546,7 @@
                                 <label class="block text-sm font-medium text-gray-700 mb-1">
                                     <i class="fas fa-tint mr-1 text-gray-400"></i>Golongan Darah
                                 </label>
-                                <select id="bloodType" class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none">
+                                <select id="bloodType" class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none text-sm">
                                     <option value="A">A</option>
                                     <option value="B">B</option>
                                     <option value="AB">AB</option>
@@ -416,7 +558,7 @@
                                 <label class="block text-sm font-medium text-gray-700 mb-1">
                                     <i class="fas fa-flag mr-1 text-gray-400"></i>Agama
                                 </label>
-                                <select id="religion" class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none">
+                                <select id="religion" class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none text-sm">
                                     <option value="Islam">Islam</option>
                                     <option value="Kristen">Kristen</option>
                                     <option value="Katolik">Katolik</option>
@@ -431,7 +573,7 @@
                                     <i class="fas fa-map-marker-alt mr-1 text-gray-400"></i>Alamat Lengkap
                                 </label>
                                 <textarea id="address" rows="2" 
-                                          class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none">Jl. Contoh No. 123, Bandung</textarea>
+                                          class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none text-sm"></textarea>
                             </div>
 
                             <div class="md:col-span-2">
@@ -439,11 +581,11 @@
                                     <i class="fas fa-university mr-1 text-gray-400"></i>Alamat Sesuai KTP
                                 </label>
                                 <textarea id="ktpAddress" rows="2" 
-                                          class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none">Jl. Contoh No. 123, Bandung</textarea>
+                                          class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none text-sm"></textarea>
                             </div>
                             
                             <div class="md:col-span-2">
-                                <button type="submit" class="bg-gradient-to-r from-purple-500 to-pink-600 text-white font-bold py-2 px-6 rounded-lg hover:shadow-lg transition-all duration-300">
+                                <button type="submit" class="bg-gradient-to-r from-purple-500 to-pink-600 text-white font-bold py-2 px-6 rounded-lg hover:shadow-lg transition-all duration-300 text-sm">
                                     <i class="fas fa-save mr-2"></i>Simpan Perubahan
                                 </button>
                             </div>
@@ -451,9 +593,9 @@
                     </div>
 
                     <!-- Application History -->
-                    <div class="bg-white rounded-xl shadow-lg p-6" data-aos="fade-left" data-aos-delay="100">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-xl font-bold text-gray-800 flex items-center">
+                    <div class="bg-white rounded-xl shadow-lg p-5 md:p-6" data-aos="fade-left" data-aos-delay="100">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4">
+                            <h3 class="text-lg md:text-xl font-bold text-gray-800 flex items-center">
                                 <i class="fas fa-history mr-2 text-purple-500"></i>
                                 Riwayat Pendaftaran
                             </h3>
@@ -471,71 +613,41 @@
                             <table class="min-w-full">
                                 <thead class="bg-gray-50">
                                     <tr>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Program</th>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Daftar</th>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                                        <th class="px-3 md:px-4 py-2 md:py-3 text-left text-xs font-medium text-gray-500 uppercase">Program</th>
+                                        <th class="px-3 md:px-4 py-2 md:py-3 text-left text-xs font-medium text-gray-500 uppercase">Tanggal Daftar</th>
+                                        <th class="px-3 md:px-4 py-2 md:py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                        <th class="px-3 md:px-4 py-2 md:py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody id="historyTable" class="bg-white divide-y divide-gray-200">
-                                    <!-- History items will be loaded here -->
-                                    <tr>
-                                        <td colspan="4" class="px-4 py-6 text-center text-gray-500">
-                                            <i class="fas fa-spinner fa-spin mr-2"></i>Memuat data...
-                                        </td>
-                                    </tr>
+                                    <tr><td colspan="4" class="px-4 py-6 text-center text-gray-500"><i class="fas fa-spinner fa-spin mr-2"></i>Memuat data...</td></tr>
                                 </tbody>
                             </table>
                         </div>
 
                         <!-- Pagination -->
                         <div class="flex justify-between items-center mt-4">
-                            <button onclick="loadPreviousPage()" class="text-sm text-gray-600 hover:text-purple-600">
+                            <button onclick="loadPreviousPage()" class="text-xs md:text-sm text-gray-600 hover:text-purple-600">
                                 <i class="fas fa-chevron-left mr-1"></i>Sebelumnya
                             </button>
-                            <span class="text-sm text-gray-600" id="pageInfo">Halaman 1 dari 1</span>
-                            <button onclick="loadNextPage()" class="text-sm text-gray-600 hover:text-purple-600">
+                            <span class="text-xs md:text-sm text-gray-600" id="pageInfo">Halaman 1 dari 1</span>
+                            <button onclick="loadNextPage()" class="text-xs md:text-sm text-gray-600 hover:text-purple-600">
                                 Selanjutnya<i class="fas fa-chevron-right ml-1"></i>
                             </button>
                         </div>
                     </div>
 
                     <!-- Documents -->
-                    <div class="bg-white rounded-xl shadow-lg p-6" data-aos="fade-left" data-aos-delay="200">
-                        <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                    <div class="bg-white rounded-xl shadow-lg p-5 md:p-6" data-aos="fade-left" data-aos-delay="200">
+                        <h3 class="text-lg md:text-xl font-bold text-gray-800 mb-4 flex items-center">
                             <i class="fas fa-folder-open mr-2 text-purple-500"></i>
                             Dokumen Saya
                         </h3>
                         
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center">
-                                        <i class="fas fa-id-card text-2xl text-blue-500 mr-3"></i>
-                                        <div>
-                                            <p class="font-medium text-gray-800">Kartu Tanda Mahasiswa</p>
-                                            <p class="text-xs text-gray-500">Diperbarui: 15 Jan 2024</p>
-                                        </div>
-                                    </div>
-                                    <button onclick="viewDocument('ktm')" class="text-blue-600 hover:text-blue-800">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            
-                            <div class="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center">
-                                        <i class="fas fa-file-pdf text-2xl text-red-500 mr-3"></i>
-                                        <div>
-                                            <p class="font-medium text-gray-800">Transkrip Nilai</p>
-                                            <p class="text-xs text-gray-500">Diperbarui: 10 Des 2023</p>
-                                        </div>
-                                    </div>
-                                    <button onclick="viewDocument('transkrip')" class="text-blue-600 hover:text-blue-800">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="documentsContainer">
+                            <div class="col-span-2 text-center py-8 text-gray-500">
+                                <i class="fas fa-spinner fa-spin text-2xl"></i>
+                                <p class="mt-2">Memuat dokumen...</p>
                             </div>
                         </div>
                     </div>
@@ -583,9 +695,7 @@
         </div>
     </div>
 
-    <!-- Scripts -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script src="../js/auth.js"></script>
  
     <script>
         // ===========================================
@@ -662,34 +772,6 @@ function checkAuth() {
     }
 }
 
-// Update user info in header
-function updateUserInfo() {
-    if (currentUser) {
-        document.getElementById('userNameDisplay').textContent = currentUser.nama_lengkap || 'Mahasiswa';
-        document.getElementById('userNimDisplay').textContent = currentUser.nim || '-';
-    }
-}
-
-// Logout function
-window.handleLogout = function() {
-    Swal.fire({
-        title: 'Konfirmasi Logout',
-        text: 'Apakah Anda yakin ingin logout?',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#EF4444',
-        cancelButtonColor: '#6B7280',
-        confirmButtonText: 'Ya, Logout',
-        cancelButtonText: 'Batal'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            window.location.href = '../login.html';
-        }
-    });
-};
-
 // ===========================================
 // LOAD DATA PROFIL DARI API
 // ===========================================
@@ -697,7 +779,6 @@ async function loadProfileData() {
     try {
         showLoading();
         
-        // Load profil
         const profileResponse = await fetch(`${API_BASE_URL}/mahasiswa/profil`, {
             method: 'GET',
             headers: getAuthHeaders()
@@ -712,13 +793,8 @@ async function loadProfileData() {
         if (profileResult.success) {
             userProfile = profileResult.data;
             
-            // Load statistik
             await loadStatistics();
-            
-            // Load riwayat pendaftaran
             await loadRiwayatPendaftaran();
-            
-            // Load dokumen
             await loadDocuments();
             
             updateProfileUI();
@@ -814,7 +890,6 @@ async function loadDocuments() {
 function updateProfileUI() {
     if (!userProfile) return;
 
-    // Update profile card
     document.getElementById('profileName').textContent = userProfile.nama_lengkap || '-';
     document.getElementById('profileNim').textContent = userProfile.nim || '-';
     document.getElementById('profileProdi').textContent = userProfile.nama_prodi || '-';
@@ -826,7 +901,6 @@ function updateProfileUI() {
         document.getElementById('profilePicture').src = userProfile.foto_profil;
     }
 
-    // Update form fields
     document.getElementById('fullName').value = userProfile.nama_lengkap || '';
     document.getElementById('phone').value = userProfile.no_hp || '';
     
@@ -848,74 +922,24 @@ function renderHistoryTable(pagination) {
     const table = document.getElementById('historyTable');
     
     if (applicationHistory.length === 0) {
-        table.innerHTML = `
-            <tr>
-                <td colspan="4" class="px-4 py-6 text-center text-gray-500">
-                    <i class="fas fa-inbox text-3xl mb-2 block"></i>
-                    Belum ada riwayat pendaftaran
-                </td>
-            </tr>
-        `;
+        table.innerHTML = `<tr><td colspan="4" class="px-4 py-6 text-center text-gray-500"><i class="fas fa-inbox text-2xl mb-2 block"></i>Belum ada riwayat pendaftaran</td></tr>`;
     } else {
         table.innerHTML = applicationHistory.map(item => {
             let statusClass = '';
             let statusText = '';
             
             switch(item.status) {
-                case 'diterima':
-                    statusClass = 'status-badge accepted';
-                    statusText = 'Diterima';
-                    break;
-                case 'menunggu':
-                case 'review':
-                    statusClass = 'status-badge pending';
-                    statusText = 'Dalam Proses';
-                    break;
-                case 'selesai':
-                    statusClass = 'status-badge completed';
-                    statusText = 'Selesai';
-                    break;
-                case 'ditolak':
-                    statusClass = 'status-badge rejected';
-                    statusText = 'Ditolak';
-                    break;
-                case 'revisi':
-                    statusClass = 'status-badge pending';
-                    statusText = 'Perlu Revisi';
-                    break;
-                default:
-                    statusClass = 'status-badge pending';
-                    statusText = item.status;
+                case 'diterima': statusClass = 'status-badge accepted'; statusText = 'Diterima'; break;
+                case 'menunggu': case 'review': statusClass = 'status-badge pending'; statusText = 'Dalam Proses'; break;
+                case 'selesai': statusClass = 'status-badge completed'; statusText = 'Selesai'; break;
+                case 'ditolak': statusClass = 'status-badge rejected'; statusText = 'Ditolak'; break;
+                case 'revisi': statusClass = 'status-badge pending'; statusText = 'Perlu Revisi'; break;
+                default: statusClass = 'status-badge pending'; statusText = item.status;
             }
 
-            const date = new Date(item.date).toLocaleDateString('id-ID', {
-                day: 'numeric',
-                month: 'short',
-                year: 'numeric'
-            });
+            const date = new Date(item.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
 
-            return `
-                <tr>
-                    <td class="px-4 py-3 whitespace-nowrap">
-                        <div class="flex items-center">
-                            <i class="fas fa-${
-                                item.type === 'magang' ? 'briefcase' :
-                                item.type === 'kkn' ? 'users' : 'calendar'
-                            } text-gray-400 mr-2"></i>
-                            <span class="text-sm font-medium text-gray-900">${item.program}</span>
-                        </div>
-                    </td>
-                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">${date}</td>
-                    <td class="px-4 py-3 whitespace-nowrap">
-                        <span class="${statusClass}">${statusText}</span>
-                    </td>
-                    <td class="px-4 py-3 whitespace-nowrap text-sm">
-                        <button onclick="viewApplicationDetail('${item.id_pendaftaran}')" class="text-blue-600 hover:text-blue-800">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </td>
-                </tr>
-            `;
+            return `<tr><td class="px-3 md:px-4 py-2 md:py-3 whitespace-nowrap"><div class="flex items-center"><i class="fas fa-${item.type === 'magang' ? 'briefcase' : item.type === 'kkn' ? 'users' : 'calendar'} text-gray-400 mr-2"></i><span class="text-xs md:text-sm font-medium text-gray-900">${item.program}</span></div></td><td class="px-3 md:px-4 py-2 md:py-3 whitespace-nowrap text-xs md:text-sm text-gray-500">${date}</td><td class="px-3 md:px-4 py-2 md:py-3 whitespace-nowrap"><span class="${statusClass}">${statusText}</span></td><td class="px-3 md:px-4 py-2 md:py-3 whitespace-nowrap text-xs md:text-sm"><button onclick="viewApplicationDetail('${item.id_pendaftaran}')" class="text-blue-600 hover:text-blue-800"><i class="fas fa-eye"></i></button></td></tr>`;
         }).join('');
     }
 
@@ -932,58 +956,16 @@ function renderDocuments() {
     if (!container) return;
 
     if (documents.length === 0) {
-        container.innerHTML = `
-            <div class="col-span-2 text-center py-8 text-gray-500">
-                <i class="fas fa-folder-open text-4xl mb-2"></i>
-                <p>Belum ada dokumen</p>
-            </div>
-        `;
+        container.innerHTML = `<div class="col-span-2 text-center py-8 text-gray-500"><i class="fas fa-folder-open text-4xl mb-2"></i><p>Belum ada dokumen</p></div>`;
         return;
     }
 
     container.innerHTML = documents.map(doc => {
-        const icon = doc.jenis_dokumen === 'ktm' ? 'id-card' : 
-                    doc.jenis_dokumen === 'transkrip' ? 'file-pdf' : 'file';
-        const color = doc.jenis_dokumen === 'ktm' ? 'text-blue-500' : 
-                     doc.jenis_dokumen === 'transkrip' ? 'text-red-500' : 'text-green-500';
+        const icon = doc.jenis_dokumen === 'ktm' ? 'id-card' : doc.jenis_dokumen === 'transkrip' ? 'file-pdf' : 'file';
+        const color = doc.jenis_dokumen === 'ktm' ? 'text-blue-500' : doc.jenis_dokumen === 'transkrip' ? 'text-red-500' : 'text-green-500';
+        const statusBadge = doc.status_verifikasi === 'diverifikasi' ? '<span class="ml-2 text-xs text-green-600">✓ Terverifikasi</span>' : doc.status_verifikasi === 'ditolak' ? '<span class="ml-2 text-xs text-red-600">✗ Ditolak</span>' : '<span class="ml-2 text-xs text-yellow-600">⏳ Menunggu</span>';
 
-        const statusBadge = doc.status_verifikasi === 'diverifikasi' ? 
-            '<span class="ml-2 text-xs text-green-600">✓ Terverifikasi</span>' :
-            doc.status_verifikasi === 'ditolak' ?
-            '<span class="ml-2 text-xs text-red-600">✗ Ditolak</span>' :
-            '<span class="ml-2 text-xs text-yellow-600">⏳ Menunggu</span>';
-
-        return `
-            <div class="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center">
-                        <i class="fas fa-${icon} text-2xl ${color} mr-3"></i>
-                        <div>
-                            <p class="font-medium text-gray-800">
-                                ${doc.nama_dokumen}
-                                ${statusBadge}
-                            </p>
-                            <p class="text-xs text-gray-500">
-                                Diupload: ${new Date(doc.uploaded_at).toLocaleDateString('id-ID')}
-                            </p>
-                        </div>
-                    </div>
-                    <div class="flex space-x-2">
-                        <button onclick="viewDocument('${doc.id_dokumen}')" class="text-blue-600 hover:text-blue-800">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <button onclick="deleteDocument('${doc.id_dokumen}')" class="text-red-600 hover:text-red-800">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </div>
-                ${doc.catatan_verifikasi ? `
-                    <div class="mt-2 text-xs text-red-600 bg-red-50 p-2 rounded">
-                        Catatan: ${doc.catatan_verifikasi}
-                    </div>
-                ` : ''}
-            </div>
-        `;
+        return `<div class="border rounded-lg p-3 md:p-4 hover:bg-gray-50 transition-colors"><div class="flex items-center justify-between"><div class="flex items-center"><i class="fas fa-${icon} text-xl md:text-2xl ${color} mr-3"></i><div><p class="font-medium text-gray-800 text-sm md:text-base">${doc.nama_dokumen} ${statusBadge}</p><p class="text-xs text-gray-500">Diupload: ${new Date(doc.uploaded_at).toLocaleDateString('id-ID')}</p></div></div><div class="flex space-x-2"><button onclick="viewDocument('${doc.id_dokumen}')" class="text-blue-600 hover:text-blue-800"><i class="fas fa-eye"></i></button><button onclick="deleteDocument('${doc.id_dokumen}')" class="text-red-600 hover:text-red-800"><i class="fas fa-trash"></i></button></div></div>${doc.catatan_verifikasi ? `<div class="mt-2 text-xs text-red-600 bg-red-50 p-2 rounded">Catatan: ${doc.catatan_verifikasi}</div>` : ''}</div>`;
     }).join('');
 }
 
@@ -1017,129 +999,47 @@ window.loadNextPage = function() {
 window.viewApplicationDetail = function(id) {
     const app = applicationHistory.find(a => a.id_pendaftaran === id);
     if (!app) return;
-
-    Swal.fire({
-        title: 'Detail Pendaftaran',
-        html: `
-            <div class="text-left">
-                <p><strong>Program:</strong> ${app.program}</p>
-                <p><strong>Tanggal Daftar:</strong> ${new Date(app.date).toLocaleDateString('id-ID')}</p>
-                <p><strong>Status:</strong> ${app.status}</p>
-                ${app.catatan ? `<p><strong>Catatan:</strong> ${app.catatan}</p>` : ''}
-                <p><strong>Lokasi:</strong> ${app.lokasi || '-'}</p>
-                <p><strong>Tanggal Mulai:</strong> ${new Date(app.tanggal_mulai).toLocaleDateString('id-ID')}</p>
-                <p><strong>Tanggal Selesai:</strong> ${new Date(app.tanggal_selesai).toLocaleDateString('id-ID')}</p>
-            </div>
-        `,
-        icon: 'info',
-        confirmButtonColor: '#8B5CF6'
-    });
+    Swal.fire({ title: 'Detail Pendaftaran', html: `<div class="text-left"><p><strong>Program:</strong> ${app.program}</p><p><strong>Tanggal Daftar:</strong> ${new Date(app.date).toLocaleDateString('id-ID')}</p><p><strong>Status:</strong> ${app.status}</p>${app.catatan ? `<p><strong>Catatan:</strong> ${app.catatan}</p>` : ''}<p><strong>Lokasi:</strong> ${app.lokasi || '-'}</p><p><strong>Tanggal Mulai:</strong> ${new Date(app.tanggal_mulai).toLocaleDateString('id-ID')}</p><p><strong>Tanggal Selesai:</strong> ${new Date(app.tanggal_selesai).toLocaleDateString('id-ID')}</p></div>`, icon: 'info', confirmButtonColor: '#8B5CF6' });
 };
 
 // ===========================================
 // CHANGE PROFILE PICTURE
 // ===========================================
-window.changeProfilePicture = function() {
-    document.getElementById('profilePicInput').click();
-};
+window.changeProfilePicture = function() { document.getElementById('profilePicInput').click(); };
 
 window.uploadProfilePicture = async function(input) {
     const file = input.files[0];
     if (!file) return;
-
-    if (file.size > 2 * 1024 * 1024) {
-        showNotification('Ukuran file maksimal 2MB', false);
-        return;
-    }
-
+    if (file.size > 2 * 1024 * 1024) { showNotification('Ukuran file maksimal 2MB', false); return; }
     const formData = new FormData();
     formData.append('foto', file);
-
     try {
         showLoading();
-
-        const response = await fetch(`${API_BASE_URL}/mahasiswa/profil/foto`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${getAuthToken()}`
-            },
-            body: formData
-        });
-
+        const response = await fetch(`${API_BASE_URL}/mahasiswa/profil/foto`, { method: 'POST', headers: { 'Authorization': `Bearer ${getAuthToken()}` }, body: formData });
         const result = await response.json();
-
-        if (result.success) {
-            document.getElementById('profilePicture').src = result.data.foto_profil;
-            showNotification('Foto profil berhasil diperbarui');
-        } else {
-            throw new Error(result.message);
-        }
-    } catch (error) {
-        console.error('Error uploading profile picture:', error);
-        showNotification(error.message || 'Gagal mengupload foto', false);
-    } finally {
-        hideLoading();
-    }
+        if (result.success) { document.getElementById('profilePicture').src = result.data.foto_profil; showNotification('Foto profil berhasil diperbarui'); }
+        else { throw new Error(result.message); }
+    } catch (error) { console.error('Error uploading profile picture:', error); showNotification(error.message || 'Gagal mengupload foto', false); } finally { hideLoading(); }
 };
 
 // ===========================================
 // CHANGE PASSWORD
 // ===========================================
-window.changePassword = function() {
-    document.getElementById('passwordModal').classList.remove('hidden');
-};
-
-window.closePasswordModal = function() {
-    document.getElementById('passwordModal').classList.add('hidden');
-    document.getElementById('passwordForm').reset();
-};
+window.changePassword = function() { document.getElementById('passwordModal').classList.remove('hidden'); };
+window.closePasswordModal = function() { document.getElementById('passwordModal').classList.add('hidden'); document.getElementById('passwordForm').reset(); };
 
 window.updatePassword = async function() {
-    const oldPass = document.getElementById('oldPassword').value;
-    const newPass = document.getElementById('newPassword').value;
-    const confirmPass = document.getElementById('confirmPassword').value;
-
-    if (!oldPass || !newPass || !confirmPass) {
-        showNotification('Semua field harus diisi', false);
-        return;
-    }
-
-    if (newPass.length < 8) {
-        showNotification('Password baru minimal 8 karakter', false);
-        return;
-    }
-
-    if (newPass !== confirmPass) {
-        showNotification('Konfirmasi password tidak cocok', false);
-        return;
-    }
-
+    const oldPass = document.getElementById('oldPassword').value, newPass = document.getElementById('newPassword').value, confirmPass = document.getElementById('confirmPassword').value;
+    if (!oldPass || !newPass || !confirmPass) { showNotification('Semua field harus diisi', false); return; }
+    if (newPass.length < 8) { showNotification('Password baru minimal 8 karakter', false); return; }
+    if (newPass !== confirmPass) { showNotification('Konfirmasi password tidak cocok', false); return; }
     try {
         showLoading();
-
-        const response = await fetch(`${API_BASE_URL}/mahasiswa/profil/ubah-password`, {
-            method: 'POST',
-            headers: getAuthHeaders(),
-            body: JSON.stringify({
-                oldPassword: oldPass,
-                newPassword: newPass
-            })
-        });
-
+        const response = await fetch(`${API_BASE_URL}/mahasiswa/profil/ubah-password`, { method: 'POST', headers: getAuthHeaders(), body: JSON.stringify({ oldPassword: oldPass, newPassword: newPass }) });
         const result = await response.json();
-
-        if (result.success) {
-            closePasswordModal();
-            showNotification('Password berhasil diperbarui');
-        } else {
-            throw new Error(result.message);
-        }
-    } catch (error) {
-        console.error('Error changing password:', error);
-        showNotification(error.message || 'Gagal mengubah password', false);
-    } finally {
-        hideLoading();
-    }
+        if (result.success) { closePasswordModal(); showNotification('Password berhasil diperbarui'); }
+        else { throw new Error(result.message); }
+    } catch (error) { console.error('Error changing password:', error); showNotification(error.message || 'Gagal mengubah password', false); } finally { hideLoading(); }
 };
 
 // ===========================================
@@ -1148,16 +1048,9 @@ window.updatePassword = async function() {
 window.downloadData = async function() {
     try {
         showLoading();
-
-        const response = await fetch(`${API_BASE_URL}/mahasiswa/profil/download-data`, {
-            method: 'GET',
-            headers: getAuthHeaders()
-        });
-
+        const response = await fetch(`${API_BASE_URL}/mahasiswa/profil/download-data`, { method: 'GET', headers: getAuthHeaders() });
         if (!response.ok) throw new Error('Gagal mengunduh data');
-
         const result = await response.json();
-
         if (result.success) {
             const blob = new Blob([JSON.stringify(result.data, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
@@ -1166,107 +1059,26 @@ window.downloadData = async function() {
             a.download = `data-pribadi-${currentUser.nim}.json`;
             a.click();
             URL.revokeObjectURL(url);
-            
             showNotification('Data berhasil diunduh');
-        } else {
-            throw new Error(result.message);
-        }
-    } catch (error) {
-        console.error('Error downloading data:', error);
-        showNotification(error.message || 'Gagal mengunduh data', false);
-    } finally {
-        hideLoading();
-    }
+        } else { throw new Error(result.message); }
+    } catch (error) { console.error('Error downloading data:', error); showNotification(error.message || 'Gagal mengunduh data', false); } finally { hideLoading(); }
 };
 
 // ===========================================
-// VIEW DOCUMENT
+// VIEW & DELETE DOCUMENT
 // ===========================================
-window.viewDocument = function(docId) {
-    const doc = documents.find(d => d.id_dokumen === docId);
-    if (doc && doc.file_path) {
-        window.open(doc.file_path, '_blank');
-    } else {
-        showNotification('Dokumen tidak ditemukan', false);
-    }
-};
+window.viewDocument = function(docId) { const doc = documents.find(d => d.id_dokumen === docId); if (doc && doc.file_path) { window.open(doc.file_path, '_blank'); } else { showNotification('Dokumen tidak ditemukan', false); } };
 
-// ===========================================
-// DELETE DOCUMENT
-// ===========================================
 window.deleteDocument = async function(docId) {
-    const result = await Swal.fire({
-        title: 'Konfirmasi Hapus',
-        text: 'Apakah Anda yakin ingin menghapus dokumen ini?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#EF4444',
-        cancelButtonColor: '#6B7280',
-        confirmButtonText: 'Ya, Hapus',
-        cancelButtonText: 'Batal'
-    });
-
+    const result = await Swal.fire({ title: 'Konfirmasi Hapus', text: 'Apakah Anda yakin ingin menghapus dokumen ini?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#EF4444', cancelButtonColor: '#6B7280', confirmButtonText: 'Ya, Hapus', cancelButtonText: 'Batal' });
     if (!result.isConfirmed) return;
-
     try {
         showLoading();
-
-        const response = await fetch(`${API_BASE_URL}/mahasiswa/profil/dokumen/${docId}`, {
-            method: 'DELETE',
-            headers: getAuthHeaders()
-        });
-
+        const response = await fetch(`${API_BASE_URL}/mahasiswa/profil/dokumen/${docId}`, { method: 'DELETE', headers: getAuthHeaders() });
         const data = await response.json();
-
-        if (data.success) {
-            await loadDocuments();
-            showNotification('Dokumen berhasil dihapus');
-        } else {
-            throw new Error(data.message);
-        }
-    } catch (error) {
-        console.error('Error deleting document:', error);
-        showNotification(error.message || 'Gagal menghapus dokumen', false);
-    } finally {
-        hideLoading();
-    }
-};
-
-// ===========================================
-// UPLOAD DOCUMENT
-// ===========================================
-window.uploadDocument = async function(jenisDokumen, file) {
-    if (!file) return;
-
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('jenis_dokumen', jenisDokumen);
-
-    try {
-        showLoading();
-
-        const response = await fetch(`${API_BASE_URL}/mahasiswa/profil/dokumen`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${getAuthToken()}`
-            },
-            body: formData
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-            await loadDocuments();
-            showNotification('Dokumen berhasil diupload');
-        } else {
-            throw new Error(result.message);
-        }
-    } catch (error) {
-        console.error('Error uploading document:', error);
-        showNotification(error.message || 'Gagal mengupload dokumen', false);
-    } finally {
-        hideLoading();
-    }
+        if (data.success) { await loadDocuments(); showNotification('Dokumen berhasil dihapus'); }
+        else { throw new Error(data.message); }
+    } catch (error) { console.error('Error deleting document:', error); showNotification(error.message || 'Gagal menghapus dokumen', false); } finally { hideLoading(); }
 };
 
 // ===========================================
@@ -1274,172 +1086,89 @@ window.uploadDocument = async function(jenisDokumen, file) {
 // ===========================================
 document.getElementById('profileForm')?.addEventListener('submit', async function(e) {
     e.preventDefault();
-
-    const updatedData = {
-        nama_lengkap: document.getElementById('fullName').value,
-        no_hp: document.getElementById('phone').value,
-        tempat_lahir: document.getElementById('birthPlace').value,
-        tanggal_lahir: document.getElementById('birthDate').value,
-        jenis_kelamin: document.getElementById('gender').value,
-        golongan_darah: document.getElementById('bloodType').value,
-        agama: document.getElementById('religion').value,
-        alamat: document.getElementById('address').value,
-        alamat_ktp: document.getElementById('ktpAddress').value
-    };
-
+    const updatedData = { nama_lengkap: document.getElementById('fullName').value, no_hp: document.getElementById('phone').value, tempat_lahir: document.getElementById('birthPlace').value, tanggal_lahir: document.getElementById('birthDate').value, jenis_kelamin: document.getElementById('gender').value, golongan_darah: document.getElementById('bloodType').value, agama: document.getElementById('religion').value, alamat: document.getElementById('address').value, alamat_ktp: document.getElementById('ktpAddress').value };
     try {
         showLoading();
-
-        const response = await fetch(`${API_BASE_URL}/mahasiswa/profil`, {
-            method: 'PUT',
-            headers: getAuthHeaders(),
-            body: JSON.stringify(updatedData)
-        });
-
+        const response = await fetch(`${API_BASE_URL}/mahasiswa/profil`, { method: 'PUT', headers: getAuthHeaders(), body: JSON.stringify(updatedData) });
         const result = await response.json();
-
-        if (result.success) {
-            userProfile = result.data;
-            updateProfileUI();
-            showNotification('Profil berhasil diperbarui');
-        } else {
-            throw new Error(result.message);
-        }
-    } catch (error) {
-        console.error('Error updating profile:', error);
-        showNotification(error.message || 'Gagal memperbarui profil', false);
-    } finally {
-        hideLoading();
-    }
+        if (result.success) { userProfile = result.data; updateProfileUI(); showNotification('Profil berhasil diperbarui'); }
+        else { throw new Error(result.message); }
+    } catch (error) { console.error('Error updating profile:', error); showNotification(error.message || 'Gagal memperbarui profil', false); } finally { hideLoading(); }
 });
+
+window.handleLogout = function() {
+    Swal.fire({ title: 'Konfirmasi Logout', text: 'Apakah Anda yakin ingin logout?', icon: 'question', showCancelButton: true, confirmButtonColor: '#EF4444', cancelButtonColor: '#6B7280', confirmButtonText: 'Ya, Logout', cancelButtonText: 'Batal' }).then((result) => { if (result.isConfirmed) { localStorage.removeItem('token'); localStorage.removeItem('user'); window.location.href = '../login.html'; } });
+};
+
+window.onclick = function(event) { const modal = document.getElementById('passwordModal'); if (event.target === modal) { closePasswordModal(); } };
+
+// ===========================================
+// NAVBAR FUNCTIONS
+// ===========================================
+async function updateNavbarUserInfo() {
+    try {
+        const token = getAuthToken();
+        if (!token) return;
+        const response = await fetch(`${API_BASE_URL}/mahasiswa/profil/basic`, { headers: { 'Authorization': `Bearer ${token}` } });
+        if (response.ok) {
+            const result = await response.json();
+            const profile = result.data;
+            if (profile) {
+                const avatarUrl = profile.foto_profil ? `/${profile.foto_profil}` : `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.nama_lengkap || 'Mahasiswa')}&background=3B82F6&color=fff&bold=true`;
+                document.getElementById('navAvatar').src = avatarUrl;
+                document.getElementById('dropdownAvatar').src = avatarUrl;
+                document.getElementById('mobileNavAvatar').src = avatarUrl;
+                document.getElementById('navUserName').textContent = profile.nama_lengkap || 'Mahasiswa';
+                document.getElementById('dropdownUserName').textContent = profile.nama_lengkap || 'Mahasiswa';
+                document.getElementById('mobileNavUserName').textContent = profile.nama_lengkap || 'Mahasiswa';
+                document.getElementById('dropdownUserNim').textContent = profile.nim ? `NIM: ${profile.nim}` : '-';
+            }
+        }
+    } catch (error) { console.error('Error loading profile for navbar:', error); }
+}
+
+function initDropdown() {
+    const userMenuBtn = document.getElementById('userMenuBtn');
+    const userDropdown = document.getElementById('userDropdown');
+    if (userMenuBtn && userDropdown) {
+        userMenuBtn.addEventListener('click', function(e) { e.stopPropagation(); userDropdown.classList.toggle('hidden'); });
+        document.addEventListener('click', function(e) { if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) userDropdown.classList.add('hidden'); });
+    }
+}
+
+function initMobileNav() {
+    const hamburger = document.getElementById('hamburgerBtn');
+    const mobileNav = document.getElementById('mobileNav');
+    const closeBtn = document.getElementById('closeMobileNav');
+    if (hamburger && mobileNav) {
+        hamburger.addEventListener('click', () => mobileNav.classList.add('active'));
+        closeBtn.addEventListener('click', () => mobileNav.classList.remove('active'));
+        mobileNav.addEventListener('click', (e) => { if (e.target === mobileNav) mobileNav.classList.remove('active'); });
+        document.querySelectorAll('.mobile-nav-link').forEach(link => { link.addEventListener('click', () => mobileNav.classList.remove('active')); });
+    }
+}
+
+function setActiveNavLink() {
+    const currentPage = window.location.pathname.split('/').pop();
+    const navLinks = document.querySelectorAll('.nav-link-modern');
+    navLinks.forEach(link => {
+        const href = link.getAttribute('href');
+        if (href === currentPage) link.classList.add('active');
+        else link.classList.remove('active');
+    });
+}
 
 // ===========================================
 // INITIALIZE PAGE
 // ===========================================
 document.addEventListener('DOMContentLoaded', async function() {
-    // Initialize AOS
     AOS.init({ duration: 800, once: true });
-
-    // Check authentication
-    const user = checkAuth();
-    if (!user) return;
-
-    // Update user info in header
-    updateUserInfo();
-
-    // Load profile data
-    await loadProfileData();
-});
-
-// ===========================================
-// CLOSE MODAL WHEN CLICKING OUTSIDE
-// ===========================================
-window.onclick = function(event) {
-    const modal = document.getElementById('passwordModal');
-    if (event.target === modal) {
-        closePasswordModal();
-    }
-};
-
-// Tambahkan fungsi-fungsi berikut di dalam tag <script> (setelah fungsi yang sudah ada)
-
-// Fungsi untuk update navbar user info
-async function updateNavbarUserInfo() {
-    try {
-        const token = getAuthToken();
-        if (!token) return;
-        
-        const response = await fetch(`${API_BASE_URL}/mahasiswa/profil/basic`, {
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
-        
-        if (response.ok) {
-            const result = await response.json();
-            const profile = result.data;
-            
-            if (profile) {
-                const avatarUrl = profile.foto_profil ? `/${profile.foto_profil}` : `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.nama_lengkap || 'Mahasiswa')}&background=3B82F6&color=fff&bold=true`;
-                const navAvatar = document.getElementById('navAvatar');
-                const dropdownAvatar = document.getElementById('dropdownAvatar');
-                const navUserName = document.getElementById('navUserName');
-                const dropdownUserName = document.getElementById('dropdownUserName');
-                const dropdownUserNim = document.getElementById('dropdownUserNim');
-                
-                if (navAvatar) navAvatar.src = avatarUrl;
-                if (dropdownAvatar) dropdownAvatar.src = avatarUrl;
-                if (navUserName) navUserName.textContent = profile.nama_lengkap || 'Mahasiswa';
-                if (dropdownUserName) dropdownUserName.textContent = profile.nama_lengkap || 'Mahasiswa';
-                if (dropdownUserNim) dropdownUserNim.textContent = profile.nim ? `NIM: ${profile.nim}` : '-';
-            }
-        }
-    } catch (error) {
-        console.error('Error loading profile for navbar:', error);
-    }
-}
-
-// Fungsi untuk inisialisasi dropdown
-function initDropdown() {
-    const userMenuBtn = document.getElementById('userMenuBtn');
-    const userDropdown = document.getElementById('userDropdown');
-    
-    if (userMenuBtn && userDropdown) {
-        userMenuBtn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            userDropdown.classList.toggle('hidden');
-        });
-        
-        document.addEventListener('click', function(e) {
-            if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) {
-                userDropdown.classList.add('hidden');
-            }
-        });
-    }
-}
-
-// Fungsi untuk set active nav link
-function setActiveNavLink() {
-    const currentPage = window.location.pathname.split('/').pop();
-    const navLinks = document.querySelectorAll('.nav-link-modern');
-    
-    navLinks.forEach(link => {
-        const href = link.getAttribute('href');
-        if (href === currentPage) {
-            link.classList.add('active');
-        } else {
-            link.classList.remove('active');
-        }
-    });
-}
-
-// Update fungsi updateUserInfo yang sudah ada
-function updateUserInfo() {
-    if (currentUser) {
-        const userNameDisplay = document.getElementById('userNameDisplay');
-        const userNimDisplay = document.getElementById('userNimDisplay');
-        
-        if (userNameDisplay) userNameDisplay.textContent = currentUser.nama_lengkap || 'Mahasiswa';
-        if (userNimDisplay) userNimDisplay.textContent = currentUser.nim || '-';
-    }
-}
-
-// Update DOMContentLoaded
-document.addEventListener('DOMContentLoaded', async function() {
-    // Initialize AOS
-    AOS.init({ duration: 800, once: true });
-
-    // Initialize navbar components
     initDropdown();
+    initMobileNav();
     setActiveNavLink();
-
-    // Check authentication
     const user = checkAuth();
     if (!user) return;
-
-    // Update user info in header
-    updateUserInfo();
     await updateNavbarUserInfo();
-
-    // Load profile data
     await loadProfileData();
 });
     </script>

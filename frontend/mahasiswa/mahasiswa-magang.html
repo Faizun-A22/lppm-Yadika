@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <title>Program Magang - Portal Mahasiswa LPPM ITB Yadika</title>
     
     <!-- CSS External Libraries -->
@@ -22,53 +22,140 @@
             background-clip: text; 
         }
 
-.nav-link-modern {
-    position: relative;
-    transition: all 0.2s ease;
-}
+        /* Navbar Styles - SAMA PERSIS DENGAN DASHBOARD */
+        .navbar-custom {
+            background: linear-gradient(135deg, #1E3A5F 0%, #2D4A6E 50%, #1E3A5F 100%);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
 
-.nav-link-modern.active {
-    background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
-    color: white !important;
-}
+        .nav-link-modern {
+            position: relative;
+            transition: all 0.2s ease;
+            color: rgba(255, 255, 255, 0.8);
+        }
 
-.nav-link-modern.active i {
-    color: white !important;
-}
+        .nav-link-modern:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.15);
+        }
 
-.nav-link-modern:not(.active):hover {
-    transform: translateY(-1px);
-}
+        .nav-link-modern.active {
+            background: rgba(255, 255, 255, 0.25);
+            color: white !important;
+        }
 
-/* Dropdown Animation */
-#userDropdown {
-    transform-origin: top right;
-    animation: dropdownFade 0.2s ease;
-}
+        .nav-link-modern.active i {
+            color: white !important;
+        }
 
-@keyframes dropdownFade {
-    from {
-        opacity: 0;
-        transform: scale(0.95) translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-    }
-}
+        .nav-link-modern.active::before {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 2px;
+            background: white;
+            border-radius: 2px;
+        }
 
-/* Active link indicator */
-.nav-link-modern.active::before {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 20px;
-    height: 2px;
-    background: white;
-    border-radius: 2px;
-}
+        /* Brand text color */
+        .brand-title {
+            color: white;
+        }
+
+        .brand-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Icon buttons */
+        .icon-btn {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .icon-btn:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .user-name {
+            color: white;
+        }
+
+        .user-role {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Dropdown Animation */
+        #userDropdown {
+            transform-origin: top right;
+            animation: dropdownFade 0.2s ease;
+        }
+
+        @keyframes dropdownFade {
+            from { opacity: 0; transform: scale(0.95) translateY(-10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* Mobile Navigation */
+        .mobile-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-nav.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .mobile-nav-container {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 280px;
+            height: 100%;
+            background: white;
+            transform: translateX(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mobile-nav.active .mobile-nav-container {
+            transform: translateX(0);
+        }
+
+        .mobile-nav-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #1E3A5F, #2D4A6E);
+            color: white;
+        }
+
+        .mobile-nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            color: #4B5563;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .mobile-nav-link.active {
+            background: #EFF6FF;
+            color: #3B82F6;
+            border-left-color: #3B82F6;
+        }
 
         .loading-spinner {
             border: 3px solid #f3f3f3;
@@ -172,25 +259,18 @@
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
 
-        /* Tambahkan di bagian style yang sudah ada */
-.fakultas-group {
-    transition: all 0.3s ease;
-}
+        /* Fakultas Select */
+        .fakultas-group {
+            transition: all 0.3s ease;
+        }
 
-.fakultas-select {
-    cursor: pointer;
-}
+        .fakultas-select {
+            cursor: pointer;
+        }
 
-.prodi-select {
-    background-color: white;
-}
-
-.select-loading {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>');
-    background-repeat: no-repeat;
-    background-position: right 1rem center;
-    background-size: 1rem;
-}
+        .prodi-select {
+            background-color: white;
+        }
         
         /* File Upload Area */
         .file-upload-area {
@@ -272,122 +352,177 @@
 </head>
 <body class="bg-gray-50 font-sans antialiased">
     <!-- ========== LOADING OVERLAY ========== -->
-    <div id="loadingOverlay" class="fixed inset-0 bg-white bg-opacity-90 z-50 flex items-center justify-center hidden">
-        <div class="text-center">
+    <div id="loadingOverlay" class="fixed inset-0 bg-white/80 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+        <div class="text-center bg-white p-6 rounded-2xl shadow-xl">
             <div class="loading-spinner"></div>
-            <p class="mt-4 text-gray-600">Memuat data...</p>
+            <p class="mt-4 text-gray-600 font-medium">Memuat data...</p>
         </div>
     </div>
 
-    <!-- Ganti bagian <header> sampai </header> dengan kode di bawah ini -->
-
-<header class="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-md shadow-sm z-50 border-b border-gray-100">
-    <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
-        <!-- Logo and Brand -->
-        <a href="mahasiswa-dashboard.html" class="flex items-center space-x-3 group">
-            <div class="relative">
-                <img src="yadika.png" alt="Logo LPPM ITB Yadika" class="h-10 w-10 rounded-xl shadow-sm transition-transform group-hover:scale-105">
-                <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl opacity-0 group-hover:opacity-20 transition"></div>
-            </div>
-            <div>
-                <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                    Portal Mahasiswa
-                </h1>
-                <p class="text-xs text-gray-400">LPPM ITB Yadika</p>
-            </div>
-        </a>
-        
-        <!-- Desktop Navigation Menu -->
-        <div class="hidden md:flex items-center space-x-1">
-            <a href="mahasiswa-dashboard.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
-                <i class="fas fa-home text-gray-400 group-hover:text-blue-500 transition"></i>
-                <span>Dashboard</span>
-            </a>
-            <a href="mahasiswa-berita.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
-                <i class="fas fa-newspaper text-gray-400 group-hover:text-blue-500 transition"></i>
-                <span>Berita</span>
-            </a>
-            <a href="mahasiswa-repository.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
-                <i class="fas fa-book text-gray-400 group-hover:text-blue-500 transition"></i>
-                <span>Repository</span>
-            </a>
-            <a href="mahasiswa-magang.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2 active">
-                <i class="fas fa-briefcase text-gray-400 group-hover:text-blue-500 transition"></i>
-                <span>Magang</span>
-            </a>
-            <a href="mahasiswa-profil.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
-                <i class="fas fa-user-circle text-gray-400 group-hover:text-blue-500 transition"></i>
-                <span>Profil Saya</span>
-            </a>
-        </div>
-        
-        <!-- User Info & Actions -->
-        <div class="flex items-center gap-4">
-            <!-- Notifications Dropdown -->
-            <div class="relative">
-                <button id="notificationBtn" class="relative p-2 rounded-lg text-gray-500 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200">
-                    <i class="fas fa-bell text-lg"></i>
-                    <span id="notificationBadge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full hidden"></span>
-                </button>
-            </div>
-            
-            <!-- User Profile Dropdown -->
-            <div class="relative">
-                <button id="userMenuBtn" class="flex items-center gap-3 p-1.5 rounded-xl hover:bg-gray-50 transition-all duration-200 border border-transparent hover:border-gray-200">
-                    <div class="relative">
-                        <img id="navAvatar" src="" alt="Avatar" class="w-9 h-9 rounded-full object-cover ring-2 ring-gray-200">
-                        <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full ring-2 ring-white"></div>
+    <!-- Mobile Navigation -->
+    <div id="mobileNav" class="mobile-nav">
+        <div class="mobile-nav-container">
+            <div class="mobile-nav-header">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                        <img src="yadika.png" alt="Logo" class="h-8 w-8 rounded-lg bg-white p-1">
+                        <span class="font-bold text-sm">LPPM ITB Yadika</span>
                     </div>
-                    <div class="hidden md:block text-left">
-                        <p class="text-sm font-semibold text-gray-800" id="navUserName">Loading...</p>
-                        <p class="text-xs text-gray-400" id="navUserRole">Mahasiswa</p>
-                    </div>
-                    <i class="fas fa-chevron-down text-xs text-gray-400 hidden md:block"></i>
-                </button>
-                
-                <!-- Dropdown Menu -->
-                <div id="userDropdown" class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hidden transition-all duration-200 z-50">
-                    <!-- Header with user info -->
-                    <div class="p-3 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-purple-50">
-                        <div class="flex items-center gap-3">
-                            <img id="dropdownAvatar" src="" alt="Avatar" class="w-10 h-10 rounded-full object-cover">
-                            <div>
-                                <p class="font-semibold text-gray-800 text-sm" id="dropdownUserName">Loading...</p>
-                                <p class="text-xs text-gray-500" id="dropdownUserNim">-</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Menu Items -->
-                    <div class="p-2">
-                        <a href="mahasiswa-profil.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
-                            <i class="fas fa-user-cog w-5 text-gray-400"></i>
-                            <span>Pengaturan Akun</span>
-                        </a>
-                        <a href="mahasiswa-ubah-password.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
-                            <i class="fas fa-key w-5 text-gray-400"></i>
-                            <span>Ubah Password</span>
-                        </a>
-                        <div class="border-t border-gray-100 my-2"></div>
-                        <button onclick="handleLogout()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-600 hover:bg-red-50 transition text-sm">
-                            <i class="fas fa-sign-out-alt w-5 text-red-400"></i>
-                            <span>Logout</span>
-                        </button>
+                    <button id="closeMobileNav" class="text-white">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <div class="flex items-center gap-3 mt-4 pt-2 border-t border-white/20">
+                    <img id="mobileNavAvatar" src="" alt="Avatar" class="w-10 h-10 rounded-full object-cover ring-2 ring-white/50">
+                    <div>
+                        <p class="font-semibold text-sm" id="mobileNavUserName">Loading...</p>
+                        <p class="text-xs opacity-80">Mahasiswa</p>
                     </div>
                 </div>
             </div>
+            <div class="flex-1 overflow-y-auto py-4">
+                <a href="mahasiswa-dashboard.html" class="mobile-nav-link">
+                    <i class="fas fa-home w-5"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="mahasiswa-berita.html" class="mobile-nav-link">
+                    <i class="fas fa-newspaper w-5"></i>
+                    <span>Berita</span>
+                </a>
+                <a href="mahasiswa-repository.html" class="mobile-nav-link">
+                    <i class="fas fa-book w-5"></i>
+                    <span>Repository</span>
+                </a>
+                <a href="mahasiswa-magang.html" class="mobile-nav-link active">
+                    <i class="fas fa-briefcase w-5"></i>
+                    <span>Magang</span>
+                </a>
+                <a href="mahasiswa-profil.html" class="mobile-nav-link">
+                    <i class="fas fa-user-circle w-5"></i>
+                    <span>Profil Saya</span>
+                </a>
+                <div class="border-t border-gray-100 my-4 mx-4"></div>
+                <a href="mahasiswa-ubah-password.html" class="mobile-nav-link">
+                    <i class="fas fa-key w-5"></i>
+                    <span>Ubah Password</span>
+                </a>
+                <button onclick="handleLogout()" class="mobile-nav-link w-full text-left text-red-600">
+                    <i class="fas fa-sign-out-alt w-5"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
         </div>
-    </nav>
-</header>
+    </div>
+
+    <!-- Navbar - SAMA PERSIS DENGAN DASHBOARD -->
+    <header class="fixed top-0 left-0 right-0 navbar-custom z-50">
+        <nav class="container mx-auto px-4 md:px-6 py-3 md:py-4 flex justify-between items-center">
+            <!-- Logo and Brand -->
+            <a href="mahasiswa-dashboard.html" class="flex items-center space-x-3 group">
+                <div class="relative">
+                    <img src="yadika.png" alt="Logo LPPM ITB Yadika" class="h-9 w-9 md:h-10 md:w-10 rounded-lg shadow-sm transition-transform group-hover:scale-105 bg-white p-1">
+                    <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-400 to-purple-400 rounded-lg opacity-0 group-hover:opacity-30 transition"></div>
+                </div>
+                <div>
+                    <h1 class="brand-title text-base md:text-lg font-bold tracking-wide">
+                        LPPM ITB Yadika
+                    </h1>
+                    <p class="brand-subtitle text-xs md:text-sm -mt-0.5">Portal Mahasiswa</p>
+                </div>
+            </a>
+            
+            <!-- Desktop Navigation Menu -->
+            <div class="hidden md:flex items-center space-x-1">
+                <a href="mahasiswa-dashboard.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-home text-sm"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="mahasiswa-berita.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-newspaper text-sm"></i>
+                    <span>Berita</span>
+                </a>
+                <a href="mahasiswa-repository.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-book text-sm"></i>
+                    <span>Repository</span>
+                </a>
+                <a href="mahasiswa-magang.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2 active">
+                    <i class="fas fa-briefcase text-sm"></i>
+                    <span>Magang</span>
+                </a>
+                <a href="mahasiswa-profil.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-user-circle text-sm"></i>
+                    <span>Profil Saya</span>
+                </a>
+            </div>
+            
+            <!-- User Info & Actions -->
+            <div class="flex items-center gap-2 md:gap-3">
+                <!-- Notifications -->
+                <div class="relative">
+                    <button id="notificationBtn" class="icon-btn relative p-2 rounded-lg transition-all duration-200">
+                        <i class="fas fa-bell text-base md:text-lg"></i>
+                        <span id="notificationBadge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full hidden"></span>
+                    </button>
+                </div>
+                
+                <!-- User Profile Dropdown Desktop -->
+                <div class="relative hidden md:block">
+                    <button id="userMenuBtn" class="flex items-center gap-2 p-1.5 rounded-xl hover:bg-white/10 transition-all duration-200">
+                        <div class="relative">
+                            <img id="navAvatar" src="" alt="Avatar" class="w-8 h-8 rounded-full object-cover ring-2 ring-white/50">
+                            <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full ring-2 ring-white"></div>
+                        </div>
+                        <div class="hidden xl:block text-left">
+                            <p class="user-name text-xs font-semibold" id="navUserName">Loading...</p>
+                            <p class="user-role text-[10px]" id="navUserRole">Mahasiswa</p>
+                        </div>
+                        <i class="fas fa-chevron-down text-[10px] text-white/60 hidden xl:block"></i>
+                    </button>
+                    
+                    <div id="userDropdown" class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hidden z-50">
+                        <div class="p-3 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-purple-50">
+                            <div class="flex items-center gap-3">
+                                <img id="dropdownAvatar" src="" alt="Avatar" class="w-10 h-10 rounded-full object-cover">
+                                <div>
+                                    <p class="font-semibold text-gray-800 text-sm" id="dropdownUserName">Loading...</p>
+                                    <p class="text-xs text-gray-500" id="dropdownUserNim">-</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-2">
+                            <a href="mahasiswa-profil.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
+                                <i class="fas fa-user-cog w-5 text-gray-400"></i>
+                                <span>Pengaturan Akun</span>
+                            </a>
+                            <a href="mahasiswa-ubah-password.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
+                                <i class="fas fa-key w-5 text-gray-400"></i>
+                                <span>Ubah Password</span>
+                            </a>
+                            <div class="border-t border-gray-100 my-2"></div>
+                            <button onclick="handleLogout()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-600 hover:bg-red-50 transition text-sm">
+                                <i class="fas fa-sign-out-alt w-5 text-red-400"></i>
+                                <span>Logout</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hamburger Menu Button -->
+                <button id="hamburgerBtn" class="md:hidden icon-btn p-2 rounded-lg transition-all duration-200">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </nav>
+    </header>
 
     <!-- ========== MAIN CONTENT ========== -->
-    <main class="pt-20">
-        <div class="container mx-auto px-6 py-8">
+    <main class="pt-[72px] md:pt-[84px]">
+        <div class="container mx-auto px-4 md:px-6 py-6 md:py-8">
             <!-- Header Section -->
-            <header class="mb-8" data-aos="fade-down">
+            <div class="mb-8" data-aos="fade-down">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
                     <div>
-                        <h2 class="text-3xl font-bold text-gray-800">Program Magang</h2>
+                        <h2 class="text-2xl md:text-3xl font-bold text-gray-800">Program Magang</h2>
                         <p class="text-gray-600">Kelola seluruh proses magang Anda dalam satu tempat</p>
                     </div>
                     <div class="mt-4 md:mt-0">
@@ -397,7 +532,7 @@
                         </div>
                     </div>
                 </div>
-            </header>
+            </div>
 
             <!-- Tab Navigation -->
             <div class="bg-white rounded-xl shadow-lg p-2 mb-6" data-aos="fade-up">
@@ -531,18 +666,18 @@
                         </table>
                     </div>
                 </div>
-                 <div class="flex items-center justify-between mt-4 pt-4 border-t border-gray-200">
-        <div class="text-sm text-gray-500" id="riwayatPaginationInfo"></div>
-        <div class="flex space-x-2">
-            <button onclick="changeRiwayatPage('prev')" class="px-3 py-1 border rounded-lg hover:bg-gray-50">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-            <span id="riwayatCurrentPage" class="px-3 py-1">1</span>
-            <button onclick="changeRiwayatPage('next')" class="px-3 py-1 border rounded-lg hover:bg-gray-50">
-                <i class="fas fa-chevron-right"></i>
-            </button>
-        </div>
-    </div>
+                <div class="flex items-center justify-between mt-4 pt-4 border-t border-gray-200">
+                    <div class="text-sm text-gray-500" id="riwayatPaginationInfo"></div>
+                    <div class="flex space-x-2">
+                        <button onclick="changeRiwayatPage('prev')" class="px-3 py-1 border rounded-lg hover:bg-gray-50">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <span id="riwayatCurrentPage" class="px-3 py-1">1</span>
+                        <button onclick="changeRiwayatPage('next')" class="px-3 py-1 border rounded-lg hover:bg-gray-50">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <!-- ========== SECTION: PENDAFTARAN MAGANG ========== -->
@@ -551,7 +686,6 @@
                     <h3 class="text-xl font-bold text-gray-800 mb-6">Formulir Pendaftaran Magang</h3>
                     
                     <form id="magangForm" class="space-y-6" enctype="multipart/form-data">
-                        <!-- Data Diri -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap</label>
@@ -563,25 +697,24 @@
                             </div>
                         </div>
                         
-                        <!-- GANTI block program studi yang lama dengan yang baru ini -->
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">
-            <i class="fas fa-university mr-1 text-gray-400"></i>Fakultas
-        </label>
-        <select id="fakultasSelect" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 fakultas-select" required>
-            <option value="">-- Pilih Fakultas --</option>
-        </select>
-    </div>
-    <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">
-            <i class="fas fa-graduation-cap mr-1 text-gray-400"></i>Program Studi
-        </label>
-        <select id="magangStudyProgram" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required disabled>
-            <option value="">-- Pilih Fakultas Terlebih Dahulu --</option>
-        </select>
-    </div>
-</div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-university mr-1 text-gray-400"></i>Fakultas
+                                </label>
+                                <select id="fakultasSelect" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 fakultas-select" required>
+                                    <option value="">-- Pilih Fakultas --</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-graduation-cap mr-1 text-gray-400"></i>Program Studi
+                                </label>
+                                <select id="magangStudyProgram" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required disabled>
+                                    <option value="">-- Pilih Fakultas Terlebih Dahulu --</option>
+                                </select>
+                            </div>
+                        </div>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
@@ -594,7 +727,6 @@
                             </div>
                         </div>
 
-                        <!-- Semester -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Semester</label>
                             <select id="magangSemester" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required>
@@ -610,7 +742,6 @@
                             </select>
                         </div>
                         
-                        <!-- Upload Dokumen -->
                         <div class="space-y-4">
                             <h4 class="font-semibold text-gray-800">Upload Dokumen Persyaratan</h4>
                             
@@ -636,7 +767,6 @@
                             </div>
                         </div>
                         
-                        <!-- Checkbox Persetujuan -->
                         <div class="flex items-center">
                             <input type="checkbox" id="magangAgreeTerms" class="mr-2" required>
                             <label for="magangAgreeTerms" class="text-sm text-gray-600">
@@ -644,7 +774,6 @@
                             </label>
                         </div>
                         
-                        <!-- Tombol Submit -->
                         <div class="flex justify-end space-x-3">
                             <button type="button" onclick="cancelRegistration()" class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
                                 Batal
@@ -742,7 +871,6 @@
                                 <div id="existingStrukturOrganisasi" class="existing-file hidden"></div>
                             </div>
                             
-                            <!-- File Preview Container -->
                             <div id="filePreviewContainer"></div>
                         </div>
                         
@@ -757,7 +885,6 @@
                     </form>
                 </div>
                 
-                <!-- Daftar Perusahaan yang sudah diinput -->
                 <div class="mt-6 bg-white rounded-xl shadow-lg p-6" data-aos="fade-up">
                     <h3 class="text-lg font-bold text-gray-800 mb-4">Riwayat Data Perusahaan</h3>
                     
@@ -783,17 +910,17 @@
                     </div>
                 </div>
                 <div class="flex items-center justify-between mt-4 pt-4 border-t border-gray-200">
-        <div class="text-sm text-gray-500" id="perusahaanPaginationInfo"></div>
-        <div class="flex space-x-2">
-            <button onclick="changePerusahaanPage('prev')" class="px-3 py-1 border rounded-lg hover:bg-gray-50">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-            <span id="perusahaanCurrentPage" class="px-3 py-1">1</span>
-            <button onclick="changePerusahaanPage('next')" class="px-3 py-1 border rounded-lg hover:bg-gray-50">
-                <i class="fas fa-chevron-right"></i>
-            </button>
-        </div>
-    </div>
+                    <div class="text-sm text-gray-500" id="perusahaanPaginationInfo"></div>
+                    <div class="flex space-x-2">
+                        <button onclick="changePerusahaanPage('prev')" class="px-3 py-1 border rounded-lg hover:bg-gray-50">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <span id="perusahaanCurrentPage" class="px-3 py-1">1</span>
+                        <button onclick="changePerusahaanPage('next')" class="px-3 py-1 border rounded-lg hover:bg-gray-50">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <!-- ========== SECTION: LUARAN WAJIB ========== -->
@@ -855,7 +982,7 @@
                                 <div id="existingMou" class="existing-file hidden"></div>
                             </div>
                             
-                            <div class="file-upload-area">
+                            <div className="file-upload-area">
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Upload Sertifikat Magang (PDF/JPG)</label>
                                 <input type="file" id="sertifikat_magang" name="sertifikat" accept=".pdf,.jpg,.jpeg" class="w-full">
                                 <p class="text-xs text-gray-500 mt-1">Format PDF/JPG, Maks 5MB</p>
@@ -886,56 +1013,42 @@
                     </form>
                 </div>
                 
-                <!-- Daftar Luaran yang sudah diupload -->
-                <!-- Luaran Magang Section -->
-<div class="mt-6 bg-white rounded-xl shadow-lg p-6">
-    <h3 class="text-lg font-bold text-gray-800 mb-4">Riwayat Upload Luaran</h3>
-    
-    <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-                <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Jenis Luaran</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tanggal Upload</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
-                </tr>
-            </thead>
-            <tbody id="luaranMagangTable" class="divide-y divide-gray-200">
-                <!-- Data akan diisi oleh JavaScript -->
-            </tbody>
-        </table>
-    </div>
-    
-    <!-- ========== PAGINATION DILETAKAN DI SINI ========== -->
-    <div class="flex items-center justify-between mt-4 pt-4 border-t border-gray-200">
-        <div class="text-sm text-gray-500" id="luaranPaginationInfo">
-            Menampilkan 1 - 10 dari 20 data
-        </div>
-        <div class="flex space-x-2">
-            <button onclick="changeLuaranPage('prev')" 
-                    class="px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
-                    id="luaranPrevBtn">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-            <span id="luaranCurrentPage" class="px-3 py-1 text-gray-700">1</span>
-            <button onclick="changeLuaranPage('next')" 
-                    class="px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
-                    id="luaranNextBtn">
-                <i class="fas fa-chevron-right"></i>
-            </button>
-        </div>
-    </div>
-</div>
+                <div class="mt-6 bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Riwayat Upload Luaran</h3>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Jenis Luaran</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tanggal Upload</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="luaranMagangTable" class="divide-y divide-gray-200">
+                                <tr><td colspan="4" class="px-6 py-4 text-center text-gray-500"><i class="fas fa-spinner fa-spin mr-2"></i>Memuat data...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="flex items-center justify-between mt-4 pt-4 border-t border-gray-200">
+                        <div class="text-sm text-gray-500" id="luaranPaginationInfo"></div>
+                        <div class="flex space-x-2">
+                            <button onclick="changeLuaranPage('prev')" class="px-3 py-1 border rounded-lg hover:bg-gray-50"><i class="fas fa-chevron-left"></i></button>
+                            <span id="luaranCurrentPage" class="px-3 py-1">1</span>
+                            <button onclick="changeLuaranPage('next')" class="px-3 py-1 border rounded-lg hover:bg-gray-50"><i class="fas fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
 
-    <!-- ========== SCRIPTS ========== -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="../js/auth.js"></script>
     
-  <script>
+    <script>
     AOS.init({ duration: 800, once: true });
     const API_BASE_URL = '/api';
     
@@ -948,631 +1061,159 @@
     let fakultasList = [];
     let prodiList = [];
     
-    function getUser() {
-        return auth.getUser();
-    }
+    function getUser() { return auth.getUser(); }
 
-    // Update user info
     function updateUserInfo() {
         const user = window.auth.getUser();
-        
-        console.log('Updating user info with:', user);
-        
         if (user) {
             const userName = user.nama_lengkap || user.name || 'Mahasiswa';
             const userNim = user.nim || '-';
             
-            document.getElementById('userNameDisplay').textContent = userName;
-            document.getElementById('userNimDisplay').textContent = userNim;
+            const userNameDisplay = document.getElementById('userNameDisplay');
+            const userNimDisplay = document.getElementById('userNimDisplay');
+            if (userNameDisplay) userNameDisplay.textContent = userName;
+            if (userNimDisplay) userNimDisplay.textContent = userNim;
             
-            if (document.getElementById('magangFullName')) {
-                document.getElementById('magangFullName').value = userName;
-            }
-            if (document.getElementById('magangNim')) {
-                document.getElementById('magangNim').value = userNim;
-            }
-            if (document.getElementById('magangEmail')) {
-                document.getElementById('magangEmail').value = user.email || '';
-            }
-        } else {
-            console.error('No user data found');
-            document.getElementById('userNameDisplay').textContent = 'User tidak ditemukan';
-            document.getElementById('userNimDisplay').textContent = '-';
+            if (document.getElementById('magangFullName')) document.getElementById('magangFullName').value = userName;
+            if (document.getElementById('magangNim')) document.getElementById('magangNim').value = userNim;
+            if (document.getElementById('magangEmail')) document.getElementById('magangEmail').value = user.email || '';
         }
     }
 
-    // Logout function
-    window.handleLogout = function() {
-        auth.logout();
-    };
+    window.handleLogout = function() { auth.logout(); };
     
-    // ========== UI HELPER FUNCTIONS ==========
-    
-    function showLoading() {
-        document.getElementById('loadingOverlay').classList.remove('hidden');
-    }
-
-    function hideLoading() {
-        document.getElementById('loadingOverlay').classList.add('hidden');
-    }
+    function showLoading() { document.getElementById('loadingOverlay').classList.remove('hidden'); }
+    function hideLoading() { document.getElementById('loadingOverlay').classList.add('hidden'); }
 
     function showNotification(message, type = 'success') {
-        const titles = {
-            success: 'Berhasil',
-            error: 'Gagal',
-            warning: 'Peringatan',
-            info: 'Informasi'
-        };
-        
-        Swal.fire({
-            icon: type,
-            title: titles[type],
-            text: message,
-            timer: type === 'success' ? 2000 : null,
-            showConfirmButton: type !== 'success',
-            confirmButtonColor: '#8B5CF6'
-        });
+        const titles = { success: 'Berhasil', error: 'Gagal', warning: 'Peringatan', info: 'Informasi' };
+        Swal.fire({ icon: type, title: titles[type], text: message, timer: type === 'success' ? 2000 : null, showConfirmButton: type !== 'success', confirmButtonColor: '#8B5CF6' });
     }
 
     function formatDate(dateString) {
         if (!dateString) return '-';
         const date = new Date(dateString);
-        return date.toLocaleDateString('id-ID', {
-            day: '2-digit',
-            month: 'long',
-            year: 'numeric'
-        });
-    }
-
-    function formatFileSize(bytes) {
-        if (bytes === 0) return '0 Bytes';
-        const k = 1024;
-        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        return date.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
     }
 
     function getStatusBadgeClass(status) {
-        const classes = {
-            'draft': 'bg-gray-100 text-gray-800',
-            'pending': 'bg-yellow-100 text-yellow-800',
-            'review': 'bg-blue-100 text-blue-800',
-            'approved': 'bg-green-100 text-green-800',
-            'rejected': 'bg-red-100 text-red-800',
-            'verified': 'bg-purple-100 text-purple-800'
-        };
+        const classes = { 'draft': 'bg-gray-100 text-gray-800', 'pending': 'bg-yellow-100 text-yellow-800', 'review': 'bg-blue-100 text-blue-800', 'approved': 'bg-green-100 text-green-800', 'rejected': 'bg-red-100 text-red-800', 'verified': 'bg-purple-100 text-purple-800' };
         return classes[status] || 'bg-gray-100 text-gray-800';
     }
 
     function getStatusText(status) {
-        const texts = {
-            'draft': 'Draft',
-            'pending': 'Menunggu',
-            'review': 'Dalam Review',
-            'approved': 'Disetujui',
-            'rejected': 'Ditolak',
-            'verified': 'Terverifikasi'
-        };
+        const texts = { 'draft': 'Draft', 'pending': 'Menunggu', 'review': 'Dalam Review', 'approved': 'Disetujui', 'rejected': 'Ditolak', 'verified': 'Terverifikasi' };
         return texts[status] || status;
     }
     
-    // ========== SECTION NAVIGATION ==========
     function showSection(section) {
-        document.querySelectorAll('.section-content').forEach(el => {
-            el.classList.add('hidden');
-        });
-        
-        document.querySelectorAll('.tab-button').forEach(el => {
-            el.classList.remove('active');
-        });
-        
+        document.querySelectorAll('.section-content').forEach(el => el.classList.add('hidden'));
+        document.querySelectorAll('.tab-button').forEach(el => el.classList.remove('active'));
         document.getElementById(`section${section.charAt(0).toUpperCase() + section.slice(1)}`).classList.remove('hidden');
         document.getElementById(`tab${section.charAt(0).toUpperCase() + section.slice(1)}`).classList.add('active');
         
-        if (section === 'perusahaan') {
-            loadPerusahaanData();
-        } else if (section === 'luaran') {
-            loadLuaranData();
-        }
+        if (section === 'perusahaan') loadPerusahaanData();
+        else if (section === 'luaran') loadLuaranData();
     }
     
-    // ========== FAKULTAS & PRODI FUNCTIONS ==========
-    
-    // Load fakultas from API
     async function loadFakultas() {
         try {
             const token = localStorage.getItem('token');
             if (!token) throw new Error('Not authenticated');
-
-            console.log('Loading fakultas...');
-            
-            const response = await fetch(`${API_BASE_URL}/mahasiswa/fakultas`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-
+            const response = await fetch(`${API_BASE_URL}/mahasiswa/fakultas`, { headers: { 'Authorization': `Bearer ${token}` } });
             if (!response.ok) throw new Error('Failed to load fakultas');
-
             const result = await response.json();
-            console.log('Fakultas response:', result);
-            
             if (result.success && result.data) {
                 fakultasList = result.data;
                 const fakultasSelect = document.getElementById('fakultasSelect');
                 fakultasSelect.innerHTML = '<option value="">-- Pilih Fakultas --</option>';
-                
                 fakultasList.forEach(fakultas => {
                     const option = document.createElement('option');
                     option.value = fakultas.id_fakultas;
                     option.textContent = fakultas.nama_fakultas;
                     fakultasSelect.appendChild(option);
                 });
-            } else {
-                console.error('No fakultas data found');
-                const fakultasSelect = document.getElementById('fakultasSelect');
-                fakultasSelect.innerHTML = '<option value="">Tidak ada data fakultas</option>';
             }
-        } catch (error) {
-            console.error('Error loading fakultas:', error);
-            showNotification('Gagal memuat data fakultas', 'error');
-            const fakultasSelect = document.getElementById('fakultasSelect');
-            fakultasSelect.innerHTML = '<option value="">Gagal memuat fakultas</option>';
-        }
+        } catch (error) { console.error('Error loading fakultas:', error); showNotification('Gagal memuat data fakultas', 'error'); }
     }
 
-    // Load prodi based on selected fakultas
     async function loadProdiByFakultas(id_fakultas) {
         try {
             const token = localStorage.getItem('token');
             if (!token) throw new Error('Not authenticated');
-
             const prodiSelect = document.getElementById('magangStudyProgram');
             prodiSelect.disabled = true;
             prodiSelect.innerHTML = '<option value="">Memuat data...</option>';
-
-            console.log('Loading prodi for fakultas:', id_fakultas);
-            
-            const response = await fetch(`${API_BASE_URL}/mahasiswa/fakultas/${id_fakultas}/prodi`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-
+            const response = await fetch(`${API_BASE_URL}/mahasiswa/fakultas/${id_fakultas}/prodi`, { headers: { 'Authorization': `Bearer ${token}` } });
             if (!response.ok) throw new Error('Failed to load prodi');
-
             const result = await response.json();
-            console.log('Prodi response:', result);
-            
             if (result.success && result.data && result.data.length > 0) {
                 prodiSelect.innerHTML = '<option value="">-- Pilih Program Studi --</option>';
-                
                 result.data.forEach(prodi => {
                     const option = document.createElement('option');
                     option.value = prodi.id_prodi;
                     option.textContent = `${prodi.nama_prodi} (${prodi.jenjang})`;
                     prodiSelect.appendChild(option);
                 });
-                
                 prodiSelect.disabled = false;
-            } else {
-                prodiSelect.innerHTML = '<option value="">Tidak ada program studi</option>';
-                prodiSelect.disabled = true;
-            }
-        } catch (error) {
-            console.error('Error loading prodi:', error);
-            const prodiSelect = document.getElementById('magangStudyProgram');
-            prodiSelect.innerHTML = '<option value="">Gagal memuat data</option>';
-            prodiSelect.disabled = true;
-            showNotification('Gagal memuat data program studi', 'error');
-        }
+            } else { prodiSelect.innerHTML = '<option value="">Tidak ada program studi</option>'; prodiSelect.disabled = true; }
+        } catch (error) { console.error('Error loading prodi:', error); showNotification('Gagal memuat data program studi', 'error'); }
     }
     
-    // ========== API CALLS ==========
-    
-    // Load all magang data
     async function loadMagangData() {
         try {
             showLoading();
-            
             const token = localStorage.getItem('token');
             if (!token) throw new Error('Not authenticated');
-
-            // Load status
-            const statusResponse = await fetch(`${API_BASE_URL}/magang/status`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-
-            if (statusResponse.ok) {
-                const statusResult = await statusResponse.json();
-                magangData.status = statusResult.data;
-            }
-
-            // Load registrasi
-            const registrasiResponse = await fetch(`${API_BASE_URL}/magang/registrasi`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-
-            if (registrasiResponse.ok) {
-                const registrasiResult = await registrasiResponse.json();
-                magangData.registrasi = registrasiResult.data;
-            }
-
-            // Load perusahaan
+            const statusResponse = await fetch(`${API_BASE_URL}/magang/status`, { headers: { 'Authorization': `Bearer ${token}` } });
+            if (statusResponse.ok) { const statusResult = await statusResponse.json(); magangData.status = statusResult.data; }
+            const registrasiResponse = await fetch(`${API_BASE_URL}/magang/registrasi`, { headers: { 'Authorization': `Bearer ${token}` } });
+            if (registrasiResponse.ok) { const registrasiResult = await registrasiResponse.json(); magangData.registrasi = registrasiResult.data; }
             await loadPerusahaanData(false);
-            
-            // Load luaran
             await loadLuaranData(false);
-            
-            // Load riwayat
             await loadRiwayatData();
-
-            // Update UI
             updateStatusUI();
-            
-        } catch (error) {
-            console.error('Error loading magang data:', error);
-            showNotification('Gagal memuat data magang', 'error');
-        } finally {
-            hideLoading();
-        }
+        } catch (error) { console.error('Error loading magang data:', error); showNotification('Gagal memuat data magang', 'error'); } finally { hideLoading(); }
     }
 
-    // Load perusahaan data
     async function loadPerusahaanData(showLoader = true) {
         try {
             if (showLoader) showLoading();
-            
             const token = localStorage.getItem('token');
             if (!token) throw new Error('Not authenticated');
-
-            const response = await fetch(`${API_BASE_URL}/magang/perusahaan`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-
-            if (response.ok) {
-                const result = await response.json();
-                magangData.perusahaan = result.data || [];
-                updatePerusahaanTable();
-            }
-
-        } catch (error) {
-            console.error('Error loading perusahaan data:', error);
-        } finally {
-            if (showLoader) hideLoading();
-        }
+            const response = await fetch(`${API_BASE_URL}/magang/perusahaan`, { headers: { 'Authorization': `Bearer ${token}` } });
+            if (response.ok) { const result = await response.json(); magangData.perusahaan = result.data || []; updatePerusahaanTable(); }
+        } catch (error) { console.error('Error loading perusahaan data:', error); } finally { if (showLoader) hideLoading(); }
     }
 
-    // Load luaran data
     async function loadLuaranData(showLoader = true) {
         try {
             if (showLoader) showLoading();
-            
             const token = localStorage.getItem('token');
             if (!token) throw new Error('Not authenticated');
-
-            const response = await fetch(`${API_BASE_URL}/magang/luaran`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-
-            if (response.ok) {
-                const result = await response.json();
-                magangData.luaran = result.data || [];
-                updateLuaranTable();
-            }
-
-        } catch (error) {
-            console.error('Error loading luaran data:', error);
-        } finally {
-            if (showLoader) hideLoading();
-        }
+            const response = await fetch(`${API_BASE_URL}/magang/luaran`, { headers: { 'Authorization': `Bearer ${token}` } });
+            if (response.ok) { const result = await response.json(); magangData.luaran = result.data || []; updateLuaranTable(); }
+        } catch (error) { console.error('Error loading luaran data:', error); } finally { if (showLoader) hideLoading(); }
     }
 
-    // Load riwayat data
     async function loadRiwayatData() {
         try {
             const token = localStorage.getItem('token');
             if (!token) throw new Error('Not authenticated');
-
-            const response = await fetch(`${API_BASE_URL}/magang/riwayat`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-
-            if (response.ok) {
-                const result = await response.json();
-                magangData.riwayat = result.data || [];
-                updateRiwayatTable();
-            }
-
-        } catch (error) {
-            console.error('Error loading riwayat data:', error);
-        }
+            const response = await fetch(`${API_BASE_URL}/magang/riwayat`, { headers: { 'Authorization': `Bearer ${token}` } });
+            if (response.ok) { const result = await response.json(); magangData.riwayat = result.data || []; updateRiwayatTable(); }
+        } catch (error) { console.error('Error loading riwayat data:', error); }
     }
 
-    // Load timeline data
     async function loadTimelineData() {
         try {
             const token = localStorage.getItem('token');
             if (!token) throw new Error('Not authenticated');
-
-            const response = await fetch(`${API_BASE_URL}/magang/timeline`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-
-            if (response.ok) {
-                const result = await response.json();
-                magangData.timeline = result.data || [];
-                updateTimeline();
-            }
-
-        } catch (error) {
-            console.error('Error loading timeline data:', error);
-        }
+            const response = await fetch(`${API_BASE_URL}/magang/timeline`, { headers: { 'Authorization': `Bearer ${token}` } });
+            if (response.ok) { const result = await response.json(); magangData.timeline = result.data || []; updateTimeline(); }
+        } catch (error) { console.error('Error loading timeline data:', error); }
     }
     
-    // ========== FORM SUBMISSIONS ==========
-    
-    // Submit pendaftaran magang
-    document.getElementById('magangForm')?.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        if (!document.getElementById('magangAgreeTerms').checked) {
-            showNotification('Anda harus menyetujui pernyataan di atas', 'warning');
-            return;
-        }
-
-        // Validate files
-        const krsFile = document.getElementById('magangKrs').files[0];
-        const khsFile = document.getElementById('magangKhs').files[0];
-        const paymentFile = document.getElementById('magangPayment').files[0];
-
-        if (!krsFile || !khsFile || !paymentFile) {
-            showNotification('Semua file harus diupload', 'warning');
-            return;
-        }
-
-        // Validate file sizes (max 2MB)
-        const maxSize = 2 * 1024 * 1024;
-        if (krsFile.size > maxSize || khsFile.size > maxSize || paymentFile.size > maxSize) {
-            showNotification('Ukuran file maksimal 2MB', 'warning');
-            return;
-        }
-
-        try {
-            showLoading();
-
-            const token = localStorage.getItem('token');
-            if (!token) throw new Error('Not authenticated');
-
-            const formData = new FormData();
-            formData.append('program_studi', document.getElementById('magangStudyProgram').value);
-            formData.append('domisili', document.getElementById('magangDomicile').value);
-            formData.append('semester', document.getElementById('magangSemester').value);
-            formData.append('krs_file', krsFile);
-            formData.append('khs_file', khsFile);
-            formData.append('payment_file', paymentFile);
-
-            const response = await fetch(`${API_BASE_URL}/magang/registrasi`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                },
-                body: formData
-            });
-
-            const result = await response.json();
-
-            if (!response.ok) {
-                throw new Error(result.message || 'Gagal mendaftar magang');
-            }
-
-            showNotification('Pendaftaran magang berhasil dikirim', 'success');
-            
-            // Reset form
-            this.reset();
-            document.getElementById('fakultasSelect').value = '';
-            document.getElementById('magangStudyProgram').innerHTML = '<option value="">-- Pilih Fakultas Terlebih Dahulu --</option>';
-            document.getElementById('magangStudyProgram').disabled = true;
-            
-            // Reload data and switch to proses section
-            await loadMagangData();
-            showSection('proses');
-
-        } catch (error) {
-            console.error('Error submitting registration:', error);
-            showNotification(error.message, 'error');
-        } finally {
-            hideLoading();
-        }
-    });
-
-    // Submit data perusahaan
-    document.getElementById('perusahaanForm')?.addEventListener('submit', async function(e) {
-        e.preventDefault();
-
-        const requiredFields = ['companyName', 'internshipField', 'position', 'duration', 
-                               'startDate', 'endDate', 'companyAddress', 'supervisor', 'supervisorContact'];
-        
-        for (const fieldId of requiredFields) {
-            const field = document.getElementById(fieldId);
-            if (!field.value) {
-                showNotification('Semua field wajib harus diisi', 'warning');
-                return;
-            }
-        }
-
-        try {
-            showLoading();
-
-            const token = localStorage.getItem('token');
-            if (!token) throw new Error('Not authenticated');
-
-            const formData = new FormData();
-            
-            formData.append('nama_perusahaan', document.getElementById('companyName').value);
-            formData.append('bidang_magang', document.getElementById('internshipField').value);
-            formData.append('posisi', document.getElementById('position').value);
-            formData.append('durasi', document.getElementById('duration').value);
-            formData.append('tanggal_mulai', document.getElementById('startDate').value);
-            formData.append('tanggal_selesai', document.getElementById('endDate').value);
-            formData.append('alamat_perusahaan', document.getElementById('companyAddress').value);
-            formData.append('nama_pembimbing', document.getElementById('supervisor').value);
-            formData.append('kontak_pembimbing', document.getElementById('supervisorContact').value);
-            
-            const emailPembimbing = document.getElementById('supervisorEmail').value;
-            if (emailPembimbing) formData.append('email_pembimbing', emailPembimbing);
-            
-            const jabatanPembimbing = document.getElementById('supervisorPosition').value;
-            if (jabatanPembimbing) formData.append('jabatan_pembimbing', jabatanPembimbing);
-
-            const suratKeterangan = document.getElementById('workCertificate').files[0];
-            if (suratKeterangan) {
-                formData.append('surat_keterangan', suratKeterangan);
-            }
-
-            const strukturOrganisasi = document.getElementById('companyStructure').files[0];
-            if (strukturOrganisasi) {
-                formData.append('struktur_organisasi', strukturOrganisasi);
-            }
-
-            const perusahaanId = document.getElementById('perusahaanId').value;
-            const url = perusahaanId 
-                ? `${API_BASE_URL}/magang/perusahaan/${perusahaanId}`
-                : `${API_BASE_URL}/magang/perusahaan`;
-            
-            const method = perusahaanId ? 'PUT' : 'POST';
-
-            const response = await fetch(url, {
-                method: method,
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                },
-                body: formData
-            });
-
-            const result = await response.json();
-
-            if (!response.ok) {
-                throw new Error(result.message || 'Gagal menyimpan data perusahaan');
-            }
-
-            showNotification('Data perusahaan berhasil disimpan', 'success');
-            
-            this.reset();
-            document.getElementById('perusahaanId').value = '';
-            
-            await loadPerusahaanData();
-            await loadMagangData();
-            showSection('proses');
-
-        } catch (error) {
-            console.error('Error submitting company data:', error);
-            showNotification(error.message, 'error');
-        } finally {
-            hideLoading();
-        }
-    });
-
-    // Submit luaran magang
-    document.getElementById('luaranMagangForm')?.addEventListener('submit', async function(e) {
-        e.preventDefault();
-
-        const requiredFields = ['judul_proyek', 'deskripsi_pekerjaan'];
-        for (const fieldId of requiredFields) {
-            const field = document.getElementById(fieldId);
-            if (!field.value) {
-                showNotification(`${fieldId.replace('_', ' ')} harus diisi`, 'warning');
-                return;
-            }
-        }
-
-        try {
-            showLoading();
-
-            const token = localStorage.getItem('token');
-            if (!token) throw new Error('Not authenticated');
-
-            const formData = new FormData();
-            
-            formData.append('judul_proyek', document.getElementById('judul_proyek').value);
-            formData.append('deskripsi_pekerjaan', document.getElementById('deskripsi_pekerjaan').value);
-            formData.append('keterangan_magang', document.getElementById('keterangan_magang').value || '');
-            
-            const posterLink = document.getElementById('link_poster_magang').value;
-            if (posterLink) formData.append('poster', posterLink);
-            
-            const laporanLink = document.getElementById('link_laporan').value;
-            if (laporanLink) formData.append('laporan', laporanLink);
-            
-            const fotoLink = document.getElementById('link_foto').value;
-            if (fotoLink) formData.append('foto_kegiatan', fotoLink);
-
-            const mouFile = document.getElementById('file_mou_magang').files[0];
-            if (mouFile) {
-                formData.append('mou_file', mouFile);
-            }
-
-            const sertifikatFile = document.getElementById('sertifikat_magang').files[0];
-            if (sertifikatFile) {
-                formData.append('sertifikat', sertifikatFile);
-            }
-
-            const logbookFile = document.getElementById('logbook_magang').files[0];
-            if (logbookFile) {
-                formData.append('logbook', logbookFile);
-            }
-
-            const luaranId = document.getElementById('luaranId').value;
-            const url = luaranId 
-                ? `${API_BASE_URL}/magang/luaran/${luaranId}`
-                : `${API_BASE_URL}/magang/luaran`;
-            
-            const method = luaranId ? 'PUT' : 'POST';
-
-            const response = await fetch(url, {
-                method: method,
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                },
-                body: formData
-            });
-
-            const result = await response.json();
-
-            if (!response.ok) {
-                throw new Error(result.message || 'Gagal menyimpan data luaran');
-            }
-
-            showNotification('Data luaran berhasil disimpan', 'success');
-            
-            this.reset();
-            document.getElementById('luaranId').value = '';
-            
-            await loadLuaranData();
-            await loadMagangData();
-            showSection('proses');
-
-        } catch (error) {
-            console.error('Error submitting luaran data:', error);
-            showNotification(error.message, 'error');
-        } finally {
-            hideLoading();
-        }
-    });
-    
-    // ========== UI UPDATE FUNCTIONS ==========
     function updateStatusUI() {
         const statusPendaftaran = document.getElementById('statusPendaftaran');
         const statusPerusahaan = document.getElementById('statusPerusahaan');
@@ -1583,440 +1224,229 @@
         if (magangData.registrasi) {
             statusPendaftaran.textContent = getStatusText(magangData.registrasi.status);
             statusPendaftaran.className = `status-badge ${getStatusBadgeClass(magangData.registrasi.status)}`;
-        } else {
-            statusPendaftaran.textContent = 'Belum Daftar';
-            statusPendaftaran.className = 'status-badge bg-gray-100 text-gray-800';
-        }
+        } else { statusPendaftaran.textContent = 'Belum Daftar'; statusPendaftaran.className = 'status-badge bg-gray-100 text-gray-800'; }
 
         if (magangData.perusahaan && magangData.perusahaan.length > 0) {
             const latest = magangData.perusahaan[0];
             statusPerusahaan.textContent = getStatusText(latest.status);
             statusPerusahaan.className = `status-badge ${getStatusBadgeClass(latest.status)}`;
-        } else {
-            statusPerusahaan.textContent = 'Belum Input';
-            statusPerusahaan.className = 'status-badge bg-gray-100 text-gray-800';
-        }
+        } else { statusPerusahaan.textContent = 'Belum Input'; statusPerusahaan.className = 'status-badge bg-gray-100 text-gray-800'; }
 
-        if (magangData.registrasi && magangData.registrasi.status === 'verified') {
-            statusVerifikasi.textContent = 'Terverifikasi';
-            statusVerifikasi.className = 'status-badge bg-purple-100 text-purple-800';
-        } else if (magangData.registrasi && magangData.registrasi.status === 'approved') {
-            statusVerifikasi.textContent = 'Disetujui';
-            statusVerifikasi.className = 'status-badge bg-green-100 text-green-800';
-        } else if (magangData.registrasi && magangData.registrasi.status === 'pending') {
-            statusVerifikasi.textContent = 'Menunggu';
-            statusVerifikasi.className = 'status-badge bg-yellow-100 text-yellow-800';
-        } else {
-            statusVerifikasi.textContent = 'Belum';
-            statusVerifikasi.className = 'status-badge bg-gray-100 text-gray-800';
-        }
+        if (magangData.registrasi && magangData.registrasi.status === 'verified') { statusVerifikasi.textContent = 'Terverifikasi'; statusVerifikasi.className = 'status-badge bg-purple-100 text-purple-800'; }
+        else if (magangData.registrasi && magangData.registrasi.status === 'approved') { statusVerifikasi.textContent = 'Disetujui'; statusVerifikasi.className = 'status-badge bg-green-100 text-green-800'; }
+        else if (magangData.registrasi && magangData.registrasi.status === 'pending') { statusVerifikasi.textContent = 'Menunggu'; statusVerifikasi.className = 'status-badge bg-yellow-100 text-yellow-800'; }
+        else { statusVerifikasi.textContent = 'Belum'; statusVerifikasi.className = 'status-badge bg-gray-100 text-gray-800'; }
 
         if (magangData.luaran && magangData.luaran.length > 0) {
             const latest = magangData.luaran[0];
             statusLuaran.textContent = getStatusText(latest.status);
             statusLuaran.className = `status-badge ${getStatusBadgeClass(latest.status)}`;
-        } else {
-            statusLuaran.textContent = 'Belum Input';
-            statusLuaran.className = 'status-badge bg-gray-100 text-gray-800';
-        }
+        } else { statusLuaran.textContent = 'Belum Input'; statusLuaran.className = 'status-badge bg-gray-100 text-gray-800'; }
 
-        if (magangData.luaran && magangData.luaran.some(l => l.status === 'verified')) {
-            overallStatus.textContent = 'Selesai';
-            overallStatus.className = 'status-badge bg-green-100 text-green-800';
-        } else if (magangData.perusahaan && magangData.perusahaan.some(p => p.status === 'approved')) {
-            overallStatus.textContent = 'Sedang Berjalan';
-            overallStatus.className = 'status-badge bg-blue-100 text-blue-800';
-        } else if (magangData.registrasi && magangData.registrasi.status === 'approved') {
-            overallStatus.textContent = 'Disetujui';
-            overallStatus.className = 'status-badge bg-green-100 text-green-800';
-        } else if (magangData.registrasi) {
-            overallStatus.textContent = 'Dalam Proses';
-            overallStatus.className = 'status-badge bg-yellow-100 text-yellow-800';
-        } else {
-            overallStatus.textContent = 'Belum Mulai';
-            overallStatus.className = 'status-badge bg-gray-100 text-gray-800';
-        }
+        if (magangData.luaran && magangData.luaran.some(l => l.status === 'verified')) { overallStatus.textContent = 'Selesai'; overallStatus.className = 'status-badge bg-green-100 text-green-800'; }
+        else if (magangData.perusahaan && magangData.perusahaan.some(p => p.status === 'approved')) { overallStatus.textContent = 'Sedang Berjalan'; overallStatus.className = 'status-badge bg-blue-100 text-blue-800'; }
+        else if (magangData.registrasi && magangData.registrasi.status === 'approved') { overallStatus.textContent = 'Disetujui'; overallStatus.className = 'status-badge bg-green-100 text-green-800'; }
+        else if (magangData.registrasi) { overallStatus.textContent = 'Dalam Proses'; overallStatus.className = 'status-badge bg-yellow-100 text-yellow-800'; }
+        else { overallStatus.textContent = 'Belum Mulai'; overallStatus.className = 'status-badge bg-gray-100 text-gray-800'; }
 
         updateStepper();
-
         loadTimelineData();
         
         if (magangData.registrasi) {
             document.getElementById('magangDomicile').value = magangData.registrasi.domisili || '';
             document.getElementById('magangSemester').value = magangData.registrasi.semester || '';
-            
-            if (magangData.registrasi.krs_file) {
-                document.getElementById('existingKrs').innerHTML = `<i class="fas fa-file-pdf text-red-500 mr-2"></i>File KRS sudah diupload`;
-                document.getElementById('existingKrs').classList.remove('hidden');
-            }
-            if (magangData.registrasi.khs_file) {
-                document.getElementById('existingKhs').innerHTML = `<i class="fas fa-file-pdf text-red-500 mr-2"></i>File KHS sudah diupload`;
-                document.getElementById('existingKhs').classList.remove('hidden');
-            }
-            if (magangData.registrasi.payment_file) {
-                document.getElementById('existingPayment').innerHTML = `<i class="fas fa-file-pdf text-red-500 mr-2"></i>File Bukti Pembayaran sudah diupload`;
-                document.getElementById('existingPayment').classList.remove('hidden');
-            }
-        }
-
-        if (magangData.perusahaan && magangData.perusahaan.length > 0) {
-            const latest = magangData.perusahaan[0];
-            document.getElementById('perusahaanId').value = latest.id_perusahaan;
-            document.getElementById('companyName').value = latest.nama_perusahaan || '';
-            document.getElementById('internshipField').value = latest.bidang_magang || '';
-            document.getElementById('position').value = latest.posisi || '';
-            document.getElementById('duration').value = latest.durasi || '';
-            document.getElementById('startDate').value = latest.tanggal_mulai || '';
-            document.getElementById('endDate').value = latest.tanggal_selesai || '';
-            document.getElementById('companyAddress').value = latest.alamat_perusahaan || '';
-            document.getElementById('supervisor').value = latest.nama_pembimbing || '';
-            document.getElementById('supervisorContact').value = latest.kontak_pembimbing || '';
-            document.getElementById('supervisorEmail').value = latest.email_pembimbing || '';
-            document.getElementById('supervisorPosition').value = latest.jabatan_pembimbing || '';
-
-            if (latest.surat_keterangan) {
-                document.getElementById('existingSuratKeterangan').innerHTML = `<i class="fas fa-file-pdf text-red-500 mr-2"></i>File Surat Keterangan sudah diupload`;
-                document.getElementById('existingSuratKeterangan').classList.remove('hidden');
-            }
-            if (latest.struktur_organisasi) {
-                document.getElementById('existingStrukturOrganisasi').innerHTML = `<i class="fas fa-file-pdf text-red-500 mr-2"></i>File Struktur Organisasi sudah diupload`;
-                document.getElementById('existingStrukturOrganisasi').classList.remove('hidden');
-            }
-
-            document.getElementById('nama_perusahaan').value = latest.nama_perusahaan || '';
-            document.getElementById('posisi_magang').value = latest.posisi || '';
-            document.getElementById('luaranPerusahaanId').value = latest.id_perusahaan;
-        }
-
-        if (magangData.luaran && magangData.luaran.length > 0) {
-            const latest = magangData.luaran[0];
-            document.getElementById('luaranId').value = latest.id_luaran;
-            document.getElementById('judul_proyek').value = latest.judul_proyek || '';
-            document.getElementById('deskripsi_pekerjaan').value = latest.deskripsi_pekerjaan || '';
-            document.getElementById('link_poster_magang').value = latest.link_poster || '';
-            document.getElementById('link_laporan').value = latest.link_laporan || '';
-            document.getElementById('link_foto').value = latest.link_foto || '';
-            document.getElementById('keterangan_magang').value = latest.keterangan || '';
-
-            if (latest.file_mou) {
-                document.getElementById('existingMou').innerHTML = `<i class="fas fa-file-pdf text-red-500 mr-2"></i>File MOU sudah diupload`;
-                document.getElementById('existingMou').classList.remove('hidden');
-            }
-            if (latest.file_sertifikat) {
-                document.getElementById('existingSertifikat').innerHTML = `<i class="fas fa-file-pdf text-red-500 mr-2"></i>File Sertifikat sudah diupload`;
-                document.getElementById('existingSertifikat').classList.remove('hidden');
-            }
-            if (latest.file_logbook) {
-                document.getElementById('existingLogbook').innerHTML = `<i class="fas fa-file-pdf text-red-500 mr-2"></i>File Logbook sudah diupload`;
-                document.getElementById('existingLogbook').classList.remove('hidden');
-            }
+            if (magangData.registrasi.krs_file) { document.getElementById('existingKrs').innerHTML = `<i class="fas fa-file-pdf text-red-500 mr-2"></i>File KRS sudah diupload`; document.getElementById('existingKrs').classList.remove('hidden'); }
+            if (magangData.registrasi.khs_file) { document.getElementById('existingKhs').innerHTML = `<i class="fas fa-file-pdf text-red-500 mr-2"></i>File KHS sudah diupload`; document.getElementById('existingKhs').classList.remove('hidden'); }
+            if (magangData.registrasi.payment_file) { document.getElementById('existingPayment').innerHTML = `<i class="fas fa-file-pdf text-red-500 mr-2"></i>File Bukti Pembayaran sudah diupload`; document.getElementById('existingPayment').classList.remove('hidden'); }
         }
     }
 
     function updateStepper() {
-        const step1 = document.getElementById('step1');
-        const step2 = document.getElementById('step2');
-        const step3 = document.getElementById('step3');
-        const step4 = document.getElementById('step4');
-
-        [step1, step2, step3, step4].forEach(step => {
-            step.classList.remove('active', 'completed');
-        });
-
+        const step1 = document.getElementById('step1'), step2 = document.getElementById('step2'), step3 = document.getElementById('step3'), step4 = document.getElementById('step4');
+        [step1, step2, step3, step4].forEach(step => step.classList.remove('active', 'completed'));
         if (magangData.registrasi) {
-            if (magangData.registrasi.status === 'verified' || magangData.registrasi.status === 'approved') {
-                step1.classList.add('completed');
-                document.getElementById('step1Status').textContent = 'Selesai';
-            } else if (magangData.registrasi.status === 'pending') {
-                step1.classList.add('active');
-                document.getElementById('step1Status').textContent = 'Dalam Proses';
-            } else {
-                document.getElementById('step1Status').textContent = getStatusText(magangData.registrasi.status);
-            }
-        } else {
-            document.getElementById('step1Status').textContent = 'Belum Dimulai';
-        }
-
+            if (magangData.registrasi.status === 'verified' || magangData.registrasi.status === 'approved') { step1.classList.add('completed'); document.getElementById('step1Status').textContent = 'Selesai'; }
+            else if (magangData.registrasi.status === 'pending') { step1.classList.add('active'); document.getElementById('step1Status').textContent = 'Dalam Proses'; }
+            else { document.getElementById('step1Status').textContent = getStatusText(magangData.registrasi.status); }
+        } else { document.getElementById('step1Status').textContent = 'Belum Dimulai'; }
         if (magangData.perusahaan && magangData.perusahaan.length > 0) {
             const latest = magangData.perusahaan[0];
-            if (latest.status === 'verified' || latest.status === 'approved') {
-                step2.classList.add('completed');
-                document.getElementById('step2Status').textContent = 'Selesai';
-            } else if (latest.status === 'pending' || latest.status === 'review') {
-                step2.classList.add('active');
-                document.getElementById('step2Status').textContent = 'Dalam Proses';
-            } else {
-                document.getElementById('step2Status').textContent = getStatusText(latest.status);
-            }
-        } else {
-            document.getElementById('step2Status').textContent = 'Belum Dimulai';
-        }
-
-        if (magangData.perusahaan && magangData.perusahaan.some(p => p.status === 'approved')) {
-            step3.classList.add('active');
-            document.getElementById('step3Status').textContent = 'Sedang Berjalan';
-        } else if (magangData.registrasi && magangData.registrasi.status === 'approved') {
-            document.getElementById('step3Status').textContent = 'Menunggu';
-        } else {
-            document.getElementById('step3Status').textContent = 'Belum Dimulai';
-        }
-
+            if (latest.status === 'verified' || latest.status === 'approved') { step2.classList.add('completed'); document.getElementById('step2Status').textContent = 'Selesai'; }
+            else if (latest.status === 'pending' || latest.status === 'review') { step2.classList.add('active'); document.getElementById('step2Status').textContent = 'Dalam Proses'; }
+            else { document.getElementById('step2Status').textContent = getStatusText(latest.status); }
+        } else { document.getElementById('step2Status').textContent = 'Belum Dimulai'; }
+        if (magangData.perusahaan && magangData.perusahaan.some(p => p.status === 'approved')) { step3.classList.add('active'); document.getElementById('step3Status').textContent = 'Sedang Berjalan'; }
+        else if (magangData.registrasi && magangData.registrasi.status === 'approved') { document.getElementById('step3Status').textContent = 'Menunggu'; }
+        else { document.getElementById('step3Status').textContent = 'Belum Dimulai'; }
         if (magangData.luaran && magangData.luaran.length > 0) {
             const latest = magangData.luaran[0];
-            if (latest.status === 'verified') {
-                step4.classList.add('completed');
-                document.getElementById('step4Status').textContent = 'Selesai';
-            } else if (latest.status === 'pending' || latest.status === 'review') {
-                step4.classList.add('active');
-                document.getElementById('step4Status').textContent = 'Dalam Proses';
-            } else {
-                document.getElementById('step4Status').textContent = getStatusText(latest.status);
-            }
-        } else {
-            document.getElementById('step4Status').textContent = 'Belum Dimulai';
-        }
+            if (latest.status === 'verified') { step4.classList.add('completed'); document.getElementById('step4Status').textContent = 'Selesai'; }
+            else if (latest.status === 'pending' || latest.status === 'review') { step4.classList.add('active'); document.getElementById('step4Status').textContent = 'Dalam Proses'; }
+            else { document.getElementById('step4Status').textContent = getStatusText(latest.status); }
+        } else { document.getElementById('step4Status').textContent = 'Belum Dimulai'; }
     }
 
     function updateTimeline() {
         const timeline = document.getElementById('timelineDetails');
-        
-        if (!magangData.timeline || magangData.timeline.length === 0) {
-            timeline.innerHTML = '<div class="text-center text-gray-500 py-4">Belum ada aktivitas</div>';
-            return;
-        }
-
-        timeline.innerHTML = magangData.timeline.map(item => {
-            const statusClass = item.status === 'approved' || item.status === 'verified' ? 'completed' : 
-                               item.status === 'pending' || item.status === 'review' ? 'active' : '';
-            
-            return `
-                <div class="timeline-item ${statusClass}">
-                    <div class="timeline-dot"></div>
-                    <div class="ml-4">
-                        <div class="flex items-center">
-                            <h4 class="font-semibold text-gray-800">${item.tahap}</h4>
-                            <span class="ml-3 ${getStatusBadgeClass(item.status)} px-2 py-1 rounded-full text-xs">
-                                ${getStatusText(item.status)}
-                            </span>
-                        </div>
-                        <p class="text-sm text-gray-600">${item.deskripsi || '-'}</p>
-                        <p class="text-xs text-gray-400 mt-1">${formatDate(item.tanggal)}</p>
-                    </div>
-                </div>
-            `;
-        }).join('');
+        if (!magangData.timeline || magangData.timeline.length === 0) { timeline.innerHTML = '<div class="text-center text-gray-500 py-4">Belum ada aktivitas</div>'; return; }
+        timeline.innerHTML = magangData.timeline.map(item => `<div class="timeline-item ${item.status === 'approved' || item.status === 'verified' ? 'completed' : item.status === 'pending' || item.status === 'review' ? 'active' : ''}"><div class="timeline-dot"></div><div class="ml-4"><div class="flex items-center"><h4 class="font-semibold text-gray-800">${item.tahap}</h4><span class="ml-3 ${getStatusBadgeClass(item.status)} px-2 py-1 rounded-full text-xs">${getStatusText(item.status)}</span></div><p class="text-sm text-gray-600">${item.deskripsi || '-'}</p><p class="text-xs text-gray-400 mt-1">${formatDate(item.tanggal)}</p></div></div>`).join('');
     }
 
     function updateRiwayatTable() {
         const table = document.getElementById('riwayatTable');
-        
-        if (!magangData.riwayat || magangData.riwayat.length === 0) {
-            table.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">Belum ada riwayat pengajuan</td></tr>';
-            return;
-        }
-
-        table.innerHTML = magangData.riwayat.map(item => {
-            let jenisIcon = 'fa-file-signature';
-            let jenisText = 'Pendaftaran';
-            let keterangan = '';
-
-            if (item.jenis === 'perusahaan') {
-                jenisIcon = 'fa-building';
-                jenisText = 'Data Perusahaan';
-                keterangan = item.nama_perusahaan || '-';
-            } else if (item.jenis === 'luaran') {
-                jenisIcon = 'fa-tasks';
-                jenisText = 'Luaran';
-                keterangan = item.judul_proyek || '-';
-            } else {
-                keterangan = 'Pendaftaran magang';
-            }
-
-            return `
-                <tr>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="flex items-center">
-                            <i class="fas ${jenisIcon} text-purple-500 mr-2"></i>
-                            <span class="text-sm text-gray-900">${jenisText}</span>
-                        </div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatDate(item.created_at)}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="${getStatusBadgeClass(item.status)} px-2 py-1 rounded-full text-xs">
-                            ${getStatusText(item.status)}
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${keterangan}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm">
-                        <button class="text-blue-600 hover:text-blue-800 mr-2" onclick="viewDetail('${item.jenis}', '${item.id_registrasi || item.id_perusahaan || item.id_luaran}')">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </td>
-                </tr>
-            `;
-        }).join('');
+        if (!magangData.riwayat || magangData.riwayat.length === 0) { table.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">Belum ada riwayat pengajuan</td></tr>'; return; }
+        table.innerHTML = magangData.riwayat.map(item => { let jenisIcon = 'fa-file-signature', jenisText = 'Pendaftaran', keterangan = ''; if (item.jenis === 'perusahaan') { jenisIcon = 'fa-building'; jenisText = 'Data Perusahaan'; keterangan = item.nama_perusahaan || '-'; } else if (item.jenis === 'luaran') { jenisIcon = 'fa-tasks'; jenisText = 'Luaran'; keterangan = item.judul_proyek || '-'; } else { keterangan = 'Pendaftaran magang'; } return `<tr><td class="px-6 py-4 whitespace-nowrap"><div class="flex items-center"><i class="fas ${jenisIcon} text-purple-500 mr-2"></i><span class="text-sm text-gray-900">${jenisText}</span></div></td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatDate(item.created_at)}</td><td class="px-6 py-4 whitespace-nowrap"><span class="${getStatusBadgeClass(item.status)} px-2 py-1 rounded-full text-xs">${getStatusText(item.status)}</span></td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${keterangan}</td><td class="px-6 py-4 whitespace-nowrap text-sm"><button class="text-blue-600 hover:text-blue-800 mr-2" onclick="viewDetail('${item.jenis}', '${item.id_registrasi || item.id_perusahaan || item.id_luaran}')"><i class="fas fa-eye"></i></button></td></tr>`; }).join('');
     }
 
     function updatePerusahaanTable() {
         const table = document.getElementById('perusahaanTable');
-        
-        if (!magangData.perusahaan || magangData.perusahaan.length === 0) {
-            table.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">Belum ada data perusahaan</td></tr>';
-            return;
-        }
-
-        table.innerHTML = magangData.perusahaan.map(company => {
-            const periode = company.tanggal_mulai && company.tanggal_selesai
-                ? `${formatDate(company.tanggal_mulai)} - ${formatDate(company.tanggal_selesai)}`
-                : '-';
-
-            return `
-                <tr>
-                    <td class="px-6 py-4 whitespace-nowrap">${company.nama_perusahaan || '-'}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">${company.bidang_magang || '-'}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">${periode}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="${getStatusBadgeClass(company.status)} px-2 py-1 rounded-full text-xs">
-                            ${getStatusText(company.status)}
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <button class="text-blue-600 hover:text-blue-800 mr-2" onclick="viewCompanyDetail('${company.id_perusahaan}')">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <button class="text-green-600 hover:text-green-800" onclick="editPerusahaan('${company.id_perusahaan}')">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                    </td>
-                </tr>
-            `;
-        }).join('');
+        if (!magangData.perusahaan || magangData.perusahaan.length === 0) { table.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">Belum ada data perusahaan</td></tr>'; return; }
+        table.innerHTML = magangData.perusahaan.map(company => { const periode = company.tanggal_mulai && company.tanggal_selesai ? `${formatDate(company.tanggal_mulai)} - ${formatDate(company.tanggal_selesai)}` : '-'; return `<tr><td class="px-6 py-4 whitespace-nowrap">${company.nama_perusahaan || '-'}</td><td class="px-6 py-4 whitespace-nowrap">${company.bidang_magang || '-'}</td><td class="px-6 py-4 whitespace-nowrap">${periode}</td><td class="px-6 py-4 whitespace-nowrap"><span class="${getStatusBadgeClass(company.status)} px-2 py-1 rounded-full text-xs">${getStatusText(company.status)}</span></td><td class="px-6 py-4 whitespace-nowrap"><button class="text-blue-600 hover:text-blue-800 mr-2" onclick="viewCompanyDetail('${company.id_perusahaan}')"><i class="fas fa-eye"></i></button><button class="text-green-600 hover:text-green-800" onclick="editPerusahaan('${company.id_perusahaan}')"><i class="fas fa-edit"></i></button></td></tr>`; }).join('');
     }
 
     function updateLuaranTable() {
         const table = document.getElementById('luaranMagangTable');
-        
-        if (!magangData.luaran || magangData.luaran.length === 0) {
-            table.innerHTML = '<tr><td colspan="4" class="px-6 py-4 text-center text-gray-500">Belum ada luaran yang diupload</td></tr>';
-            return;
-        }
-
-        table.innerHTML = magangData.luaran.map(luaran => {
-            return `
-                <tr>
-                    <td class="px-6 py-4 whitespace-nowrap">${luaran.judul_proyek || '-'}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">${formatDate(luaran.created_at)}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="${getStatusBadgeClass(luaran.status)} px-2 py-1 rounded-full text-xs">
-                            ${getStatusText(luaran.status)}
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <button class="text-blue-600 hover:text-blue-800 mr-2" onclick="viewLuaranDetail('${luaran.id_luaran}')">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <button class="text-green-600 hover:text-green-800" onclick="editLuaran('${luaran.id_luaran}')">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                    </td>
-                </tr>
-            `;
-        }).join('');
+        if (!magangData.luaran || magangData.luaran.length === 0) { table.innerHTML = '<tr><td colspan="4" class="px-6 py-4 text-center text-gray-500">Belum ada luaran yang diupload</td></tr>'; return; }
+        table.innerHTML = magangData.luaran.map(luaran => `<tr><td class="px-6 py-4 whitespace-nowrap">${luaran.judul_proyek || '-'}</td><td class="px-6 py-4 whitespace-nowrap">${formatDate(luaran.created_at)}</td><td class="px-6 py-4 whitespace-nowrap"><span class="${getStatusBadgeClass(luaran.status)} px-2 py-1 rounded-full text-xs">${getStatusText(luaran.status)}</span></td><td class="px-6 py-4 whitespace-nowrap"><button class="text-blue-600 hover:text-blue-800 mr-2" onclick="viewLuaranDetail('${luaran.id_luaran}')"><i class="fas fa-eye"></i></button><button class="text-green-600 hover:text-green-800" onclick="editLuaran('${luaran.id_luaran}')"><i class="fas fa-edit"></i></button></td></tr>`).join('');
     }
     
-    // ========== DETAIL VIEW FUNCTIONS ==========
+    document.getElementById('magangForm')?.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        if (!document.getElementById('magangAgreeTerms').checked) { showNotification('Anda harus menyetujui pernyataan di atas', 'warning'); return; }
+        const krsFile = document.getElementById('magangKrs').files[0], khsFile = document.getElementById('magangKhs').files[0], paymentFile = document.getElementById('magangPayment').files[0];
+        if (!krsFile || !khsFile || !paymentFile) { showNotification('Semua file harus diupload', 'warning'); return; }
+        try {
+            showLoading();
+            const token = localStorage.getItem('token');
+            if (!token) throw new Error('Not authenticated');
+            const formData = new FormData();
+            formData.append('program_studi', document.getElementById('magangStudyProgram').value);
+            formData.append('domisili', document.getElementById('magangDomicile').value);
+            formData.append('semester', document.getElementById('magangSemester').value);
+            formData.append('krs_file', krsFile);
+            formData.append('khs_file', khsFile);
+            formData.append('payment_file', paymentFile);
+            const response = await fetch(`${API_BASE_URL}/magang/registrasi`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: formData });
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.message || 'Gagal mendaftar magang');
+            showNotification('Pendaftaran magang berhasil dikirim', 'success');
+            this.reset();
+            document.getElementById('fakultasSelect').value = '';
+            document.getElementById('magangStudyProgram').innerHTML = '<option value="">-- Pilih Fakultas Terlebih Dahulu --</option>';
+            document.getElementById('magangStudyProgram').disabled = true;
+            await loadMagangData();
+            showSection('proses');
+        } catch (error) { console.error('Error:', error); showNotification(error.message, 'error'); } finally { hideLoading(); }
+    });
+
+    document.getElementById('perusahaanForm')?.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        try {
+            showLoading();
+            const token = localStorage.getItem('token');
+            if (!token) throw new Error('Not authenticated');
+            const formData = new FormData();
+            formData.append('nama_perusahaan', document.getElementById('companyName').value);
+            formData.append('bidang_magang', document.getElementById('internshipField').value);
+            formData.append('posisi', document.getElementById('position').value);
+            formData.append('durasi', document.getElementById('duration').value);
+            formData.append('tanggal_mulai', document.getElementById('startDate').value);
+            formData.append('tanggal_selesai', document.getElementById('endDate').value);
+            formData.append('alamat_perusahaan', document.getElementById('companyAddress').value);
+            formData.append('nama_pembimbing', document.getElementById('supervisor').value);
+            formData.append('kontak_pembimbing', document.getElementById('supervisorContact').value);
+            const emailPembimbing = document.getElementById('supervisorEmail').value;
+            if (emailPembimbing) formData.append('email_pembimbing', emailPembimbing);
+            const jabatanPembimbing = document.getElementById('supervisorPosition').value;
+            if (jabatanPembimbing) formData.append('jabatan_pembimbing', jabatanPembimbing);
+            const suratKeterangan = document.getElementById('workCertificate').files[0];
+            if (suratKeterangan) formData.append('surat_keterangan', suratKeterangan);
+            const strukturOrganisasi = document.getElementById('companyStructure').files[0];
+            if (strukturOrganisasi) formData.append('struktur_organisasi', strukturOrganisasi);
+            const perusahaanId = document.getElementById('perusahaanId').value;
+            const url = perusahaanId ? `${API_BASE_URL}/magang/perusahaan/${perusahaanId}` : `${API_BASE_URL}/magang/perusahaan`;
+            const method = perusahaanId ? 'PUT' : 'POST';
+            const response = await fetch(url, { method: method, headers: { 'Authorization': `Bearer ${token}` }, body: formData });
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.message || 'Gagal menyimpan data perusahaan');
+            showNotification('Data perusahaan berhasil disimpan', 'success');
+            this.reset();
+            document.getElementById('perusahaanId').value = '';
+            await loadPerusahaanData();
+            await loadMagangData();
+            showSection('proses');
+        } catch (error) { console.error('Error:', error); showNotification(error.message, 'error'); } finally { hideLoading(); }
+    });
+
+    document.getElementById('luaranMagangForm')?.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        try {
+            showLoading();
+            const token = localStorage.getItem('token');
+            if (!token) throw new Error('Not authenticated');
+            const formData = new FormData();
+            formData.append('judul_proyek', document.getElementById('judul_proyek').value);
+            formData.append('deskripsi_pekerjaan', document.getElementById('deskripsi_pekerjaan').value);
+            formData.append('keterangan_magang', document.getElementById('keterangan_magang').value || '');
+            const posterLink = document.getElementById('link_poster_magang').value;
+            if (posterLink) formData.append('poster', posterLink);
+            const laporanLink = document.getElementById('link_laporan').value;
+            if (laporanLink) formData.append('laporan', laporanLink);
+            const fotoLink = document.getElementById('link_foto').value;
+            if (fotoLink) formData.append('foto_kegiatan', fotoLink);
+            const mouFile = document.getElementById('file_mou_magang').files[0];
+            if (mouFile) formData.append('mou_file', mouFile);
+            const sertifikatFile = document.getElementById('sertifikat_magang').files[0];
+            if (sertifikatFile) formData.append('sertifikat', sertifikatFile);
+            const logbookFile = document.getElementById('logbook_magang').files[0];
+            if (logbookFile) formData.append('logbook', logbookFile);
+            const luaranId = document.getElementById('luaranId').value;
+            const url = luaranId ? `${API_BASE_URL}/magang/luaran/${luaranId}` : `${API_BASE_URL}/magang/luaran`;
+            const method = luaranId ? 'PUT' : 'POST';
+            const response = await fetch(url, { method: method, headers: { 'Authorization': `Bearer ${token}` }, body: formData });
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.message || 'Gagal menyimpan data luaran');
+            showNotification('Data luaran berhasil disimpan', 'success');
+            this.reset();
+            document.getElementById('luaranId').value = '';
+            await loadLuaranData();
+            await loadMagangData();
+            showSection('proses');
+        } catch (error) { console.error('Error:', error); showNotification(error.message, 'error'); } finally { hideLoading(); }
+    });
     
     async function viewDetail(jenis, id) {
         try {
             showLoading();
-            
             const token = localStorage.getItem('token');
             if (!token) throw new Error('Not authenticated');
-
-            let data = null;
-            let title = '';
-
+            let data = null, title = '';
             if (jenis === 'perusahaan') {
-                const response = await fetch(`${API_BASE_URL}/magang/perusahaan/${id}`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                if (response.ok) {
-                    const result = await response.json();
-                    data = result.data;
-                    title = 'Detail Perusahaan';
-                }
+                const response = await fetch(`${API_BASE_URL}/magang/perusahaan/${id}`, { headers: { 'Authorization': `Bearer ${token}` } });
+                if (response.ok) { const result = await response.json(); data = result.data; title = 'Detail Perusahaan'; }
             } else if (jenis === 'luaran') {
-                const response = await fetch(`${API_BASE_URL}/magang/luaran/${id}`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                if (response.ok) {
-                    const result = await response.json();
-                    data = result.data;
-                    title = 'Detail Luaran';
-                }
+                const response = await fetch(`${API_BASE_URL}/magang/luaran/${id}`, { headers: { 'Authorization': `Bearer ${token}` } });
+                if (response.ok) { const result = await response.json(); data = result.data; title = 'Detail Luaran'; }
             }
-
-            if (!data) {
-                showNotification('Data tidak ditemukan', 'error');
-                return;
-            }
-
+            if (!data) { showNotification('Data tidak ditemukan', 'error'); return; }
             let html = '<div class="text-left space-y-2">';
-            
             if (jenis === 'perusahaan') {
-                html += `
-                    <p><strong>Nama Perusahaan:</strong> ${data.nama_perusahaan || '-'}</p>
-                    <p><strong>Bidang:</strong> ${data.bidang_magang || '-'}</p>
-                    <p><strong>Posisi:</strong> ${data.posisi || '-'}</p>
-                    <p><strong>Durasi:</strong> ${data.durasi || '-'} bulan</p>
-                    <p><strong>Periode:</strong> ${formatDate(data.tanggal_mulai)} - ${formatDate(data.tanggal_selesai)}</p>
-                    <p><strong>Alamat:</strong> ${data.alamat_perusahaan || '-'}</p>
-                    <p><strong>Pembimbing:</strong> ${data.nama_pembimbing || '-'}</p>
-                    <p><strong>Kontak:</strong> ${data.kontak_pembimbing || '-'}</p>
-                    <p><strong>Status:</strong> <span class="${getStatusBadgeClass(data.status)} px-2 py-1 rounded-full text-xs">${getStatusText(data.status)}</span></p>
-                `;
+                html += `<p><strong>Nama Perusahaan:</strong> ${data.nama_perusahaan || '-'}</p><p><strong>Bidang:</strong> ${data.bidang_magang || '-'}</p><p><strong>Posisi:</strong> ${data.posisi || '-'}</p><p><strong>Durasi:</strong> ${data.durasi || '-'} bulan</p><p><strong>Periode:</strong> ${formatDate(data.tanggal_mulai)} - ${formatDate(data.tanggal_selesai)}</p><p><strong>Alamat:</strong> ${data.alamat_perusahaan || '-'}</p><p><strong>Pembimbing:</strong> ${data.nama_pembimbing || '-'}</p><p><strong>Kontak:</strong> ${data.kontak_pembimbing || '-'}</p><p><strong>Status:</strong> <span class="${getStatusBadgeClass(data.status)} px-2 py-1 rounded-full text-xs">${getStatusText(data.status)}</span></p>`;
             } else if (jenis === 'luaran') {
-                html += `
-                    <p><strong>Judul Proyek:</strong> ${data.judul_proyek || '-'}</p>
-                    <p><strong>Deskripsi:</strong> ${data.deskripsi_pekerjaan || '-'}</p>
-                    <p><strong>Link Poster:</strong> ${data.link_poster ? `<a href="${data.link_poster}" target="_blank" class="text-blue-600">Lihat</a>` : '-'}</p>
-                    <p><strong>Link Laporan:</strong> ${data.link_laporan ? `<a href="${data.link_laporan}" target="_blank" class="text-blue-600">Lihat</a>` : '-'}</p>
-                    <p><strong>Link Foto:</strong> ${data.link_foto ? `<a href="${data.link_foto}" target="_blank" class="text-blue-600">Lihat</a>` : '-'}</p>
-                    <p><strong>Status:</strong> <span class="${getStatusBadgeClass(data.status)} px-2 py-1 rounded-full text-xs">${getStatusText(data.status)}</span></p>
-                `;
+                html += `<p><strong>Judul Proyek:</strong> ${data.judul_proyek || '-'}</p><p><strong>Deskripsi:</strong> ${data.deskripsi_pekerjaan || '-'}</p><p><strong>Link Poster:</strong> ${data.link_poster ? `<a href="${data.link_poster}" target="_blank" class="text-blue-600">Lihat</a>` : '-'}</p><p><strong>Link Laporan:</strong> ${data.link_laporan ? `<a href="${data.link_laporan}" target="_blank" class="text-blue-600">Lihat</a>` : '-'}</p><p><strong>Link Foto:</strong> ${data.link_foto ? `<a href="${data.link_foto}" target="_blank" class="text-blue-600">Lihat</a>` : '-'}</p><p><strong>Status:</strong> <span class="${getStatusBadgeClass(data.status)} px-2 py-1 rounded-full text-xs">${getStatusText(data.status)}</span></p>`;
             }
-
             html += '</div>';
-
-            Swal.fire({
-                title: title,
-                html: html,
-                icon: 'info',
-                confirmButtonColor: '#8B5CF6',
-                width: 600
-            });
-
-        } catch (error) {
-            console.error('Error viewing detail:', error);
-            showNotification('Gagal memuat detail', 'error');
-        } finally {
-            hideLoading();
-        }
+            Swal.fire({ title: title, html: html, icon: 'info', confirmButtonColor: '#8B5CF6', width: 600 });
+        } catch (error) { console.error('Error viewing detail:', error); showNotification('Gagal memuat detail', 'error'); } finally { hideLoading(); }
     }
 
-    async function viewCompanyDetail(id) {
-        await viewDetail('perusahaan', id);
-    }
-
-    async function viewLuaranDetail(id) {
-        await viewDetail('luaran', id);
-    }
+    async function viewCompanyDetail(id) { await viewDetail('perusahaan', id); }
+    async function viewLuaranDetail(id) { await viewDetail('luaran', id); }
 
     function editPerusahaan(id) {
         const perusahaan = magangData.perusahaan.find(p => p.id_perusahaan === id);
         if (perusahaan) {
             showSection('perusahaan');
-            
             document.getElementById('perusahaanId').value = perusahaan.id_perusahaan;
             document.getElementById('companyName').value = perusahaan.nama_perusahaan || '';
             document.getElementById('internshipField').value = perusahaan.bidang_magang || '';
@@ -2029,7 +1459,6 @@
             document.getElementById('supervisorContact').value = perusahaan.kontak_pembimbing || '';
             document.getElementById('supervisorEmail').value = perusahaan.email_pembimbing || '';
             document.getElementById('supervisorPosition').value = perusahaan.jabatan_pembimbing || '';
-
             document.getElementById('sectionPerusahaan').scrollIntoView({ behavior: 'smooth' });
         }
     }
@@ -2038,7 +1467,6 @@
         const luaran = magangData.luaran.find(l => l.id_luaran === id);
         if (luaran) {
             showSection('luaran');
-            
             document.getElementById('luaranId').value = luaran.id_luaran;
             document.getElementById('judul_proyek').value = luaran.judul_proyek || '';
             document.getElementById('deskripsi_pekerjaan').value = luaran.deskripsi_pekerjaan || '';
@@ -2046,279 +1474,98 @@
             document.getElementById('link_laporan').value = luaran.link_laporan || '';
             document.getElementById('link_foto').value = luaran.link_foto || '';
             document.getElementById('keterangan_magang').value = luaran.keterangan || '';
-
             document.getElementById('sectionLuaran').scrollIntoView({ behavior: 'smooth' });
         }
     }
     
-    // ========== CANCEL FUNCTIONS ==========
-    function cancelRegistration() {
-        document.getElementById('magangForm').reset();
-        document.getElementById('fakultasSelect').value = '';
-        document.getElementById('magangStudyProgram').innerHTML = '<option value="">-- Pilih Fakultas Terlebih Dahulu --</option>';
-        document.getElementById('magangStudyProgram').disabled = true;
-        showSection('proses');
-    }
+    function cancelRegistration() { document.getElementById('magangForm').reset(); document.getElementById('fakultasSelect').value = ''; document.getElementById('magangStudyProgram').innerHTML = '<option value="">-- Pilih Fakultas Terlebih Dahulu --</option>'; document.getElementById('magangStudyProgram').disabled = true; showSection('proses'); }
+    function cancelCompanyData() { document.getElementById('perusahaanForm').reset(); document.getElementById('perusahaanId').value = ''; showSection('proses'); }
+    function cancelLuaran() { document.getElementById('luaranMagangForm').reset(); document.getElementById('luaranId').value = ''; showSection('proses'); }
     
-    function cancelCompanyData() {
-        document.getElementById('perusahaanForm').reset();
-        document.getElementById('perusahaanId').value = '';
-        showSection('proses');
-    }
-    
-    function cancelLuaran() {
-        document.getElementById('luaranMagangForm').reset();
-        document.getElementById('luaranId').value = '';
-        showSection('proses');
-    }
-    
-    // ========== FILE HANDLING ==========
-    
-    function setupFileValidation() {
-        const fileInputs = document.querySelectorAll('input[type="file"]');
-        
-        fileInputs.forEach(input => {
-            input.addEventListener('change', function() {
-                const file = this.files[0];
-                if (!file) return;
-
-                const maxSize = this.id.includes('mou') || this.id.includes('sertifikat') || this.id.includes('logbook')
-                    ? 5 * 1024 * 1024
-                    : 2 * 1024 * 1024;
-
-                if (file.size > maxSize) {
-                    showNotification(`Ukuran file maksimal ${maxSize / (1024 * 1024)}MB`, 'warning');
-                    this.value = '';
-                    return;
+    // ==================== NAVBAR FUNCTIONS ====================
+    async function updateNavbarUserInfo() {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+            const response = await fetch(`${API_BASE_URL}/mahasiswa/profil/basic`, { headers: { 'Authorization': `Bearer ${token}` } });
+            if (response.ok) {
+                const result = await response.json();
+                const profile = result.data;
+                if (profile) {
+                    const avatarUrl = profile.foto_profil ? `/${profile.foto_profil}` : `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.nama_lengkap || 'Mahasiswa')}&background=3B82F6&color=fff&bold=true`;
+                    const navAvatar = document.getElementById('navAvatar');
+                    const dropdownAvatar = document.getElementById('dropdownAvatar');
+                    const mobileNavAvatar = document.getElementById('mobileNavAvatar');
+                    const navUserName = document.getElementById('navUserName');
+                    const dropdownUserName = document.getElementById('dropdownUserName');
+                    const mobileNavUserName = document.getElementById('mobileNavUserName');
+                    const dropdownUserNim = document.getElementById('dropdownUserNim');
+                    if (navAvatar) navAvatar.src = avatarUrl;
+                    if (dropdownAvatar) dropdownAvatar.src = avatarUrl;
+                    if (mobileNavAvatar) mobileNavAvatar.src = avatarUrl;
+                    if (navUserName) navUserName.textContent = profile.nama_lengkap || 'Mahasiswa';
+                    if (dropdownUserName) dropdownUserName.textContent = profile.nama_lengkap || 'Mahasiswa';
+                    if (mobileNavUserName) mobileNavUserName.textContent = profile.nama_lengkap || 'Mahasiswa';
+                    if (dropdownUserNim) dropdownUserNim.textContent = profile.nim ? `NIM: ${profile.nim}` : '-';
                 }
+            }
+        } catch (error) { console.error('Error loading profile for navbar:', error); }
+    }
 
-                const validTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg'];
-                if (!validTypes.includes(file.type) && !file.name.toLowerCase().endsWith('.pdf')) {
-                    showNotification('Format file harus PDF, JPG, atau PNG', 'warning');
-                    this.value = '';
-                    return;
-                }
+    function initDropdown() {
+        const userMenuBtn = document.getElementById('userMenuBtn');
+        const userDropdown = document.getElementById('userDropdown');
+        if (userMenuBtn && userDropdown) {
+            userMenuBtn.addEventListener('click', function(e) { e.stopPropagation(); userDropdown.classList.toggle('hidden'); });
+            document.addEventListener('click', function(e) { if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) userDropdown.classList.add('hidden'); });
+        }
+    }
 
-                const previewId = `file-preview-${this.id}`;
-                let previewDiv = document.getElementById(previewId);
-                
-                if (!previewDiv) {
-                    previewDiv = document.createElement('div');
-                    previewDiv.id = previewId;
-                    previewDiv.className = 'file-preview text-sm mt-2';
-                    this.parentNode.appendChild(previewDiv);
-                }
+    function initMobileNav() {
+        const hamburger = document.getElementById('hamburgerBtn');
+        const mobileNav = document.getElementById('mobileNav');
+        const closeBtn = document.getElementById('closeMobileNav');
+        if (hamburger && mobileNav) {
+            hamburger.addEventListener('click', () => mobileNav.classList.add('active'));
+            closeBtn.addEventListener('click', () => mobileNav.classList.remove('active'));
+            mobileNav.addEventListener('click', (e) => { if (e.target === mobileNav) mobileNav.classList.remove('active'); });
+            document.querySelectorAll('.mobile-nav-link').forEach(link => { link.addEventListener('click', () => mobileNav.classList.remove('active')); });
+        }
+    }
 
-                previewDiv.innerHTML = `
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center">
-                            <i class="fas ${file.type === 'application/pdf' ? 'fa-file-pdf text-red-500' : 'fa-file-image text-blue-500'} mr-2"></i>
-                            <span>${file.name} (${formatFileSize(file.size)})</span>
-                        </div>
-                        <button type="button" onclick="removeFile('${this.id}')" class="text-red-500 hover:text-red-700">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                `;
-            });
+    function setActiveNavLink() {
+        const currentPage = window.location.pathname.split('/').pop();
+        const navLinks = document.querySelectorAll('.nav-link-modern');
+        navLinks.forEach(link => {
+            const href = link.getAttribute('href');
+            if (href === currentPage) link.classList.add('active');
+            else link.classList.remove('active');
         });
     }
 
-    window.removeFile = function(inputId) {
-        const input = document.getElementById(inputId);
-        if (input) {
-            input.value = '';
-            const previewId = `file-preview-${inputId}`;
-            const previewDiv = document.getElementById(previewId);
-            if (previewDiv) {
-                previewDiv.remove();
-            }
-        }
-    };
-    
-    // ========== DOM CONTENT LOADED ==========
+    // ========== INITIALIZATION ==========
     document.addEventListener('DOMContentLoaded', async function() {
         if (!auth.requireRole('mahasiswa')) return;
+        initDropdown();
+        initMobileNav();
+        setActiveNavLink();
+        updateUserInfo();
+        await updateNavbarUserInfo();
         showLoading();
         try {
             currentUser = getUser();
-            updateUserInfo();
-            
-            // Load fakultas first
             await loadFakultas();
-            
-            // Setup event listener for fakultas select
             const fakultasSelect = document.getElementById('fakultasSelect');
             if (fakultasSelect) {
                 fakultasSelect.addEventListener('change', function(e) {
                     const id_fakultas = e.target.value;
-                    if (id_fakultas) {
-                        loadProdiByFakultas(id_fakultas);
-                    } else {
-                        const prodiSelect = document.getElementById('magangStudyProgram');
-                        prodiSelect.innerHTML = '<option value="">-- Pilih Fakultas Terlebih Dahulu --</option>';
-                        prodiSelect.disabled = true;
-                    }
+                    if (id_fakultas) loadProdiByFakultas(id_fakultas);
+                    else { const prodiSelect = document.getElementById('magangStudyProgram'); prodiSelect.innerHTML = '<option value="">-- Pilih Fakultas Terlebih Dahulu --</option>'; prodiSelect.disabled = true; }
                 });
             }
-            
-            // Load other data
             await loadMagangData();
-            setupFileValidation();
-            
-        } catch (error) {
-            console.error('Error initializing page:', error);
-            showNotification('Gagal memuat halaman', 'error');
-        } finally {
-            hideLoading();
-        }
+        } catch (error) { console.error('Error initializing page:', error); showNotification('Gagal memuat halaman', 'error'); } finally { hideLoading(); }
     });
-
-    // Tambahkan fungsi-fungsi berikut di dalam tag <script> (setelah fungsi yang sudah ada)
-
-// Fungsi untuk update navbar user info
-async function updateNavbarUserInfo() {
-    try {
-        const token = localStorage.getItem('token');
-        if (!token) return;
-        
-        const response = await fetch(`${API_BASE_URL}/mahasiswa/profil/basic`, {
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
-        
-        if (response.ok) {
-            const result = await response.json();
-            const profile = result.data;
-            
-            if (profile) {
-                const avatarUrl = profile.foto_profil ? `/${profile.foto_profil}` : `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.nama_lengkap || 'Mahasiswa')}&background=3B82F6&color=fff&bold=true`;
-                const navAvatar = document.getElementById('navAvatar');
-                const dropdownAvatar = document.getElementById('dropdownAvatar');
-                const navUserName = document.getElementById('navUserName');
-                const dropdownUserName = document.getElementById('dropdownUserName');
-                const dropdownUserNim = document.getElementById('dropdownUserNim');
-                
-                if (navAvatar) navAvatar.src = avatarUrl;
-                if (dropdownAvatar) dropdownAvatar.src = avatarUrl;
-                if (navUserName) navUserName.textContent = profile.nama_lengkap || 'Mahasiswa';
-                if (dropdownUserName) dropdownUserName.textContent = profile.nama_lengkap || 'Mahasiswa';
-                if (dropdownUserNim) dropdownUserNim.textContent = profile.nim ? `NIM: ${profile.nim}` : '-';
-            }
-        }
-    } catch (error) {
-        console.error('Error loading profile for navbar:', error);
-    }
-}
-
-// Fungsi untuk inisialisasi dropdown
-function initDropdown() {
-    const userMenuBtn = document.getElementById('userMenuBtn');
-    const userDropdown = document.getElementById('userDropdown');
-    
-    if (userMenuBtn && userDropdown) {
-        userMenuBtn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            userDropdown.classList.toggle('hidden');
-        });
-        
-        document.addEventListener('click', function(e) {
-            if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) {
-                userDropdown.classList.add('hidden');
-            }
-        });
-    }
-}
-
-// Fungsi untuk set active nav link
-function setActiveNavLink() {
-    const currentPage = window.location.pathname.split('/').pop();
-    const navLinks = document.querySelectorAll('.nav-link-modern');
-    
-    navLinks.forEach(link => {
-        const href = link.getAttribute('href');
-        if (href === currentPage) {
-            link.classList.add('active');
-        } else {
-            link.classList.remove('active');
-        }
-    });
-}
-
-// Update fungsi updateUserInfo yang sudah ada
-function updateUserInfo() {
-    const user = window.auth.getUser();
-    
-    console.log('Updating user info with:', user);
-    
-    if (user) {
-        const userName = user.nama_lengkap || user.name || 'Mahasiswa';
-        const userNim = user.nim || '-';
-        
-        const userNameDisplay = document.getElementById('userNameDisplay');
-        const userNimDisplay = document.getElementById('userNimDisplay');
-        
-        if (userNameDisplay) userNameDisplay.textContent = userName;
-        if (userNimDisplay) userNimDisplay.textContent = userNim;
-        
-        if (document.getElementById('magangFullName')) {
-            document.getElementById('magangFullName').value = userName;
-        }
-        if (document.getElementById('magangNim')) {
-            document.getElementById('magangNim').value = userNim;
-        }
-        if (document.getElementById('magangEmail')) {
-            document.getElementById('magangEmail').value = user.email || '';
-        }
-    } else {
-        console.error('No user data found');
-        const userNameDisplay = document.getElementById('userNameDisplay');
-        if (userNameDisplay) userNameDisplay.textContent = 'User tidak ditemukan';
-    }
-}
-
-// Update DOMContentLoaded
-document.addEventListener('DOMContentLoaded', async function() {
-    if (!auth.requireRole('mahasiswa')) return;
-    
-    // Initialize navbar components
-    initDropdown();
-    setActiveNavLink();
-    updateUserInfo();
-    await updateNavbarUserInfo();
-    
-    showLoading();
-    try {
-        currentUser = getUser();
-        
-        // Load fakultas first
-        await loadFakultas();
-        
-        // Setup event listener for fakultas select
-        const fakultasSelect = document.getElementById('fakultasSelect');
-        if (fakultasSelect) {
-            fakultasSelect.addEventListener('change', function(e) {
-                const id_fakultas = e.target.value;
-                if (id_fakultas) {
-                    loadProdiByFakultas(id_fakultas);
-                } else {
-                    const prodiSelect = document.getElementById('magangStudyProgram');
-                    prodiSelect.innerHTML = '<option value="">-- Pilih Fakultas Terlebih Dahulu --</option>';
-                    prodiSelect.disabled = true;
-                }
-            });
-        }
-        
-        // Load other data
-        await loadMagangData();
-        setupFileValidation();
-        
-    } catch (error) {
-        console.error('Error initializing page:', error);
-        showNotification('Gagal memuat halaman', 'error');
-    } finally {
-        hideLoading();
-    }
-});
-</script>
+    </script>
 </body>
 </html>
