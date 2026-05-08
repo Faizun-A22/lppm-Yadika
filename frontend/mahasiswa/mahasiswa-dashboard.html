@@ -11,7 +11,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     
     <style>
-        /* Custom CSS */
+        /* Custom CSS Enhanced Professional */
         .gradient-text { 
             background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%); 
             -webkit-background-clip: text; 
@@ -19,14 +19,14 @@
             background-clip: text; 
         }
 
+        /* Modern Loading Spinner */
         .loading-spinner {
-            border: 3px solid #f3f3f3;
+            width: 48px;
+            height: 48px;
+            border: 3px solid #E5E7EB;
             border-top: 3px solid #3B82F6;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
+            animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
         }
 
         @keyframes spin {
@@ -34,233 +34,234 @@
             100% { transform: rotate(360deg); }
         }
 
+        /* Skeleton Loading Animation */
+        .skeleton {
+            background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s linear infinite;
+            border-radius: 8px;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
         .realtime-badge {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: #10B981;
+            background: linear-gradient(135deg, #10B981, #059669);
             color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
+            padding: 5px 14px;
+            border-radius: 30px;
             font-size: 12px;
             font-weight: 500;
+            box-shadow: 0 2px 6px rgba(16,185,129,0.2);
         }
 
-        .pulse {
-            animation: pulse 2s infinite;
+        .pulse-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+            box-shadow: 0 0 0 0 rgba(255,255,255,0.7);
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+            0% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 0 rgba(255,255,255,0.7); }
+            70% { transform: scale(1.2); opacity: 0.7; box-shadow: 0 0 0 6px rgba(255,255,255,0); }
+            100% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 0 rgba(255,255,255,0); }
         }
 
+        /* Enhanced Stat Cards */
         .stat-card {
-            transition: all 0.3s ease;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .stat-card:hover::before {
+            left: 100%;
         }
         
         .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transform: translateY(-6px);
+            box-shadow: 0 25px 35px -12px rgba(0, 0, 0, 0.15);
         }
 
+        /* Animated Progress Bar */
+        .animated-progress {
+            transition: width 0.8s cubic-bezier(0.34, 1.2, 0.64, 1);
+        }
+
+        /* Slide Down Animation */
         @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
+            from { opacity: 0; transform: translateY(-20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .update-animation { animation: slideDown 0.3s ease-out; }
+        .update-animation { animation: slideDown 0.4s cubic-bezier(0.34, 1.2, 0.64, 1); }
 
+        /* Toast Notification Premium */
         .toast-notification {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
+            bottom: 24px;
+            right: 24px;
             background: #1F2937;
+            backdrop-filter: blur(10px);
+            background: rgba(31, 41, 55, 0.95);
             color: white;
-            padding: 12px 20px;
-            border-radius: 8px;
+            padding: 12px 24px;
+            border-radius: 50px;
             display: flex;
             align-items: center;
             gap: 12px;
             z-index: 1000;
-            transform: translateX(400px);
-            transition: transform 0.3s ease;
+            transform: translateX(450px);
+            transition: transform 0.4s cubic-bezier(0.34, 1.2, 0.64, 1);
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2);
+            font-weight: 500;
         }
 
         .toast-notification.show { transform: translateX(0); }
 
-        .progress-bar {
-            height: 4px;
-            background: rgba(255,255,255,0.3);
-            border-radius: 2px;
-            overflow: hidden;
-            margin-top: 8px;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: white;
-            border-radius: 2px;
-            transition: width 0.5s ease;
-        }
-
+        /* Status Badges Premium */
         .status-badge {
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 11px;
             font-weight: 600;
+            letter-spacing: 0.3px;
         }
         
-        .status-pending { background: #FEF3C7; color: #D97706; }
-        .status-approved { background: #D1FAE5; color: #059669; }
-        .status-rejected { background: #FEE2E2; color: #DC2626; }
-        .status-verified { background: #DBEAFE; color: #2563EB; }
+        .status-pending { background: #FEF3C7; color: #D97706; border: 1px solid #FDE68A; }
+        .status-approved { background: #D1FAE5; color: #059669; border: 1px solid #A7F3D0; }
+        .status-rejected { background: #FEE2E2; color: #DC2626; border: 1px solid #FECACA; }
+        .status-verified { background: #DBEAFE; color: #2563EB; border: 1px solid #BFDBFE; }
 
-        /* ========== NAVBAR STYLE MODERN & INTEGRATED ========== */
+        /* Navbar Enhancements */
         .navbar {
-            background: white;
-            border-bottom: 1px solid #E5E7EB;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid rgba(229,231,235,0.6);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02), 0 2px 5px rgba(0,0,0,0.03);
         }
 
         .nav-link {
             position: relative;
-            transition: all 0.2s ease;
-            color: #4B5563;
+            transition: all 0.25s ease;
             font-weight: 500;
+            letter-spacing: 0.2px;
         }
 
-        .nav-link:hover {
-            color: #3B82F6;
-            background: #EFF6FF;
-        }
-
-        .nav-link.active {
-            color: #3B82F6;
-            background: #EFF6FF;
-        }
-
-        .nav-link.active i {
-            color: #3B82F6;
-        }
-
-        /* Mobile Nav */
-        .mobile-nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 100;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .mobile-nav.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .mobile-nav-container {
+        .nav-link.active::after {
+            content: '';
             position: absolute;
-            top: 0;
-            right: 0;
-            width: 280px;
-            height: 100%;
-            background: white;
-            transform: translateX(100%);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            flex-direction: column;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 3px;
+            background: linear-gradient(90deg, #3B82F6, #8B5CF6);
+            border-radius: 3px;
+            animation: navUnderline 0.3s ease;
         }
 
-        .mobile-nav.active .mobile-nav-container {
-            transform: translateX(0);
+        @keyframes navUnderline {
+            from { width: 0; opacity: 0; }
+            to { width: 24px; opacity: 1; }
         }
 
-        .mobile-nav-header {
-            padding: 20px;
-            background: linear-gradient(135deg, #2563EB, #7C3AED);
-            color: white;
+        /* Floating Action Button Effect */
+        .refresh-btn {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .refresh-btn:active {
+            transform: rotate(180deg);
         }
 
-        .mobile-nav-link {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 20px;
-            color: #4B5563;
-            transition: all 0.2s ease;
-            border-left: 3px solid transparent;
+        /* Responsive & Micro Interactions */
+        .card-hover {
+            transition: all 0.25s ease;
         }
-
-        .mobile-nav-link.active {
-            background: #EFF6FF;
-            color: #2563EB;
-            border-left-color: #2563EB;
-        }
-
-        .mobile-nav-link i { width: 20px; }
-
-        @media (max-width: 768px) {
-            .container { padding-left: 1rem; padding-right: 1rem; }
+        .card-hover:hover {
+            transform: scale(1.02);
+            box-shadow: 0 20px 25px -12px rgba(0,0,0,0.1);
         }
     </style>
 </head>
-<body class="bg-gray-50 font-sans antialiased">
-    <!-- Loading Overlay -->
-    <div id="loadingOverlay" class="fixed inset-0 bg-white bg-opacity-90 z-50 flex items-center justify-center">
-        <div class="text-center">
-            <div class="loading-spinner"></div>
-            <p class="mt-4 text-gray-600">Memuat dashboard...</p>
+<body class="bg-gradient-to-br from-gray-50 via-gray-50 to-blue-50/30 font-sans antialiased">
+    <!-- Premium Loading Overlay -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-white/95 backdrop-blur-sm z-50 flex items-center justify-center transition-all duration-500">
+        <div class="text-center transform transition-all scale-100">
+            <div class="loading-spinner mx-auto"></div>
+            <div class="mt-6 space-y-2">
+                <p class="text-gray-700 font-medium">Memuat Dashboard Anda</p>
+                <div class="w-48 h-1 bg-gray-200 rounded-full overflow-hidden mx-auto">
+                    <div class="h-full bg-blue-500 rounded-full animate-pulse" style="width: 60%"></div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Mobile Navigation -->
-    <div id="mobileNav" class="mobile-nav">
-        <div class="mobile-nav-container">
-            <div class="mobile-nav-header">
-                <div class="flex items-center justify-between mb-4">
-                   <div class="flex items-center gap-3">
-                        <img src="yadika.png" alt="Logo" class="h-10 w-10 rounded-xl bg-white p-1">
-                        <span class="font-bold text-lg">LPPM ITB Yadika</span>
+    <!-- Mobile Navigation (Enhanced) -->
+    <div id="mobileNav" class="mobile-nav fixed inset-0 bg-black/50 z-[100] opacity-0 invisible transition-all duration-300">
+        <div class="absolute top-0 right-0 w-[280px] h-full bg-white shadow-2xl transform translate-x-full transition-transform duration-300 ease-[cubic-bezier(0.34,1.2,0.64,1)]">
+            <div class="bg-gradient-to-br from-blue-600 to-purple-700 p-6 text-white">
+                <div class="flex justify-between items-center mb-6">
+                    <div class="flex items-center gap-3">
+                        <img src="yadika.png" alt="Logo" class="h-10 w-10 rounded-xl bg-white/20 backdrop-blur p-1">
+                        <span class="font-bold text-base">LPPM ITB Yadika</span>
                     </div>
-                    <button id="closeMobileNav" class="text-white">
-                        <i class="fas fa-times text-xl"></i>
+                    <button id="closeMobileNav" class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition">
+                        <i class="fas fa-times"></i>
                     </button>
                 </div>
-                <div class="flex items-center gap-3 mt-4 pt-2 border-t border-white/20">
-                    <img id="mobileNavAvatar" src="" alt="Avatar" class="w-9 h-9 rounded-full object-cover ring-2 ring-white/50">
+                <div class="flex items-center gap-3 pt-2 border-t border-white/20">
+                    <img id="mobileNavAvatar" src="" alt="Avatar" class="w-12 h-12 rounded-full object-cover ring-2 ring-white/50 shadow-md">
                     <div>
-                        <p class="font-semibold text-sm" id="mobileNavUserName">Loading...</p>
+                        <p class="font-semibold" id="mobileNavUserName">Loading...</p>
                         <p class="text-xs opacity-80" id="mobileNavUserRole">Mahasiswa</p>
                     </div>
                 </div>
             </div>
             <div class="flex-1 overflow-y-auto py-4">
-                <a href="mahasiswa-dashboard.html" class="mobile-nav-link active" id="mobileDashboardLink"><i class="fas fa-home w-5"></i><span>Dashboard</span></a>
-                <a href="mahasiswa-berita.html" class="mobile-nav-link" id="mobileBeritaLink"><i class="fas fa-newspaper w-5"></i><span>Berita</span></a>
-                <a href="mahasiswa-repository.html" class="mobile-nav-link" id="mobileRepositoryLink"><i class="fas fa-book w-5"></i><span>Repository</span></a>
-                <a href="mahasiswa-magang-kkn.html" class="mobile-nav-link" id="mobileMagangKknLink"><i class="fas fa-briefcase w-5"></i><span>Magang & KKN</span></a>
-                <a href="mahasiswa-profil.html" class="mobile-nav-link" id="mobileProfilLink"><i class="fas fa-user-circle w-5"></i><span>Profil Saya</span></a>
-                <div class="border-t border-gray-100 my-4 mx-4"></div>
-                <a href="mahasiswa-ubah-password.html" class="mobile-nav-link"><i class="fas fa-key w-5"></i><span>Ubah Password</span></a>
-                <button onclick="handleLogout()" class="mobile-nav-link w-full text-left text-red-600"><i class="fas fa-sign-out-alt w-5"></i><span>Logout</span></button>
+                <a href="mahasiswa-dashboard.html" class="mobile-nav-link flex items-center gap-3 px-5 py-3 text-gray-700 hover:bg-blue-50 active"><i class="fas fa-home w-5 text-blue-500"></i><span>Dashboard</span></a>
+                <a href="mahasiswa-berita.html" class="mobile-nav-link flex items-center gap-3 px-5 py-3 text-gray-700 hover:bg-blue-50"><i class="fas fa-newspaper w-5 text-purple-500"></i><span>Berita</span></a>
+                <a href="mahasiswa-repository.html" class="mobile-nav-link flex items-center gap-3 px-5 py-3 text-gray-700 hover:bg-blue-50"><i class="fas fa-book w-5 text-green-500"></i><span>Repository</span></a>
+                <a href="mahasiswa-magang-kkn.html" class="mobile-nav-link flex items-center gap-3 px-5 py-3 text-gray-700 hover:bg-blue-50"><i class="fas fa-briefcase w-5 text-orange-500"></i><span>Magang & KKN</span></a>
+                <a href="mahasiswa-profil.html" class="mobile-nav-link flex items-center gap-3 px-5 py-3 text-gray-700 hover:bg-blue-50"><i class="fas fa-user-circle w-5 text-teal-500"></i><span>Profil Saya</span></a>
+                <div class="border-t border-gray-100 my-3 mx-5"></div>
+                <a href="mahasiswa-ubah-password.html" class="mobile-nav-link flex items-center gap-3 px-5 py-3 text-gray-700 hover:bg-blue-50"><i class="fas fa-key w-5 text-yellow-600"></i><span>Ubah Password</span></a>
+                <button onclick="handleLogout()" class="mobile-nav-link w-full text-left flex items-center gap-3 px-5 py-3 text-red-600 hover:bg-red-50"><i class="fas fa-sign-out-alt w-5"></i><span>Logout</span></button>
             </div>
         </div>
     </div>
 
-    <!-- HEADER / NAVBAR - WHITE MODERN WITH SHADOW -->
+    <!-- HEADER / NAVBAR -->
     <header class="navbar fixed top-0 left-0 right-0 z-50">
         <div class="container mx-auto px-4 md:px-6">
-            <div class="flex justify-between items-center h-16 md:h-[70px]">
-                <!-- Logo & Brand -->
+            <div class="flex justify-between items-center h-16 md:h-[72px]">
                 <a href="mahasiswa-dashboard.html" class="flex items-center space-x-3 group">
-                    <img src="yadika.png" alt="Logo" class="h-9 w-9 md:h-10 md:w-10 rounded-xl shadow-sm bg-white p-1">
+                    <img src="yadika.png" alt="Logo" class="h-9 w-9 md:h-10 md:w-10 rounded-xl shadow-sm bg-white p-1 group-hover:scale-105 transition">
                     <div>
                         <h1 class="text-gray-800 font-bold text-base md:text-lg">LPPM ITB Yadika</h1>
                         <p class="text-gray-500 text-xs -mt-0.5">Portal Mahasiswa</p>
@@ -269,58 +270,45 @@
 
                 <!-- Desktop Navigation -->
                 <div class="hidden md:flex items-center space-x-1">
-                    <a href="mahasiswa-dashboard.html" class="nav-link px-4 py-2 rounded-lg text-sm flex items-center gap-2 active">
-                        <i class="fas fa-home"></i> Dashboard
-                    </a>
-                    <a href="mahasiswa-berita.html" class="nav-link px-4 py-2 rounded-lg text-sm flex items-center gap-2">
-                        <i class="fas fa-newspaper"></i> Berita
-                    </a>
-                    <a href="mahasiswa-repository.html" class="nav-link px-4 py-2 rounded-lg text-sm flex items-center gap-2">
-                        <i class="fas fa-book"></i> Repository
-                    </a>
-                    <a href="mahasiswa-magang-kkn.html" class="nav-link px-4 py-2 rounded-lg text-sm flex items-center gap-2">
-                        <i class="fas fa-briefcase"></i> Magang & KKN
-                    </a>
-                    <a href="mahasiswa-profil.html" class="nav-link px-4 py-2 rounded-lg text-sm flex items-center gap-2">
-                        <i class="fas fa-user-circle"></i> Profil Saya
-                    </a>
+                    <a href="mahasiswa-dashboard.html" class="nav-link px-4 py-2 rounded-lg text-sm flex items-center gap-2 active"><i class="fas fa-home"></i> Dashboard</a>
+                    <a href="mahasiswa-berita.html" class="nav-link px-4 py-2 rounded-lg text-sm flex items-center gap-2"><i class="fas fa-newspaper"></i> Berita</a>
+                    <a href="mahasiswa-repository.html" class="nav-link px-4 py-2 rounded-lg text-sm flex items-center gap-2"><i class="fas fa-book"></i> Repository</a>
+                    <a href="mahasiswa-magang-kkn.html" class="nav-link px-4 py-2 rounded-lg text-sm flex items-center gap-2"><i class="fas fa-briefcase"></i> Magang & KKN</a>
+                    <a href="mahasiswa-profil.html" class="nav-link px-4 py-2 rounded-lg text-sm flex items-center gap-2"><i class="fas fa-user-circle"></i> Profil Saya</a>
                 </div>
 
-                <!-- Right Actions -->
                 <div class="flex items-center gap-3">
-                    <button id="notificationBtn" class="relative p-2 rounded-lg text-gray-500 hover:bg-gray-100 transition">
+                    <button id="notificationBtn" class="relative p-2 rounded-full text-gray-500 hover:bg-gray-100 transition-all hover:scale-105">
                         <i class="fas fa-bell text-lg"></i>
-                        <span id="notificationBadge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full hidden"></span>
+                        <span id="notificationBadge" class="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse hidden"></span>
                     </button>
 
-                    <!-- Desktop User Menu -->
                     <div class="relative hidden md:block">
-                        <button id="userMenuBtn" class="flex items-center gap-2 p-1 rounded-xl hover:bg-gray-100 transition">
+                        <button id="userMenuBtn" class="flex items-center gap-2 p-1.5 rounded-full hover:bg-gray-100 transition-all">
                             <img id="navAvatar" src="" alt="Avatar" class="w-8 h-8 rounded-full object-cover ring-2 ring-gray-200">
                             <div class="hidden xl:block text-left">
                                 <p class="text-sm font-semibold text-gray-800" id="navUserName">Loading...</p>
                                 <p class="text-xs text-gray-500" id="navUserRole">Mahasiswa</p>
                             </div>
-                            <i class="fas fa-chevron-down text-xs text-gray-400"></i>
+                            <i class="fas fa-chevron-down text-xs text-gray-400 transition-transform duration-200"></i>
                         </button>
-                        <div id="userDropdown" class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hidden z-50">
-                            <div class="p-3 border-b bg-gray-50">
+                        <div id="userDropdown" class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden hidden z-50 transform transition-all duration-200">
+                            <div class="p-3 border-b bg-gradient-to-r from-gray-50 to-white">
                                 <div class="flex items-center gap-3">
-                                    <img id="dropdownAvatar" src="" class="w-9 h-9 rounded-full">
+                                    <img id="dropdownAvatar" src="" class="w-9 h-9 rounded-full ring-2 ring-blue-200">
                                     <div><p class="font-semibold text-sm" id="dropdownUserName">Loading</p><p class="text-xs text-gray-500" id="dropdownUserNim">-</p></div>
                                 </div>
                             </div>
                             <div class="p-2">
-                                <a href="mahasiswa-profil.html" class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-blue-50 text-sm"><i class="fas fa-user-cog"></i> Pengaturan Akun</a>
-                                <a href="mahasiswa-ubah-password.html" class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-blue-50 text-sm"><i class="fas fa-key"></i> Ubah Password</a>
+                                <a href="mahasiswa-profil.html" class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-blue-50 text-sm"><i class="fas fa-user-cog w-4"></i> Pengaturan Akun</a>
+                                <a href="mahasiswa-ubah-password.html" class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-blue-50 text-sm"><i class="fas fa-key w-4"></i> Ubah Password</a>
                                 <div class="border-t my-2"></div>
-                                <button onclick="handleLogout()" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-red-600 hover:bg-red-50 text-sm"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                                <button onclick="handleLogout()" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-red-600 hover:bg-red-50 text-sm"><i class="fas fa-sign-out-alt w-4"></i> Logout</button>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Hamburger -->
-                    <button id="hamburgerBtn" class="md:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition">
+                    <button id="hamburgerBtn" class="md:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-all">
                         <i class="fas fa-bars text-xl"></i>
                     </button>
                 </div>
@@ -328,87 +316,94 @@
         </div>
     </header>
 
-    <!-- MAIN CONTENT - SAMA PERSIS LEBARNYA DENGAN NAVBAR -->
+    <!-- MAIN CONTENT -->
     <main class="pt-[65px] md:pt-[86px]">
         <div class="container mx-auto px-4 md:px-6 py-6 md:py-8">
             <!-- Welcome Section -->
-            <div class="mb-6 md:mb-8 flex justify-between items-center flex-wrap gap-3" data-aos="fade-down">
+            <div class="mb-8 flex justify-between items-center flex-wrap gap-3" data-aos="fade-up" data-aos-duration="600">
                 <div>
                     <h2 class="text-2xl md:text-3xl font-bold text-gray-800">Selamat datang, <span id="userName" class="gradient-text">Mahasiswa</span>!</h2>
-                    <p class="text-gray-600 text-sm mt-1"><i class="fas fa-id-card mr-1"></i> NIM: <span id="userNim">-</span> | <i class="fas fa-building mr-1"></i> <span id="userProdi">-</span></p>
+                    <p class="text-gray-600 text-sm mt-1 flex flex-wrap gap-2"><span><i class="fas fa-id-card mr-1 text-blue-500"></i> NIM: <span id="userNim">-</span></span> <span><i class="fas fa-building mr-1 text-purple-500"></i> <span id="userProdi">-</span></span></p>
                 </div>
                 <div class="flex items-center gap-3">
-                    <div class="realtime-badge text-xs"><i class="fas fa-circle pulse"></i> Live Data <span id="lastUpdateTime" class="ml-1 text-[10px]"></span></div>
-                    <button onclick="refreshAllData()" class="bg-gray-200 hover:bg-gray-300 p-2 rounded-lg"><i class="fas fa-sync-alt"></i></button>
+                    <div class="realtime-badge text-xs shadow-lg"><i class="fas fa-circle pulse-dot"></i> Live Data <span id="lastUpdateTime" class="ml-1 font-mono text-[10px]"></span></div>
+                    <button onclick="refreshAllData()" class="refresh-btn bg-gray-100 hover:bg-gray-200 p-2.5 rounded-full transition-all duration-300 hover:rotate-180 shadow-sm"><i class="fas fa-sync-alt text-gray-600"></i></button>
                 </div>
             </div>
 
-            <!-- Stat Cards -->
+            <!-- Stat Cards with Animation -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
-                <div class="bg-white rounded-xl shadow-md p-5 border-l-4 border-blue-500 stat-card">
-                    <div class="flex justify-between"><div><p class="text-gray-500 text-sm">Status Magang</p><h3 class="text-2xl font-bold" id="magangStatus">-</h3><p class="text-xs text-gray-400 mt-1" id="magangDetail">-</p></div><div class="bg-blue-100 p-3 rounded-lg"><i class="fas fa-briefcase text-blue-600"></i></div></div>
-                    <div class="progress-bar mt-2 bg-gray-200"><div class="progress-fill bg-blue-500" id="magangProgress" style="width:0%"></div></div>
+                <div class="bg-white rounded-2xl shadow-lg p-5 border-l-4 border-blue-500 stat-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="flex justify-between items-center"><div><p class="text-gray-500 text-sm font-medium">Status Magang</p><h3 class="text-2xl font-bold" id="magangStatus">-</h3><p class="text-xs text-gray-400 mt-1" id="magangDetail">-</p></div><div class="bg-blue-100 p-3 rounded-xl"><i class="fas fa-briefcase text-blue-600 text-xl"></i></div></div>
+                    <div class="progress-bar mt-3 bg-gray-100 rounded-full h-1.5"><div class="progress-fill bg-gradient-to-r from-blue-500 to-blue-600 rounded-full animated-progress h-full" id="magangProgress" style="width:0%"></div></div>
                     <p class="text-xs text-gray-400 mt-2" id="magangDate">-</p>
                 </div>
-                <div class="bg-white rounded-xl shadow-md p-5 border-l-4 border-purple-500 stat-card">
-                    <div class="flex justify-between"><div><p class="text-gray-500 text-sm">Status KKN</p><h3 class="text-2xl font-bold" id="kknStatus">-</h3><p class="text-xs text-gray-400 mt-1" id="kknDetail">-</p></div><div class="bg-purple-100 p-3 rounded-lg"><i class="fas fa-users text-purple-600"></i></div></div>
-                    <div class="progress-bar mt-2 bg-gray-200"><div class="progress-fill bg-purple-500" id="kknProgress" style="width:0%"></div></div>
+                <div class="bg-white rounded-2xl shadow-lg p-5 border-l-4 border-purple-500 stat-card" data-aos="fade-up" data-aos-delay="150">
+                    <div class="flex justify-between items-center"><div><p class="text-gray-500 text-sm font-medium">Status KKN</p><h3 class="text-2xl font-bold" id="kknStatus">-</h3><p class="text-xs text-gray-400 mt-1" id="kknDetail">-</p></div><div class="bg-purple-100 p-3 rounded-xl"><i class="fas fa-users text-purple-600 text-xl"></i></div></div>
+                    <div class="progress-bar mt-3 bg-gray-100 rounded-full h-1.5"><div class="progress-fill bg-gradient-to-r from-purple-500 to-purple-600 rounded-full animated-progress h-full" id="kknProgress" style="width:0%"></div></div>
                     <p class="text-xs text-gray-400 mt-2" id="kknDate">-</p>
                 </div>
-                <div class="bg-white rounded-xl shadow-md p-5 border-l-4 border-green-500 stat-card">
-                    <div class="flex justify-between"><div><p class="text-gray-500 text-sm">Kegiatan Diikuti</p><h3 class="text-2xl font-bold" id="totalKegiatan">0</h3><p class="text-xs text-gray-400 mt-1" id="kegiatanDetail">-</p></div><div class="bg-green-100 p-3 rounded-lg"><i class="fas fa-calendar-check text-green-600"></i></div></div>
+                <div class="bg-white rounded-2xl shadow-lg p-5 border-l-4 border-green-500 stat-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="flex justify-between items-center"><div><p class="text-gray-500 text-sm font-medium">Kegiatan Diikuti</p><h3 class="text-2xl font-bold" id="totalKegiatan">0</h3><p class="text-xs text-gray-400 mt-1" id="kegiatanDetail">-</p></div><div class="bg-green-100 p-3 rounded-xl"><i class="fas fa-calendar-check text-green-600 text-xl"></i></div></div>
                     <p class="text-xs text-green-600 mt-2" id="upcomingKegiatan"><i class="fas fa-clock"></i> Memuat...</p>
                 </div>
-                <div class="bg-white rounded-xl shadow-md p-5 border-l-4 border-orange-500 stat-card">
-                    <div class="flex justify-between"><div><p class="text-gray-500 text-sm">Sertifikat & Luaran</p><h3 class="text-2xl font-bold" id="totalSertifikat">0</h3><p class="text-xs text-gray-400 mt-1" id="sertifikatDetail">-</p></div><div class="bg-orange-100 p-3 rounded-lg"><i class="fas fa-certificate text-orange-600"></i></div></div>
-                    <p class="text-xs text-orange-600 mt-2" id="luaranCount"><i class="fas fa-file-alt"></i> 0 Luaran</p>
+                <div class="bg-white rounded-2xl shadow-lg p-5 border-l-4 border-orange-500 stat-card" data-aos="fade-up" data-aos-delay="250">
+                    <div class="flex justify-between items-center"><div><p class="text-gray-500 text-sm font-medium">Sertifikat & Luaran</p><h3 class="text-2xl font-bold" id="totalSertifikat">0</h3><p class="text-xs text-gray-400 mt-1" id="sertifikatDetail">-</p></div><div class="bg-orange-100 p-3 rounded-xl"><i class="fas fa-certificate text-orange-600 text-xl"></i></div></div>
+                    <p class="text-xs text-orange-600 mt-2 font-medium" id="luaranCount"><i class="fas fa-file-alt mr-1"></i> 0 Luaran</p>
                 </div>
             </div>
 
             <!-- Timeline & Activity -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                <div class="bg-white rounded-xl shadow-md p-5"><h3 class="font-bold mb-3"><i class="fas fa-chart-line text-blue-500 mr-2"></i>Timeline Magang</h3><div id="magangTimeline" class="space-y-3 max-h-80 overflow-y-auto"><div class="text-center py-4 text-gray-400"><i class="fas fa-spinner fa-spin"></i> Memuat...</div></div></div>
-                <div class="bg-white rounded-xl shadow-md p-5"><h3 class="font-bold mb-3"><i class="fas fa-chart-line text-purple-500 mr-2"></i>Timeline KKN</h3><div id="kknTimeline" class="space-y-3 max-h-80 overflow-y-auto"><div class="text-center py-4 text-gray-400"><i class="fas fa-spinner fa-spin"></i> Memuat...</div></div></div>
-                <div class="bg-white rounded-xl shadow-md p-5"><h3 class="font-bold mb-3"><i class="fas fa-history text-green-500 mr-2"></i>Aktivitas Terbaru</h3><div id="recentActivities" class="space-y-3 max-h-80 overflow-y-auto"><div class="text-center py-4 text-gray-400"><i class="fas fa-spinner fa-spin"></i> Memuat...</div></div></div>
+                <div class="bg-white rounded-2xl shadow-md p-5 transition-all hover:shadow-xl" data-aos="fade-right"><h3 class="font-bold mb-3 flex items-center"><i class="fas fa-chart-line text-blue-500 mr-2"></i>Timeline Magang</h3><div id="magangTimeline" class="space-y-3 max-h-80 overflow-y-auto custom-scroll"><div class="skeleton h-16 w-full"></div><div class="skeleton h-16 w-full"></div></div></div>
+                <div class="bg-white rounded-2xl shadow-md p-5 transition-all hover:shadow-xl" data-aos="fade-up"><h3 class="font-bold mb-3 flex items-center"><i class="fas fa-chart-line text-purple-500 mr-2"></i>Timeline KKN</h3><div id="kknTimeline" class="space-y-3 max-h-80 overflow-y-auto"><div class="skeleton h-16 w-full"></div></div></div>
+                <div class="bg-white rounded-2xl shadow-md p-5 transition-all hover:shadow-xl" data-aos="fade-left"><h3 class="font-bold mb-3 flex items-center"><i class="fas fa-history text-green-500 mr-2"></i>Aktivitas Terbaru</h3><div id="recentActivities" class="space-y-3 max-h-80 overflow-y-auto"><div class="skeleton h-16 w-full"></div></div></div>
             </div>
 
             <!-- Announcements & Events -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div class="bg-white rounded-xl shadow-md p-5"><div class="flex justify-between items-center mb-3"><h3 class="font-bold text-lg"><i class="fas fa-bullhorn text-purple-500 mr-2"></i>Pengumuman</h3><button onclick="loadAnnouncements(true)" class="text-purple-600 text-sm"><i class="fas fa-sync-alt"></i></button></div><div id="pengumumanList"><div class="text-center py-6 text-gray-400"><i class="fas fa-spinner fa-spin"></i> Memuat...</div></div><a href="mahasiswa-berita.html" class="text-purple-600 text-sm mt-3 inline-block">Lihat semua →</a></div>
-                <div class="bg-white rounded-xl shadow-md p-5"><div class="flex justify-between items-center mb-3"><h3 class="font-bold text-lg"><i class="fas fa-calendar-alt text-green-500 mr-2"></i>Kegiatan Mendatang</h3><button onclick="loadUpcomingEvents(true)" class="text-green-600 text-sm"><i class="fas fa-sync-alt"></i></button></div><div id="kegiatanList"><div class="text-center py-6 text-gray-400"><i class="fas fa-spinner fa-spin"></i> Memuat...</div></div><a href="mahasiswa-kegiatan.html" class="text-green-600 text-sm mt-3 inline-block">Lihat semua →</a></div>
+                <div class="bg-white rounded-2xl shadow-md p-5 hover:shadow-lg transition" data-aos="fade-right"><div class="flex justify-between items-center mb-3"><h3 class="font-bold text-lg"><i class="fas fa-bullhorn text-purple-500 mr-2"></i>Pengumuman</h3><button onclick="loadAnnouncements(true)" class="text-purple-600 text-sm hover:scale-105 transition"><i class="fas fa-sync-alt"></i></button></div><div id="pengumumanList"><div class="skeleton h-20 w-full mb-2"></div></div><a href="mahasiswa-berita.html" class="text-purple-600 text-sm mt-3 inline-flex items-center gap-1 hover:gap-2 transition-all">Lihat semua →</a></div>
+                <div class="bg-white rounded-2xl shadow-md p-5 hover:shadow-lg transition" data-aos="fade-left"><div class="flex justify-between items-center mb-3"><h3 class="font-bold text-lg"><i class="fas fa-calendar-alt text-green-500 mr-2"></i>Kegiatan Mendatang</h3><button onclick="loadUpcomingEvents(true)" class="text-green-600 text-sm hover:scale-105 transition"><i class="fas fa-sync-alt"></i></button></div><div id="kegiatanList"><div class="skeleton h-20 w-full mb-2"></div></div><a href="mahasiswa-kegiatan.html" class="text-green-600 text-sm mt-3 inline-flex items-center gap-1 hover:gap-2 transition-all">Lihat semua →</a></div>
             </div>
         </div>
     </main>
 
-    <div id="toast" class="toast-notification"><i class="fas fa-info-circle"></i><span id="toastMessage">Data berhasil diperbarui</span></div>
+    <div id="toast" class="toast-notification"><i class="fas fa-check-circle text-green-400"></i><span id="toastMessage">Data berhasil diperbarui</span></div>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        AOS.init({ duration: 800, once: true });
+        AOS.init({ duration: 800, once: true, offset: 20 });
         const API_BASE = '/api';
         let refreshInterval = null, isRefreshing = false;
 
-        function showToast(msg, type='success') { const toast = document.getElementById('toast'); document.getElementById('toastMessage').innerText = msg; toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'),3000); }
+        function showToast(msg, type='success') { 
+            const toast = document.getElementById('toast'); 
+            const icon = toast.querySelector('i');
+            icon.className = type === 'success' ? 'fas fa-check-circle text-green-400' : 'fas fa-exclamation-circle text-red-400';
+            document.getElementById('toastMessage').innerText = msg; 
+            toast.classList.add('show'); 
+            setTimeout(()=>toast.classList.remove('show'),3000); 
+        }
+        
         function getToken() { return localStorage.getItem('token'); }
         function getUser() { const u = localStorage.getItem('user'); return u ? JSON.parse(u) : null; }
         function updateLastUpdateTime() { document.getElementById('lastUpdateTime').innerText = new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit'}); }
         function checkAuth() { const token=getToken(), user=getUser(); if(!token||!user){ window.location='../login.html'; return false; } if(user.role!=='mahasiswa'){ alert('Akses ditolak'); window.location='../login.html'; return false; } return true; }
-        window.handleLogout = function() { if(refreshInterval) clearInterval(refreshInterval); localStorage.clear(); window.location='../login.html'; };
+        window.handleLogout = function() { if(refreshInterval) clearInterval(refreshInterval); localStorage.clear(); showToast('Logout berhasil'); setTimeout(()=>window.location='../login.html', 500); };
 
-        // API Functions (diringkas tapi tetap lengkap)
-        async function loadMagangData() { try { const res = await fetch(`${API_BASE}/magang/status`,{headers:{'Authorization':`Bearer ${getToken()}`}}); if(res.ok){ const d=(await res.json()).data||{}; let status='Belum Daftar',cls='text-gray-500',prog=0,det='',date=''; if(d.registrasi){ const s=d.registrasi.status; if(s==='pending'){ status='Menunggu Verifikasi'; cls='text-yellow-600'; prog=25; det='Dokumen diperiksa'; date=formatDate(d.registrasi.created_at); } else if(s==='approved'){ status='Disetujui'; cls='text-green-600'; prog=50; det='Isi data perusahaan'; date=formatDate(d.registrasi.created_at); } else if(s==='verified'){ status='Selesai'; cls='text-blue-600'; prog=100; det='Magang selesai'; } else if(s==='rejected'){ status='Ditolak'; cls='text-red-600'; det=d.registrasi.catatan||'Ditolak'; } } if(d.perusahaan){ prog=75; status='Magang Aktif'; cls='text-green-600'; det=`${d.perusahaan.nama_perusahaan||'Perusahaan'} - ${d.perusahaan.posisi||'Magang'}`; } if(d.luaran){ prog=100; status='Selesai'; cls='text-blue-600'; } document.getElementById('magangStatus').innerHTML=`<span class="${cls}">${status}</span>`; document.getElementById('magangDetail').innerText=det; document.getElementById('magangDate').innerText=date?`Daftar: ${date}`:'-'; document.getElementById('magangProgress').style.width=`${prog}%`; } }catch(e){ console.error(e); } }
-        async function loadKKNData() { try { const res = await fetch(`${API_BASE}/mahasiswa/kkn/status`,{headers:{'Authorization':`Bearer ${getToken()}`}}); if(res.ok){ const d=(await res.json()).data||{}; let status='Belum Daftar',cls='text-gray-500',prog=0,det='',date=''; if(d.pendaftaran&&d.pendaftaran.status!=='belum_daftar'){ const s=d.pendaftaran.status; if(s==='pending'){ status='Menunggu Verifikasi'; cls='text-yellow-600'; prog=25; det=`Desa: ${d.pendaftaran.desa||'-'}`; date=formatDate(d.pendaftaran.tanggal); } else if(s==='approved'){ status='Disetujui'; cls='text-green-600'; prog=50; det=`Desa: ${d.pendaftaran.desa||'-'}`; } else if(s==='verified'){ status='Selesai'; cls='text-blue-600'; prog=100; det='KKN selesai'; } else if(s==='rejected'){ status='Ditolak'; cls='text-red-600'; det='Pengajuan ditolak'; } } document.getElementById('kknStatus').innerHTML=`<span class="${cls}">${status}</span>`; document.getElementById('kknDetail').innerText=det; document.getElementById('kknDate').innerText=date?`Daftar: ${date}`:'-'; document.getElementById('kknProgress').style.width=`${prog}%`; } }catch(e){ console.error(e); } }
+        async function loadMagangData() { try { const res = await fetch(`${API_BASE}/magang/status`,{headers:{'Authorization':`Bearer ${getToken()}`}}); if(res.ok){ const d=(await res.json()).data||{}; let status='Belum Daftar',cls='text-gray-500',prog=0,det='',date=''; if(d.registrasi){ const s=d.registrasi.status; if(s==='pending'){ status='Menunggu Verifikasi'; cls='text-yellow-600'; prog=25; det='Dokumen diperiksa'; date=formatDate(d.registrasi.created_at); } else if(s==='approved'){ status='Disetujui'; cls='text-green-600'; prog=50; det='Isi data perusahaan'; date=formatDate(d.registrasi.created_at); } else if(s==='verified'){ status='Selesai'; cls='text-blue-600'; prog=100; det='Magang selesai'; } else if(s==='rejected'){ status='Ditolak'; cls='text-red-600'; det=d.registrasi.catatan||'Ditolak'; } } if(d.perusahaan){ prog=75; status='Magang Aktif'; cls='text-green-600'; det=`${d.perusahaan.nama_perusahaan||'Perusahaan'} - ${d.perusahaan.posisi||'Magang'}`; } if(d.luaran){ prog=100; status='Selesai'; cls='text-blue-600'; } document.getElementById('magangStatus').innerHTML=`<span class="${cls} font-semibold">${status}</span>`; document.getElementById('magangDetail').innerText=det; document.getElementById('magangDate').innerHTML=date?`<i class="far fa-calendar-alt mr-1"></i> ${date}`:'-'; document.getElementById('magangProgress').style.width=`${prog}%`; } }catch(e){ console.error(e); } }
+        async function loadKKNData() { try { const res = await fetch(`${API_BASE}/mahasiswa/kkn/status`,{headers:{'Authorization':`Bearer ${getToken()}`}}); if(res.ok){ const d=(await res.json()).data||{}; let status='Belum Daftar',cls='text-gray-500',prog=0,det='',date=''; if(d.pendaftaran&&d.pendaftaran.status!=='belum_daftar'){ const s=d.pendaftaran.status; if(s==='pending'){ status='Menunggu Verifikasi'; cls='text-yellow-600'; prog=25; det=`Desa: ${d.pendaftaran.desa||'-'}`; date=formatDate(d.pendaftaran.tanggal); } else if(s==='approved'){ status='Disetujui'; cls='text-green-600'; prog=50; det=`Desa: ${d.pendaftaran.desa||'-'}`; } else if(s==='verified'){ status='Selesai'; cls='text-blue-600'; prog=100; det='KKN selesai'; } else if(s==='rejected'){ status='Ditolak'; cls='text-red-600'; det='Pengajuan ditolak'; } } document.getElementById('kknStatus').innerHTML=`<span class="${cls} font-semibold">${status}</span>`; document.getElementById('kknDetail').innerText=det; document.getElementById('kknDate').innerHTML=date?`<i class="far fa-calendar-alt mr-1"></i> ${date}`:'-'; document.getElementById('kknProgress').style.width=`${prog}%`; } }catch(e){ console.error(e); } }
         async function loadKegiatanCount() { try { const res = await fetch(`${API_BASE}/mahasiswa/kegiatan?limit=100`,{headers:{'Authorization':`Bearer ${getToken()}`}}); if(res.ok){ const k=(await res.json()).data||[]; const total=k.filter(k=>k.user_registered===true).length; document.getElementById('totalKegiatan').innerText=total; document.getElementById('kegiatanDetail').innerText=total===0?'Belum ada kegiatan':`${total} kegiatan`; } }catch(e){ console.error(e); } }
-        async function loadSertifikatDanLuaran() { try { let luaran=0; const resMag=await fetch(`${API_BASE}/magang/luaran`,{headers:{'Authorization':`Bearer ${getToken()}`}}); if(resMag.ok) luaran+=(await resMag.json()).data?.length||0; const resKKN=await fetch(`${API_BASE}/mahasiswa/kkn/luaran`,{headers:{'Authorization':`Bearer ${getToken()}`}}); if(resKKN.ok) luaran+=(await resKKN.json()).data?.length||0; document.getElementById('totalSertifikat').innerText='0'; document.getElementById('sertifikatDetail').innerText='0 Sertifikat'; document.getElementById('luaranCount').innerHTML=`<i class="fas fa-file-alt"></i> ${luaran} Luaran`; }catch(e){ console.error(e); } }
-        async function loadMagangTimeline() { try { const res=await fetch(`${API_BASE}/magang/timeline`,{headers:{'Authorization':`Bearer ${getToken()}`}}); const container=document.getElementById('magangTimeline'); if(res.ok){ const t=(await res.json()).data||[]; if(!t.length){ container.innerHTML='<div class="text-center text-gray-400 py-4">Belum ada aktivitas</div>'; return; } container.innerHTML=t.map((item,i,arr)=>`<div class="flex gap-3"><div class="relative"><div class="w-8 h-8 rounded-full ${item.status==='completed'?'bg-green-500':'bg-blue-500'} flex items-center justify-center"><i class="fas ${item.tahap==='Pendaftaran'?'fa-file-alt':(item.tahap==='Luaran'?'fa-certificate':'fa-building')} text-white text-xs"></i></div>${i!==arr.length-1?'<div class="absolute top-8 left-4 w-0.5 h-8 bg-gray-200"></div>':''}</div><div><p class="font-semibold text-sm">${item.tahap||'Aktivitas'}</p><p class="text-xs text-gray-500">${item.deskripsi||'-'}</p><span class="text-xs text-gray-400">${formatDate(item.tanggal)}</span></div></div>`).join(''); }else container.innerHTML='<div class="text-center text-gray-400 py-4">Gagal memuat</div>'; }catch(e){ console.error(e); } }
-        async function loadKKNTimeline() { try { const res=await fetch(`${API_BASE}/mahasiswa/kkn/timeline`,{headers:{'Authorization':`Bearer ${getToken()}`}}); const container=document.getElementById('kknTimeline'); if(res.ok){ const t=(await res.json()).data||[]; if(!t.length){ container.innerHTML='<div class="text-center text-gray-400 py-4">Belum ada aktivitas</div>'; return; } container.innerHTML=t.map(item=>`<div class="flex gap-3"><div class="w-8 h-8 rounded-full ${item.is_completed?'bg-green-500':(item.is_active?'bg-blue-500':'bg-gray-300')} flex items-center justify-center"><i class="fas ${item.is_completed?'fa-check':(item.is_active?'fa-spinner fa-pulse':'fa-clock')} text-white text-xs"></i></div><div><p class="font-semibold text-sm">${item.title}</p><p class="text-xs text-gray-500">${item.description}</p>${item.date?`<span class="text-xs text-gray-400">${formatDate(item.date)}</span>`:''}</div></div>`).join(''); } }catch(e){ console.error(e); } }
-        async function loadRecentActivities() { try { const acts=[]; const m=await fetch(`${API_BASE}/magang/riwayat`,{headers:{'Authorization':`Bearer ${getToken()}`}}); if(m.ok){ (await m.json()).data?.forEach(r=>acts.push({title:r.jenis==='registrasi'?'Pendaftaran Magang':(r.jenis==='perusahaan'?'Data Perusahaan':'Luaran Magang'),status:r.status,date:r.created_at||r.tanggal,icon:'fa-briefcase',color:'blue'})); } const k=await fetch(`${API_BASE}/mahasiswa/kkn/riwayat`,{headers:{'Authorization':`Bearer ${getToken()}`}}); if(k.ok){ (await k.json()).data?.forEach(r=>acts.push({title:r.jenis==='pendaftaran'?'Pendaftaran KKN':'Luaran KKN',status:r.status,date:r.tanggal,icon:'fa-users',color:'purple'})); } acts.sort((a,b)=>new Date(b.date)-new Date(a.date)); const latest=acts.slice(0,5); const container=document.getElementById('recentActivities'); if(!latest.length){ container.innerHTML='<div class="text-center text-gray-400 py-4">Belum ada aktivitas</div>'; return; } container.innerHTML=latest.map(a=>`<div class="flex items-center gap-3 p-2 hover:bg-gray-50 rounded"><div class="w-10 h-10 bg-${a.color}-100 rounded-lg flex items-center justify-center"><i class="fas ${a.icon} text-${a.color}-600"></i></div><div><p class="text-sm font-medium">${a.title}</p><div class="flex gap-2 mt-1"><span class="status-badge status-${a.status||'pending'}">${a.status||'pending'}</span><span class="text-xs text-gray-400">${formatDate(a.date)}</span></div></div></div>`).join(''); }catch(e){ console.error(e); } }
-        async function loadAnnouncements(toast=false){ try{ const res=await fetch(`${API_BASE}/mahasiswa/berita?limit=3`,{headers:{'Authorization':`Bearer ${getToken()}`}}); const container=document.getElementById('pengumumanList'); if(res.ok){ const items=(await res.json()).data||[]; if(!items.length) container.innerHTML='<div class="text-center text-gray-400 py-6">Tidak ada pengumuman</div>'; else container.innerHTML=items.map(i=>`<div class="border-l-4 border-purple-500 pl-4 py-2"><h4 class="font-semibold">${escapeHtml(i.judul)}</h4><p class="text-xs text-gray-500 mt-1">${escapeHtml((i.konten||'').substring(0,100))}</p><span class="text-xs text-gray-400">${formatDate(i.created_at)}</span></div>`).join(''); if(toast) showToast('Pengumuman diperbarui'); } }catch(e){ console.error(e); } }
-        async function loadUpcomingEvents(toast=false){ try{ const res=await fetch(`${API_BASE}/mahasiswa/kegiatan/upcoming?limit=3`,{headers:{'Authorization':`Bearer ${getToken()}`}}); const container=document.getElementById('kegiatanList'); if(res.ok){ const items=(await res.json()).data||[]; if(!items.length) container.innerHTML='<div class="text-center text-gray-400 py-6">Tidak ada kegiatan</div>'; else container.innerHTML=items.map(e=>`<div class="flex gap-3"><div class="bg-green-100 rounded-lg px-3 py-1 text-center"><span class="font-bold text-green-600">${getEventDay(e.tanggal_mulai)}</span><span class="text-xs block text-green-600">${getEventMonth(e.tanggal_mulai)}</span></div><div><h4 class="font-semibold">${escapeHtml(e.nama_kegiatan)}</h4><p class="text-xs text-gray-500"><i class="fas fa-map-marker-alt"></i> ${e.lokasi||'Online'}</p>${e.sisa_kuota!==undefined?`<p class="text-xs ${e.sisa_kuota<=0?'text-red-500':'text-green-500'}">Sisa kuota: ${e.sisa_kuota}</p>`:''}</div></div>`).join(''); if(toast) showToast('Kegiatan diperbarui'); } }catch(e){ console.error(e); } }
+        async function loadSertifikatDanLuaran() { try { let luaran=0; const resMag=await fetch(`${API_BASE}/magang/luaran`,{headers:{'Authorization':`Bearer ${getToken()}`}}); if(resMag.ok) luaran+=(await resMag.json()).data?.length||0; const resKKN=await fetch(`${API_BASE}/mahasiswa/kkn/luaran`,{headers:{'Authorization':`Bearer ${getToken()}`}}); if(resKKN.ok) luaran+=(await resKKN.json()).data?.length||0; document.getElementById('totalSertifikat').innerText='0'; document.getElementById('sertifikatDetail').innerText='0 Sertifikat'; document.getElementById('luaranCount').innerHTML=`<i class="fas fa-file-alt mr-1"></i> ${luaran} Luaran`; }catch(e){ console.error(e); } }
+        async function loadMagangTimeline() { try { const res=await fetch(`${API_BASE}/magang/timeline`,{headers:{'Authorization':`Bearer ${getToken()}`}}); const container=document.getElementById('magangTimeline'); if(res.ok){ const t=(await res.json()).data||[]; if(!t.length){ container.innerHTML='<div class="text-center text-gray-400 py-4"><i class="far fa-folder-open"></i> Belum ada aktivitas</div>'; return; } container.innerHTML=t.map((item,i,arr)=>`<div class="flex gap-3 group"><div class="relative"><div class="w-8 h-8 rounded-full ${item.status==='completed'?'bg-green-500':'bg-blue-500'} flex items-center justify-center shadow-md group-hover:scale-110 transition"><i class="fas ${item.tahap==='Pendaftaran'?'fa-file-alt':(item.tahap==='Luaran'?'fa-certificate':'fa-building')} text-white text-xs"></i></div>${i!==arr.length-1?'<div class="absolute top-8 left-4 w-0.5 h-8 bg-gray-200"></div>':''}</div><div><p class="font-semibold text-sm">${item.tahap||'Aktivitas'}</p><p class="text-xs text-gray-500">${item.deskripsi||'-'}</p><span class="text-xs text-gray-400">${formatDate(item.tanggal)}</span></div></div>`).join(''); } }catch(e){ console.error(e); } }
+        async function loadKKNTimeline() { try { const res=await fetch(`${API_BASE}/mahasiswa/kkn/timeline`,{headers:{'Authorization':`Bearer ${getToken()}`}}); const container=document.getElementById('kknTimeline'); if(res.ok){ const t=(await res.json()).data||[]; if(!t.length){ container.innerHTML='<div class="text-center text-gray-400 py-4"><i class="far fa-folder-open"></i> Belum ada aktivitas</div>'; return; } container.innerHTML=t.map(item=>`<div class="flex gap-3"><div class="w-8 h-8 rounded-full ${item.is_completed?'bg-green-500':(item.is_active?'bg-blue-500':'bg-gray-300')} flex items-center justify-center"><i class="fas ${item.is_completed?'fa-check':(item.is_active?'fa-spinner fa-pulse':'fa-clock')} text-white text-xs"></i></div><div><p class="font-semibold text-sm">${item.title}</p><p class="text-xs text-gray-500">${item.description}</p>${item.date?`<span class="text-xs text-gray-400">${formatDate(item.date)}</span>`:''}</div></div>`).join(''); } }catch(e){ console.error(e); } }
+        async function loadRecentActivities() { try { const acts=[]; const m=await fetch(`${API_BASE}/magang/riwayat`,{headers:{'Authorization':`Bearer ${getToken()}`}}); if(m.ok){ (await m.json()).data?.forEach(r=>acts.push({title:r.jenis==='registrasi'?'Pendaftaran Magang':(r.jenis==='perusahaan'?'Data Perusahaan':'Luaran Magang'),status:r.status,date:r.created_at||r.tanggal,icon:'fa-briefcase',color:'blue'})); } const k=await fetch(`${API_BASE}/mahasiswa/kkn/riwayat`,{headers:{'Authorization':`Bearer ${getToken()}`}}); if(k.ok){ (await k.json()).data?.forEach(r=>acts.push({title:r.jenis==='pendaftaran'?'Pendaftaran KKN':'Luaran KKN',status:r.status,date:r.tanggal,icon:'fa-users',color:'purple'})); } acts.sort((a,b)=>new Date(b.date)-new Date(a.date)); const latest=acts.slice(0,5); const container=document.getElementById('recentActivities'); if(!latest.length){ container.innerHTML='<div class="text-center text-gray-400 py-4"><i class="far fa-clock"></i> Belum ada aktivitas</div>'; return; } container.innerHTML=latest.map(a=>`<div class="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-xl transition"><div class="w-10 h-10 bg-${a.color}-100 rounded-xl flex items-center justify-center"><i class="fas ${a.icon} text-${a.color}-600"></i></div><div><p class="text-sm font-medium">${a.title}</p><div class="flex gap-2 mt-1"><span class="status-badge status-${a.status||'pending'}"><i class="fas ${a.status==='approved'?'fa-check-circle':(a.status==='pending'?'fa-clock':'fa-times-circle')} text-xs"></i> ${a.status||'pending'}</span><span class="text-xs text-gray-400">${formatDate(a.date)}</span></div></div></div>`).join(''); }catch(e){ console.error(e); } }
+        async function loadAnnouncements(toast=false){ try{ const res=await fetch(`${API_BASE}/mahasiswa/berita?limit=3`,{headers:{'Authorization':`Bearer ${getToken()}`}}); const container=document.getElementById('pengumumanList'); if(res.ok){ const items=(await res.json()).data||[]; if(!items.length) container.innerHTML='<div class="text-center text-gray-400 py-6">📢 Tidak ada pengumuman</div>'; else container.innerHTML=items.map(i=>`<div class="border-l-4 border-purple-500 pl-4 py-2 hover:bg-purple-50/30 rounded-lg transition"><h4 class="font-semibold">${escapeHtml(i.judul)}</h4><p class="text-xs text-gray-500 mt-1 line-clamp-2">${escapeHtml((i.konten||'').substring(0,100))}</p><span class="text-xs text-gray-400 flex items-center gap-1 mt-1"><i class="far fa-calendar-alt"></i> ${formatDate(i.created_at)}</span></div>`).join(''); if(toast) showToast('Pengumuman diperbarui'); } }catch(e){ console.error(e); } }
+        async function loadUpcomingEvents(toast=false){ try{ const res=await fetch(`${API_BASE}/mahasiswa/kegiatan/upcoming?limit=3`,{headers:{'Authorization':`Bearer ${getToken()}`}}); const container=document.getElementById('kegiatanList'); if(res.ok){ const items=(await res.json()).data||[]; if(!items.length) container.innerHTML='<div class="text-center text-gray-400 py-6">📅 Tidak ada kegiatan mendatang</div>'; else container.innerHTML=items.map(e=>`<div class="flex gap-3 p-2 hover:bg-green-50/30 rounded-lg transition"><div class="bg-green-100 rounded-xl px-3 py-2 text-center min-w-[60px]"><span class="font-bold text-green-600 text-lg">${getEventDay(e.tanggal_mulai)}</span><span class="text-xs block text-green-600 font-medium">${getEventMonth(e.tanggal_mulai)}</span></div><div><h4 class="font-semibold">${escapeHtml(e.nama_kegiatan)}</h4><p class="text-xs text-gray-500"><i class="fas fa-map-marker-alt mr-1"></i> ${e.lokasi||'Online'}</p>${e.sisa_kuota!==undefined?`<p class="text-xs ${e.sisa_kuota<=0?'text-red-500':'text-green-500'} font-medium mt-1">Sisa kuota: ${e.sisa_kuota}</p>`:''}</div></div>`).join(''); if(toast) showToast('Kegiatan diperbarui'); } }catch(e){ console.error(e); } }
         async function loadUserProfile(){ const user=getUser(); if(user){ document.getElementById('userName').innerText=user.name||user.nama_lengkap||'Mahasiswa'; try{ const res=await fetch(`${API_BASE}/mahasiswa/profil/basic`,{headers:{'Authorization':`Bearer ${getToken()}`}}); if(res.ok){ const p=(await res.json()).data; document.getElementById('userNim').innerText=p.nim||'-'; document.getElementById('userProdi').innerText=p.nama_prodi||'Teknik Informatika'; updateNavbarUserInfo(p); } }catch(e){ console.error(e); } } }
         async function refreshAllData(){ if(isRefreshing) return; isRefreshing=true; try{ await Promise.all([loadUserProfile(),loadMagangData(),loadKKNData(),loadKegiatanCount(),loadSertifikatDanLuaran(),loadMagangTimeline(),loadKKNTimeline(),loadRecentActivities(),loadAnnouncements(),loadUpcomingEvents()]); updateLastUpdateTime(); showToast('Semua data diperbarui'); }catch(e){ showToast('Gagal refresh','error'); }finally{ isRefreshing=false; } }
-        function updateNavbarUserInfo(p){ if(!p) return; const url=p.foto_profil?`/${p.foto_profil}`:`https://ui-avatars.com/api/?name=${encodeURIComponent(p.nama_lengkap||'User')}&background=3B82F6&color=fff`; ['navAvatar','dropdownAvatar','mobileNavAvatar'].forEach(id=>{ const el=document.getElementById(id); if(el) el.src=url; }); ['navUserName','dropdownUserName','mobileNavUserName'].forEach(id=>{ const el=document.getElementById(id); if(el) el.innerText=p.nama_lengkap||'Mahasiswa'; }); const nim=document.getElementById('dropdownUserNim'); if(nim) nim.innerText=p.nim?`NIM: ${p.nim}`:'-'; }
-        function initMobileNav(){ const hamburger=document.getElementById('hamburgerBtn'), mobileNav=document.getElementById('mobileNav'), closeBtn=document.getElementById('closeMobileNav'); if(hamburger&&mobileNav){ hamburger.onclick=()=>mobileNav.classList.add('active'); closeBtn.onclick=()=>mobileNav.classList.remove('active'); mobileNav.onclick=(e)=>{ if(e.target===mobileNav) mobileNav.classList.remove('active'); }; document.querySelectorAll('.mobile-nav-link').forEach(l=>l.addEventListener('click',()=>mobileNav.classList.remove('active'))); } const page=window.location.pathname.split('/').pop(); document.querySelectorAll('.mobile-nav-link').forEach(link=>{ const href=link.getAttribute('href'); if(href===page||(page==='mahasiswa-dashboard.html'&&href==='mahasiswa-dashboard.html')) link.classList.add('active'); else link.classList.remove('active'); }); }
+        function updateNavbarUserInfo(p){ if(!p) return; const url=p.foto_profil?`/${p.foto_profil}`:`https://ui-avatars.com/api/?name=${encodeURIComponent(p.nama_lengkap||'User')}&background=3B82F6&color=fff&bold=true`; ['navAvatar','dropdownAvatar','mobileNavAvatar'].forEach(id=>{ const el=document.getElementById(id); if(el) el.src=url; }); ['navUserName','dropdownUserName','mobileNavUserName'].forEach(id=>{ const el=document.getElementById(id); if(el) el.innerText=p.nama_lengkap||'Mahasiswa'; }); const nim=document.getElementById('dropdownUserNim'); if(nim) nim.innerText=p.nim?`NIM: ${p.nim}`:'-'; }
+        function initMobileNav(){ const hamburger=document.getElementById('hamburgerBtn'), mobileNav=document.getElementById('mobileNav'), closeBtn=document.getElementById('closeMobileNav'); if(hamburger&&mobileNav){ hamburger.onclick=()=>mobileNav.classList.add('active'); closeBtn.onclick=()=>mobileNav.classList.remove('active'); mobileNav.onclick=(e)=>{ if(e.target===mobileNav) mobileNav.classList.remove('active'); }; document.querySelectorAll('.mobile-nav-link').forEach(l=>l.addEventListener('click',()=>mobileNav.classList.remove('active'))); } }
         function setActiveNavLink(){ const page=window.location.pathname.split('/').pop(); document.querySelectorAll('.nav-link').forEach(link=>{ const href=link.getAttribute('href'); if(href===page||(page==='mahasiswa-dashboard.html'&&href==='mahasiswa-dashboard.html')) link.classList.add('active'); else link.classList.remove('active'); }); }
         function initDropdown(){ const btn=document.getElementById('userMenuBtn'), drop=document.getElementById('userDropdown'); if(btn&&drop){ btn.onclick=(e)=>{ e.stopPropagation(); drop.classList.toggle('hidden'); }; document.onclick=(e)=>{ if(!btn.contains(e.target)&&!drop.contains(e.target)) drop.classList.add('hidden'); }; } }
         function escapeHtml(t){ if(!t) return ''; const div=document.createElement('div'); div.textContent=t; return div.innerHTML; }
@@ -416,7 +411,7 @@
         function getEventDay(d){ return d?new Date(d).getDate():'-'; }
         function getEventMonth(d){ if(!d) return '-'; const m=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des']; return m[new Date(d).getMonth()]; }
 
-        document.addEventListener('DOMContentLoaded',async()=>{ if(!checkAuth()) return; initDropdown(); setActiveNavLink(); initMobileNav(); document.getElementById('loadingOverlay').classList.remove('hidden'); await refreshAllData(); setTimeout(()=>document.getElementById('loadingOverlay').classList.add('hidden'),500); refreshInterval=setInterval(()=>{ if(!document.hidden) refreshAllData(); },30000); });
+        document.addEventListener('DOMContentLoaded',async()=>{ if(!checkAuth()) return; initDropdown(); setActiveNavLink(); initMobileNav(); setTimeout(()=>document.getElementById('loadingOverlay').classList.add('hidden'), 800); await refreshAllData(); refreshInterval=setInterval(()=>{ if(!document.hidden) refreshAllData(); },30000); });
     </script>
 </body>
 </html>
