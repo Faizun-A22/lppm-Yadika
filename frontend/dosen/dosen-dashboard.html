@@ -585,8 +585,7 @@
     function updateNavbarUserInfo(profile) {
         if (!profile) return;
         
-        const avatarUrl = profile.foto_profil ? `http://localhost:3000/${profile.foto_profil}` : `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.nama_lengkap || 'Dosen')}&background=3B82F6&color=fff&bold=true`;
-        
+        const avatarUrl = profile.foto_profil ? `/${profile.foto_profil}` : `...`;
         const navAvatar = document.getElementById('navAvatar');
         const dropdownAvatar = document.getElementById('dropdownAvatar');
         const navUserName = document.getElementById('navUserName');
@@ -650,7 +649,7 @@
                 const profileAvatar = document.getElementById('profileAvatar');
                 if (profileAvatar) {
                     if (profile.foto_profil) {
-                        profileAvatar.src = `http://localhost:3000/${profile.foto_profil}`;
+                    profileAvatar.src = `/${profile.foto_profil}`;
                     } else {
                         profileAvatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.nama_lengkap || 'Dosen')}&background=ffffff&color=3B82F6&bold=true`;
                     }
