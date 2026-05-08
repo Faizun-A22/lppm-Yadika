@@ -21,6 +21,10 @@
             overflow-x: hidden;
         }
 
+        body.menu-open {
+            overflow: hidden;
+        }
+
         /* Better touch targets for mobile */
         button, 
         .nav-link-modern,
@@ -50,47 +54,113 @@
             transform: translateY(-1px);
         }
 
-        /* Mobile bottom navigation - shown only on mobile */
-        .mobile-bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(10px);
-            border-top: 1px solid rgba(0, 0, 0, 0.08);
-            padding: 8px 12px 20px;
-            z-index: 40;
+        /* ========== HAMBURGER MENU STYLES ========== */
+        .hamburger {
             display: none;
-            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
-        }
-
-        .mobile-nav-item {
-            display: flex;
             flex-direction: column;
+            justify-content: space-between;
+            width: 28px;
+            height: 20px;
+            cursor: pointer;
+            z-index: 60;
+            position: relative;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 100%;
+            height: 2.5px;
+            background-color: #4B5563;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: translateY(8.5px) rotate(45deg);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: translateY(-8.5px) rotate(-45deg);
+        }
+
+        /* Mobile Sidebar Menu */
+        .mobile-sidebar {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 280px;
+            max-width: 80%;
+            height: 100vh;
+            background: white;
+            z-index: 50;
+            transition: right 0.3s ease;
+            box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            padding-top: 70px;
+        }
+
+        .mobile-sidebar.open {
+            right: 0;
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 45;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .mobile-sidebar .sidebar-nav-item {
+            display: flex;
             align-items: center;
-            gap: 4px;
-            padding: 6px 0;
-            border-radius: 12px;
-            transition: all 0.2s;
-            font-size: 11px;
+            gap: 14px;
+            padding: 14px 20px;
+            color: #4B5563;
+            font-size: 15px;
             font-weight: 500;
-            color: #6b7280;
-            flex: 1;
-            text-align: center;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
         }
 
-        .mobile-nav-item i {
-            font-size: 20px;
+        .mobile-sidebar .sidebar-nav-item i {
+            width: 24px;
+            font-size: 18px;
+            color: #9CA3AF;
         }
 
-        .mobile-nav-item.active {
+        .mobile-sidebar .sidebar-nav-item.active {
+            background: linear-gradient(135deg, rgba(59,130,246,0.1) 0%, rgba(139,92,246,0.1) 100%);
             color: #3B82F6;
-            background: rgba(59, 130, 246, 0.1);
+            border-left-color: #3B82F6;
         }
 
-        .mobile-nav-item:active {
-            transform: scale(0.95);
+        .mobile-sidebar .sidebar-nav-item.active i {
+            color: #3B82F6;
+        }
+
+        .mobile-sidebar .sidebar-nav-item:active {
+            background: #F3F4F6;
+        }
+
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 1px solid #E5E7EB;
+            margin-top: 20px;
         }
 
         /* Dropdown Animation */
@@ -254,15 +324,7 @@
         .status-rejected { background: #FEE2E2; color: #DC2626; }
         .status-verified { background: #DBEAFE; color: #2563EB; }
 
-        /* Mobile scroll improvements */
-        .scrollable-x {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: thin;
-        }
-
         /* RESPONSIVE BREAKPOINTS */
-        /* Mobile (≤768px) */
         @media (max-width: 768px) {
             .container {
                 padding-left: 16px !important;
@@ -270,7 +332,7 @@
             }
             
             main {
-                padding-bottom: 70px;
+                padding-bottom: 20px;
             }
             
             .stat-card {
@@ -301,18 +363,29 @@
             .desktop-nav {
                 display: none !important;
             }
-            
-            .mobile-bottom-nav {
-                display: flex;
+
+            .hamburger {
+                display: flex !important;
             }
-            
+
             header .container {
                 padding-left: 12px !important;
                 padding-right: 12px !important;
             }
         }
 
-        /* Tablet (768px - 1024px) */
+        @media (min-width: 769px) {
+            .hamburger {
+                display: none !important;
+            }
+            .mobile-sidebar {
+                display: none !important;
+            }
+            .sidebar-overlay {
+                display: none !important;
+            }
+        }
+
         @media (min-width: 769px) and (max-width: 1024px) {
             .container {
                 padding-left: 24px !important;
@@ -326,27 +399,46 @@
             .nav-link-modern span {
                 font-size: 13px;
             }
-            
-            .mobile-bottom-nav {
-                display: none !important;
-            }
         }
 
-        /* Desktop (≥1024px) */
         @media (min-width: 1025px) {
             .container {
                 padding-left: 32px !important;
                 padding-right: 32px !important;
-            }
-            
-            .mobile-bottom-nav {
-                display: none !important;
             }
         }
 
         /* Smooth scrolling */
         html {
             scroll-behavior: smooth;
+        }
+
+        /* User profile in sidebar */
+        .sidebar-user {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #E5E7EB;
+            margin-bottom: 16px;
+        }
+
+        .sidebar-user img {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 10px;
+            border: 3px solid #E5E7EB;
+        }
+
+        .sidebar-user h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1F2937;
+        }
+
+        .sidebar-user p {
+            font-size: 12px;
+            color: #6B7280;
         }
     </style>
 </head>
@@ -356,6 +448,55 @@
         <div class="text-center">
             <div class="loading-spinner"></div>
             <p class="mt-4 text-gray-600 text-sm">Memuat dashboard...</p>
+        </div>
+    </div>
+
+    <!-- Sidebar Overlay -->
+    <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+    <!-- Mobile Sidebar Menu -->
+    <div id="mobileSidebar" class="mobile-sidebar">
+        <div class="sidebar-user">
+            <img id="sidebarAvatar" src="" alt="Avatar">
+            <h4 id="sidebarUserName">Loading...</h4>
+            <p id="sidebarUserNim">-</p>
+            <p class="text-xs text-gray-400 mt-1">Mahasiswa</p>
+        </div>
+        
+        <a href="mahasiswa-dashboard.html" class="sidebar-nav-item">
+            <i class="fas fa-home"></i>
+            <span>Dashboard</span>
+        </a>
+        <a href="mahasiswa-berita.html" class="sidebar-nav-item">
+            <i class="fas fa-newspaper"></i>
+            <span>Berita & Pengumuman</span>
+        </a>
+        <a href="mahasiswa-repository.html" class="sidebar-nav-item">
+            <i class="fas fa-book"></i>
+            <span>Repository</span>
+        </a>
+        <a href="mahasiswa-magang-kkn.html" class="sidebar-nav-item">
+            <i class="fas fa-briefcase"></i>
+            <span>Magang & KKN</span>
+        </a>
+        <a href="mahasiswa-kegiatan.html" class="sidebar-nav-item">
+            <i class="fas fa-calendar-alt"></i>
+            <span>Kegiatan</span>
+        </a>
+        
+        <div class="sidebar-footer">
+            <a href="mahasiswa-profil.html" class="sidebar-nav-item" style="padding-left: 0;">
+                <i class="fas fa-user-circle"></i>
+                <span>Profil Saya</span>
+            </a>
+            <a href="mahasiswa-ubah-password.html" class="sidebar-nav-item" style="padding-left: 0;">
+                <i class="fas fa-key"></i>
+                <span>Ubah Password</span>
+            </a>
+            <button onclick="handleLogout()" class="sidebar-nav-item w-full text-left" style="padding-left: 0; color: #DC2626;">
+                <i class="fas fa-sign-out-alt" style="color: #DC2626;"></i>
+                <span>Logout</span>
+            </button>
         </div>
     </div>
 
@@ -401,9 +542,9 @@
                 </a>
             </div>
             
-            <!-- User Info & Actions -->
+            <!-- Right side: Notifications + User Menu + Hamburger -->
             <div class="flex items-center gap-2 sm:gap-4">
-                <!-- Notifications Dropdown -->
+                <!-- Notifications -->
                 <div class="relative">
                     <button id="notificationBtn" class="relative p-2 rounded-lg text-gray-500 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200">
                         <i class="fas fa-bell text-base sm:text-lg"></i>
@@ -411,18 +552,18 @@
                     </button>
                 </div>
                 
-                <!-- User Profile Dropdown -->
-                <div class="relative">
+                <!-- User Profile Dropdown (Desktop only) -->
+                <div class="relative hidden md:block">
                     <button id="userMenuBtn" class="flex items-center gap-2 sm:gap-3 p-1 rounded-xl hover:bg-gray-50 transition-all duration-200 border border-transparent hover:border-gray-200">
                         <div class="relative">
                             <img id="navAvatar" src="" alt="Avatar" class="w-7 h-7 sm:w-9 sm:h-9 rounded-full object-cover ring-2 ring-gray-200">
                             <div class="absolute bottom-0 right-0 w-2 h-2 bg-green-500 rounded-full ring-2 ring-white"></div>
                         </div>
-                        <div class="hidden md:block text-left">
+                        <div class="hidden lg:block text-left">
                             <p class="text-xs lg:text-sm font-semibold text-gray-800" id="navUserName">Loading...</p>
                             <p class="text-[10px] lg:text-xs text-gray-400" id="navUserRole">Mahasiswa</p>
                         </div>
-                        <i class="fas fa-chevron-down text-xs text-gray-400 hidden md:block"></i>
+                        <i class="fas fa-chevron-down text-xs text-gray-400 hidden lg:block"></i>
                     </button>
                     
                     <!-- Dropdown Menu -->
@@ -453,6 +594,13 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Hamburger Menu Button (Mobile only) -->
+                <div class="hamburger" id="hamburgerBtn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
             </div>
         </nav>
     </header>
@@ -473,7 +621,7 @@
                 <div class="flex items-center gap-2 sm:gap-3">
                     <div class="realtime-badge">
                         <i class="fas fa-circle pulse"></i>
-                        <span class="hidden xs:inline">Live Data</span>
+                        <span class="hidden xs:inline">Live</span>
                         <span id="lastUpdateTime" class="text-xs opacity-75"></span>
                     </div>
                     <button onclick="refreshAllData()" class="bg-gray-200 hover:bg-gray-300 p-2 rounded-lg transition active:scale-95">
@@ -482,9 +630,9 @@
                 </div>
             </header>
 
-            <!-- Statistics Cards - Responsive Grid (2 kolom di HP, 4 kolom di Desktop) -->
+            <!-- Statistics Cards -->
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
-                <!-- Card 1: Status Pendaftaran Magang -->
+                <!-- Card 1 -->
                 <div class="stat-card bg-white rounded-xl shadow-lg p-3 sm:p-6 border-l-4 border-blue-500" data-aos="fade-up" data-aos-delay="100">
                     <div class="flex justify-between items-start">
                         <div class="flex-1">
@@ -502,7 +650,7 @@
                     <p class="text-[9px] sm:text-xs text-gray-400 mt-1 sm:mt-2 truncate" id="magangDate">-</p>
                 </div>
 
-                <!-- Card 2: Status Pendaftaran KKN -->
+                <!-- Card 2 -->
                 <div class="stat-card bg-white rounded-xl shadow-lg p-3 sm:p-6 border-l-4 border-purple-500" data-aos="fade-up" data-aos-delay="150">
                     <div class="flex justify-between items-start">
                         <div class="flex-1">
@@ -520,7 +668,7 @@
                     <p class="text-[9px] sm:text-xs text-gray-400 mt-1 sm:mt-2 truncate" id="kknDate">-</p>
                 </div>
 
-                <!-- Card 3: Total Kegiatan Diikuti -->
+                <!-- Card 3 -->
                 <div class="stat-card bg-white rounded-xl shadow-lg p-3 sm:p-6 border-l-4 border-green-500" data-aos="fade-up" data-aos-delay="200">
                     <div class="flex justify-between items-start">
                         <div class="flex-1">
@@ -537,7 +685,7 @@
                     </div>
                 </div>
 
-                <!-- Card 4: Sertifikat & Luaran -->
+                <!-- Card 4 -->
                 <div class="stat-card bg-white rounded-xl shadow-lg p-3 sm:p-6 border-l-4 border-orange-500" data-aos="fade-up" data-aos-delay="250">
                     <div class="flex justify-between items-start">
                         <div class="flex-1">
@@ -557,49 +705,39 @@
 
             <!-- Timeline & Recent Activity Section -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
-                <!-- Timeline Magang -->
                 <div class="bg-white rounded-xl shadow-lg p-4 sm:p-6" data-aos="fade-right">
                     <h3 class="text-base sm:text-lg font-bold text-gray-800 mb-3 sm:mb-4 flex items-center">
                         <i class="fas fa-chart-line mr-2 text-blue-500"></i>
                         Timeline Magang
                     </h3>
                     <div id="magangTimeline" class="space-y-2 sm:space-y-3">
-                        <div class="text-center text-gray-400 py-4">
-                            <i class="fas fa-spinner fa-spin"></i> Memuat timeline...
-                        </div>
+                        <div class="text-center text-gray-400 py-4"><i class="fas fa-spinner fa-spin"></i> Memuat...</div>
                     </div>
                 </div>
 
-                <!-- Timeline KKN -->
                 <div class="bg-white rounded-xl shadow-lg p-4 sm:p-6" data-aos="fade-up">
                     <h3 class="text-base sm:text-lg font-bold text-gray-800 mb-3 sm:mb-4 flex items-center">
                         <i class="fas fa-chart-line mr-2 text-purple-500"></i>
                         Timeline KKN
                     </h3>
                     <div id="kknTimeline" class="space-y-2 sm:space-y-3">
-                        <div class="text-center text-gray-400 py-4">
-                            <i class="fas fa-spinner fa-spin"></i> Memuat timeline...
-                        </div>
+                        <div class="text-center text-gray-400 py-4"><i class="fas fa-spinner fa-spin"></i> Memuat...</div>
                     </div>
                 </div>
 
-                <!-- Recent Activities -->
                 <div class="bg-white rounded-xl shadow-lg p-4 sm:p-6" data-aos="fade-left">
                     <h3 class="text-base sm:text-lg font-bold text-gray-800 mb-3 sm:mb-4 flex items-center">
                         <i class="fas fa-history mr-2 text-green-500"></i>
                         Aktivitas Terbaru
                     </h3>
                     <div id="recentActivities" class="space-y-2 sm:space-y-3">
-                        <div class="text-center text-gray-400 py-4">
-                            <i class="fas fa-spinner fa-spin"></i> Memuat aktivitas...
-                        </div>
+                        <div class="text-center text-gray-400 py-4"><i class="fas fa-spinner fa-spin"></i> Memuat...</div>
                     </div>
                 </div>
             </div>
 
             <!-- Pengumuman & Kegiatan -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-                <!-- Pengumuman -->
                 <div class="bg-white rounded-xl shadow-lg p-4 sm:p-6" data-aos="fade-right">
                     <h3 class="text-base sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4 flex items-center justify-between">
                         <span><i class="fas fa-bullhorn mr-2 text-purple-500"></i> Pengumuman Terbaru</span>
@@ -608,16 +746,11 @@
                         </button>
                     </h3>
                     <div id="pengumumanList" class="space-y-3 sm:space-y-4">
-                        <div class="text-center text-gray-400 py-8">
-                            <i class="fas fa-spinner fa-spin mr-2"></i>Memuat...
-                        </div>
+                        <div class="text-center text-gray-400 py-8"><i class="fas fa-spinner fa-spin mr-2"></i>Memuat...</div>
                     </div>
-                    <a href="mahasiswa-berita.html" class="mt-3 sm:mt-4 inline-block text-sm text-purple-600 hover:text-purple-800">
-                        Lihat semua &rarr;
-                    </a>
+                    <a href="mahasiswa-berita.html" class="mt-3 sm:mt-4 inline-block text-sm text-purple-600 hover:text-purple-800">Lihat semua &rarr;</a>
                 </div>
 
-                <!-- Kegiatan Mendatang -->
                 <div class="bg-white rounded-xl shadow-lg p-4 sm:p-6" data-aos="fade-left">
                     <h3 class="text-base sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4 flex items-center justify-between">
                         <span><i class="fas fa-calendar-alt mr-2 text-green-500"></i> Kegiatan Mendatang</span>
@@ -626,43 +759,13 @@
                         </button>
                     </h3>
                     <div id="kegiatanList" class="space-y-3 sm:space-y-4">
-                        <div class="text-center text-gray-400 py-8">
-                            <i class="fas fa-spinner fa-spin mr-2"></i>Memuat...
-                        </div>
+                        <div class="text-center text-gray-400 py-8"><i class="fas fa-spinner fa-spin mr-2"></i>Memuat...</div>
                     </div>
-                    <a href="mahasiswa-kegiatan.html" class="mt-3 sm:mt-4 inline-block text-sm text-green-600 hover:text-green-800">
-                        Lihat semua &rarr;
-                    </a>
+                    <a href="mahasiswa-kegiatan.html" class="mt-3 sm:mt-4 inline-block text-sm text-green-600 hover:text-green-800">Lihat semua &rarr;</a>
                 </div>
             </div>
         </div>
     </main>
-
-    <!-- Mobile Bottom Navigation Bar -->
-    <nav class="mobile-bottom-nav fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-2 px-2 z-40">
-        <div class="flex justify-around items-center">
-            <a href="mahasiswa-dashboard.html" class="mobile-nav-item flex flex-col items-center text-xs">
-                <i class="fas fa-home text-xl"></i>
-                <span class="text-[10px] mt-1">Beranda</span>
-            </a>
-            <a href="mahasiswa-berita.html" class="mobile-nav-item flex flex-col items-center text-xs">
-                <i class="fas fa-newspaper text-xl"></i>
-                <span class="text-[10px] mt-1">Berita</span>
-            </a>
-            <a href="mahasiswa-repository.html" class="mobile-nav-item flex flex-col items-center text-xs">
-                <i class="fas fa-book text-xl"></i>
-                <span class="text-[10px] mt-1">Repository</span>
-            </a>
-            <a href="mahasiswa-magang-kkn.html" class="mobile-nav-item flex flex-col items-center text-xs">
-                <i class="fas fa-briefcase text-xl"></i>
-                <span class="text-[10px] mt-1">Magang</span>
-            </a>
-            <a href="mahasiswa-profil.html" class="mobile-nav-item flex flex-col items-center text-xs">
-                <i class="fas fa-user text-xl"></i>
-                <span class="text-[10px] mt-1">Profil</span>
-            </a>
-        </div>
-    </nav>
 
     <!-- Toast Notification -->
     <div id="toast" class="toast-notification">
@@ -678,13 +781,72 @@
         let refreshInterval = null;
         let isRefreshing = false;
 
-        // Cache data
         let cachedData = {
             magang: null,
             kkn: null,
             kegiatan: null,
             sertifikat: 0
         };
+
+        // ============ HAMBURGER MENU FUNCTIONS ============
+        function initHamburgerMenu() {
+            const hamburger = document.getElementById('hamburgerBtn');
+            const sidebar = document.getElementById('mobileSidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            
+            if (!hamburger || !sidebar || !overlay) return;
+            
+            function openMenu() {
+                sidebar.classList.add('open');
+                overlay.classList.add('active');
+                hamburger.classList.add('active');
+                document.body.classList.add('menu-open');
+            }
+            
+            function closeMenu() {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('active');
+                hamburger.classList.remove('active');
+                document.body.classList.remove('menu-open');
+            }
+            
+            hamburger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (sidebar.classList.contains('open')) {
+                    closeMenu();
+                } else {
+                    openMenu();
+                }
+            });
+            
+            overlay.addEventListener('click', closeMenu);
+            
+            // Close menu when clicking a link inside sidebar
+            document.querySelectorAll('.sidebar-nav-item').forEach(link => {
+                link.addEventListener('click', () => {
+                    setTimeout(closeMenu, 150);
+                });
+            });
+            
+            // Close on escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && sidebar.classList.contains('open')) {
+                    closeMenu();
+                }
+            });
+        }
+
+        function updateSidebarUserInfo(profile) {
+            if (!profile) return;
+            const avatarUrl = profile.foto_profil ? `/${profile.foto_profil}` : `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.nama_lengkap || 'Mahasiswa')}&background=3B82F6&color=fff&bold=true&size=70`;
+            const sidebarAvatar = document.getElementById('sidebarAvatar');
+            const sidebarUserName = document.getElementById('sidebarUserName');
+            const sidebarUserNim = document.getElementById('sidebarUserNim');
+            
+            if (sidebarAvatar) sidebarAvatar.src = avatarUrl;
+            if (sidebarUserName) sidebarUserName.textContent = profile.nama_lengkap || 'Mahasiswa';
+            if (sidebarUserNim) sidebarUserNim.textContent = profile.nim || '-';
+        }
 
         function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
@@ -730,7 +892,7 @@
             window.location.href = '../login.html';
         };
 
-        // ============ LOAD MAGANG DATA ============
+        // ============ ALL DATA LOADING FUNCTIONS (SAME AS ORIGINAL) ============
         async function loadMagangData() {
             try {
                 const response = await fetch(`${API_BASE}/magang/status`, {
@@ -808,7 +970,6 @@
             return null;
         }
 
-        // ============ LOAD KKN DATA ============
         async function loadKKNData() {
             try {
                 const response = await fetch(`${API_BASE}/mahasiswa/kkn/status`, {
@@ -871,7 +1032,6 @@
             return null;
         }
 
-        // ============ LOAD KEGIATAN YANG DIIKUTI ============
         async function loadKegiatanCount() {
             try {
                 const response = await fetch(`${API_BASE}/mahasiswa/kegiatan?limit=100`, {
@@ -881,17 +1041,11 @@
                 if (response.ok) {
                     const result = await response.json();
                     const kegiatan = result.data || [];
-                    
                     const userKegiatan = kegiatan.filter(k => k.user_registered === true);
                     const total = userKegiatan.length;
                     
                     document.getElementById('totalKegiatan').textContent = total;
-                    
-                    if (total === 0) {
-                        document.getElementById('kegiatanDetail').textContent = 'Belum ada kegiatan';
-                    } else {
-                        document.getElementById('kegiatanDetail').textContent = `${total} kegiatan diikuti`;
-                    }
+                    document.getElementById('kegiatanDetail').textContent = total === 0 ? 'Belum ada kegiatan' : `${total} kegiatan diikuti`;
                     
                     cachedData.kegiatan = kegiatan;
                     return kegiatan;
@@ -902,7 +1056,6 @@
             return [];
         }
 
-        // ============ LOAD SERTIFIKAT & LUARAN ============
         async function loadSertifikatDanLuaran() {
             try {
                 const kegiatanRes = await fetch(`${API_BASE}/mahasiswa/kegiatan`, {
@@ -938,12 +1091,11 @@
                     luaranCount += luaran.length;
                 }
                 
-                const totalSertifikat = sertifikatCount;
-                document.getElementById('totalSertifikat').textContent = totalSertifikat;
+                document.getElementById('totalSertifikat').textContent = sertifikatCount;
                 document.getElementById('sertifikatDetail').textContent = `${sertifikatCount} Sertifikat`;
                 document.getElementById('luaranCount').innerHTML = `<i class="fas fa-file-alt"></i> ${luaranCount} Luaran`;
                 
-                cachedData.sertifikat = totalSertifikat;
+                cachedData.sertifikat = sertifikatCount;
                 return { sertifikatCount, luaranCount };
             } catch (error) {
                 console.error('Error loading sertifikat:', error);
@@ -951,31 +1103,26 @@
             return { sertifikatCount: 0, luaranCount: 0 };
         }
 
-        // ============ LOAD TIMELINE MAGANG ============
         async function loadMagangTimeline() {
             try {
                 const response = await fetch(`${API_BASE}/magang/timeline`, {
                     headers: { 'Authorization': `Bearer ${getToken()}` }
                 });
-                
                 const container = document.getElementById('magangTimeline');
-                
                 if (response.ok) {
                     const result = await response.json();
                     const timeline = result.data || result || [];
-                    
                     if (timeline.length === 0) {
                         container.innerHTML = '<div class="text-center text-gray-400 py-4">Belum ada aktivitas magang</div>';
                         return;
                     }
-                    
-                    container.innerHTML = timeline.map(item => `
+                    container.innerHTML = timeline.map((item, idx) => `
                         <div class="flex items-start gap-2 sm:gap-3">
                             <div class="relative">
                                 <div class="w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center ${getTimelineColor(item.status)}">
                                     <i class="fas ${getTimelineIcon(item.tahap || item.jenis)} text-[10px] sm:text-xs text-white"></i>
                                 </div>
-                                ${timeline.indexOf(item) !== timeline.length - 1 ? '<div class="absolute top-6 sm:top-8 left-2.5 sm:left-4 w-0.5 h-6 sm:h-8 bg-gray-200"></div>' : ''}
+                                ${idx !== timeline.length - 1 ? '<div class="absolute top-6 sm:top-8 left-2.5 sm:left-4 w-0.5 h-6 sm:h-8 bg-gray-200"></div>' : ''}
                             </div>
                             <div class="flex-1 pb-3 sm:pb-4">
                                 <p class="font-semibold text-xs sm:text-sm">${item.tahap || item.jenis || 'Aktivitas'}</p>
@@ -993,24 +1140,19 @@
             }
         }
 
-        // ============ LOAD TIMELINE KKN ============
         async function loadKKNTimeline() {
             try {
                 const response = await fetch(`${API_BASE}/mahasiswa/kkn/timeline`, {
                     headers: { 'Authorization': `Bearer ${getToken()}` }
                 });
-                
                 const container = document.getElementById('kknTimeline');
-                
                 if (response.ok) {
                     const result = await response.json();
                     const timeline = result.data || result || [];
-                    
                     if (timeline.length === 0) {
                         container.innerHTML = '<div class="text-center text-gray-400 py-4">Belum ada aktivitas KKN</div>';
                         return;
                     }
-                    
                     container.innerHTML = timeline.map(item => `
                         <div class="flex items-start gap-2 sm:gap-3">
                             <div class="relative">
@@ -1034,11 +1176,9 @@
             }
         }
 
-        // ============ LOAD RECENT ACTIVITIES ============
         async function loadRecentActivities() {
             try {
                 const activities = [];
-                
                 const magangRes = await fetch(`${API_BASE}/magang/riwayat`, {
                     headers: { 'Authorization': `Bearer ${getToken()}` }
                 });
@@ -1047,7 +1187,6 @@
                     const riwayat = result.data || [];
                     riwayat.forEach(r => {
                         activities.push({
-                            type: 'magang',
                             title: r.jenis === 'registrasi' ? 'Pendaftaran Magang' : (r.jenis === 'perusahaan' ? 'Data Perusahaan' : 'Luaran Magang'),
                             status: r.status,
                             date: r.created_at || r.tanggal,
@@ -1056,7 +1195,6 @@
                         });
                     });
                 }
-                
                 const kknRes = await fetch(`${API_BASE}/mahasiswa/kkn/riwayat`, {
                     headers: { 'Authorization': `Bearer ${getToken()}` }
                 });
@@ -1065,7 +1203,6 @@
                     const riwayat = result.data || [];
                     riwayat.forEach(r => {
                         activities.push({
-                            type: 'kkn',
                             title: r.jenis === 'pendaftaran' ? 'Pendaftaran KKN' : 'Luaran KKN',
                             status: r.status,
                             date: r.tanggal,
@@ -1074,17 +1211,13 @@
                         });
                     });
                 }
-                
                 activities.sort((a, b) => new Date(b.date) - new Date(a.date));
                 const latest = activities.slice(0, 5);
-                
                 const container = document.getElementById('recentActivities');
-                
                 if (latest.length === 0) {
                     container.innerHTML = '<div class="text-center text-gray-400 py-4">Belum ada aktivitas</div>';
                     return;
                 }
-                
                 container.innerHTML = latest.map(act => `
                     <div class="flex items-center gap-2 sm:gap-3 p-2 hover:bg-gray-50 rounded-lg transition">
                         <div class="w-8 h-8 sm:w-10 sm:h-10 bg-${act.color}-100 rounded-lg flex items-center justify-center">
@@ -1099,26 +1232,21 @@
                         </div>
                     </div>
                 `).join('');
-                
             } catch (error) {
                 console.error('Error loading activities:', error);
                 document.getElementById('recentActivities').innerHTML = '<div class="text-center text-gray-400 py-4">Gagal memuat aktivitas</div>';
             }
         }
 
-        // ============ LOAD ANNOUNCEMENTS ============
         async function loadAnnouncements(showToastMsg = false) {
             try {
                 const response = await fetch(`${API_BASE}/mahasiswa/berita?limit=3`, {
                     headers: { 'Authorization': `Bearer ${getToken()}` }
                 });
-                
                 const container = document.getElementById('pengumumanList');
-                
                 if (response.ok) {
                     const result = await response.json();
                     const announcements = result.data || [];
-                    
                     if (announcements.length === 0) {
                         container.innerHTML = '<div class="text-center text-gray-400 py-8">Belum ada pengumuman</div>';
                     } else {
@@ -1140,19 +1268,15 @@
             }
         }
 
-        // ============ LOAD UPCOMING EVENTS ============
         async function loadUpcomingEvents(showToastMsg = false) {
             try {
                 const response = await fetch(`${API_BASE}/mahasiswa/kegiatan/upcoming?limit=3`, {
                     headers: { 'Authorization': `Bearer ${getToken()}` }
                 });
-                
                 const container = document.getElementById('kegiatanList');
-                
                 if (response.ok) {
                     const result = await response.json();
                     const events = result.data || [];
-                    
                     if (events.length === 0) {
                         container.innerHTML = '<div class="text-center text-gray-400 py-8">Tidak ada kegiatan mendatang</div>';
                     } else {
@@ -1167,11 +1291,7 @@
                                     <p class="text-[10px] sm:text-xs text-gray-500 mt-1">
                                         <i class="fas fa-map-marker-alt mr-1"></i>${event.lokasi || 'Online'}
                                     </p>
-                                    ${event.sisa_kuota !== undefined ? `
-                                        <p class="text-[10px] sm:text-xs ${event.sisa_kuota <= 0 ? 'text-red-500' : 'text-green-500'} mt-1">
-                                            <i class="fas fa-users mr-1"></i>Sisa kuota: ${event.sisa_kuota}
-                                        </p>
-                                    ` : ''}
+                                    ${event.sisa_kuota !== undefined ? `<p class="text-[10px] sm:text-xs ${event.sisa_kuota <= 0 ? 'text-red-500' : 'text-green-500'} mt-1"><i class="fas fa-users mr-1"></i>Sisa kuota: ${event.sisa_kuota}</p>` : ''}
                                 </div>
                             </div>
                         `).join('');
@@ -1186,24 +1306,21 @@
             }
         }
 
-        // ============ LOAD USER PROFILE ============
         async function loadUserProfile() {
             const user = getUser();
             if (user) {
                 document.getElementById('userName').textContent = user.name || user.nama_lengkap || 'Mahasiswa';
-                
                 try {
                     const response = await fetch(`${API_BASE}/mahasiswa/profil/basic`, {
                         headers: { 'Authorization': `Bearer ${getToken()}` }
                     });
-                    
                     if (response.ok) {
                         const result = await response.json();
                         const profile = result.data;
                         document.getElementById('userNim').textContent = profile.nim || '-';
                         document.getElementById('userProdi').textContent = profile.nama_prodi || 'Teknik Informatika';
-                        
                         updateNavbarUserInfo(profile);
+                        updateSidebarUserInfo(profile);
                     }
                 } catch (error) {
                     console.error('Error loading profile:', error);
@@ -1211,10 +1328,8 @@
             }
         }
 
-        // ============ UPDATE NAVBAR ============
         function updateNavbarUserInfo(profile) {
             if (!profile) return;
-              
             const avatarUrl = profile.foto_profil ? `/${profile.foto_profil}` : `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.nama_lengkap || 'Mahasiswa')}&background=3B82F6&color=fff&bold=true`;
             const navAvatar = document.getElementById('navAvatar');
             const dropdownAvatar = document.getElementById('dropdownAvatar');
@@ -1229,11 +1344,9 @@
             if (dropdownUserNim) dropdownUserNim.textContent = profile.nim ? `NIM: ${profile.nim}` : '-';
         }
 
-        // ============ REFRESH ALL DATA ============
         async function refreshAllData() {
             if (isRefreshing) return;
             isRefreshing = true;
-            
             try {
                 await Promise.all([
                     loadUserProfile(),
@@ -1257,7 +1370,6 @@
             }
         }
 
-        // ============ HELPER FUNCTIONS ============
         function escapeHtml(text) {
             if (!text) return '';
             const div = document.createElement('div');
@@ -1270,7 +1382,6 @@
             const date = new Date(dateString);
             const now = new Date();
             const diff = Math.floor((now - date) / (1000 * 60 * 60 * 24));
-            
             if (diff === 0) return 'Hari ini';
             if (diff === 1) return 'Kemarin';
             if (diff < 7) return `${diff} hari lalu`;
@@ -1279,15 +1390,13 @@
 
         function getEventDay(dateString) {
             if (!dateString) return '-';
-            const date = new Date(dateString);
-            return date.getDate();
+            return new Date(dateString).getDate();
         }
 
         function getEventMonth(dateString) {
             if (!dateString) return '-';
             const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-            const date = new Date(dateString);
-            return months[date.getMonth()];
+            return months[new Date(dateString).getMonth()];
         }
 
         function getTimelineColor(status) {
@@ -1308,17 +1417,14 @@
             return icons[tahap] || 'fa-circle';
         }
 
-        // ============ DROPDOWN & NAVIGATION INIT ============
         function initDropdown() {
             const userMenuBtn = document.getElementById('userMenuBtn');
             const userDropdown = document.getElementById('userDropdown');
-            
             if (userMenuBtn && userDropdown) {
                 userMenuBtn.addEventListener('click', function(e) {
                     e.stopPropagation();
                     userDropdown.classList.toggle('hidden');
                 });
-                
                 document.addEventListener('click', function(e) {
                     if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) {
                         userDropdown.classList.add('hidden');
@@ -1330,7 +1436,7 @@
         function setActiveNavLink() {
             const currentPage = window.location.pathname.split('/').pop();
             const navLinks = document.querySelectorAll('.nav-link-modern');
-            const mobileLinks = document.querySelectorAll('.mobile-nav-item');
+            const sidebarLinks = document.querySelectorAll('.sidebar-nav-item');
             
             navLinks.forEach(link => {
                 const href = link.getAttribute('href');
@@ -1341,31 +1447,13 @@
                 }
             });
 
-            mobileLinks.forEach(link => {
+            sidebarLinks.forEach(link => {
                 const href = link.getAttribute('href');
                 if (href === currentPage || (currentPage === 'mahasiswa-dashboard.html' && href === 'mahasiswa-dashboard.html')) {
                     link.classList.add('active');
-                    link.classList.remove('text-gray-500');
-                    link.classList.add('text-blue-600', 'bg-blue-50');
                 } else {
-                    link.classList.remove('active', 'text-blue-600', 'bg-blue-50');
-                    link.classList.add('text-gray-500');
+                    link.classList.remove('active');
                 }
-            });
-        }
-
-        // ============ TOUCH FEEDBACK ============
-        function initTouchFeedback() {
-            document.querySelectorAll('.stat-card, button, .mobile-nav-item').forEach(el => {
-                el.addEventListener('touchstart', function() {
-                    this.style.transform = 'scale(0.98)';
-                }, { passive: true });
-                el.addEventListener('touchend', function() {
-                    this.style.transform = '';
-                });
-                el.addEventListener('touchcancel', function() {
-                    this.style.transform = '';
-                });
             });
         }
 
@@ -1375,7 +1463,7 @@
             
             initDropdown();
             setActiveNavLink();
-            initTouchFeedback();
+            initHamburgerMenu();
             
             document.getElementById('loadingOverlay').classList.remove('hidden');
             
