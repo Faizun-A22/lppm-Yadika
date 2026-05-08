@@ -360,107 +360,186 @@
         </div>
     </div>
 
-    <!-- Navbar - SAMA PERSIS DENGAN DASHBOARD -->
-    <header class="fixed top-0 left-0 right-0 navbar-custom z-50">
-        <nav class="max-w-7xl mx-auto px-4 md:px-6 h-16 md:h-20 flex justify-between items-center">
+    <header class="fixed top-0 left-0 right-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 md:px-6">
+
+        <nav class="navbar-custom mt-2 rounded-2xl h-16 md:h-20 flex justify-between items-center px-4 md:px-6">
+
+            <!-- Logo -->
             <a href="mahasiswa-dashboard.html" class="flex items-center space-x-3 group">
                 <div class="relative">
-                    <img src="yadika.png" alt="Logo LPPM ITB Yadika" class="h-9 w-9 md:h-10 md:w-10 rounded-lg shadow-sm transition-transform group-hover:scale-105 bg-white p-1">
+                    <img 
+                        src="yadika.png" 
+                        alt="Logo LPPM ITB Yadika"
+                        class="h-9 w-9 md:h-10 md:w-10 rounded-lg shadow-sm transition-transform group-hover:scale-105 bg-white p-1"
+                    >
+
                     <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-400 to-purple-400 rounded-lg opacity-0 group-hover:opacity-30 transition"></div>
                 </div>
+
                 <div>
                     <h1 class="brand-title text-base md:text-lg font-bold tracking-wide">
                         LPPM ITB Yadika
                     </h1>
-                    <p class="brand-subtitle text-xs md:text-sm -mt-0.5">Portal Mahasiswa</p>
+
+                    <p class="brand-subtitle text-xs md:text-sm -mt-0.5">
+                        Portal Mahasiswa
+                    </p>
                 </div>
             </a>
-            
-            <!-- Desktop Navigation Menu -->
+
+            <!-- Desktop Navigation -->
             <div class="hidden md:flex items-center space-x-1">
-                <a href="mahasiswa-dashboard.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+
+                <a href="mahasiswa-dashboard.html"
+                   class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
                     <i class="fas fa-home text-sm"></i>
                     <span>Dashboard</span>
                 </a>
-                <a href="mahasiswa-berita.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+
+                <a href="mahasiswa-berita.html"
+                   class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
                     <i class="fas fa-newspaper text-sm"></i>
                     <span>Berita</span>
                 </a>
-                <a href="mahasiswa-repository.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+
+                <a href="mahasiswa-repository.html"
+                   class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
                     <i class="fas fa-book text-sm"></i>
                     <span>Repository</span>
                 </a>
-                <a href="mahasiswa-magang-kkn.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2 active">
+
+                <a href="mahasiswa-magang-kkn.html"
+                   class="nav-link-modern active px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
                     <i class="fas fa-briefcase text-sm"></i>
                     <span>Magang & KKN</span>
                 </a>
-                <a href="mahasiswa-profil.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+
+                <a href="mahasiswa-profil.html"
+                   class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
                     <i class="fas fa-user-circle text-sm"></i>
                     <span>Profil Saya</span>
                 </a>
+
             </div>
-            
-            <!-- User Info & Actions -->
+
+            <!-- Right Actions -->
             <div class="flex items-center gap-2 md:gap-3">
-                <!-- Notifications -->
+
+                <!-- Notification -->
                 <div class="relative">
-                    <button id="notificationBtn" class="icon-btn relative p-2 rounded-lg transition-all duration-200">
+                    <button id="notificationBtn"
+                            class="icon-btn relative p-2 rounded-lg transition-all duration-200">
+
                         <i class="fas fa-bell text-base md:text-lg"></i>
-                        <span id="notificationBadge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full hidden"></span>
+
+                        <span id="notificationBadge"
+                              class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full hidden">
+                        </span>
                     </button>
                 </div>
-                
-                <!-- User Profile Dropdown Desktop -->
+
+                <!-- Desktop Profile -->
                 <div class="relative hidden md:block">
-                    <button id="userMenuBtn" class="flex items-center gap-2 p-1.5 rounded-xl hover:bg-white/10 transition-all duration-200">
+
+                    <button id="userMenuBtn"
+                            class="flex items-center gap-2 p-1.5 rounded-xl hover:bg-white/10 transition-all duration-200">
+
                         <div class="relative">
-                            <img id="navAvatar" src="" alt="Avatar" class="w-8 h-8 rounded-full object-cover ring-2 ring-white/50">
+                            <img id="navAvatar"
+                                 src=""
+                                 alt="Avatar"
+                                 class="w-8 h-8 rounded-full object-cover ring-2 ring-white/50">
+
                             <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full ring-2 ring-white"></div>
                         </div>
+
                         <div class="hidden xl:block text-left">
-                            <p class="user-name text-xs font-semibold" id="navUserName">Loading...</p>
-                            <p class="user-role text-[10px]" id="navUserRole">Mahasiswa</p>
+                            <p class="user-name text-xs font-semibold" id="navUserName">
+                                Loading...
+                            </p>
+
+                            <p class="user-role text-[10px]" id="navUserRole">
+                                Mahasiswa
+                            </p>
                         </div>
+
                         <i class="fas fa-chevron-down text-[10px] text-white/60 hidden xl:block"></i>
                     </button>
-                    
-                    <div id="userDropdown" class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hidden z-50">
+
+                    <!-- Dropdown -->
+                    <div id="userDropdown"
+                         class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hidden z-50">
+
                         <div class="p-3 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-purple-50">
+
                             <div class="flex items-center gap-3">
-                                <img id="dropdownAvatar" src="" alt="Avatar" class="w-10 h-10 rounded-full object-cover">
+
+                                <img id="dropdownAvatar"
+                                     src=""
+                                     alt="Avatar"
+                                     class="w-10 h-10 rounded-full object-cover">
+
                                 <div>
-                                    <p class="font-semibold text-gray-800 text-sm" id="dropdownUserName">Loading...</p>
-                                    <p class="text-xs text-gray-500" id="dropdownUserNim">-</p>
+                                    <p class="font-semibold text-gray-800 text-sm"
+                                       id="dropdownUserName">
+                                        Loading...
+                                    </p>
+
+                                    <p class="text-xs text-gray-500"
+                                       id="dropdownUserNim">
+                                        -
+                                    </p>
                                 </div>
+
                             </div>
+
                         </div>
+
                         <div class="p-2">
-                            <a href="mahasiswa-profil.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
+
+                            <a href="mahasiswa-profil.html"
+                               class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
+
                                 <i class="fas fa-user-cog w-5 text-gray-400"></i>
                                 <span>Pengaturan Akun</span>
                             </a>
-                            <a href="mahasiswa-ubah-password.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
+
+                            <a href="mahasiswa-ubah-password.html"
+                               class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
+
                                 <i class="fas fa-key w-5 text-gray-400"></i>
                                 <span>Ubah Password</span>
                             </a>
+
                             <div class="border-t border-gray-100 my-2"></div>
-                            <button onclick="handleLogout()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-600 hover:bg-red-50 transition text-sm">
+
+                            <button onclick="handleLogout()"
+                                    class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-600 hover:bg-red-50 transition text-sm">
+
                                 <i class="fas fa-sign-out-alt w-5 text-red-400"></i>
                                 <span>Logout</span>
                             </button>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Hamburger Menu Button -->
-                <button id="hamburgerBtn" class="md:hidden icon-btn p-2 rounded-lg transition-all duration-200">
+                        </div>
+
+                    </div>
+
+                </div>
+                <button id="hamburgerBtn"
+                        class="md:hidden icon-btn p-2 rounded-lg transition-all duration-200">
+
                     <i class="fas fa-bars text-xl"></i>
                 </button>
-            </div>
-        </nav>
-    </header>
 
-    <main class="pt-16 md:pt-20">
+            </div>
+
+        </nav>
+
+    </div>
+</header>
+
+    <main class="pt-24 md:pt-28">
         <div class="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-8">
             <div class="mb-10 text-center" data-aos="fade-down">
                 <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-3">Pilih Program Anda</h2>
