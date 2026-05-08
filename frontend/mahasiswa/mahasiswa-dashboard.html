@@ -118,32 +118,82 @@
         .status-rejected { background: #FEE2E2; color: #DC2626; }
         .status-verified { background: #DBEAFE; color: #2563EB; }
 
-        /* ========== NAVBAR STYLE MODERN & INTEGRATED ========== */
-        .navbar {
-            background: white;
-            border-bottom: 1px solid #E5E7EB;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        /* ========== NAVBAR STYLE - BIRU GRADIENT ========== */
+        .navbar-custom {
+            background: linear-gradient(135deg, #1E3A5F 0%, #2D4A6E 50%, #1E3A5F 100%);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .nav-link {
             position: relative;
             transition: all 0.2s ease;
-            color: #4B5563;
+            color: rgba(255, 255, 255, 0.8);
             font-weight: 500;
         }
 
         .nav-link:hover {
-            color: #3B82F6;
-            background: #EFF6FF;
+            color: white;
+            background: rgba(255, 255, 255, 0.15);
         }
 
         .nav-link.active {
-            color: #3B82F6;
-            background: #EFF6FF;
+            background: rgba(255, 255, 255, 0.25);
+            color: white !important;
         }
 
         .nav-link.active i {
-            color: #3B82F6;
+            color: white !important;
+        }
+
+        .nav-link.active::before {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 2px;
+            background: white;
+            border-radius: 2px;
+        }
+
+        /* Brand text color */
+        .brand-title {
+            color: white;
+        }
+
+        .brand-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Icon buttons */
+        .icon-btn {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .icon-btn:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .user-name {
+            color: white;
+        }
+
+        .user-role {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Dropdown Animation */
+        #userDropdown {
+            transform-origin: top right;
+            animation: dropdownFade 0.2s ease;
+        }
+
+        @keyframes dropdownFade {
+            from { opacity: 0; transform: scale(0.95) translateY(-10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
         }
 
         /* Mobile Nav */
@@ -184,7 +234,7 @@
 
         .mobile-nav-header {
             padding: 20px;
-            background: linear-gradient(135deg, #2563EB, #7C3AED);
+            background: linear-gradient(135deg, #1E3A5F, #2D4A6E);
             color: white;
         }
 
@@ -213,10 +263,10 @@
 </head>
 <body class="bg-gray-50 font-sans antialiased">
     <!-- Loading Overlay -->
-    <div id="loadingOverlay" class="fixed inset-0 bg-white bg-opacity-90 z-50 flex items-center justify-center">
-        <div class="text-center">
+    <div id="loadingOverlay" class="fixed inset-0 bg-white/80 backdrop-blur-sm z-50 flex items-center justify-center">
+        <div class="text-center bg-white p-6 rounded-2xl shadow-xl">
             <div class="loading-spinner"></div>
-            <p class="mt-4 text-gray-600">Memuat dashboard...</p>
+            <p class="mt-4 text-gray-600 font-medium">Memuat dashboard...</p>
         </div>
     </div>
 
@@ -254,16 +304,16 @@
         </div>
     </div>
 
-    <!-- HEADER / NAVBAR - WHITE MODERN WITH SHADOW -->
-    <header class="navbar fixed top-0 left-0 right-0 z-50">
+    <!-- HEADER / NAVBAR - BIRU GRADIENT -->
+    <header class="navbar-custom fixed top-0 left-0 right-0 z-50">
         <div class="container mx-auto px-4 md:px-6">
             <div class="flex justify-between items-center h-16 md:h-[70px]">
                 <!-- Logo & Brand -->
                 <a href="mahasiswa-dashboard.html" class="flex items-center space-x-3 group">
-                    <img src="yadika.png" alt="Logo" class="h-9 w-9 md:h-10 md:w-10 rounded-xl shadow-sm bg-white p-1">
+                    <img src="yadika.png" alt="Logo" class="h-9 w-9 md:h-10 md:w-10 rounded-lg shadow-sm bg-white p-1">
                     <div>
-                        <h1 class="text-gray-800 font-bold text-base md:text-lg">LPPM ITB Yadika</h1>
-                        <p class="text-gray-500 text-xs -mt-0.5">Portal Mahasiswa</p>
+                        <h1 class="brand-title font-bold text-base md:text-lg">LPPM ITB Yadika</h1>
+                        <p class="brand-subtitle text-xs -mt-0.5">Portal Mahasiswa</p>
                     </div>
                 </a>
 
@@ -288,23 +338,23 @@
 
                 <!-- Right Actions -->
                 <div class="flex items-center gap-3">
-                    <button id="notificationBtn" class="relative p-2 rounded-lg text-gray-500 hover:bg-gray-100 transition">
+                    <button id="notificationBtn" class="icon-btn relative p-2 rounded-lg transition">
                         <i class="fas fa-bell text-lg"></i>
                         <span id="notificationBadge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full hidden"></span>
                     </button>
 
                     <!-- Desktop User Menu -->
                     <div class="relative hidden md:block">
-                        <button id="userMenuBtn" class="flex items-center gap-2 p-1 rounded-xl hover:bg-gray-100 transition">
-                            <img id="navAvatar" src="" alt="Avatar" class="w-8 h-8 rounded-full object-cover ring-2 ring-gray-200">
+                        <button id="userMenuBtn" class="flex items-center gap-2 p-1 rounded-xl hover:bg-white/10 transition">
+                            <img id="navAvatar" src="" alt="Avatar" class="w-8 h-8 rounded-full object-cover ring-2 ring-white/50">
                             <div class="hidden xl:block text-left">
-                                <p class="text-sm font-semibold text-gray-800" id="navUserName">Loading...</p>
-                                <p class="text-xs text-gray-500" id="navUserRole">Mahasiswa</p>
+                                <p class="user-name text-sm font-semibold" id="navUserName">Loading...</p>
+                                <p class="user-role text-xs" id="navUserRole">Mahasiswa</p>
                             </div>
-                            <i class="fas fa-chevron-down text-xs text-gray-400"></i>
+                            <i class="fas fa-chevron-down text-xs text-white/60"></i>
                         </button>
                         <div id="userDropdown" class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hidden z-50">
-                            <div class="p-3 border-b bg-gray-50">
+                            <div class="p-3 border-b bg-gradient-to-r from-blue-50 to-purple-50">
                                 <div class="flex items-center gap-3">
                                     <img id="dropdownAvatar" src="" class="w-9 h-9 rounded-full">
                                     <div><p class="font-semibold text-sm" id="dropdownUserName">Loading</p><p class="text-xs text-gray-500" id="dropdownUserNim">-</p></div>
@@ -320,7 +370,7 @@
                     </div>
 
                     <!-- Hamburger -->
-                    <button id="hamburgerBtn" class="md:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition">
+                    <button id="hamburgerBtn" class="md:hidden icon-btn p-2 rounded-lg transition">
                         <i class="fas fa-bars text-xl"></i>
                     </button>
                 </div>
@@ -328,7 +378,7 @@
         </div>
     </header>
 
-    <!-- MAIN CONTENT - SAMA PERSIS LEBARNYA DENGAN NAVBAR -->
+    <!-- MAIN CONTENT -->
     <main class="pt-[65px] md:pt-[86px]">
         <div class="container mx-auto px-4 md:px-6 py-6 md:py-8">
             <!-- Welcome Section -->
@@ -395,7 +445,7 @@
         function checkAuth() { const token=getToken(), user=getUser(); if(!token||!user){ window.location='../login.html'; return false; } if(user.role!=='mahasiswa'){ alert('Akses ditolak'); window.location='../login.html'; return false; } return true; }
         window.handleLogout = function() { if(refreshInterval) clearInterval(refreshInterval); localStorage.clear(); window.location='../login.html'; };
 
-        // API Functions (diringkas tapi tetap lengkap)
+        // API Functions
         async function loadMagangData() { try { const res = await fetch(`${API_BASE}/magang/status`,{headers:{'Authorization':`Bearer ${getToken()}`}}); if(res.ok){ const d=(await res.json()).data||{}; let status='Belum Daftar',cls='text-gray-500',prog=0,det='',date=''; if(d.registrasi){ const s=d.registrasi.status; if(s==='pending'){ status='Menunggu Verifikasi'; cls='text-yellow-600'; prog=25; det='Dokumen diperiksa'; date=formatDate(d.registrasi.created_at); } else if(s==='approved'){ status='Disetujui'; cls='text-green-600'; prog=50; det='Isi data perusahaan'; date=formatDate(d.registrasi.created_at); } else if(s==='verified'){ status='Selesai'; cls='text-blue-600'; prog=100; det='Magang selesai'; } else if(s==='rejected'){ status='Ditolak'; cls='text-red-600'; det=d.registrasi.catatan||'Ditolak'; } } if(d.perusahaan){ prog=75; status='Magang Aktif'; cls='text-green-600'; det=`${d.perusahaan.nama_perusahaan||'Perusahaan'} - ${d.perusahaan.posisi||'Magang'}`; } if(d.luaran){ prog=100; status='Selesai'; cls='text-blue-600'; } document.getElementById('magangStatus').innerHTML=`<span class="${cls}">${status}</span>`; document.getElementById('magangDetail').innerText=det; document.getElementById('magangDate').innerText=date?`Daftar: ${date}`:'-'; document.getElementById('magangProgress').style.width=`${prog}%`; } }catch(e){ console.error(e); } }
         async function loadKKNData() { try { const res = await fetch(`${API_BASE}/mahasiswa/kkn/status`,{headers:{'Authorization':`Bearer ${getToken()}`}}); if(res.ok){ const d=(await res.json()).data||{}; let status='Belum Daftar',cls='text-gray-500',prog=0,det='',date=''; if(d.pendaftaran&&d.pendaftaran.status!=='belum_daftar'){ const s=d.pendaftaran.status; if(s==='pending'){ status='Menunggu Verifikasi'; cls='text-yellow-600'; prog=25; det=`Desa: ${d.pendaftaran.desa||'-'}`; date=formatDate(d.pendaftaran.tanggal); } else if(s==='approved'){ status='Disetujui'; cls='text-green-600'; prog=50; det=`Desa: ${d.pendaftaran.desa||'-'}`; } else if(s==='verified'){ status='Selesai'; cls='text-blue-600'; prog=100; det='KKN selesai'; } else if(s==='rejected'){ status='Ditolak'; cls='text-red-600'; det='Pengajuan ditolak'; } } document.getElementById('kknStatus').innerHTML=`<span class="${cls}">${status}</span>`; document.getElementById('kknDetail').innerText=det; document.getElementById('kknDate').innerText=date?`Daftar: ${date}`:'-'; document.getElementById('kknProgress').style.width=`${prog}%`; } }catch(e){ console.error(e); } }
         async function loadKegiatanCount() { try { const res = await fetch(`${API_BASE}/mahasiswa/kegiatan?limit=100`,{headers:{'Authorization':`Bearer ${getToken()}`}}); if(res.ok){ const k=(await res.json()).data||[]; const total=k.filter(k=>k.user_registered===true).length; document.getElementById('totalKegiatan').innerText=total; document.getElementById('kegiatanDetail').innerText=total===0?'Belum ada kegiatan':`${total} kegiatan`; } }catch(e){ console.error(e); } }
