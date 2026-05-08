@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>Berita & Kegiatan - LPPM ITB Yadika</title>
+    <title>Informasi & Kegiatan - LPPM ITB Yadika</title>
     
     <!-- CSS External Libraries -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -27,18 +27,24 @@
 
         /* Navbar Styles - SAMA PERSIS DENGAN DASHBOARD */
         .navbar-custom {
-            background: white;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.05);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            background: linear-gradient(135deg, #1E3A5F 0%, #2D4A6E 50%, #1E3A5F 100%);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .nav-link-modern {
             position: relative;
             transition: all 0.2s ease;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .nav-link-modern:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.15);
         }
 
         .nav-link-modern.active {
-            background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
+            background: rgba(255, 255, 255, 0.25);
             color: white !important;
         }
 
@@ -46,9 +52,43 @@
             color: white !important;
         }
 
-        .nav-link-modern:not(.active):hover {
-            transform: translateY(-1px);
-            background: #F3F4F6;
+        .nav-link-modern.active::before {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 2px;
+            background: white;
+            border-radius: 2px;
+        }
+
+        /* Brand text color */
+        .brand-title {
+            color: white;
+        }
+
+        .brand-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Icon buttons */
+        .icon-btn {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .icon-btn:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .user-name {
+            color: white;
+        }
+
+        .user-role {
+            color: rgba(255, 255, 255, 0.7);
         }
 
         /* Dropdown Animation */
@@ -66,19 +106,6 @@
                 opacity: 1;
                 transform: scale(1) translateY(0);
             }
-        }
-
-        /* Active link indicator */
-        .nav-link-modern.active::before {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 20px;
-            height: 2px;
-            background: white;
-            border-radius: 2px;
         }
 
         /* Loading Spinner */
@@ -108,23 +135,21 @@
         .content-card:hover {
             transform: translateY(-6px);
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            border-color: rgba(59, 130, 246, 0.2);
+            border-color: rgba(59, 130, 246, 0.1);
         }
 
-        /* Category Badges for Berita */
-        .badge-pengumuman { background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%); color: #92400E; border: 1px solid rgba(245, 158, 11, 0.2); }
-        .badge-berita { background: linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%); color: #1E40AF; border: 1px solid rgba(37, 99, 235, 0.2); }
-        .badge-kegiatan { background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%); color: #065F46; border: 1px solid rgba(16, 185, 129, 0.2); }
-        .badge-prestasi { background: linear-gradient(135deg, #F3E8FF 0%, #E9D5FF 100%); color: #6B21A8; border: 1px solid rgba(147, 51, 234, 0.2); }
-        .badge-kerjasama { background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%); color: #991B1B; border: 1px solid rgba(220, 38, 38, 0.2); }
-        .badge-lainnya { background: linear-gradient(135deg, #E5E7EB 0%, #D1D5DB 100%); color: #374151; border: 1px solid rgba(75, 85, 99, 0.2); }
-
-        /* Category Badges for Kegiatan */
-        .badge-seminar { background: linear-gradient(135deg, #F3E8FF 0%, #E9D5FF 100%); color: #6B21A8; border: 1px solid rgba(147, 51, 234, 0.2); }
-        .badge-workshop { background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%); color: #065F46; border: 1px solid rgba(16, 185, 129, 0.2); }
-        .badge-pelatihan { background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%); color: #92400E; border: 1px solid rgba(245, 158, 11, 0.2); }
-        .badge-webinar { background: linear-gradient(135deg, #E0F2FE 0%, #BAE6FD 100%); color: #075985; border: 1px solid rgba(2, 132, 199, 0.2); }
-        .badge-konferensi { background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%); color: #991B1B; border: 1px solid rgba(220, 38, 38, 0.2); }
+        /* Category Badges */
+        .badge-pengumuman { background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%); color: #92400E; }
+        .badge-berita { background: linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%); color: #1E40AF; }
+        .badge-kegiatan { background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%); color: #065F46; }
+        .badge-prestasi { background: linear-gradient(135deg, #F3E8FF 0%, #E9D5FF 100%); color: #6B21A8; }
+        .badge-kerjasama { background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%); color: #991B1B; }
+        .badge-lainnya { background: linear-gradient(135deg, #E5E7EB 0%, #D1D5DB 100%); color: #374151; }
+        .badge-seminar { background: linear-gradient(135deg, #F3E8FF 0%, #E9D5FF 100%); color: #6B21A8; }
+        .badge-workshop { background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%); color: #065F46; }
+        .badge-pelatihan { background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%); color: #92400E; }
+        .badge-webinar { background: linear-gradient(135deg, #E0F2FE 0%, #BAE6FD 100%); color: #075985; }
+        .badge-konferensi { background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%); color: #991B1B; }
 
         /* Status Badges */
         .badge-upcoming { background: #FEF3C7; color: #92400E; }
@@ -217,9 +242,9 @@
 
         .search-input {
             width: 100%;
-            padding: 0.75rem 1rem 0.75rem 2.75rem;
+            padding: 0.875rem 1rem 0.875rem 2.75rem;
             border: 1px solid #E5E7EB;
-            border-radius: 0.75rem;
+            border-radius: 1rem;
             font-size: 0.875rem;
             transition: all 0.2s ease;
             background: white;
@@ -256,14 +281,8 @@
             appearance: none;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236B7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
             background-repeat: no-repeat;
-            background-position: right 0.75rem center;
-            background-size: 1rem;
-        }
-
-        .sort-select:focus {
-            outline: none;
-            border-color: #3B82F6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            background-position: right 0.5rem center;
+            background-size: 1.5rem;
         }
 
         /* Modal */
@@ -282,6 +301,19 @@
             }
         }
 
+        /* Register Button */
+        .register-btn {
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+        }
+
         /* Toast Notification */
         .toast-notification {
             position: fixed;
@@ -297,35 +329,73 @@
             max-width: 350px;
         }
 
-        .toast-notification.error { border-left-color: #EF4444; }
-        .toast-notification.success { border-left-color: #10B981; }
-
         @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
 
-        /* Load More Button */
-        .load-more-btn {
+        /* Mobile Navigation */
+        .mobile-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-nav.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .mobile-nav-container {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 280px;
+            height: 100%;
             background: white;
-            color: #4B5563;
-            padding: 0.75rem 2rem;
-            border-radius: 0.75rem;
-            font-size: 0.875rem;
-            font-weight: 500;
-            border: 1px solid #E5E7EB;
-            transition: all 0.2s ease;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
+            transform: translateX(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
         }
 
-        .load-more-btn:hover {
-            background: #F9FAFB;
-            border-color: #3B82F6;
+        .mobile-nav.active .mobile-nav-container {
+            transform: translateX(0);
+        }
+
+        .mobile-nav-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #1E3A5F, #2D4A6E);
+            color: white;
+        }
+
+        .mobile-nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            color: #4B5563;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .mobile-nav-link.active {
+            background: #EFF6FF;
             color: #3B82F6;
-            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.1);
+            border-left-color: #3B82F6;
         }
     </style>
 </head>
@@ -338,73 +408,127 @@
         </div>
     </div>
 
-    <!-- HEADER / NAVBAR - SAMA PERSIS DENGAN DASHBOARD -->
-    <header class="navbar-custom fixed top-0 left-0 right-0 z-50">
-        <nav class="container mx-auto px-4 md:px-6 py-3 flex justify-between items-center">
+    <!-- Mobile Navigation -->
+    <div id="mobileNav" class="mobile-nav">
+        <div class="mobile-nav-container">
+            <div class="mobile-nav-header">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                        <img src="yadika.png" alt="Logo" class="h-8 w-8 rounded-lg bg-white p-1">
+                        <span class="font-bold text-sm">LPPM ITB Yadika</span>
+                    </div>
+                    <button id="closeMobileNav" class="text-white">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <div class="flex items-center gap-3 mt-4 pt-2 border-t border-white/20">
+                    <img id="mobileNavAvatar" src="" alt="Avatar" class="w-10 h-10 rounded-full object-cover ring-2 ring-white/50">
+                    <div>
+                        <p class="font-semibold text-sm" id="mobileNavUserName">Loading...</p>
+                        <p class="text-xs opacity-80">Mahasiswa</p>
+                    </div>
+                </div>
+            </div>
+            <div class="flex-1 overflow-y-auto py-4">
+                <a href="mahasiswa-dashboard.html" class="mobile-nav-link">
+                    <i class="fas fa-home w-5"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="mahasiswa-berita.html" class="mobile-nav-link active">
+                    <i class="fas fa-newspaper w-5"></i>
+                    <span>Berita</span>
+                </a>
+                <a href="mahasiswa-repository.html" class="mobile-nav-link">
+                    <i class="fas fa-book w-5"></i>
+                    <span>Repository</span>
+                </a>
+                <a href="mahasiswa-magang-kkn.html" class="mobile-nav-link">
+                    <i class="fas fa-briefcase w-5"></i>
+                    <span>Magang & KKN</span>
+                </a>
+                <a href="mahasiswa-profil.html" class="mobile-nav-link">
+                    <i class="fas fa-user-circle w-5"></i>
+                    <span>Profil Saya</span>
+                </a>
+                <div class="border-t border-gray-100 my-4 mx-4"></div>
+                <a href="mahasiswa-ubah-password.html" class="mobile-nav-link">
+                    <i class="fas fa-key w-5"></i>
+                    <span>Ubah Password</span>
+                </a>
+                <button onclick="handleLogout()" class="mobile-nav-link w-full text-left text-red-600">
+                    <i class="fas fa-sign-out-alt w-5"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navbar - SAMA PERSIS DENGAN DASHBOARD -->
+    <header class="fixed top-0 left-0 right-0 navbar-custom z-50">
+        <nav class="container mx-auto px-4 md:px-6 py-3 md:py-4 flex justify-between items-center">
             <!-- Logo and Brand -->
             <a href="mahasiswa-dashboard.html" class="flex items-center space-x-3 group">
                 <div class="relative">
-                    <img src="yadika.png" alt="Logo LPPM ITB Yadika" class="h-9 w-9 md:h-10 md:w-10 rounded-xl shadow-sm transition-transform group-hover:scale-105">
-                    <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl opacity-0 group-hover:opacity-20 transition"></div>
+                    <img src="yadika.png" alt="Logo LPPM ITB Yadika" class="h-9 w-9 md:h-10 md:w-10 rounded-lg shadow-sm transition-transform group-hover:scale-105 bg-white p-1">
+                    <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-400 to-purple-400 rounded-lg opacity-0 group-hover:opacity-30 transition"></div>
                 </div>
                 <div>
-                    <h1 class="text-base md:text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                        Portal Mahasiswa
+                    <h1 class="brand-title text-base md:text-lg font-bold tracking-wide">
+                        LPPM ITB Yadika
                     </h1>
-                    <p class="text-xs text-gray-400 hidden sm:block">LPPM ITB Yadika</p>
+                    <p class="brand-subtitle text-xs md:text-sm -mt-0.5">Portal Mahasiswa</p>
                 </div>
             </a>
             
             <!-- Desktop Navigation Menu -->
             <div class="hidden md:flex items-center space-x-1">
-                <a href="mahasiswa-dashboard.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
-                    <i class="fas fa-home text-gray-400"></i>
+                <a href="mahasiswa-dashboard.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-home text-sm"></i>
                     <span>Dashboard</span>
                 </a>
-                <a href="mahasiswa-berita.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2 active">
-                    <i class="fas fa-newspaper text-gray-400"></i>
+                <a href="mahasiswa-berita.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2 active">
+                    <i class="fas fa-newspaper text-sm"></i>
                     <span>Berita</span>
                 </a>
-                <a href="mahasiswa-repository.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
-                    <i class="fas fa-book text-gray-400"></i>
+                <a href="mahasiswa-repository.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-book text-sm"></i>
                     <span>Repository</span>
                 </a>
-                <a href="mahasiswa-magang-kkn.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
-                    <i class="fas fa-briefcase text-gray-400"></i>
+                <a href="mahasiswa-magang-kkn.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-briefcase text-sm"></i>
                     <span>Magang & KKN</span>
                 </a>
-                <a href="mahasiswa-profil.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
-                    <i class="fas fa-user-circle text-gray-400"></i>
+                <a href="mahasiswa-profil.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-user-circle text-sm"></i>
                     <span>Profil Saya</span>
                 </a>
             </div>
             
             <!-- User Info & Actions -->
-            <div class="flex items-center gap-3 md:gap-4">
-                <!-- Notifications Dropdown -->
+            <div class="flex items-center gap-2 md:gap-3">
+                <!-- Notifications -->
                 <div class="relative">
-                    <button id="notificationBtn" class="relative p-2 rounded-lg text-gray-500 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200">
+                    <button id="notificationBtn" class="icon-btn relative p-2 rounded-lg transition-all duration-200">
                         <i class="fas fa-bell text-base md:text-lg"></i>
                         <span id="notificationBadge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full hidden"></span>
                     </button>
                 </div>
                 
-                <!-- User Profile Dropdown -->
-                <div class="relative">
-                    <button id="userMenuBtn" class="flex items-center gap-2 p-1.5 rounded-xl hover:bg-gray-50 transition-all duration-200 border border-transparent hover:border-gray-200">
+                <!-- User Profile Dropdown Desktop -->
+                <div class="relative hidden md:block">
+                    <button id="userMenuBtn" class="flex items-center gap-2 p-1.5 rounded-xl hover:bg-white/10 transition-all duration-200">
                         <div class="relative">
-                            <img id="navAvatar" src="" alt="Avatar" class="w-8 h-8 md:w-9 md:h-9 rounded-full object-cover ring-2 ring-gray-200">
-                            <div class="absolute bottom-0 right-0 w-2 h-2 md:w-2.5 md:h-2.5 bg-green-500 rounded-full ring-2 ring-white"></div>
+                            <img id="navAvatar" src="" alt="Avatar" class="w-8 h-8 rounded-full object-cover ring-2 ring-white/50">
+                            <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full ring-2 ring-white"></div>
                         </div>
                         <div class="hidden xl:block text-left">
-                            <p class="text-sm font-semibold text-gray-800" id="navUserName">Loading...</p>
-                            <p class="text-xs text-gray-400" id="navUserRole">Mahasiswa</p>
+                            <p class="user-name text-xs font-semibold" id="navUserName">Loading...</p>
+                            <p class="user-role text-[10px]" id="navUserRole">Mahasiswa</p>
                         </div>
-                        <i class="fas fa-chevron-down text-xs text-gray-400 hidden xl:block"></i>
+                        <i class="fas fa-chevron-down text-[10px] text-white/60 hidden xl:block"></i>
                     </button>
                     
-                    <!-- Dropdown Menu -->
-                    <div id="userDropdown" class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hidden transition-all duration-200 z-50">
+                    <div id="userDropdown" class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hidden z-50">
                         <div class="p-3 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-purple-50">
                             <div class="flex items-center gap-3">
                                 <img id="dropdownAvatar" src="" alt="Avatar" class="w-10 h-10 rounded-full object-cover">
@@ -431,27 +555,32 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Hamburger Menu Button -->
+                <button id="hamburgerBtn" class="md:hidden icon-btn p-2 rounded-lg transition-all duration-200">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
             </div>
         </nav>
     </header>
 
     <!-- Main Content -->
-    <main class="pt-20 md:pt-24 pb-12">
-        <div class="container mx-auto px-4 md:px-6 max-w-7xl">
+    <main class="pt-[72px] md:pt-[84px] pb-12">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
             <!-- Header Section with Stats -->
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 md:mb-8">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
                 <div>
-                    <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 tracking-tight">Informasi & Kegiatan</h2>
-                    <p class="text-gray-500 text-sm mt-1">Tetap terupdate dengan berita dan kegiatan terbaru dari LPPM</p>
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">Informasi & Kegiatan</h2>
+                    <p class="text-gray-500 text-sm mt-2">Tetap terupdate dengan berita dan kegiatan terbaru dari LPPM</p>
                 </div>
                 
                 <!-- Quick Stats -->
                 <div class="flex gap-3 mt-4 md:mt-0">
-                    <div class="stat-card">
+                    <div class="stat-card" id="totalBeritaStat">
                         <span class="text-xs text-gray-500">Total Berita</span>
                         <p class="text-xl font-bold text-blue-600" id="totalBerita">0</p>
                     </div>
-                    <div class="stat-card">
+                    <div class="stat-card" id="totalKegiatanStat">
                         <span class="text-xs text-gray-500">Total Kegiatan</span>
                         <p class="text-xl font-bold text-green-600" id="totalKegiatan">0</p>
                     </div>
@@ -459,7 +588,7 @@
             </div>
 
             <!-- Content Type Tabs -->
-            <div class="flex gap-3 mb-6 md:mb-8">
+            <div class="flex gap-3 mb-8">
                 <button onclick="switchContentType('berita')" class="content-type-tab active" id="tabBerita">
                     <i class="fas fa-newspaper mr-2"></i>Berita & Pengumuman
                 </button>
@@ -468,16 +597,12 @@
                 </button>
             </div>
 
-            <!-- Featured Content Container -->
-            <div id="featuredBeritaContainer" class="featured-content rounded-2xl shadow-xl mb-8 md:mb-10" data-aos="fade-up">
-                <!-- Featured berita will be loaded here -->
-            </div>
-            <div id="featuredKegiatanContainer" class="featured-content rounded-2xl shadow-xl mb-8 md:mb-10 hidden" data-aos="fade-up">
-                <!-- Featured kegiatan will be loaded here -->
-            </div>
+            <!-- Featured Content Containers -->
+            <div id="featuredBeritaContainer" class="featured-content rounded-2xl shadow-xl mb-10" data-aos="fade-up"></div>
+            <div id="featuredKegiatanContainer" class="featured-content rounded-2xl shadow-xl mb-10 hidden" data-aos="fade-up"></div>
 
             <!-- Categories, Sort & Search Row -->
-            <div class="flex flex-col lg:flex-row justify-between gap-4 mb-6 md:mb-8">
+            <div class="flex flex-col lg:flex-row justify-between gap-4 mb-8">
                 <div class="flex flex-wrap gap-2" id="categoriesContainer"></div>
                 <div class="flex gap-3">
                     <select id="sortSelect" class="sort-select" onchange="handleSortChange()">
@@ -487,13 +612,13 @@
                     </select>
                     <div class="search-wrapper lg:w-64">
                         <i class="fas fa-search"></i>
-                        <input type="text" id="searchInput" placeholder="Cari berita atau kegiatan..." class="search-input">
+                        <input type="text" id="searchInput" placeholder="Cari..." class="search-input">
                     </div>
                 </div>
             </div>
 
             <!-- Content Grid -->
-            <div id="contentContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
+            <div id="contentContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div class="col-span-3 text-center py-16">
                     <div class="loading-spinner mx-auto"></div>
                     <p class="mt-4 text-gray-500">Memuat data...</p>
@@ -501,9 +626,9 @@
             </div>
 
             <!-- Load More -->
-            <div class="text-center mt-8 md:mt-10" id="loadMoreContainer" style="display: none;">
-                <button onclick="loadMore()" class="load-more-btn">
-                    <i class="fas fa-sync-alt"></i>
+            <div class="text-center mt-10" id="loadMoreContainer" style="display: none;">
+                <button onclick="loadMore()" class="bg-white text-gray-600 px-6 py-3 rounded-xl font-medium border border-gray-200 hover:border-blue-500 hover:text-blue-500 transition shadow-sm">
+                    <i class="fas fa-sync-alt mr-2"></i>
                     Muat Lainnya
                 </button>
             </div>
@@ -513,13 +638,13 @@
     <!-- Detail Modal -->
     <div id="detailModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto modal-content">
-            <div class="sticky top-0 bg-white p-5 md:p-6 border-b flex justify-between items-center">
-                <h3 class="font-bold text-lg md:text-xl text-gray-900" id="modalTitle"></h3>
-                <button onclick="closeModal()" class="w-8 h-8 md:w-10 md:h-10 rounded-full hover:bg-gray-100 transition flex items-center justify-center">
+            <div class="sticky top-0 bg-white p-6 border-b flex justify-between items-center">
+                <h3 class="font-bold text-xl text-gray-900" id="modalTitle"></h3>
+                <button onclick="closeModal()" class="w-10 h-10 rounded-full hover:bg-gray-100 transition flex items-center justify-center">
                     <i class="fas fa-times text-gray-500"></i>
                 </button>
             </div>
-            <div class="p-5 md:p-6" id="modalContent"></div>
+            <div class="p-6" id="modalContent"></div>
         </div>
     </div>
 
@@ -528,13 +653,9 @@
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-    // Initialize AOS
     AOS.init({ duration: 800, once: true, easing: 'ease-out-cubic' });
 
-    // API Configuration
     const API_CONFIG = { BASE_URL: '/api' };
-
-    // State Management
     let currentPage = 1;
     let currentContentType = 'berita';
     let currentCategory = 'all';
@@ -549,7 +670,7 @@
     let token = localStorage.getItem('token');
     let user = JSON.parse(localStorage.getItem('user') || '{}');
 
-    // ============ AUTHENTICATION FUNCTIONS ============
+    // ==================== AUTHENTICATION & UTILITY ====================
     function handleLogout() {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
@@ -557,10 +678,10 @@
     }
 
     function isAuthenticated() {
-        return token && user && user.id && token !== 'null' && token !== 'undefined' && user.role === 'mahasiswa';
+        return token && user && user.id && token !== 'null' && token !== 'undefined';
     }
 
-    if (!isAuthenticated()) {
+    if (!isAuthenticated() || user.role !== 'mahasiswa') {
         window.location.href = '../login.html';
         throw new Error('Authentication failed');
     }
@@ -568,47 +689,26 @@
     async function authenticatedFetch(url, options = {}) {
         const response = await fetch(`${API_CONFIG.BASE_URL}${url}`, {
             ...options,
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
-                ...options.headers
-            }
+            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', ...options.headers }
         });
-
         if (response.status === 401) {
             showToast('Sesi Anda telah berakhir. Silakan login kembali.', 'error');
             handleLogout();
             throw new Error('Unauthorized');
         }
-
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
             throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
         }
-        
         return await response.json();
     }
 
-    // ============ UTILITY FUNCTIONS ============
-    function safeGetElementById(id) {
-        const element = document.getElementById(id);
-        if (!element) console.warn(`Element '${id}' not found.`);
-        return element;
-    }
-
     function showToast(message, type = 'info') {
-        const toastContainer = safeGetElementById('toastContainer');
+        const toastContainer = document.getElementById('toastContainer');
         if (!toastContainer) return;
-
         const toast = document.createElement('div');
         toast.className = `toast-notification ${type}`;
-        toast.innerHTML = `
-            <div class="flex items-start gap-3">
-                <i class="fas ${type === 'error' ? 'fa-exclamation-circle text-red-500' : type === 'success' ? 'fa-check-circle text-green-500' : 'fa-info-circle text-blue-500'} text-xl"></i>
-                <div><p class="text-sm text-gray-700">${message}</p></div>
-                <button onclick="this.parentElement.parentElement.remove()" class="ml-auto text-gray-400 hover:text-gray-600"><i class="fas fa-times"></i></button>
-            </div>
-        `;
+        toast.innerHTML = `<div class="flex items-start gap-3"><i class="fas ${type === 'error' ? 'fa-exclamation-circle text-red-500' : 'fa-check-circle text-green-500'} text-xl"></i><div><p class="text-sm text-gray-700">${message}</p></div><button onclick="this.parentElement.parentElement.remove()" class="ml-auto text-gray-400 hover:text-gray-600"><i class="fas fa-times"></i></button></div>`;
         toastContainer.appendChild(toast);
         setTimeout(() => toast.remove(), 5000);
     }
@@ -618,20 +718,15 @@
         const date = new Date(dateString);
         const now = new Date();
         const diffDays = Math.floor((now - date) / (1000 * 60 * 60 * 24));
-
         if (diffDays === 0) return "Hari ini";
         if (diffDays === 1) return "Kemarin";
         if (diffDays < 7) return `${diffDays} hari lalu`;
-
         return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
     }
 
     function formatDateTime(dateString) {
         if (!dateString) return '-';
-        return new Date(dateString).toLocaleString('id-ID', {
-            day: 'numeric', month: 'long', year: 'numeric',
-            hour: '2-digit', minute: '2-digit'
-        });
+        return new Date(dateString).toLocaleString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
     }
 
     function stripHtmlTags(html) {
@@ -675,50 +770,7 @@
         }
     }
 
-    // ============ NAVBAR FUNCTIONS ============
-    function updateNavbarUserInfo(profile) {
-        if (!profile) return;
-        const avatarUrl = profile.foto_profil ? `/${profile.foto_profil}` : `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.nama_lengkap || 'Mahasiswa')}&background=3B82F6&color=fff&bold=true`;
-        const navAvatar = document.getElementById('navAvatar');
-        const dropdownAvatar = document.getElementById('dropdownAvatar');
-        const navUserName = document.getElementById('navUserName');
-        const dropdownUserName = document.getElementById('dropdownUserName');
-        const dropdownUserNim = document.getElementById('dropdownUserNim');
-        if (navAvatar) navAvatar.src = avatarUrl;
-        if (dropdownAvatar) dropdownAvatar.src = avatarUrl;
-        if (navUserName) navUserName.textContent = profile.nama_lengkap || 'Mahasiswa';
-        if (dropdownUserName) dropdownUserName.textContent = profile.nama_lengkap || 'Mahasiswa';
-        if (dropdownUserNim) dropdownUserNim.textContent = profile.nim ? `NIM: ${profile.nim}` : '-';
-    }
-
-    function initDropdown() {
-        const userMenuBtn = document.getElementById('userMenuBtn');
-        const userDropdown = document.getElementById('userDropdown');
-        if (userMenuBtn && userDropdown) {
-            userMenuBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                userDropdown.classList.toggle('hidden');
-            });
-            document.addEventListener('click', function(e) {
-                if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) {
-                    userDropdown.classList.add('hidden');
-                }
-            });
-        }
-    }
-
-    function setActiveNavLink() {
-        const currentPage = window.location.pathname.split('/').pop();
-        document.querySelectorAll('.nav-link-modern').forEach(link => {
-            const href = link.getAttribute('href');
-            if (href === currentPage || (currentPage === 'mahasiswa-berita.html' && href === 'mahasiswa-berita.html')) {
-                link.classList.add('active');
-            } else {
-                link.classList.remove('active');
-            }
-        });
-    }
-
+    // ==================== NAVBAR FUNCTIONS ====================
     async function loadMahasiswaProfile() {
         try {
             const response = await fetch(`${API_CONFIG.BASE_URL}/mahasiswa/profil/basic`, {
@@ -726,14 +778,47 @@
             });
             if (response.ok) {
                 const result = await response.json();
-                if (result.data) updateNavbarUserInfo(result.data);
+                const profile = result.data;
+                if (profile) {
+                    const avatarUrl = profile.foto_profil ? `/${profile.foto_profil}` : `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.nama_lengkap || 'Mahasiswa')}&background=3B82F6&color=fff&bold=true`;
+                    document.getElementById('navAvatar').src = avatarUrl;
+                    document.getElementById('dropdownAvatar').src = avatarUrl;
+                    document.getElementById('mobileNavAvatar').src = avatarUrl;
+                    document.getElementById('navUserName').textContent = profile.nama_lengkap || 'Mahasiswa';
+                    document.getElementById('dropdownUserName').textContent = profile.nama_lengkap || 'Mahasiswa';
+                    document.getElementById('mobileNavUserName').textContent = profile.nama_lengkap || 'Mahasiswa';
+                    document.getElementById('dropdownUserNim').textContent = profile.nim ? `NIM: ${profile.nim}` : '-';
+                }
             }
         } catch (error) {
             console.error('Error loading profile:', error);
         }
     }
 
-    // ============ CONTENT TYPE SWITCH ============
+    function initDropdown() {
+        const userMenuBtn = document.getElementById('userMenuBtn');
+        const userDropdown = document.getElementById('userDropdown');
+        if (userMenuBtn && userDropdown) {
+            userMenuBtn.addEventListener('click', (e) => { e.stopPropagation(); userDropdown.classList.toggle('hidden'); });
+            document.addEventListener('click', (e) => { if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) userDropdown.classList.add('hidden'); });
+        }
+    }
+
+    function initMobileNav() {
+        const hamburger = document.getElementById('hamburgerBtn');
+        const mobileNav = document.getElementById('mobileNav');
+        const closeBtn = document.getElementById('closeMobileNav');
+        if (hamburger && mobileNav) {
+            hamburger.addEventListener('click', () => mobileNav.classList.add('active'));
+            closeBtn.addEventListener('click', () => mobileNav.classList.remove('active'));
+            mobileNav.addEventListener('click', (e) => { if (e.target === mobileNav) mobileNav.classList.remove('active'); });
+            document.querySelectorAll('.mobile-nav-link').forEach(link => {
+                link.addEventListener('click', () => mobileNav.classList.remove('active'));
+            });
+        }
+    }
+
+    // ==================== SWITCH CONTENT ====================
     function switchContentType(type) {
         currentContentType = type;
         currentPage = 1;
@@ -760,36 +845,38 @@
     function updateCategories() {
         const container = document.getElementById('categoriesContainer');
         if (!container) return;
-
         if (currentContentType === 'berita') {
             container.innerHTML = `
-                <button onclick="filterCategory('all')" class="category-btn active px-4 py-2 rounded-xl text-sm font-medium" data-category="all"><i class="fas fa-newspaper mr-2"></i>Semua</button>
-                <button onclick="filterCategory('pengumuman')" class="category-btn px-4 py-2 rounded-xl text-sm font-medium" data-category="pengumuman"><i class="fas fa-bullhorn mr-2"></i>Pengumuman</button>
-                <button onclick="filterCategory('berita')" class="category-btn px-4 py-2 rounded-xl text-sm font-medium" data-category="berita"><i class="fas fa-globe mr-2"></i>Berita</button>
-                <button onclick="filterCategory('kegiatan')" class="category-btn px-4 py-2 rounded-xl text-sm font-medium" data-category="kegiatan"><i class="fas fa-calendar-alt mr-2"></i>Kegiatan</button>
-                <button onclick="filterCategory('prestasi')" class="category-btn px-4 py-2 rounded-xl text-sm font-medium" data-category="prestasi"><i class="fas fa-trophy mr-2"></i>Prestasi</button>
-                <button onclick="filterCategory('kerjasama')" class="category-btn px-4 py-2 rounded-xl text-sm font-medium" data-category="kerjasama"><i class="fas fa-handshake mr-2"></i>Kerjasama</button>
-                <button onclick="filterCategory('lainnya')" class="category-btn px-4 py-2 rounded-xl text-sm font-medium" data-category="lainnya"><i class="fas fa-tag mr-2"></i>Lainnya</button>
+                <button onclick="filterCategory('all')" class="category-btn active px-5 py-2.5 rounded-xl text-sm font-medium" data-category="all"><i class="fas fa-newspaper mr-2"></i>Semua</button>
+                <button onclick="filterCategory('pengumuman')" class="category-btn px-5 py-2.5 rounded-xl text-sm font-medium" data-category="pengumuman"><i class="fas fa-bullhorn mr-2"></i>Pengumuman</button>
+                <button onclick="filterCategory('berita')" class="category-btn px-5 py-2.5 rounded-xl text-sm font-medium" data-category="berita"><i class="fas fa-globe mr-2"></i>Berita</button>
+                <button onclick="filterCategory('kegiatan')" class="category-btn px-5 py-2.5 rounded-xl text-sm font-medium" data-category="kegiatan"><i class="fas fa-calendar-alt mr-2"></i>Kegiatan</button>
+                <button onclick="filterCategory('prestasi')" class="category-btn px-5 py-2.5 rounded-xl text-sm font-medium" data-category="prestasi"><i class="fas fa-trophy mr-2"></i>Prestasi</button>
+                <button onclick="filterCategory('kerjasama')" class="category-btn px-5 py-2.5 rounded-xl text-sm font-medium" data-category="kerjasama"><i class="fas fa-handshake mr-2"></i>Kerjasama</button>
+                <button onclick="filterCategory('lainnya')" class="category-btn px-5 py-2.5 rounded-xl text-sm font-medium" data-category="lainnya"><i class="fas fa-tag mr-2"></i>Lainnya</button>
             `;
         } else {
             container.innerHTML = `
-                <button onclick="filterCategory('all')" class="category-btn active px-4 py-2 rounded-xl text-sm font-medium" data-category="all"><i class="fas fa-calendar-alt mr-2"></i>Semua</button>
-                <button onclick="filterCategory('seminar')" class="category-btn px-4 py-2 rounded-xl text-sm font-medium" data-category="seminar"><i class="fas fa-chalkboard-teacher mr-2"></i>Seminar</button>
-                <button onclick="filterCategory('workshop')" class="category-btn px-4 py-2 rounded-xl text-sm font-medium" data-category="workshop"><i class="fas fa-tools mr-2"></i>Workshop</button>
-                <button onclick="filterCategory('pelatihan')" class="category-btn px-4 py-2 rounded-xl text-sm font-medium" data-category="pelatihan"><i class="fas fa-user-graduate mr-2"></i>Pelatihan</button>
-                <button onclick="filterCategory('webinar')" class="category-btn px-4 py-2 rounded-xl text-sm font-medium" data-category="webinar"><i class="fas fa-video mr-2"></i>Webinar</button>
-                <button onclick="filterCategory('konferensi')" class="category-btn px-4 py-2 rounded-xl text-sm font-medium" data-category="konferensi"><i class="fas fa-users mr-2"></i>Konferensi</button>
-                <button onclick="filterCategory('lainnya')" class="category-btn px-4 py-2 rounded-xl text-sm font-medium" data-category="lainnya"><i class="fas fa-tag mr-2"></i>Lainnya</button>
+                <button onclick="filterCategory('all')" class="category-btn active px-5 py-2.5 rounded-xl text-sm font-medium" data-category="all"><i class="fas fa-calendar-alt mr-2"></i>Semua</button>
+                <button onclick="filterCategory('seminar')" class="category-btn px-5 py-2.5 rounded-xl text-sm font-medium" data-category="seminar"><i class="fas fa-chalkboard-teacher mr-2"></i>Seminar</button>
+                <button onclick="filterCategory('workshop')" class="category-btn px-5 py-2.5 rounded-xl text-sm font-medium" data-category="workshop"><i class="fas fa-tools mr-2"></i>Workshop</button>
+                <button onclick="filterCategory('pelatihan')" class="category-btn px-5 py-2.5 rounded-xl text-sm font-medium" data-category="pelatihan"><i class="fas fa-user-graduate mr-2"></i>Pelatihan</button>
+                <button onclick="filterCategory('webinar')" class="category-btn px-5 py-2.5 rounded-xl text-sm font-medium" data-category="webinar"><i class="fas fa-video mr-2"></i>Webinar</button>
+                <button onclick="filterCategory('konferensi')" class="category-btn px-5 py-2.5 rounded-xl text-sm font-medium" data-category="konferensi"><i class="fas fa-users mr-2"></i>Konferensi</button>
+                <button onclick="filterCategory('lainnya')" class="category-btn px-5 py-2.5 rounded-xl text-sm font-medium" data-category="lainnya"><i class="fas fa-tag mr-2"></i>Lainnya</button>
             `;
         }
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            if (btn.getAttribute('data-category') === currentCategory) btn.classList.add('active');
+            else btn.classList.remove('active');
+        });
     }
 
     function filterCategory(category) {
         currentCategory = category;
         currentPage = 1;
         document.querySelectorAll('.category-btn').forEach(btn => {
-            const btnCategory = btn.getAttribute('data-category');
-            if (btnCategory === category) btn.classList.add('active');
+            if (btn.getAttribute('data-category') === category) btn.classList.add('active');
             else btn.classList.remove('active');
         });
         if (currentContentType === 'berita') fetchBerita(true);
@@ -803,7 +890,7 @@
         else fetchKegiatan(true);
     }
 
-    // ============ BERITA FUNCTIONS ============
+    // ==================== BERITA FUNCTIONS ====================
     async function fetchBeritaStats() {
         try {
             const result = await authenticatedFetch('/mahasiswa/berita/stats');
@@ -811,7 +898,7 @@
                 beritaStats.total = result.data.by_category?.reduce((sum, cat) => sum + cat.count, 0) || 0;
                 document.getElementById('totalBerita').textContent = beritaStats.total;
             }
-        } catch (error) { console.error('Error fetching berita stats:', error); }
+        } catch (error) { console.error(error); }
     }
 
     async function fetchFeaturedBerita() {
@@ -822,29 +909,27 @@
                 const latestResult = await authenticatedFetch('/mahasiswa/berita?page=1&limit=1');
                 if (latestResult.data && latestResult.data.length > 0) renderFeaturedBerita(latestResult.data[0]);
             }
-        } catch (error) { console.error('Error fetching featured berita:', error); }
+        } catch (error) { console.error(error); }
     }
 
     function renderFeaturedBerita(article) {
         const container = document.getElementById('featuredBeritaContainer');
         if (!container) return;
-        const color = getCategoryColor(article.kategori, 'berita');
         container.innerHTML = `
             <div class="md:flex relative z-10">
-                <div class="md:w-2/5 p-6 md:p-8 flex items-center justify-center">
-                    ${article.thumbnail ? `<img src="${article.thumbnail}" alt="${article.judul}" class="w-24 h-24 md:w-32 md:h-32 object-cover rounded-2xl">` : `<div class="w-24 h-24 md:w-32 md:h-32 bg-white/10 backdrop-blur rounded-2xl flex items-center justify-center"><i class="fas fa-star text-4xl md:text-5xl text-yellow-400"></i></div>`}
+                <div class="md:w-2/5 p-8 flex items-center justify-center">
+                    <div class="w-32 h-32 bg-white/10 backdrop-blur rounded-2xl flex items-center justify-center">
+                        <i class="fas ${getCategoryIcon(article.kategori, 'berita')} text-5xl text-yellow-400"></i>
+                    </div>
                 </div>
-                <div class="md:w-3/5 p-6 md:p-8 text-white">
-                    <div class="flex items-center gap-3 mb-3 md:mb-4 flex-wrap">
-                        <span class="bg-${color}-500/20 backdrop-blur text-${color}-300 text-xs px-3 py-1 rounded-full font-medium">${article.kategori.charAt(0).toUpperCase() + article.kategori.slice(1)}</span>
-                        <span class="text-gray-300 text-xs"><i class="far fa-clock mr-1"></i>${formatDate(article.tanggal_publish)}</span>
+                <div class="md:w-3/5 p-8 text-white">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="bg-white/20 backdrop-blur text-white text-xs px-3 py-1 rounded-full font-medium">${article.kategori}</span>
+                        <span class="text-gray-300 text-sm"><i class="far fa-clock mr-1"></i> ${formatDate(article.tanggal_publish)}</span>
                     </div>
-                    <h3 class="text-xl md:text-2xl lg:text-3xl font-bold mb-3 md:mb-4 leading-tight">${article.judul}</h3>
-                    <p class="text-gray-300 text-sm mb-4 md:mb-6 leading-relaxed">${stripHtmlTags(article.isi_berita).substring(0, 150)}...</p>
-                    <div class="flex items-center justify-between flex-wrap gap-2">
-                        <span class="text-xs md:text-sm text-gray-300"><i class="far fa-user mr-1"></i>${article.admin?.nama || 'Admin'}</span>
-                        <button onclick="viewBerita('${article.id}')" class="bg-white text-blue-600 px-4 py-2 rounded-xl font-medium hover:shadow-xl transition-all hover:scale-105 text-sm">Baca Selengkapnya <i class="fas fa-arrow-right ml-2 text-sm"></i></button>
-                    </div>
+                    <h3 class="text-2xl md:text-3xl font-bold mb-4 leading-tight">${article.judul}</h3>
+                    <p class="text-gray-300 text-sm mb-6">${stripHtmlTags(article.isi_berita).substring(0, 150)}...</p>
+                    <button onclick="viewBerita('${article.id}')" class="bg-white text-blue-600 px-5 py-2.5 rounded-xl font-medium hover:shadow-xl transition-all">Baca Selengkapnya <i class="fas fa-arrow-right ml-2 text-sm"></i></button>
                 </div>
             </div>
         `;
@@ -853,8 +938,6 @@
     async function fetchBerita(reset = false) {
         try {
             const container = document.getElementById('contentContainer');
-            if (!container) return;
-            
             let url = `/mahasiswa/berita?page=${currentPage}&limit=${itemsPerPage}`;
             if (searchQuery) url += `&search=${encodeURIComponent(searchQuery)}`;
             if (currentCategory !== 'all') url += `&kategori=${currentCategory}`;
@@ -866,70 +949,60 @@
             totalPages = result.pagination.total_pages;
 
             if (result.data.length === 0 && currentPage === 1) {
-                container.innerHTML = `<div class="col-span-3 text-center py-16"><div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fas fa-newspaper text-4xl text-gray-400"></i></div><p class="text-gray-500 font-medium">Tidak ada berita ditemukan</p><p class="text-gray-400 text-sm mt-1">Coba kata kunci atau kategori lain</p></div>`;
+                container.innerHTML = `<div class="col-span-3 text-center py-16"><div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fas fa-newspaper text-4xl text-gray-400"></i></div><p class="text-gray-500 font-medium">Tidak ada berita ditemukan</p></div>`;
                 document.getElementById('loadMoreContainer').style.display = 'none';
                 return;
             }
 
-            const articlesHTML = result.data.map(article => {
-                const color = getCategoryColor(article.kategori, 'berita');
-                return `<div class="content-card cursor-pointer group" onclick="viewBerita('${article.id}')">
-                    <div class="h-40 bg-gradient-to-br from-${color}-50 to-${color}-100 flex items-center justify-center relative">
-                        <i class="fas ${getCategoryIcon(article.kategori, 'berita')} text-5xl text-${color}-300 group-hover:scale-110 transition-transform duration-300"></i>
+            const articlesHTML = result.data.map(article => `
+                <div class="content-card cursor-pointer group" onclick="viewBerita('${article.id}')">
+                    <div class="h-40 bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center relative">
+                        <i class="fas ${getCategoryIcon(article.kategori, 'berita')} text-5xl text-gray-400 group-hover:scale-110 transition-transform"></i>
                     </div>
                     <div class="p-5">
                         <div class="flex items-center justify-between mb-2">
-                            <span class="px-3 py-1 rounded-full text-xs font-medium ${getBeritaCategoryBadge(article.kategori)}">${article.kategori.charAt(0).toUpperCase() + article.kategori.slice(1)}</span>
+                            <span class="px-3 py-1 rounded-full text-xs font-medium ${getBeritaCategoryBadge(article.kategori)}">${article.kategori}</span>
                             <span class="text-xs text-gray-400"><i class="far fa-eye mr-1"></i>${article.views || 0}</span>
                         </div>
                         <h4 class="font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">${article.judul}</h4>
-                        <p class="text-gray-500 text-xs mb-3 line-clamp-2 leading-relaxed">${stripHtmlTags(article.isi_berita).substring(0, 100)}...</p>
+                        <p class="text-gray-500 text-xs mb-3 line-clamp-2">${stripHtmlTags(article.isi_berita).substring(0, 100)}...</p>
                         <div class="flex items-center justify-between pt-3 border-t border-gray-100">
                             <span class="text-xs text-gray-400"><i class="far fa-user mr-1"></i>${article.admin?.nama || 'Admin'}</span>
                             <span class="text-xs text-gray-400"><i class="far fa-calendar mr-1"></i>${formatDate(article.tanggal_publish)}</span>
                         </div>
                     </div>
-                </div>`;
-            }).join('');
+                </div>
+            `).join('');
 
             if (reset) container.innerHTML = articlesHTML;
             else container.innerHTML += articlesHTML;
 
             document.getElementById('loadMoreContainer').style.display = currentPage < totalPages ? 'block' : 'none';
-        } catch (error) { console.error('Error fetching berita:', error); if (error.message !== 'Unauthorized') showToast(error.message, 'error'); }
+        } catch (error) { console.error(error); showToast(error.message, 'error'); }
     }
 
     async function viewBerita(id) {
         try {
-            const modal = document.getElementById('detailModal');
-            const modalTitle = document.getElementById('modalTitle');
-            const modalContent = document.getElementById('modalContent');
-            if (!modal || !modalTitle || !modalContent) return;
-
-            modalTitle.textContent = 'Memuat...';
-            modalContent.innerHTML = `<div class="text-center py-8"><div class="loading-spinner mx-auto"></div><p class="mt-4 text-gray-500">Memuat berita...</p></div>`;
-            modal.classList.remove('hidden');
+            document.getElementById('modalTitle').textContent = 'Memuat...';
+            document.getElementById('modalContent').innerHTML = `<div class="text-center py-8"><div class="loading-spinner mx-auto"></div><p class="mt-4 text-gray-500">Memuat berita...</p></div>`;
+            document.getElementById('detailModal').classList.remove('hidden');
             document.body.style.overflow = 'hidden';
 
             const result = await authenticatedFetch(`/mahasiswa/berita/${id}`);
             const article = result.data;
-            modalTitle.textContent = article.judul;
-
-            modalContent.innerHTML = `<div class="space-y-5">
-                <div class="flex items-center gap-2"><span class="px-3 py-1.5 rounded-xl text-xs font-medium ${getBeritaCategoryBadge(article.kategori)}"><i class="fas ${getCategoryIcon(article.kategori, 'berita')} mr-1"></i>${article.kategori.charAt(0).toUpperCase() + article.kategori.slice(1)}</span></div>
-                <div class="flex items-center gap-4 text-sm text-gray-500 border-b border-gray-100 pb-4 flex-wrap">
-                    <span><i class="far fa-user mr-2"></i>${article.admin?.nama || 'Admin'}</span>
-                    <span><i class="far fa-calendar mr-2"></i>${new Date(article.tanggal_publish).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
-                    <span><i class="far fa-eye mr-2"></i>${article.views} dilihat</span>
+            document.getElementById('modalTitle').textContent = article.judul;
+            document.getElementById('modalContent').innerHTML = `
+                <div class="space-y-5">
+                    <div><span class="px-3 py-1.5 rounded-xl text-xs font-medium ${getBeritaCategoryBadge(article.kategori)}">${article.kategori}</span></div>
+                    <div class="flex items-center gap-4 text-sm text-gray-500 border-b pb-4"><span><i class="far fa-user mr-2"></i>${article.admin?.nama || 'Admin'}</span><span><i class="far fa-calendar mr-2"></i>${new Date(article.tanggal_publish).toLocaleDateString('id-ID')}</span><span><i class="far fa-eye mr-2"></i>${article.views} dilihat</span></div>
+                    <div class="text-gray-700 leading-relaxed">${article.isi_berita}</div>
+                    <div class="flex justify-end pt-4 border-t"><button onclick="closeModal()" class="px-5 py-2 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200">Tutup</button></div>
                 </div>
-                ${article.thumbnail ? `<div class="rounded-xl overflow-hidden"><img src="${article.thumbnail}" alt="${article.judul}" class="w-full h-48 md:h-64 object-cover"></div>` : ''}
-                <div class="text-gray-700 leading-relaxed prose prose-sm max-w-none">${article.isi_berita}</div>
-                <div class="flex justify-end pt-4 border-t"><button onclick="closeModal()" class="px-5 py-2 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition font-medium">Tutup</button></div>
-            </div>`;
-        } catch (error) { console.error('Error fetching berita detail:', error); showToast(error.message, 'error'); }
+            `;
+        } catch (error) { console.error(error); showToast(error.message, 'error'); }
     }
 
-    // ============ KEGIATAN FUNCTIONS ============
+    // ==================== KEGIATAN FUNCTIONS ====================
     async function fetchKegiatanStats() {
         try {
             const result = await authenticatedFetch('/mahasiswa/kegiatan/stats');
@@ -937,36 +1010,34 @@
                 kegiatanStats.total = result.data.by_status?.reduce((sum, s) => sum + s.count, 0) || 0;
                 document.getElementById('totalKegiatan').textContent = kegiatanStats.total;
             }
-        } catch (error) { console.error('Error fetching kegiatan stats:', error); }
+        } catch (error) { console.error(error); }
     }
 
     async function fetchFeaturedKegiatan() {
         try {
             const result = await authenticatedFetch('/mahasiswa/kegiatan/upcoming?limit=1');
             if (result.data && result.data.length > 0) renderFeaturedKegiatan(result.data[0]);
-        } catch (error) { console.error('Error fetching featured kegiatan:', error); }
+        } catch (error) { console.error(error); }
     }
 
     function renderFeaturedKegiatan(kegiatan) {
         const container = document.getElementById('featuredKegiatanContainer');
         if (!container) return;
-        const color = getCategoryColor(kegiatan.jenis_kegiatan, 'kegiatan');
         container.innerHTML = `
             <div class="md:flex relative z-10">
-                <div class="md:w-2/5 p-6 md:p-8 flex items-center justify-center">
-                    ${kegiatan.poster ? `<img src="${kegiatan.poster}" alt="${kegiatan.nama_kegiatan}" class="w-24 h-24 md:w-32 md:h-32 object-cover rounded-2xl">` : `<div class="w-24 h-24 md:w-32 md:h-32 bg-white/10 backdrop-blur rounded-2xl flex items-center justify-center"><i class="fas fa-calendar-alt text-4xl md:text-5xl text-yellow-400"></i></div>`}
+                <div class="md:w-2/5 p-8 flex items-center justify-center">
+                    <div class="w-32 h-32 bg-white/10 backdrop-blur rounded-2xl flex items-center justify-center">
+                        <i class="fas ${getCategoryIcon(kegiatan.jenis_kegiatan, 'kegiatan')} text-5xl text-yellow-400"></i>
+                    </div>
                 </div>
-                <div class="md:w-3/5 p-6 md:p-8 text-white">
-                    <div class="flex items-center gap-3 mb-3 md:mb-4 flex-wrap">
-                        <span class="bg-${color}-500/20 backdrop-blur text-${color}-300 text-xs px-3 py-1 rounded-full font-medium">${kegiatan.jenis_kegiatan.charAt(0).toUpperCase() + kegiatan.jenis_kegiatan.slice(1)}</span>
-                        <span class="text-gray-300 text-xs"><i class="far fa-clock mr-1"></i>${formatDateTime(kegiatan.tanggal_mulai)}</span>
+                <div class="md:w-3/5 p-8 text-white">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="bg-white/20 backdrop-blur text-white text-xs px-3 py-1 rounded-full font-medium">${kegiatan.jenis_kegiatan}</span>
+                        <span class="text-gray-300 text-sm"><i class="far fa-clock mr-1"></i> ${formatDateTime(kegiatan.tanggal_mulai)}</span>
                     </div>
-                    <h3 class="text-xl md:text-2xl lg:text-3xl font-bold mb-3 md:mb-4 leading-tight">${kegiatan.nama_kegiatan}</h3>
-                    <p class="text-gray-300 text-sm mb-4 md:mb-6 leading-relaxed">${kegiatan.deskripsi ? stripHtmlTags(kegiatan.deskripsi).substring(0, 150) : 'Tidak ada deskripsi'}...</p>
-                    <div class="flex items-center justify-between flex-wrap gap-2">
-                        <span class="text-xs md:text-sm text-gray-300"><i class="fas fa-users mr-1"></i>Sisa: ${kegiatan.sisa_kuota} dari ${kegiatan.kapasitas}</span>
-                        <button onclick="viewKegiatan('${kegiatan.id}')" class="bg-white text-blue-600 px-4 py-2 rounded-xl font-medium hover:shadow-xl transition-all hover:scale-105 text-sm">Lihat Detail <i class="fas fa-arrow-right ml-2 text-sm"></i></button>
-                    </div>
+                    <h3 class="text-2xl md:text-3xl font-bold mb-4">${kegiatan.nama_kegiatan}</h3>
+                    <p class="text-gray-300 text-sm mb-6">${kegiatan.deskripsi ? stripHtmlTags(kegiatan.deskripsi).substring(0, 150) : 'Tidak ada deskripsi'}...</p>
+                    <button onclick="viewKegiatan('${kegiatan.id}')" class="bg-white text-blue-600 px-5 py-2.5 rounded-xl font-medium hover:shadow-xl transition-all">Lihat Detail <i class="fas fa-arrow-right ml-2 text-sm"></i></button>
                 </div>
             </div>
         `;
@@ -975,8 +1046,6 @@
     async function fetchKegiatan(reset = false) {
         try {
             const container = document.getElementById('contentContainer');
-            if (!container) return;
-            
             let url = `/mahasiswa/kegiatan?page=${currentPage}&limit=${itemsPerPage}`;
             if (searchQuery) url += `&search=${encodeURIComponent(searchQuery)}`;
             if (currentCategory !== 'all') url += `&jenis=${currentCategory}`;
@@ -988,95 +1057,73 @@
             totalPages = result.pagination.total_pages;
 
             if (result.data.length === 0 && currentPage === 1) {
-                container.innerHTML = `<div class="col-span-3 text-center py-16"><div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fas fa-calendar-alt text-4xl text-gray-400"></i></div><p class="text-gray-500 font-medium">Tidak ada kegiatan ditemukan</p><p class="text-gray-400 text-sm mt-1">Coba kata kunci atau kategori lain</p></div>`;
+                container.innerHTML = `<div class="col-span-3 text-center py-16"><div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fas fa-calendar-alt text-4xl text-gray-400"></i></div><p class="text-gray-500 font-medium">Tidak ada kegiatan ditemukan</p></div>`;
                 document.getElementById('loadMoreContainer').style.display = 'none';
                 return;
             }
 
-            const kegiatanHTML = result.data.map(kegiatan => {
-                const color = getCategoryColor(kegiatan.jenis_kegiatan, 'kegiatan');
-                const statusBadge = getKegiatanStatusBadge(kegiatan.status_kegiatan);
-                return `<div class="content-card cursor-pointer group" onclick="viewKegiatan('${kegiatan.id}')">
-                    <div class="h-40 bg-gradient-to-br from-${color}-50 to-${color}-100 flex items-center justify-center relative">
-                        ${kegiatan.poster ? `<img src="${kegiatan.poster}" alt="${kegiatan.nama_kegiatan}" class="w-full h-full object-cover">` : `<i class="fas ${getCategoryIcon(kegiatan.jenis_kegiatan, 'kegiatan')} text-5xl text-${color}-300 group-hover:scale-110 transition-transform duration-300"></i>`}
-                        ${kegiatan.status_kegiatan === 'upcoming' && kegiatan.sisa_kuota > 0 ? `<span class="absolute top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full"><i class="fas fa-pen mr-1"></i>Buka</span>` : ''}
+            const kegiatanHTML = result.data.map(kegiatan => `
+                <div class="content-card cursor-pointer group" onclick="viewKegiatan('${kegiatan.id}')">
+                    <div class="h-40 bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center relative">
+                        <i class="fas ${getCategoryIcon(kegiatan.jenis_kegiatan, 'kegiatan')} text-5xl text-gray-400 group-hover:scale-110 transition-transform"></i>
+                        ${kegiatan.status_kegiatan === 'upcoming' && kegiatan.sisa_kuota > 0 ? `<span class="absolute top-2 right-2 register-btn text-xs"><i class="fas fa-pen mr-1"></i>Daftar</span>` : ''}
                     </div>
                     <div class="p-5">
-                        <div class="flex items-center justify-between mb-2 flex-wrap gap-1">
-                            <span class="px-3 py-1 rounded-full text-xs font-medium ${getKegiatanCategoryBadge(kegiatan.jenis_kegiatan)}">${kegiatan.jenis_kegiatan.charAt(0).toUpperCase() + kegiatan.jenis_kegiatan.slice(1)}</span>
-                            <span class="text-xs px-2 py-1 rounded-full ${statusBadge}">${kegiatan.status_kegiatan === 'upcoming' ? 'Akan Datang' : kegiatan.status_kegiatan === 'ongoing' ? 'Berlangsung' : 'Selesai'}</span>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="px-3 py-1 rounded-full text-xs font-medium ${getKegiatanCategoryBadge(kegiatan.jenis_kegiatan)}">${kegiatan.jenis_kegiatan}</span>
+                            <span class="text-xs px-2 py-1 rounded-full ${getKegiatanStatusBadge(kegiatan.status_kegiatan)}">${kegiatan.status_kegiatan === 'upcoming' ? 'Akan Datang' : kegiatan.status_kegiatan === 'ongoing' ? 'Berlangsung' : 'Selesai'}</span>
                         </div>
-                        <h4 class="font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">${kegiatan.nama_kegiatan}</h4>
+                        <h4 class="font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600">${kegiatan.nama_kegiatan}</h4>
                         <div class="space-y-1 mb-3">
-                            <p class="text-gray-500 text-xs flex items-center"><i class="far fa-calendar mr-2 w-4"></i>${formatDateTime(kegiatan.tanggal_mulai)}</p>
-                            <p class="text-gray-500 text-xs flex items-center"><i class="fas fa-map-marker-alt mr-2 w-4"></i>${kegiatan.lokasi || 'Online'}</p>
-                            <p class="text-gray-500 text-xs flex items-center"><i class="fas fa-users mr-2 w-4"></i>${kegiatan.sisa_kuota} dari ${kegiatan.kapasitas} tersedia</p>
+                            <p class="text-gray-500 text-xs"><i class="far fa-calendar mr-2 w-4"></i>${formatDateTime(kegiatan.tanggal_mulai)}</p>
+                            <p class="text-gray-500 text-xs"><i class="fas fa-map-marker-alt mr-2 w-4"></i>${kegiatan.lokasi || 'Online'}</p>
+                            <p class="text-gray-500 text-xs"><i class="fas fa-users mr-2 w-4"></i>${kegiatan.sisa_kuota} dari ${kegiatan.kapasitas} tersedia</p>
                         </div>
                         <div class="flex items-center justify-between pt-3 border-t border-gray-100">
                             <span class="text-xs text-gray-400"><i class="far fa-user mr-1"></i>${kegiatan.admin?.nama || 'Admin'}</span>
                             <span class="text-xs text-gray-400"><i class="far fa-clock mr-1"></i>${formatDate(kegiatan.created_at)}</span>
                         </div>
                     </div>
-                </div>`;
-            }).join('');
+                </div>
+            `).join('');
 
             if (reset) container.innerHTML = kegiatanHTML;
             else container.innerHTML += kegiatanHTML;
 
             document.getElementById('loadMoreContainer').style.display = currentPage < totalPages ? 'block' : 'none';
-        } catch (error) { console.error('Error fetching kegiatan:', error); if (error.message !== 'Unauthorized') showToast(error.message, 'error'); }
+        } catch (error) { console.error(error); showToast(error.message, 'error'); }
     }
 
     async function viewKegiatan(id) {
         try {
-            const modal = document.getElementById('detailModal');
-            const modalTitle = document.getElementById('modalTitle');
-            const modalContent = document.getElementById('modalContent');
-            if (!modal || !modalTitle || !modalContent) return;
-
-            modalTitle.textContent = 'Memuat...';
-            modalContent.innerHTML = `<div class="text-center py-8"><div class="loading-spinner mx-auto"></div><p class="mt-4 text-gray-500">Memuat detail kegiatan...</p></div>`;
-            modal.classList.remove('hidden');
+            document.getElementById('modalTitle').textContent = 'Memuat...';
+            document.getElementById('modalContent').innerHTML = `<div class="text-center py-8"><div class="loading-spinner mx-auto"></div><p class="mt-4 text-gray-500">Memuat detail kegiatan...</p></div>`;
+            document.getElementById('detailModal').classList.remove('hidden');
             document.body.style.overflow = 'hidden';
 
             const result = await authenticatedFetch(`/mahasiswa/kegiatan/${id}`);
             const kegiatan = result.data;
-            modalTitle.textContent = kegiatan.nama_kegiatan;
-
-            const color = getCategoryColor(kegiatan.jenis_kegiatan, 'kegiatan');
-            const statusBadge = getKegiatanStatusBadge(kegiatan.status_kegiatan);
+            document.getElementById('modalTitle').textContent = kegiatan.nama_kegiatan;
             const canRegister = kegiatan.status_kegiatan === 'upcoming' && kegiatan.sisa_kuota > 0 && !kegiatan.user_registered;
-
-            modalContent.innerHTML = `<div class="space-y-5">
-                ${kegiatan.poster ? `<div class="rounded-xl overflow-hidden"><img src="${kegiatan.poster}" alt="${kegiatan.nama_kegiatan}" class="w-full h-48 md:h-64 object-cover"></div>` : ''}
-                <div class="flex flex-wrap gap-2">
-                    <span class="px-3 py-1.5 rounded-xl text-xs font-medium ${getKegiatanCategoryBadge(kegiatan.jenis_kegiatan)}"><i class="fas fa-tag mr-1"></i>${kegiatan.jenis_kegiatan}</span>
-                    <span class="px-3 py-1.5 rounded-xl text-xs font-medium ${statusBadge}"><i class="fas fa-circle mr-1"></i>${kegiatan.status_kegiatan === 'upcoming' ? 'Akan Datang' : kegiatan.status_kegiatan === 'ongoing' ? 'Berlangsung' : 'Selesai'}</span>
-                    ${kegiatan.user_registered ? `<span class="px-3 py-1.5 rounded-xl text-xs font-medium bg-blue-100 text-blue-700"><i class="fas fa-check-circle mr-1"></i>Terdaftar: ${kegiatan.user_registration_status}</span>` : ''}
+            document.getElementById('modalContent').innerHTML = `
+                <div class="space-y-5">
+                    <div class="flex flex-wrap gap-2"><span class="px-3 py-1.5 rounded-xl text-xs font-medium ${getKegiatanCategoryBadge(kegiatan.jenis_kegiatan)}">${kegiatan.jenis_kegiatan}</span><span class="px-3 py-1.5 rounded-xl text-xs font-medium ${getKegiatanStatusBadge(kegiatan.status_kegiatan)}">${kegiatan.status_kegiatan}</span>${kegiatan.user_registered ? '<span class="px-3 py-1.5 rounded-xl text-xs font-medium bg-blue-100 text-blue-700"><i class="fas fa-check-circle mr-1"></i>Terdaftar</span>' : ''}</div>
+                    <div class="grid grid-cols-2 gap-4 text-sm border-b pb-4"><div><p class="text-gray-500 text-xs">Mulai</p><p class="font-medium">${formatDateTime(kegiatan.tanggal_mulai)}</p></div><div><p class="text-gray-500 text-xs">Selesai</p><p class="font-medium">${formatDateTime(kegiatan.tanggal_selesai)}</p></div><div><p class="text-gray-500 text-xs">Lokasi</p><p class="font-medium">${kegiatan.lokasi || 'Online'}</p></div><div><p class="text-gray-500 text-xs">Kuota</p><p class="font-medium">${kegiatan.sisa_kuota} dari ${kegiatan.kapasitas}</p></div></div>
+                    <div><h4 class="font-semibold">Deskripsi</h4><p class="text-gray-700">${kegiatan.deskripsi || 'Tidak ada deskripsi'}</p></div>
+                    ${canRegister ? `<div class="bg-blue-50 p-4 rounded-xl"><h4 class="font-semibold text-blue-900 mb-2">Pendaftaran</h4>${kegiatan.link_pendaftaran ? `<a href="${kegiatan.link_pendaftaran}" target="_blank" class="inline-block bg-blue-600 text-white px-4 py-2 rounded-lg">Daftar via Link Eksternal</a>` : `<button onclick="registerKegiatan('${kegiatan.id}')" class="bg-green-600 text-white px-4 py-2 rounded-lg">Daftar Sekarang</button>`}</div>` : ''}
+                    <div class="flex justify-end pt-4 border-t"><button onclick="closeModal()" class="px-5 py-2 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200">Tutup</button></div>
                 </div>
-                <div class="grid grid-cols-2 gap-4 text-sm border-b border-gray-100 pb-4">
-                    <div><p class="text-gray-500 text-xs">Mulai</p><p class="font-medium">${formatDateTime(kegiatan.tanggal_mulai)}</p></div>
-                    <div><p class="text-gray-500 text-xs">Selesai</p><p class="font-medium">${formatDateTime(kegiatan.tanggal_selesai)}</p></div>
-                    <div><p class="text-gray-500 text-xs">Lokasi</p><p class="font-medium">${kegiatan.lokasi || 'Online'}</p></div>
-                    <div><p class="text-gray-500 text-xs">Kuota</p><p class="font-medium">${kegiatan.sisa_kuota} dari ${kegiatan.kapasitas}</p></div>
-                    ${kegiatan.narasumber ? `<div class="col-span-2"><p class="text-gray-500 text-xs">Narasumber</p><p class="font-medium">${kegiatan.narasumber}</p></div>` : ''}
-                </div>
-                <div class="text-gray-700 leading-relaxed prose prose-sm max-w-none"><h4 class="font-semibold">Deskripsi Kegiatan</h4><p>${kegiatan.deskripsi || 'Tidak ada deskripsi'}</p></div>
-                ${canRegister ? `<div class="bg-blue-50 p-4 rounded-xl"><h4 class="font-semibold text-blue-900 mb-2">Pendaftaran</h4>${kegiatan.link_pendaftaran ? `<p class="text-sm text-blue-700 mb-3">Link pendaftaran eksternal tersedia</p><a href="${kegiatan.link_pendaftaran}" target="_blank" class="inline-block bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Daftar via Link Eksternal</a>` : `<button onclick="registerKegiatan('${kegiatan.id}')" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">Daftar Sekarang</button>`}</div>` : kegiatan.user_registered ? `<div class="bg-green-50 p-4 rounded-xl"><p class="text-green-700"><i class="fas fa-check-circle mr-2"></i>Anda telah terdaftar. Status: ${kegiatan.user_registration_status}</p></div>` : kegiatan.sisa_kuota <= 0 ? `<div class="bg-red-50 p-4 rounded-xl"><p class="text-red-700"><i class="fas fa-times-circle mr-2"></i>Maaf, kuota telah penuh</p></div>` : ''}
-                <div class="flex justify-end pt-4 border-t"><button onclick="closeModal()" class="px-5 py-2 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition font-medium">Tutup</button></div>
-            </div>`;
-        } catch (error) { console.error('Error fetching kegiatan detail:', error); showToast(error.message, 'error'); }
+            `;
+        } catch (error) { console.error(error); showToast(error.message, 'error'); }
     }
 
     async function registerKegiatan(id) {
         try {
-            const result = await authenticatedFetch(`/mahasiswa/kegiatan/${id}/register`, { method: 'POST', body: JSON.stringify({}) });
-            if (result.success) {
-                showToast('Berhasil mendaftar kegiatan!', 'success');
-                viewKegiatan(id);
-                fetchKegiatan(true);
-            }
-        } catch (error) { console.error('Error registering for kegiatan:', error); showToast(error.message, 'error'); }
+            await authenticatedFetch(`/mahasiswa/kegiatan/${id}/register`, { method: 'POST', body: JSON.stringify({}) });
+            showToast('Berhasil mendaftar kegiatan!', 'success');
+            viewKegiatan(id);
+            fetchKegiatan(true);
+        } catch (error) { showToast(error.message, 'error'); }
     }
 
     function loadMore() {
@@ -1086,14 +1133,11 @@
     }
 
     function closeModal() {
-        const modal = document.getElementById('detailModal');
-        if (modal) {
-            modal.classList.add('hidden');
-            document.body.style.overflow = 'auto';
-        }
+        document.getElementById('detailModal').classList.add('hidden');
+        document.body.style.overflow = 'auto';
     }
 
-    // Search with debounce
+    // Search debounce
     let searchTimeout;
     document.getElementById('searchInput').addEventListener('input', function(e) {
         clearTimeout(searchTimeout);
@@ -1108,7 +1152,7 @@
     // Initialize
     document.addEventListener('DOMContentLoaded', function() {
         initDropdown();
-        setActiveNavLink();
+        initMobileNav();
         loadMahasiswaProfile();
         switchContentType('berita');
     });
