@@ -1193,7 +1193,7 @@
 
         // Chart instances
         let statusChart, fakultasChart;
-        
+    
         // Pagination state
         let currentPage = {
             semua: 1,
@@ -2616,10 +2616,6 @@ document.addEventListener('DOMContentLoaded', function() {
     loadAllSubmissions(1);
     loadSkemaData();
 
-    // HAPUS atau COMMENT baris ini:
-    // setInterval(loadNotifications, 30000);
-    
-    // Close dropdowns when clicking outside
     document.addEventListener('click', function(event) {
         if (!event.target.closest('.relative')) {
             document.getElementById('notificationDropdown').classList.add('hidden');

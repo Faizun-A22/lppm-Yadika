@@ -1143,9 +1143,8 @@
 // ===========================================
     function updateNavbarUserInfo(profile) {
     if (!profile) return;
-    
-    const avatarUrl = profile.foto_profil ? `http://localhost:3000/${profile.foto_profil}` : `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.nama_lengkap || 'Mahasiswa')}&background=3B82F6&color=fff&bold=true`;
-    
+      
+    const avatarUrl = profile.foto_profil ? `/${profile.foto_profil}` : `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.nama_lengkap || 'Mahasiswa')}&background=3B82F6&color=fff&bold=true`;
     const navAvatar = document.getElementById('navAvatar');
     const dropdownAvatar = document.getElementById('dropdownAvatar');
     const navUserName = document.getElementById('navUserName');
