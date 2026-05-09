@@ -45,19 +45,16 @@ const formatDate = (date) => {
  */
 
 // utils/helpers.js
-
 const getFileUrl = (filePath) => {
     if (!filePath) return null;
     
-    // Jika filePath sudah berupa URL lengkap, kembalikan langsung
+    // Jika sudah URL lengkap, return langsung
     if (filePath.startsWith('http://') || filePath.startsWith('https://')) {
         return filePath;
     }
     
-    // Hapus 'uploads/' dari awal path jika ada (karena akan ditambahkan lagi)
+    // Hapus 'uploads/' duplikat jika ada
     let cleanPath = filePath;
-    
-    // Hapus 'uploads/' dari awal path
     if (cleanPath.startsWith('uploads/')) {
         cleanPath = cleanPath.substring('uploads/'.length);
     }
@@ -65,27 +62,19 @@ const getFileUrl = (filePath) => {
         cleanPath = cleanPath.substring('uploads\\'.length);
     }
     
-    // Hapus double 'uploads' di tengah path
+    // Hapus double uploads
     cleanPath = cleanPath.replace(/^uploads[\/\\]/, '');
     cleanPath = cleanPath.replace(/[\/\\]uploads[\/\\]/, '/');
-    
-    // Ganti backslash dengan forward slash
     cleanPath = cleanPath.replace(/\\/g, '/');
     
-    // Encode untuk keamanan URL (tapi jangan encode slash)
+    // Encode untuk keamanan
     cleanPath = cleanPath.split('/').map(part => encodeURIComponent(part)).join('/');
     
-    // Gunakan base URL dari environment atau default
-    const baseUrl = process.env.API_BASE_URL || 'http://localhost:3000';
+    // Gunakan base URL tanpa /api
+    const baseUrl = process.env.API_BASE_URL || 'http://103.189.234.236';
     
-    // Buat URL lengkap (jangan tambahkan /api/uploads/ jika sudah ada)
-    // Pastikan path tidak double
-    const result = `${baseUrl}/api/uploads/${cleanPath}`;
-    
-    console.log('getFileUrl input:', filePath);
-    console.log('getFileUrl output:', result);
-    
-    return result;
+    // Langsung ke /uploads/, BUKAN /api/uploads/
+    return `${baseUrl}/uploads/${cleanPath}`;
 };
 
 const updateMagangStatus = async (supabase, id_magang, status_magang) => {

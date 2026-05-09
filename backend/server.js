@@ -108,11 +108,6 @@ app.use((req, res) => {
     });
 });
 
-app.use('/uploads', (req, res, next) => {
-    console.log('📁 Serving static file:', req.path);
-    next();
-}, express.static(path.join(__dirname, 'uploads')));
-
 // ============ TAMBAHKAN ROUTE INI ============
 
 // Endpoint untuk desa aktif (list untuk dropdown)
