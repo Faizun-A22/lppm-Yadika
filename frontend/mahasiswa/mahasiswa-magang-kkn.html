@@ -3,50 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>Dashboard Mahasiswa - LPPM ITB Yadika</title>
-    
-    <!-- Google Fonts - Inter -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <title>Magang & KKN - Portal Mahasiswa LPPM ITB Yadika</title>
     
     <!-- CSS External Libraries -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        'sans': ['Inter', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
-                        'inter': ['Inter', 'sans-serif']
-                    }
-                }
-            }
-        }
-    </script>
-    
     <style>
-        /* Reset dan font dasar */
-        * {
-            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-        }
-        
+        /* Custom CSS Styles - Normal Font */
         body {
-            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            text-rendering: optimizeLegibility;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
         }
         
-        /* Pastikan semua elemen menggunakan font yang konsisten */
-        h1, h2, h3, h4, h5, h6, p, span, div, a, button, input, label, li {
-            font-family: inherit;
-        }
-        
-        /* Custom CSS */
         .gradient-text { 
             background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%); 
             -webkit-background-clip: text; 
@@ -54,134 +23,34 @@
             background-clip: text; 
         }
 
-        .loading-spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #3B82F6;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .realtime-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: #10B981;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 500;
-        }
-
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .stat-card {
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-        }
-
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .update-animation { animation: slideDown 0.3s ease-out; }
-
-        .toast-notification {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #1F2937;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            z-index: 1000;
-            transform: translateX(400px);
-            transition: transform 0.3s ease;
-        }
-
-        .toast-notification.show { transform: translateX(0); }
-
-        .progress-bar {
-            height: 4px;
-            background: rgba(255,255,255,0.3);
-            border-radius: 2px;
-            overflow: hidden;
-            margin-top: 8px;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: white;
-            border-radius: 2px;
-            transition: width 0.5s ease;
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 10px;
-            font-weight: 600;
-        }
-        
-        .status-pending { background: #FEF3C7; color: #D97706; }
-        .status-approved { background: #D1FAE5; color: #059669; }
-        .status-rejected { background: #FEE2E2; color: #DC2626; }
-        .status-verified { background: #DBEAFE; color: #2563EB; }
-
-        /* ========== NAVBAR STYLE - BIRU GRADIENT ========== */
+        /* Navbar Styles */
         .navbar-custom {
             background: linear-gradient(135deg, #1E3A5F 0%, #2D4A6E 50%, #1E3A5F 100%);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .nav-link {
+        .nav-link-modern {
             position: relative;
             transition: all 0.2s ease;
             color: rgba(255, 255, 255, 0.8);
-            font-weight: 500;
         }
 
-        .nav-link:hover {
+        .nav-link-modern:hover {
             color: white;
             background: rgba(255, 255, 255, 0.15);
         }
 
-        .nav-link.active {
+        .nav-link-modern.active {
             background: rgba(255, 255, 255, 0.25);
             color: white !important;
         }
 
-        .nav-link.active i {
+        .nav-link-modern.active i {
             color: white !important;
         }
 
-        .nav-link.active::before {
+        .nav-link-modern.active::before {
             content: '';
             position: absolute;
             bottom: -2px;
@@ -193,7 +62,6 @@
             border-radius: 2px;
         }
 
-        /* Brand text color */
         .brand-title {
             color: white;
         }
@@ -202,7 +70,6 @@
             color: rgba(255, 255, 255, 0.7);
         }
 
-        /* Icon buttons */
         .icon-btn {
             color: rgba(255, 255, 255, 0.8);
         }
@@ -227,11 +94,106 @@
         }
 
         @keyframes dropdownFade {
-            from { opacity: 0; transform: scale(0.95) translateY(-10px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        
+        /* Loading Spinner */
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3B82F6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
         }
 
-        /* Mobile Nav */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Card hover effects - Normal */
+        .choice-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        @media (min-width: 768px) {
+            .choice-card:hover {
+                transform: translateY(-5px);
+            }
+        }
+        
+        .choice-card.magang:hover {
+            box-shadow: 0 20px 40px -12px rgba(59, 130, 246, 0.35);
+        }
+        
+        .choice-card.kkn:hover {
+            box-shadow: 0 20px 40px -12px rgba(139, 92, 246, 0.35);
+        }
+        
+        .floating-icon {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .benefit-item {
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+        
+        .benefit-item:hover {
+            transform: translateX(4px);
+            border-left-color: currentColor;
+        }
+
+        /* Program Badge */
+        .program-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 10;
+        }
+
+        /* Status Badge Styles */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .status-pending { background-color: #FEF3C7; color: #D97706; }
+        .status-approved { background-color: #D1FAE5; color: #059669; }
+        .status-rejected { background-color: #FEE2E2; color: #DC2626; }
+        .status-verified { background-color: #DBEAFE; color: #2563EB; }
+        
+        /* Program Card */
+        .program-card {
+            transition: all 0.3s ease;
+        }
+        .program-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px -12px rgba(0,0,0,0.15);
+        }
+
+        /* Mobile Navigation */
         .mobile-nav {
             position: fixed;
             top: 0;
@@ -281,27 +243,40 @@
             color: #4B5563;
             transition: all 0.2s ease;
             border-left: 3px solid transparent;
+            font-weight: 500;
         }
 
         .mobile-nav-link.active {
             background: #EFF6FF;
-            color: #2563EB;
-            border-left-color: #2563EB;
+            color: #3B82F6;
+            border-left-color: #3B82F6;
         }
 
-        .mobile-nav-link i { width: 20px; }
-
-        @media (max-width: 768px) {
-            .container { padding-left: 1rem; padding-right: 1rem; }
+        /* Responsive */
+        @media (max-width: 640px) {
+            .program-badge {
+                top: 12px;
+                right: 12px;
+            }
+            .program-badge span {
+                font-size: 10px;
+                padding: 4px 8px;
+            }
+            .benefit-item {
+                font-size: 13px;
+            }
+            .floating-icon {
+                transform: scale(0.85);
+            }
         }
     </style>
 </head>
 <body class="bg-gray-50 font-sans antialiased">
     <!-- Loading Overlay -->
-    <div id="loadingOverlay" class="fixed inset-0 bg-white/80 backdrop-blur-sm z-50 flex items-center justify-center">
+    <div id="loadingOverlay" class="fixed inset-0 bg-white/80 backdrop-blur-sm z-50 flex items-center justify-center hidden">
         <div class="text-center bg-white p-6 rounded-2xl shadow-xl">
-            <div class="loading-spinner"></div>
-            <p class="mt-4 text-gray-600 font-medium">Memuat dashboard...</p>
+            <div class="loading-spinner mx-auto"></div>
+            <p class="mt-4 text-gray-600">Memuat data...</p>
         </div>
     </div>
 
@@ -311,197 +286,573 @@
             <div class="mobile-nav-header">
                 <div class="flex items-center justify-between mb-4">
                     <div class="flex items-center gap-2">
-                        <img src="yadika.png" alt="Logo" class="h-7 w-7 rounded-lg bg-white p-0.5">
-                        <span class="font-bold text-sm">LPPM ITB Yadika</span>
+                        <img src="yadika.png" alt="Logo" class="h-8 w-8 rounded-lg bg-white p-1">
+                        <span class="font-semibold text-sm">LPPM ITB Yadika</span>
                     </div>
                     <button id="closeMobileNav" class="text-white">
                         <i class="fas fa-times text-xl"></i>
                     </button>
                 </div>
                 <div class="flex items-center gap-3 mt-4 pt-2 border-t border-white/20">
-                    <img id="mobileNavAvatar" src="" alt="Avatar" class="w-9 h-9 rounded-full object-cover ring-2 ring-white/50">
+                    <img id="mobileNavAvatar" src="" alt="Avatar" class="w-10 h-10 rounded-full object-cover ring-2 ring-white/50">
                     <div>
                         <p class="font-semibold text-sm" id="mobileNavUserName">Loading...</p>
-                        <p class="text-xs opacity-80" id="mobileNavUserRole">Mahasiswa</p>
+                        <p class="text-xs opacity-80">Mahasiswa</p>
                     </div>
                 </div>
             </div>
             <div class="flex-1 overflow-y-auto py-4">
-                <a href="mahasiswa-dashboard.html" class="mobile-nav-link active" id="mobileDashboardLink"><i class="fas fa-home w-5"></i><span>Dashboard</span></a>
-                <a href="mahasiswa-berita.html" class="mobile-nav-link" id="mobileBeritaLink"><i class="fas fa-newspaper w-5"></i><span>Berita</span></a>
-                <a href="mahasiswa-repository.html" class="mobile-nav-link" id="mobileRepositoryLink"><i class="fas fa-book w-5"></i><span>Repository</span></a>
-                <a href="mahasiswa-magang-kkn.html" class="mobile-nav-link" id="mobileMagangKknLink"><i class="fas fa-briefcase w-5"></i><span>Magang & KKN</span></a>
-                <a href="mahasiswa-profil.html" class="mobile-nav-link" id="mobileProfilLink"><i class="fas fa-user-circle w-5"></i><span>Profil Saya</span></a>
+                <a href="mahasiswa-dashboard.html" class="mobile-nav-link">
+                    <i class="fas fa-home w-5"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="mahasiswa-berita.html" class="mobile-nav-link">
+                    <i class="fas fa-newspaper w-5"></i>
+                    <span>Berita</span>
+                </a>
+                <a href="mahasiswa-repository.html" class="mobile-nav-link">
+                    <i class="fas fa-book w-5"></i>
+                    <span>Repository</span>
+                </a>
+                <a href="mahasiswa-magang-kkn.html" class="mobile-nav-link active">
+                    <i class="fas fa-briefcase w-5"></i>
+                    <span>Magang & KKN</span>
+                </a>
+                <a href="mahasiswa-profil.html" class="mobile-nav-link">
+                    <i class="fas fa-user-circle w-5"></i>
+                    <span>Profil Saya</span>
+                </a>
                 <div class="border-t border-gray-100 my-4 mx-4"></div>
-                <a href="mahasiswa-ubah-password.html" class="mobile-nav-link"><i class="fas fa-key w-5"></i><span>Ubah Password</span></a>
-                <button onclick="handleLogout()" class="mobile-nav-link w-full text-left text-red-600"><i class="fas fa-sign-out-alt w-5"></i><span>Logout</span></button>
+                <a href="mahasiswa-ubah-password.html" class="mobile-nav-link">
+                    <i class="fas fa-key w-5"></i>
+                    <span>Ubah Password</span>
+                </a>
+                <button onclick="handleLogout()" class="mobile-nav-link w-full text-left text-red-600">
+                    <i class="fas fa-sign-out-alt w-5"></i>
+                    <span>Logout</span>
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- HEADER / NAVBAR - BIRU GRADIENT -->
-    <header class="navbar-custom fixed top-0 left-0 right-0 z-50">
-        <div class="container mx-auto px-4 md:px-6">
-            <div class="flex justify-between items-center h-16 md:h-[70px]">
-                <!-- Logo & Brand -->
-                <a href="mahasiswa-dashboard.html" class="flex items-center space-x-3 group">
-                    <img src="yadika.png" alt="Logo" class="h-9 w-9 md:h-10 md:w-10 rounded-lg shadow-sm bg-white p-1">
-                    <div>
-                        <h1 class="brand-title font-bold text-base md:text-lg">LPPM ITB Yadika</h1>
-                        <p class="brand-subtitle text-xs -mt-0.5">Portal Mahasiswa</p>
-                    </div>
-                </a>
-
-                <!-- Desktop Navigation -->
-                <div class="hidden md:flex items-center space-x-1">
-                    <a href="mahasiswa-dashboard.html" class="nav-link px-4 py-2 rounded-lg text-sm flex items-center gap-2 active">
-                        <i class="fas fa-home"></i> Dashboard
-                    </a>
-                    <a href="mahasiswa-berita.html" class="nav-link px-4 py-2 rounded-lg text-sm flex items-center gap-2">
-                        <i class="fas fa-newspaper"></i> Berita
-                    </a>
-                    <a href="mahasiswa-repository.html" class="nav-link px-4 py-2 rounded-lg text-sm flex items-center gap-2">
-                        <i class="fas fa-book"></i> Repository
-                    </a>
-                    <a href="mahasiswa-magang-kkn.html" class="nav-link px-4 py-2 rounded-lg text-sm flex items-center gap-2">
-                        <i class="fas fa-briefcase"></i> Magang & KKN
-                    </a>
-                    <a href="mahasiswa-profil.html" class="nav-link px-4 py-2 rounded-lg text-sm flex items-center gap-2">
-                        <i class="fas fa-user-circle"></i> Profil Saya
-                    </a>
+    <!-- Navbar -->
+    <header class="fixed top-0 left-0 right-0 navbar-custom z-50">
+        <nav class="max-w-7xl mx-auto px-4 md:px-6 h-16 md:h-20 flex justify-between items-center">
+            <a href="mahasiswa-dashboard.html" class="flex items-center space-x-3 group">
+                <div class="relative">
+                    <img src="yadika.png" alt="Logo LPPM ITB Yadika" class="h-9 w-9 md:h-10 md:w-10 rounded-lg shadow-sm transition-transform group-hover:scale-105 bg-white p-1">
                 </div>
-
-                <!-- Right Actions -->
-                <div class="flex items-center gap-3">
-                    <button id="notificationBtn" class="icon-btn relative p-2 rounded-lg transition">
-                        <i class="fas fa-bell text-lg"></i>
+                <div>
+                    <h1 class="brand-title text-base md:text-lg font-bold tracking-wide">
+                        LPPM ITB Yadika
+                    </h1>
+                    <p class="brand-subtitle text-xs md:text-sm -mt-0.5">Portal Mahasiswa</p>
+                </div>
+            </a>
+            
+            <!-- Desktop Navigation Menu -->
+            <div class="hidden md:flex items-center space-x-1">
+                <a href="mahasiswa-dashboard.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-home text-sm"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="mahasiswa-berita.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-newspaper text-sm"></i>
+                    <span>Berita</span>
+                </a>
+                <a href="mahasiswa-repository.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-book text-sm"></i>
+                    <span>Repository</span>
+                </a>
+                <a href="mahasiswa-magang-kkn.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2 active">
+                    <i class="fas fa-briefcase text-sm"></i>
+                    <span>Magang & KKN</span>
+                </a>
+                <a href="mahasiswa-profil.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-user-circle text-sm"></i>
+                    <span>Profil Saya</span>
+                </a>
+            </div>
+            
+            <!-- User Info & Actions -->
+            <div class="flex items-center gap-2 md:gap-3">
+                <div class="relative">
+                    <button id="notificationBtn" class="icon-btn relative p-2 rounded-lg transition-all duration-200">
+                        <i class="fas fa-bell text-base md:text-lg"></i>
                         <span id="notificationBadge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full hidden"></span>
                     </button>
-
-                    <!-- Desktop User Menu -->
-                    <div class="relative hidden md:block">
-                        <button id="userMenuBtn" class="flex items-center gap-2 p-1 rounded-xl hover:bg-white/10 transition">
+                </div>
+                
+                <!-- User Profile Dropdown Desktop -->
+                <div class="relative hidden md:block">
+                    <button id="userMenuBtn" class="flex items-center gap-2 p-1.5 rounded-xl hover:bg-white/10 transition-all duration-200">
+                        <div class="relative">
                             <img id="navAvatar" src="" alt="Avatar" class="w-8 h-8 rounded-full object-cover ring-2 ring-white/50">
-                            <div class="hidden xl:block text-left">
-                                <p class="user-name text-sm font-semibold" id="navUserName">Loading...</p>
-                                <p class="user-role text-xs" id="navUserRole">Mahasiswa</p>
-                            </div>
-                            <i class="fas fa-chevron-down text-xs text-white/60"></i>
-                        </button>
-                        <div id="userDropdown" class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hidden z-50">
-                            <div class="p-3 border-b bg-gradient-to-r from-blue-50 to-purple-50">
-                                <div class="flex items-center gap-3">
-                                    <img id="dropdownAvatar" src="" class="w-9 h-9 rounded-full">
-                                    <div><p class="font-semibold text-sm" id="dropdownUserName">Loading</p><p class="text-xs text-gray-500" id="dropdownUserNim">-</p></div>
+                            <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full ring-2 ring-white"></div>
+                        </div>
+                        <div class="hidden xl:block text-left">
+                            <p class="user-name text-xs font-semibold" id="navUserName">Loading...</p>
+                            <p class="user-role text-[10px]" id="navUserRole">Mahasiswa</p>
+                        </div>
+                        <i class="fas fa-chevron-down text-[10px] text-white/60 hidden xl:block"></i>
+                    </button>
+                    
+                    <div id="userDropdown" class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hidden z-50">
+                        <div class="p-3 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-purple-50">
+                            <div class="flex items-center gap-3">
+                                <img id="dropdownAvatar" src="" alt="Avatar" class="w-10 h-10 rounded-full object-cover">
+                                <div>
+                                    <p class="font-semibold text-gray-800 text-sm" id="dropdownUserName">Loading...</p>
+                                    <p class="text-xs text-gray-500" id="dropdownUserNim">-</p>
                                 </div>
                             </div>
-                            <div class="p-2">
-                                <a href="mahasiswa-profil.html" class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-blue-50 text-sm"><i class="fas fa-user-cog"></i> Pengaturan Akun</a>
-                                <a href="mahasiswa-ubah-password.html" class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-blue-50 text-sm"><i class="fas fa-key"></i> Ubah Password</a>
-                                <div class="border-t my-2"></div>
-                                <button onclick="handleLogout()" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-red-600 hover:bg-red-50 text-sm"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                        </div>
+                        <div class="p-2">
+                            <a href="mahasiswa-profil.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
+                                <i class="fas fa-user-cog w-5 text-gray-400"></i>
+                                <span>Pengaturan Akun</span>
+                            </a>
+                            <a href="mahasiswa-ubah-password.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
+                                <i class="fas fa-key w-5 text-gray-400"></i>
+                                <span>Ubah Password</span>
+                            </a>
+                            <div class="border-t border-gray-100 my-2"></div>
+                            <button onclick="handleLogout()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-600 hover:bg-red-50 transition text-sm">
+                                <i class="fas fa-sign-out-alt w-5 text-red-400"></i>
+                                <span>Logout</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hamburger Menu Button -->
+                <button id="hamburgerBtn" class="md:hidden icon-btn p-2 rounded-lg transition-all duration-200">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="pt-16 md:pt-20">
+        <div class="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-8">
+            <div class="mb-8 text-center" data-aos="fade-down">
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">Pilih Program Anda</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Wujudkan masa depanmu melalui pengalaman berharga dalam program magang atau pengabdian masyarakat</p>
+            </div>
+
+            <!-- Registered Programs Section -->
+            <div id="registeredProgramsSection" class="mb-10 max-w-6xl mx-auto hidden" data-aos="fade-up">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg md:text-xl font-semibold text-gray-800">
+                        <i class="fas fa-clipboard-list text-blue-500 mr-2"></i>
+                        Program Yang Telah Anda Daftarkan
+                    </h3>
+                    <button onclick="refreshData()" class="text-blue-600 hover:text-blue-800 transition text-sm">
+                        <i class="fas fa-sync-alt mr-1"></i> Refresh
+                    </button>
+                </div>
+                <div id="registeredProgramsList" class="space-y-3">
+                    <!-- Dynamic content -->
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+                <!-- Magang Card -->
+                <div onclick="window.location.href='mahasiswa-magang.html'" 
+                     class="choice-card magang bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer group"
+                     data-aos="fade-right" data-aos-delay="100">
+                    
+                    <div class="program-badge">
+                        <span class="px-3 py-1 bg-blue-500 text-white rounded-full text-xs font-medium">
+                            <i class="fas fa-briefcase mr-1"></i><span id="magangCount">0</span> Program
+                        </span>
+                    </div>
+                    
+                    <div class="bg-gradient-to-r from-blue-600 to-blue-700 p-5 md:p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="text-2xl md:text-3xl font-bold text-white mb-1">Magang</h3>
+                                <p class="text-blue-100">Program Magang Profesional</p>
+                            </div>
+                            <div class="floating-icon">
+                                <div class="w-14 h-14 md:w-16 md:h-16 bg-white/20 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-briefcase text-white text-2xl md:text-3xl"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    
+                    <div class="p-5 md:p-6">
+                        <p class="text-gray-600 mb-4">
+                            Dapatkan pengalaman kerja nyata di perusahaan terkemuka. Kembangkan skill profesional dan bangun jaringan karir.
+                        </p>
+                        
+                        <div class="space-y-2 mb-5">
+                            <div class="benefit-item flex items-center gap-3 text-gray-600 pl-2 py-1">
+                                <i class="fas fa-certificate text-blue-500 w-5"></i>
+                                <span class="text-sm">Sertifikat Magang diakui industri</span>
+                            </div>
+                            <div class="benefit-item flex items-center gap-3 text-gray-600 pl-2 py-1">
+                                <i class="fas fa-wallet text-blue-500 w-5"></i>
+                                <span class="text-sm">Insentif bulanan minimal UMR</span>
+                            </div>
+                            <div class="benefit-item flex items-center gap-3 text-gray-600 pl-2 py-1">
+                                <i class="fas fa-network-wired text-blue-500 w-5"></i>
+                                <span class="text-sm">Networking dengan profesional</span>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-3 gap-2 mb-5 pt-3 border-t border-gray-100">
+                            <div class="text-center">
+                                <div class="text-lg font-bold text-blue-600">50+</div>
+                                <div class="text-xs text-gray-500">Mitra</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-lg font-bold text-blue-600">200+</div>
+                                <div class="text-xs text-gray-500">Mahasiswa</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-lg font-bold text-blue-600">90%</div>
+                                <div class="text-xs text-gray-500">Terserap</div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-md text-xs">Multinasional</span>
+                            <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-md text-xs">3-6 Bulan</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between bg-blue-50 rounded-lg p-3 group-hover:bg-blue-100 transition">
+                            <span class="text-blue-700 font-medium text-sm">Lihat program magang</span>
+                            <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white group-hover:translate-x-1 transition">
+                                <i class="fas fa-arrow-right text-sm"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                    <!-- Hamburger -->
-                    <button id="hamburgerBtn" class="md:hidden icon-btn p-2 rounded-lg transition">
-                        <i class="fas fa-bars text-xl"></i>
-                    </button>
+                <!-- KKN Card -->
+                <div onclick="window.location.href='mahasiswa-kkn.html'" 
+                     class="choice-card kkn bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer group"
+                     data-aos="fade-left" data-aos-delay="200">
+                    
+                    <div class="program-badge">
+                        <span class="px-3 py-1 bg-purple-500 text-white rounded-full text-xs font-medium">
+                            <i class="fas fa-map-marker-alt mr-1"></i><span id="kknCount">0</span> Lokasi
+                        </span>
+                    </div>
+                    
+                    <div class="bg-gradient-to-r from-purple-600 to-purple-700 p-5 md:p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="text-2xl md:text-3xl font-bold text-white mb-1">KKN</h3>
+                                <p class="text-purple-100">Kuliah Kerja Nyata</p>
+                            </div>
+                            <div class="floating-icon">
+                                <div class="w-14 h-14 md:w-16 md:h-16 bg-white/20 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-hands-helping text-white text-2xl md:text-3xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-5 md:p-6">
+                        <p class="text-gray-600 mb-4">
+                            Berkontribusi langsung untuk masyarakat. Terapkan ilmu, kembangkan empati, dan rasakan pengalaman berharga.
+                        </p>
+                        
+                        <div class="space-y-2 mb-5">
+                            <div class="benefit-item flex items-center gap-3 text-gray-600 pl-2 py-1">
+                                <i class="fas fa-home text-purple-500 w-5"></i>
+                                <span class="text-sm">Live-in masyarakat selama 2 bulan</span>
+                            </div>
+                            <div class="benefit-item flex items-center gap-3 text-gray-600 pl-2 py-1">
+                                <i class="fas fa-lightbulb text-purple-500 w-5"></i>
+                                <span class="text-sm">Program pemberdayaan berdampak nyata</span>
+                            </div>
+                            <div class="benefit-item flex items-center gap-3 text-gray-600 pl-2 py-1">
+                                <i class="fas fa-users text-purple-500 w-5"></i>
+                                <span class="text-sm">Kerjasama tim dan komunikasi</span>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-3 gap-2 mb-5 pt-3 border-t border-gray-100">
+                            <div class="text-center">
+                                <div class="text-lg font-bold text-purple-600">25+</div>
+                                <div class="text-xs text-gray-500">Desa</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-lg font-bold text-purple-600">500+</div>
+                                <div class="text-xs text-gray-500">Alumni</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-lg font-bold text-purple-600">100+</div>
+                                <div class="text-xs text-gray-500">Program</div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded-md text-xs">Desa Wisata</span>
+                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded-md text-xs">2 Bulan</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between bg-purple-50 rounded-lg p-3 group-hover:bg-purple-100 transition">
+                            <span class="text-purple-700 font-medium text-sm">Lihat program KKN</span>
+                            <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-white group-hover:translate-x-1 transition">
+                                <i class="fas fa-arrow-right text-sm"></i>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </header>
-
-    <!-- MAIN CONTENT -->
-    <main class="pt-[65px] md:pt-[86px]">
-        <div class="container mx-auto px-4 md:px-6 py-6 md:py-8">
-            <!-- Welcome Section -->
-            <div class="mb-6 md:mb-8 flex justify-between items-center flex-wrap gap-3" data-aos="fade-down">
-                <div>
-                    <h2 class="text-2xl md:text-3xl font-bold text-gray-800">Selamat datang, <span id="userName" class="gradient-text">Mahasiswa</span>!</h2>
-                    <p class="text-gray-600 text-sm mt-1"><i class="fas fa-id-card mr-1"></i> NIM: <span id="userNim">-</span> | <i class="fas fa-building mr-1"></i> <span id="userProdi">-</span></p>
-                </div>
-                <div class="flex items-center gap-3">
-                    <div class="realtime-badge text-xs"><i class="fas fa-circle pulse"></i> Live Data <span id="lastUpdateTime" class="ml-1 text-[10px]"></span></div>
-                    <button onclick="refreshAllData()" class="bg-gray-200 hover:bg-gray-300 p-2 rounded-lg"><i class="fas fa-sync-alt"></i></button>
-                </div>
-            </div>
-
-            <!-- Stat Cards -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
-                <div class="bg-white rounded-xl shadow-md p-5 border-l-4 border-blue-500 stat-card">
-                    <div class="flex justify-between"><div><p class="text-gray-500 text-sm">Status Magang</p><h3 class="text-2xl font-bold" id="magangStatus">-</h3><p class="text-xs text-gray-400 mt-1" id="magangDetail">-</p></div><div class="bg-blue-100 p-3 rounded-lg"><i class="fas fa-briefcase text-blue-600"></i></div></div>
-                    <div class="progress-bar mt-2 bg-gray-200"><div class="progress-fill bg-blue-500" id="magangProgress" style="width:0%"></div></div>
-                    <p class="text-xs text-gray-400 mt-2" id="magangDate">-</p>
-                </div>
-                <div class="bg-white rounded-xl shadow-md p-5 border-l-4 border-purple-500 stat-card">
-                    <div class="flex justify-between"><div><p class="text-gray-500 text-sm">Status KKN</p><h3 class="text-2xl font-bold" id="kknStatus">-</h3><p class="text-xs text-gray-400 mt-1" id="kknDetail">-</p></div><div class="bg-purple-100 p-3 rounded-lg"><i class="fas fa-users text-purple-600"></i></div></div>
-                    <div class="progress-bar mt-2 bg-gray-200"><div class="progress-fill bg-purple-500" id="kknProgress" style="width:0%"></div></div>
-                    <p class="text-xs text-gray-400 mt-2" id="kknDate">-</p>
-                </div>
-                <div class="bg-white rounded-xl shadow-md p-5 border-l-4 border-green-500 stat-card">
-                    <div class="flex justify-between"><div><p class="text-gray-500 text-sm">Kegiatan Diikuti</p><h3 class="text-2xl font-bold" id="totalKegiatan">0</h3><p class="text-xs text-gray-400 mt-1" id="kegiatanDetail">-</p></div><div class="bg-green-100 p-3 rounded-lg"><i class="fas fa-calendar-check text-green-600"></i></div></div>
-                    <p class="text-xs text-green-600 mt-2" id="upcomingKegiatan"><i class="fas fa-clock"></i> Memuat...</p>
-                </div>
-                <div class="bg-white rounded-xl shadow-md p-5 border-l-4 border-orange-500 stat-card">
-                    <div class="flex justify-between"><div><p class="text-gray-500 text-sm">Sertifikat & Luaran</p><h3 class="text-2xl font-bold" id="totalSertifikat">0</h3><p class="text-xs text-gray-400 mt-1" id="sertifikatDetail">-</p></div><div class="bg-orange-100 p-3 rounded-lg"><i class="fas fa-certificate text-orange-600"></i></div></div>
-                    <p class="text-xs text-orange-600 mt-2" id="luaranCount"><i class="fas fa-file-alt"></i> 0 Luaran</p>
-                </div>
-            </div>
-
-            <!-- Timeline & Activity -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                <div class="bg-white rounded-xl shadow-md p-5"><h3 class="font-bold mb-3"><i class="fas fa-chart-line text-blue-500 mr-2"></i>Timeline Magang</h3><div id="magangTimeline" class="space-y-3 max-h-80 overflow-y-auto"><div class="text-center py-4 text-gray-400"><i class="fas fa-spinner fa-spin"></i> Memuat...</div></div></div>
-                <div class="bg-white rounded-xl shadow-md p-5"><h3 class="font-bold mb-3"><i class="fas fa-chart-line text-purple-500 mr-2"></i>Timeline KKN</h3><div id="kknTimeline" class="space-y-3 max-h-80 overflow-y-auto"><div class="text-center py-4 text-gray-400"><i class="fas fa-spinner fa-spin"></i> Memuat...</div></div></div>
-                <div class="bg-white rounded-xl shadow-md p-5"><h3 class="font-bold mb-3"><i class="fas fa-history text-green-500 mr-2"></i>Aktivitas Terbaru</h3><div id="recentActivities" class="space-y-3 max-h-80 overflow-y-auto"><div class="text-center py-4 text-gray-400"><i class="fas fa-spinner fa-spin"></i> Memuat...</div></div></div>
-            </div>
-
-            <!-- Announcements & Events -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div class="bg-white rounded-xl shadow-md p-5"><div class="flex justify-between items-center mb-3"><h3 class="font-bold text-lg"><i class="fas fa-bullhorn text-purple-500 mr-2"></i>Pengumuman</h3><button onclick="loadAnnouncements(true)" class="text-purple-600 text-sm"><i class="fas fa-sync-alt"></i></button></div><div id="pengumumanList"><div class="text-center py-6 text-gray-400"><i class="fas fa-spinner fa-spin"></i> Memuat...</div></div><a href="mahasiswa-berita.html" class="text-purple-600 text-sm mt-3 inline-block">Lihat semua →</a></div>
-                <div class="bg-white rounded-xl shadow-md p-5"><div class="flex justify-between items-center mb-3"><h3 class="font-bold text-lg"><i class="fas fa-calendar-alt text-green-500 mr-2"></i>Kegiatan Mendatang</h3><button onclick="loadUpcomingEvents(true)" class="text-green-600 text-sm"><i class="fas fa-sync-alt"></i></button></div><div id="kegiatanList"><div class="text-center py-6 text-gray-400"><i class="fas fa-spinner fa-spin"></i> Memuat...</div></div><a href="mahasiswa-kegiatan.html" class="text-green-600 text-sm mt-3 inline-block">Lihat semua →</a></div>
             </div>
         </div>
     </main>
 
-    <div id="toast" class="toast-notification"><i class="fas fa-info-circle"></i><span id="toastMessage">Data berhasil diperbarui</span></div>
+    <!-- Notification -->
+    <div id="notification" class="fixed bottom-4 right-4 z-50 hidden">
+        <div class="bg-green-500 text-white px-5 py-3 rounded-lg shadow-lg flex items-center">
+            <i class="fas fa-check-circle mr-2"></i>
+            <span id="notificationMessage">Notifikasi</span>
+        </div>
+    </div>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
     <script>
-        AOS.init({ duration: 800, once: true });
-        const API_BASE = '/api';
-        let refreshInterval = null, isRefreshing = false;
+        AOS.init({ duration: 600, once: true, offset: 80 });
 
-        function showToast(msg, type='success') { const toast = document.getElementById('toast'); document.getElementById('toastMessage').innerText = msg; toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'),3000); }
+        const API_BASE_URL = window.location.origin + '/api';
+        let userPrograms = { magang: null, kkn: null };
+
+        function showLoading() { document.getElementById('loadingOverlay').classList.remove('hidden'); }
+        function hideLoading() { document.getElementById('loadingOverlay').classList.add('hidden'); }
+
+        function showNotification(message, isSuccess = true) {
+            const notification = document.getElementById('notification');
+            const messageEl = document.getElementById('notificationMessage');
+            notification.className = `fixed bottom-4 right-4 z-50 ${isSuccess ? 'bg-green-500' : 'bg-red-500'} text-white px-5 py-3 rounded-lg shadow-lg flex items-center`;
+            messageEl.textContent = message;
+            notification.classList.remove('hidden');
+            setTimeout(() => notification.classList.add('hidden'), 3000);
+        }
+
         function getToken() { return localStorage.getItem('token'); }
-        function getUser() { const u = localStorage.getItem('user'); return u ? JSON.parse(u) : null; }
-        function updateLastUpdateTime() { document.getElementById('lastUpdateTime').innerText = new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit'}); }
-        function checkAuth() { const token=getToken(), user=getUser(); if(!token||!user){ window.location='../login.html'; return false; } if(user.role!=='mahasiswa'){ alert('Akses ditolak'); window.location='../login.html'; return false; } return true; }
-        window.handleLogout = function() { if(refreshInterval) clearInterval(refreshInterval); localStorage.clear(); window.location='../login.html'; };
+        function getHeaders() { return { 'Authorization': `Bearer ${getToken()}`, 'Content-Type': 'application/json' }; }
+        
+        function getUser() {
+            try {
+                const userStr = localStorage.getItem('user');
+                return userStr ? JSON.parse(userStr) : null;
+            } catch (error) { return null; }
+        }
 
-        // API Functions
-        async function loadMagangData() { try { const res = await fetch(`${API_BASE}/magang/status`,{headers:{'Authorization':`Bearer ${getToken()}`}}); if(res.ok){ const d=(await res.json()).data||{}; let status='Belum Daftar',cls='text-gray-500',prog=0,det='',date=''; if(d.registrasi){ const s=d.registrasi.status; if(s==='pending'){ status='Menunggu Verifikasi'; cls='text-yellow-600'; prog=25; det='Dokumen diperiksa'; date=formatDate(d.registrasi.created_at); } else if(s==='approved'){ status='Disetujui'; cls='text-green-600'; prog=50; det='Isi data perusahaan'; date=formatDate(d.registrasi.created_at); } else if(s==='verified'){ status='Selesai'; cls='text-blue-600'; prog=100; det='Magang selesai'; } else if(s==='rejected'){ status='Ditolak'; cls='text-red-600'; det=d.registrasi.catatan||'Ditolak'; } } if(d.perusahaan){ prog=75; status='Magang Aktif'; cls='text-green-600'; det=`${d.perusahaan.nama_perusahaan||'Perusahaan'} - ${d.perusahaan.posisi||'Magang'}`; } if(d.luaran){ prog=100; status='Selesai'; cls='text-blue-600'; } document.getElementById('magangStatus').innerHTML=`<span class="${cls}">${status}</span>`; document.getElementById('magangDetail').innerText=det; document.getElementById('magangDate').innerText=date?`Daftar: ${date}`:'-'; document.getElementById('magangProgress').style.width=`${prog}%`; } }catch(e){ console.error(e); } }
-        async function loadKKNData() { try { const res = await fetch(`${API_BASE}/mahasiswa/kkn/status`,{headers:{'Authorization':`Bearer ${getToken()}`}}); if(res.ok){ const d=(await res.json()).data||{}; let status='Belum Daftar',cls='text-gray-500',prog=0,det='',date=''; if(d.pendaftaran&&d.pendaftaran.status!=='belum_daftar'){ const s=d.pendaftaran.status; if(s==='pending'){ status='Menunggu Verifikasi'; cls='text-yellow-600'; prog=25; det=`Desa: ${d.pendaftaran.desa||'-'}`; date=formatDate(d.pendaftaran.tanggal); } else if(s==='approved'){ status='Disetujui'; cls='text-green-600'; prog=50; det=`Desa: ${d.pendaftaran.desa||'-'}`; } else if(s==='verified'){ status='Selesai'; cls='text-blue-600'; prog=100; det='KKN selesai'; } else if(s==='rejected'){ status='Ditolak'; cls='text-red-600'; det='Pengajuan ditolak'; } } document.getElementById('kknStatus').innerHTML=`<span class="${cls}">${status}</span>`; document.getElementById('kknDetail').innerText=det; document.getElementById('kknDate').innerText=date?`Daftar: ${date}`:'-'; document.getElementById('kknProgress').style.width=`${prog}%`; } }catch(e){ console.error(e); } }
-        async function loadKegiatanCount() { try { const res = await fetch(`${API_BASE}/mahasiswa/kegiatan?limit=100`,{headers:{'Authorization':`Bearer ${getToken()}`}}); if(res.ok){ const k=(await res.json()).data||[]; const total=k.filter(k=>k.user_registered===true).length; document.getElementById('totalKegiatan').innerText=total; document.getElementById('kegiatanDetail').innerText=total===0?'Belum ada kegiatan':`${total} kegiatan`; } }catch(e){ console.error(e); } }
-        async function loadSertifikatDanLuaran() { try { let luaran=0; const resMag=await fetch(`${API_BASE}/magang/luaran`,{headers:{'Authorization':`Bearer ${getToken()}`}}); if(resMag.ok) luaran+=(await resMag.json()).data?.length||0; const resKKN=await fetch(`${API_BASE}/mahasiswa/kkn/luaran`,{headers:{'Authorization':`Bearer ${getToken()}`}}); if(resKKN.ok) luaran+=(await resKKN.json()).data?.length||0; document.getElementById('totalSertifikat').innerText='0'; document.getElementById('sertifikatDetail').innerText='0 Sertifikat'; document.getElementById('luaranCount').innerHTML=`<i class="fas fa-file-alt"></i> ${luaran} Luaran`; }catch(e){ console.error(e); } }
-        async function loadMagangTimeline() { try { const res=await fetch(`${API_BASE}/magang/timeline`,{headers:{'Authorization':`Bearer ${getToken()}`}}); const container=document.getElementById('magangTimeline'); if(res.ok){ const t=(await res.json()).data||[]; if(!t.length){ container.innerHTML='<div class="text-center text-gray-400 py-4">Belum ada aktivitas</div>'; return; } container.innerHTML=t.map((item,i,arr)=>`<div class="flex gap-3"><div class="relative"><div class="w-8 h-8 rounded-full ${item.status==='completed'?'bg-green-500':'bg-blue-500'} flex items-center justify-center"><i class="fas ${item.tahap==='Pendaftaran'?'fa-file-alt':(item.tahap==='Luaran'?'fa-certificate':'fa-building')} text-white text-xs"></i></div>${i!==arr.length-1?'<div class="absolute top-8 left-4 w-0.5 h-8 bg-gray-200"></div>':''}</div><div><p class="font-semibold text-sm">${item.tahap||'Aktivitas'}</p><p class="text-xs text-gray-500">${item.deskripsi||'-'}</p><span class="text-xs text-gray-400">${formatDate(item.tanggal)}</span></div></div>`).join(''); }else container.innerHTML='<div class="text-center text-gray-400 py-4">Gagal memuat</div>'; }catch(e){ console.error(e); } }
-        async function loadKKNTimeline() { try { const res=await fetch(`${API_BASE}/mahasiswa/kkn/timeline`,{headers:{'Authorization':`Bearer ${getToken()}`}}); const container=document.getElementById('kknTimeline'); if(res.ok){ const t=(await res.json()).data||[]; if(!t.length){ container.innerHTML='<div class="text-center text-gray-400 py-4">Belum ada aktivitas</div>'; return; } container.innerHTML=t.map(item=>`<div class="flex gap-3"><div class="w-8 h-8 rounded-full ${item.is_completed?'bg-green-500':(item.is_active?'bg-blue-500':'bg-gray-300')} flex items-center justify-center"><i class="fas ${item.is_completed?'fa-check':(item.is_active?'fa-spinner fa-pulse':'fa-clock')} text-white text-xs"></i></div><div><p class="font-semibold text-sm">${item.title}</p><p class="text-xs text-gray-500">${item.description}</p>${item.date?`<span class="text-xs text-gray-400">${formatDate(item.date)}</span>`:''}</div></div>`).join(''); } }catch(e){ console.error(e); } }
-        async function loadRecentActivities() { try { const acts=[]; const m=await fetch(`${API_BASE}/magang/riwayat`,{headers:{'Authorization':`Bearer ${getToken()}`}}); if(m.ok){ (await m.json()).data?.forEach(r=>acts.push({title:r.jenis==='registrasi'?'Pendaftaran Magang':(r.jenis==='perusahaan'?'Data Perusahaan':'Luaran Magang'),status:r.status,date:r.created_at||r.tanggal,icon:'fa-briefcase',color:'blue'})); } const k=await fetch(`${API_BASE}/mahasiswa/kkn/riwayat`,{headers:{'Authorization':`Bearer ${getToken()}`}}); if(k.ok){ (await k.json()).data?.forEach(r=>acts.push({title:r.jenis==='pendaftaran'?'Pendaftaran KKN':'Luaran KKN',status:r.status,date:r.tanggal,icon:'fa-users',color:'purple'})); } acts.sort((a,b)=>new Date(b.date)-new Date(a.date)); const latest=acts.slice(0,5); const container=document.getElementById('recentActivities'); if(!latest.length){ container.innerHTML='<div class="text-center text-gray-400 py-4">Belum ada aktivitas</div>'; return; } container.innerHTML=latest.map(a=>`<div class="flex items-center gap-3 p-2 hover:bg-gray-50 rounded"><div class="w-10 h-10 bg-${a.color}-100 rounded-lg flex items-center justify-center"><i class="fas ${a.icon} text-${a.color}-600"></i></div><div><p class="text-sm font-medium">${a.title}</p><div class="flex gap-2 mt-1"><span class="status-badge status-${a.status||'pending'}">${a.status||'pending'}</span><span class="text-xs text-gray-400">${formatDate(a.date)}</span></div></div></div>`).join(''); }catch(e){ console.error(e); } }
-        async function loadAnnouncements(toast=false){ try{ const res=await fetch(`${API_BASE}/mahasiswa/berita?limit=3`,{headers:{'Authorization':`Bearer ${getToken()}`}}); const container=document.getElementById('pengumumanList'); if(res.ok){ const items=(await res.json()).data||[]; if(!items.length) container.innerHTML='<div class="text-center text-gray-400 py-6">Tidak ada pengumuman</div>'; else container.innerHTML=items.map(i=>`<div class="border-l-4 border-purple-500 pl-4 py-2"><h4 class="font-semibold">${escapeHtml(i.judul)}</h4><p class="text-xs text-gray-500 mt-1">${escapeHtml((i.konten||'').substring(0,100))}</p><span class="text-xs text-gray-400">${formatDate(i.created_at)}</span></div>`).join(''); if(toast) showToast('Pengumuman diperbarui'); } }catch(e){ console.error(e); } }
-        async function loadUpcomingEvents(toast=false){ try{ const res=await fetch(`${API_BASE}/mahasiswa/kegiatan/upcoming?limit=3`,{headers:{'Authorization':`Bearer ${getToken()}`}}); const container=document.getElementById('kegiatanList'); if(res.ok){ const items=(await res.json()).data||[]; if(!items.length) container.innerHTML='<div class="text-center text-gray-400 py-6">Tidak ada kegiatan</div>'; else container.innerHTML=items.map(e=>`<div class="flex gap-3"><div class="bg-green-100 rounded-lg px-3 py-1 text-center"><span class="font-bold text-green-600">${getEventDay(e.tanggal_mulai)}</span><span class="text-xs block text-green-600">${getEventMonth(e.tanggal_mulai)}</span></div><div><h4 class="font-semibold">${escapeHtml(e.nama_kegiatan)}</h4><p class="text-xs text-gray-500"><i class="fas fa-map-marker-alt"></i> ${e.lokasi||'Online'}</p>${e.sisa_kuota!==undefined?`<p class="text-xs ${e.sisa_kuota<=0?'text-red-500':'text-green-500'}">Sisa kuota: ${e.sisa_kuota}</p>`:''}</div></div>`).join(''); if(toast) showToast('Kegiatan diperbarui'); } }catch(e){ console.error(e); } }
-        async function loadUserProfile(){ const user=getUser(); if(user){ document.getElementById('userName').innerText=user.name||user.nama_lengkap||'Mahasiswa'; try{ const res=await fetch(`${API_BASE}/mahasiswa/profil/basic`,{headers:{'Authorization':`Bearer ${getToken()}`}}); if(res.ok){ const p=(await res.json()).data; document.getElementById('userNim').innerText=p.nim||'-'; document.getElementById('userProdi').innerText=p.nama_prodi||'Teknik Informatika'; updateNavbarUserInfo(p); } }catch(e){ console.error(e); } } }
-        async function refreshAllData(){ if(isRefreshing) return; isRefreshing=true; try{ await Promise.all([loadUserProfile(),loadMagangData(),loadKKNData(),loadKegiatanCount(),loadSertifikatDanLuaran(),loadMagangTimeline(),loadKKNTimeline(),loadRecentActivities(),loadAnnouncements(),loadUpcomingEvents()]); updateLastUpdateTime(); showToast('Semua data diperbarui'); }catch(e){ showToast('Gagal refresh','error'); }finally{ isRefreshing=false; } }
-        function updateNavbarUserInfo(p){ if(!p) return; const url=p.foto_profil?`/${p.foto_profil}`:`https://ui-avatars.com/api/?name=${encodeURIComponent(p.nama_lengkap||'User')}&background=3B82F6&color=fff`; ['navAvatar','dropdownAvatar','mobileNavAvatar'].forEach(id=>{ const el=document.getElementById(id); if(el) el.src=url; }); ['navUserName','dropdownUserName','mobileNavUserName'].forEach(id=>{ const el=document.getElementById(id); if(el) el.innerText=p.nama_lengkap||'Mahasiswa'; }); const nim=document.getElementById('dropdownUserNim'); if(nim) nim.innerText=p.nim?`NIM: ${p.nim}`:'-'; }
-        function initMobileNav(){ const hamburger=document.getElementById('hamburgerBtn'), mobileNav=document.getElementById('mobileNav'), closeBtn=document.getElementById('closeMobileNav'); if(hamburger&&mobileNav){ hamburger.onclick=()=>mobileNav.classList.add('active'); closeBtn.onclick=()=>mobileNav.classList.remove('active'); mobileNav.onclick=(e)=>{ if(e.target===mobileNav) mobileNav.classList.remove('active'); }; document.querySelectorAll('.mobile-nav-link').forEach(l=>l.addEventListener('click',()=>mobileNav.classList.remove('active'))); } const page=window.location.pathname.split('/').pop(); document.querySelectorAll('.mobile-nav-link').forEach(link=>{ const href=link.getAttribute('href'); if(href===page||(page==='mahasiswa-dashboard.html'&&href==='mahasiswa-dashboard.html')) link.classList.add('active'); else link.classList.remove('active'); }); }
-        function setActiveNavLink(){ const page=window.location.pathname.split('/').pop(); document.querySelectorAll('.nav-link').forEach(link=>{ const href=link.getAttribute('href'); if(href===page||(page==='mahasiswa-dashboard.html'&&href==='mahasiswa-dashboard.html')) link.classList.add('active'); else link.classList.remove('active'); }); }
-        function initDropdown(){ const btn=document.getElementById('userMenuBtn'), drop=document.getElementById('userDropdown'); if(btn&&drop){ btn.onclick=(e)=>{ e.stopPropagation(); drop.classList.toggle('hidden'); }; document.onclick=(e)=>{ if(!btn.contains(e.target)&&!drop.contains(e.target)) drop.classList.add('hidden'); }; } }
-        function escapeHtml(t){ if(!t) return ''; const div=document.createElement('div'); div.textContent=t; return div.innerHTML; }
-        function formatDate(d){ if(!d) return '-'; const date=new Date(d), now=new Date(), diff=Math.floor((now-date)/(86400000)); if(diff===0) return 'Hari ini'; if(diff===1) return 'Kemarin'; if(diff<7) return `${diff} hari lalu`; return date.toLocaleDateString('id-ID'); }
-        function getEventDay(d){ return d?new Date(d).getDate():'-'; }
-        function getEventMonth(d){ if(!d) return '-'; const m=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des']; return m[new Date(d).getMonth()]; }
+        window.handleLogout = function() {
+            if (confirm('Apakah Anda yakin ingin logout?')) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = '../login.html';
+            }
+        };
 
-        document.addEventListener('DOMContentLoaded',async()=>{ if(!checkAuth()) return; initDropdown(); setActiveNavLink(); initMobileNav(); document.getElementById('loadingOverlay').classList.remove('hidden'); await refreshAllData(); setTimeout(()=>document.getElementById('loadingOverlay').classList.add('hidden'),500); refreshInterval=setInterval(()=>{ if(!document.hidden) refreshAllData(); },30000); });
+        function getStatusBadge(status) {
+            const statusMap = {
+                'pending': '<span class="status-badge status-pending"><i class="fas fa-clock mr-1"></i>Menunggu Verifikasi</span>',
+                'approved': '<span class="status-badge status-approved"><i class="fas fa-check-circle mr-1"></i>Disetujui</span>',
+                'rejected': '<span class="status-badge status-rejected"><i class="fas fa-times-circle mr-1"></i>Ditolak</span>',
+                'verified': '<span class="status-badge status-verified"><i class="fas fa-shield-alt mr-1"></i>Terverifikasi</span>'
+            };
+            return statusMap[status] || '<span class="status-badge status-pending">' + status + '</span>';
+        }
+
+        function getProgramTypeBadge(type) {
+            if (type === 'magang') {
+                return '<span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-md text-xs"><i class="fas fa-briefcase mr-1"></i>Magang</span>';
+            } else {
+                return '<span class="px-2 py-1 bg-purple-100 text-purple-700 rounded-md text-xs"><i class="fas fa-hands-helping mr-1"></i>KKN</span>';
+            }
+        }
+
+        async function loadUserRegisteredPrograms() {
+            const user = getUser();
+            if (!user) return;
+
+            showLoading();
+            try {
+                const magangResponse = await fetch(`${API_BASE_URL}/mahasiswa/magang/registrasi`, { headers: getHeaders() });
+                const kknResponse = await fetch(`${API_BASE_URL}/mahasiswa/kkn/registrasi`, { headers: getHeaders() });
+
+                if (magangResponse.ok) {
+                    const result = await magangResponse.json();
+                    if (result.success && result.data) userPrograms.magang = result.data;
+                }
+                if (kknResponse.ok) {
+                    const result = await kknResponse.json();
+                    if (result.success && result.data) userPrograms.kkn = result.data;
+                }
+
+                updateRegisteredProgramsUI();
+            } catch (error) {
+                console.error('Error:', error);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function updateRegisteredProgramsUI() {
+            const registeredSection = document.getElementById('registeredProgramsSection');
+            const registeredList = document.getElementById('registeredProgramsList');
+            
+            const programs = [];
+            if (userPrograms.magang) programs.push({ type: 'magang', data: userPrograms.magang });
+            if (userPrograms.kkn) programs.push({ type: 'kkn', data: userPrograms.kkn });
+            
+            if (programs.length === 0) {
+                registeredSection.classList.add('hidden');
+                return;
+            }
+            
+            registeredSection.classList.remove('hidden');
+            
+            registeredList.innerHTML = programs.map(program => {
+                const data = program.data;
+                const isMagang = program.type === 'magang';
+                const bgGradient = isMagang ? 'from-blue-50 to-blue-100/50' : 'from-purple-50 to-purple-100/50';
+                
+                return `
+                    <div class="program-card bg-gradient-to-r ${bgGradient} rounded-lg p-4 border border-gray-200 shadow-sm">
+                        <div class="flex flex-wrap justify-between items-start gap-3">
+                            <div class="flex-1">
+                                <div class="flex flex-wrap items-center gap-2 mb-2">
+                                    ${getProgramTypeBadge(program.type)}
+                                    <span class="text-xs text-gray-500">
+                                        <i class="far fa-calendar-alt mr-1"></i>
+                                        ${new Date(data.created_at || data.tanggal_daftar).toLocaleDateString('id-ID')}
+                                    </span>
+                                </div>
+                                <h4 class="font-semibold text-gray-800 mb-1">
+                                    ${isMagang ? (data.program_studi_input || 'Program Magang') : (data.desa_kkn?.nama_desa || 'Program KKN')}
+                                </h4>
+                                ${isMagang ? `
+                                    <p class="text-gray-500 text-sm">${data.nama_perusahaan || '-'} | Semester ${data.semester || '-'}</p>
+                                ` : `
+                                    <p class="text-gray-500 text-sm">${data.desa_kkn?.kecamatan || '-'}, ${data.desa_kkn?.kabupaten || '-'}</p>
+                                `}
+                            </div>
+                            <div class="flex flex-col items-end gap-2">
+                                ${getStatusBadge(data.status)}
+                                ${data.catatan && data.status === 'rejected' ? `
+                                    <div class="mt-1 p-2 bg-red-50 rounded-lg max-w-xs">
+                                        <p class="text-xs text-red-600"><i class="fas fa-info-circle mr-1"></i>${data.catatan}</p>
+                                    </div>
+                                ` : ''}
+                                <div class="flex gap-3 mt-1">
+                                    <button onclick="viewDetail('${program.type}', '${data.id_registrasi}')" class="text-sm text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-eye mr-1"></i> Detail
+                                    </button>
+                                    ${data.status === 'rejected' ? `
+                                        <button onclick="daftarUlang('${program.type}')" class="text-sm text-green-600 hover:text-green-800">
+                                            <i class="fas fa-redo mr-1"></i> Daftar Ulang
+                                        </button>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        window.viewDetail = function(type, id) {
+            if (type === 'magang') window.location.href = `mahasiswa-magang-detail.html?id=${id}`;
+            else window.location.href = `mahasiswa-kkn-detail.html?id=${id}`;
+        };
+
+        window.daftarUlang = function(type) {
+            if (type === 'magang') window.location.href = 'mahasiswa-magang.html';
+            else window.location.href = 'mahasiswa-kkn.html';
+        };
+
+        window.refreshData = function() {
+            loadUserRegisteredPrograms();
+            showNotification('Data diperbarui');
+        };
+
+        async function updateNavbarUserInfo() {
+            try {
+                const token = getToken();
+                if (!token) return;
+                const response = await fetch(`${API_BASE_URL}/mahasiswa/profil/basic`, { headers: getHeaders() });
+                if (response.ok) {
+                    const result = await response.json();
+                    const profile = result.data;
+                    if (profile) {
+                        const avatarUrl = profile.foto_profil ? `/${profile.foto_profil}` : `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.nama_lengkap || 'Mahasiswa')}&background=3B82F6&color=fff&bold=true`;
+                        document.getElementById('navAvatar')?.setAttribute('src', avatarUrl);
+                        document.getElementById('dropdownAvatar')?.setAttribute('src', avatarUrl);
+                        document.getElementById('mobileNavAvatar')?.setAttribute('src', avatarUrl);
+                        document.getElementById('navUserName').textContent = profile.nama_lengkap || 'Mahasiswa';
+                        document.getElementById('dropdownUserName').textContent = profile.nama_lengkap || 'Mahasiswa';
+                        document.getElementById('mobileNavUserName').textContent = profile.nama_lengkap || 'Mahasiswa';
+                        document.getElementById('dropdownUserNim').textContent = profile.nim ? `NIM: ${profile.nim}` : '-';
+                    }
+                }
+            } catch (error) { console.error('Error:', error); }
+        }
+
+        function initDropdown() {
+            const userMenuBtn = document.getElementById('userMenuBtn');
+            const userDropdown = document.getElementById('userDropdown');
+            if (userMenuBtn && userDropdown) {
+                userMenuBtn.addEventListener('click', (e) => { e.stopPropagation(); userDropdown.classList.toggle('hidden'); });
+                document.addEventListener('click', (e) => {
+                    if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) userDropdown.classList.add('hidden');
+                });
+            }
+        }
+
+        function initMobileNav() {
+            const hamburger = document.getElementById('hamburgerBtn');
+            const mobileNav = document.getElementById('mobileNav');
+            const closeBtn = document.getElementById('closeMobileNav');
+            if (hamburger && mobileNav && closeBtn) {
+                hamburger.addEventListener('click', () => mobileNav.classList.add('active'));
+                closeBtn.addEventListener('click', () => mobileNav.classList.remove('active'));
+                mobileNav.addEventListener('click', (e) => { if (e.target === mobileNav) mobileNav.classList.remove('active'); });
+                document.querySelectorAll('.mobile-nav-link').forEach(link => {
+                    link.addEventListener('click', () => mobileNav.classList.remove('active'));
+                });
+            }
+        }
+
+        async function loadMagangCount() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/mahasiswa/magang/count`, { headers: getHeaders() });
+                if (response.ok) {
+                    const result = await response.json();
+                    const countEl = document.getElementById('magangCount');
+                    if (countEl) countEl.textContent = result.data?.total || '0';
+                }
+            } catch (error) {}
+        }
+
+        async function loadKKNCount() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/mahasiswa/kkn/count`, { headers: getHeaders() });
+                if (response.ok) {
+                    const result = await response.json();
+                    const countEl = document.getElementById('kknCount');
+                    if (countEl) countEl.textContent = result.data?.total || '0';
+                }
+            } catch (error) {}
+        }
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            if (!getToken()) { window.location.href = '../login.html'; return; }
+            initDropdown();
+            initMobileNav();
+            await updateNavbarUserInfo();
+            await Promise.all([loadUserRegisteredPrograms(), loadMagangCount(), loadKKNCount()]);
+        });
     </script>
 </body>
 </html>
