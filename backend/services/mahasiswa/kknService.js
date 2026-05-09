@@ -1,33 +1,40 @@
-// services/mahasiswa/kknService.js
+// services/mahasiswa/kknService.js (Disesuaikan)
 const supabase = require('../../config/database');
 const { deleteFile } = require('../../middleware/upload');
 
 class KKNService {
-    constructor() {
-        this.tableRegistrasi = 'registrasi_kkn';
-        this.tableLuaran = 'luaran_kkn';
+        constructor() {
+        // Perbaiki nama tabel sesuai dengan yang ada di database
+        this.tableRegistrasi = 'registrasi_kkn';  // ← Ganti jadi ini
+       this.tableLuaran = 'luaran_kkn'; 
         this.tableDesa = 'desa_kkn';
         this.tableUsers = 'users';
         this.tableProgramStudi = 'program_studi';
     }
 
-    async getProgramStudi() {
-        try {
-            const { data, error } = await supabase
-                .from('program_studi')
-                .select('id_prodi, nama_prodi, jenjang, kode_prodi')
-                .order('nama_prodi');
 
-            if (error) throw error;
-            return data || [];
-        } catch (error) {
-            console.error('Error in getProgramStudi:', error);
-            throw error;
-        }
+async getProgramStudi() {
+    try {
+        const { data, error } = await supabase
+            .from('program_studi')
+            .select('id_prodi, nama_prodi, jenjang, kode_prodi')
+            .order('nama_prodi');
+
+        if (error) throw error;
+
+        return data || [];
+    } catch (error) {
+        console.error('Error in getProgramStudi:', error);
+        throw error;
     }
+}
 
+    /**
+     * Mendapatkan dashboard KKN mahasiswa
+     */
     async getDashboard(userId) {
         try {
+            // Ambil data registrasi
             const { data: registrasi, error: regError } = await supabase
                 .from(this.tableRegistrasi)
                 .select(`
@@ -51,6 +58,7 @@ class KKNService {
                 throw regError;
             }
 
+            // Ambil data luaran
             const { data: luaran, error: luarError } = await supabase
                 .from(this.tableLuaran)
                 .select('*')
@@ -72,6 +80,9 @@ class KKNService {
         }
     }
 
+    /**
+     * Mendapatkan status KKN
+     */
     async getStatus(userId) {
         try {
             const { data: registrasi, error } = await supabase
@@ -86,6 +97,7 @@ class KKNService {
                 throw error;
             }
 
+            // Hitung jumlah luaran
             let jumlahLuaran = 0;
             if (registrasi) {
                 const { count } = await supabase
@@ -113,55 +125,61 @@ class KKNService {
     }
 
     async getAvailableVillages(filters = {}) {
-        try {
-            let query = supabase
-                .from(this.tableDesa)
-                .select(`
-                    id_desa,
-                    nama_desa,
-                    kecamatan,
-                    kabupaten,
-                    provinsi,
-                    kuota,
-                    kuota_terisi,
-                    deskripsi,
-                    nama_pembimbing_lapangan,
-                    kontak_pembimbing_lapangan
-                `)
-                .eq('status', 'aktif');
+    try {
+        let query = supabase
+            .from(this.tableDesa)
+            .select(`
+                id_desa,
+                nama_desa,
+                kecamatan,
+                kabupaten,
+                provinsi,
+                kuota,
+                kuota_terisi,
+                deskripsi,
+                nama_pembimbing_lapangan,
+                kontak_pembimbing_lapangan
+            `)
+            .eq('status', 'aktif');
 
-            if (filters.search) {
-                query = query.or(`nama_desa.ilike.%${filters.search}%,kecamatan.ilike.%${filters.search}%`);
-            }
-
-            if (filters.kabupaten) {
-                query = query.eq('kabupaten', filters.kabupaten);
-            }
-
-            const { data, error } = await query.order('nama_desa');
-
-            if (error) throw error;
-
-            const filteredData = data.filter(desa => {
-                const sisaKuota = desa.kuota - (desa.kuota_terisi || 0);
-                return sisaKuota > 0;
-            });
-
-            return filteredData.map(desa => ({
-                ...desa,
-                sisa_kuota: desa.kuota - (desa.kuota_terisi || 0),
-                persentase_terisi: Math.round(((desa.kuota_terisi || 0) / desa.kuota) * 100)
-            }));
-        } catch (error) {
-            console.error('Error in getAvailableVillages:', error);
-            throw error;
+        if (filters.search) {
+            query = query.or(`nama_desa.ilike.%${filters.search}%,kecamatan.ilike.%${filters.search}%`);
         }
-    }
 
+        if (filters.kabupaten) {
+            query = query.eq('kabupaten', filters.kabupaten);
+        }
+
+        const { data, error } = await query.order('nama_desa');
+
+        if (error) throw error;
+
+        // Filter setelah data diambil (lebih aman)
+        const filteredData = data.filter(desa => {
+            const sisaKuota = desa.kuota - (desa.kuota_terisi || 0);
+            return sisaKuota > 0; // Hanya desa dengan sisa kuota > 0
+        });
+
+        return filteredData.map(desa => ({
+            ...desa,
+            sisa_kuota: desa.kuota - (desa.kuota_terisi || 0),
+            persentase_terisi: Math.round(((desa.kuota_terisi || 0) / desa.kuota) * 100)
+        }));
+    } catch (error) {
+        console.error('Error in getAvailableVillages:', error);
+        throw error;
+    }
+}
+
+
+    /**
+     * Mendapatkan riwayat pengajuan
+     */
     async getRiwayat(userId, { page = 1, limit = 10 }) {
         try {
             const offset = (page - 1) * limit;
             
+            // Ambil data registrasi
             const { data: registrasi, error: regError, count: regCount } = await supabase
                 .from(this.tableRegistrasi)
                 .select(`
@@ -174,6 +192,7 @@ class KKNService {
 
             if (regError) throw regError;
 
+            // Format data
             const formattedData = registrasi.map(item => ({
                 id: item.id_registrasi,
                 jenis: 'pendaftaran',
@@ -194,8 +213,12 @@ class KKNService {
         }
     }
 
+    /**
+     * Mendapatkan daftar luaran
+     */
     async getLuaran(userId) {
         try {
+            // Cari registrasi terlebih dahulu
             const { data: registrasi } = await supabase
                 .from(this.tableRegistrasi)
                 .select('id_registrasi')
@@ -215,6 +238,7 @@ class KKNService {
                 .order('created_at', { ascending: false });
 
             if (error) throw error;
+
             return data;
         } catch (error) {
             console.error('Error in getLuaran:', error);
@@ -222,6 +246,9 @@ class KKNService {
         }
     }
 
+    /**
+     * Mendapatkan detail luaran
+     */
     async getLuaranDetail(id, userId) {
         try {
             const { data, error } = await supabase
@@ -238,6 +265,7 @@ class KKNService {
 
             if (error) throw error;
             
+            // Validasi kepemilikan
             if (data.registrasi_kkn.id_user !== userId) {
                 throw new Error('Anda tidak memiliki akses ke luaran ini');
             }
@@ -249,10 +277,14 @@ class KKNService {
         }
     }
 
+    /**
+     * Mendapatkan timeline KKN
+     */
     async getTimeline(userId) {
         try {
             const timeline = [];
 
+            // Cek registrasi
             const { data: registrasi } = await supabase
                 .from(this.tableRegistrasi)
                 .select('*')
@@ -272,6 +304,7 @@ class KKNService {
                     is_active: registrasi.status === 'pending'
                 });
 
+                // Jika sudah disetujui
                 if (registrasi.status === 'approved' || registrasi.status === 'verified') {
                     timeline.push({
                         id: 2,
@@ -283,6 +316,7 @@ class KKNService {
                         is_active: true
                     });
 
+                    // Cek luaran
                     const { count } = await supabase
                         .from(this.tableLuaran)
                         .select('*', { count: 'exact', head: true })
@@ -329,6 +363,9 @@ class KKNService {
         }
     }
 
+    /**
+     * Mendaftar KKN
+     */
     async daftarKKN(userId, data) {
         try {
             // Validasi apakah sudah pernah daftar
@@ -365,7 +402,7 @@ class KKNService {
                 .eq('id_user', userId)
                 .single();
 
-            // Simpan data registrasi dengan path file yang benar
+            // Simpan data registrasi
             const registrasiData = {
                 id_user: userId,
                 id_desa: data.id_desa,
@@ -393,12 +430,6 @@ class KKNService {
 
             if (error) throw error;
 
-            // Update kuota desa
-            await supabase
-                .from(this.tableDesa)
-                .update({ kuota_terisi: (desa.kuota_terisi || 0) + 1 })
-                .eq('id_desa', data.id_desa);
-
             return result;
         } catch (error) {
             console.error('Error in daftarKKN:', error);
@@ -406,8 +437,12 @@ class KKNService {
         }
     }
 
+    /**
+     * Simpan luaran
+     */
     async simpanLuaran(userId, data) {
         try {
+            // Cari registrasi terbaru
             const { data: registrasi } = await supabase
                 .from(this.tableRegistrasi)
                 .select('id_registrasi')
@@ -425,11 +460,10 @@ class KKNService {
                 id_registrasi: registrasi.id_registrasi,
                 judul_kegiatan: data.judul_kegiatan,
                 link_video: data.link_video,
-                link_poster: data.link_poster,
-                link_foto: data.link_foto,
+                file_poster: data.link_poster, // Sesuaikan dengan field di database
                 file_mou: data.file_mou ? data.file_mou.path : null,
-                keterangan: data.keterangan || null,
                 status: 'pending',
+                tanggal_submit: new Date(),
                 created_at: new Date(),
                 updated_at: new Date()
             };
@@ -441,6 +475,7 @@ class KKNService {
                 .single();
 
             if (error) throw error;
+
             return result;
         } catch (error) {
             console.error('Error in simpanLuaran:', error);
@@ -448,8 +483,12 @@ class KKNService {
         }
     }
 
+    /**
+     * Update luaran
+     */
     async updateLuaran(id, userId, data) {
         try {
+            // Validasi kepemilikan
             const { data: existing } = await supabase
                 .from(this.tableLuaran)
                 .select(`
@@ -471,6 +510,7 @@ class KKNService {
                 throw new Error('Luaran tidak dapat diupdate karena sudah diproses');
             }
 
+            // Hapus file lama jika ada file baru
             if (data.file_mou && existing.file_mou) {
                 await deleteFile(existing.file_mou);
             }
@@ -478,8 +518,7 @@ class KKNService {
             const updateData = {
                 judul_kegiatan: data.judul_kegiatan,
                 link_video: data.link_video,
-                link_poster: data.link_poster,
-                link_foto: data.link_foto,
+                file_poster: data.link_poster,
                 keterangan: data.keterangan,
                 updated_at: new Date()
             };
@@ -496,6 +535,7 @@ class KKNService {
                 .single();
 
             if (error) throw error;
+
             return result;
         } catch (error) {
             console.error('Error in updateLuaran:', error);
@@ -503,8 +543,12 @@ class KKNService {
         }
     }
 
+    /**
+     * Hapus luaran
+     */
     async hapusLuaran(id, userId) {
         try {
+            // Validasi kepemilikan
             const { data: existing } = await supabase
                 .from(this.tableLuaran)
                 .select(`
@@ -526,6 +570,7 @@ class KKNService {
                 throw new Error('Hanya luaran dengan status pending yang dapat dihapus');
             }
 
+            // Hapus file
             if (existing.file_mou) {
                 await deleteFile(existing.file_mou);
             }
@@ -536,6 +581,7 @@ class KKNService {
                 .eq('id_luaran', id);
 
             if (error) throw error;
+
             return { success: true };
         } catch (error) {
             console.error('Error in hapusLuaran:', error);
@@ -543,7 +589,8 @@ class KKNService {
         }
     }
 
-    // Helper Methods
+    // ==================== HELPER METHODS ====================
+
     mapStatus(status) {
         const statusMap = {
             'pending': 'pending',
