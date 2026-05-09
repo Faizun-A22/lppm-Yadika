@@ -1,14 +1,14 @@
-// services/mahasiswa/kknService.js - VERSI PAKAI RAW SQL
-
-const { createClient } = require('@supabase/supabase-js');
+// services/mahasiswa/kknService.js (Disesuaikan)
+const supabase = require('../../config/database');
 const { deleteFile } = require('../../middleware/upload');
-
-// Gunakan connection pool langsung
-const pool = require('../../config/database');
 
 class KKNService {
     constructor() {
-        // Tidak perlu define table names karena pakai raw SQL
+        this.tableRegistrasi = 'registrasi_kkn';
+        this.tableLuaran = 'luaran_kkn';
+        this.tableDesa = 'desa_kkn';
+        this.tableUsers = 'users';
+        this.tableProgramStudi = 'program_studi';
     }
 
     /**
@@ -16,43 +16,44 @@ class KKNService {
      */
     async getDashboard(userId) {
         try {
-            console.log('getDashboard untuk userId:', userId);
-            
-            // Query registrasi terbaru
-            const registrasiQuery = `
-                SELECT 
-                    r.*,
-                    d.id_desa,
-                    d.nama_desa,
-                    d.kecamatan,
-                    d.kabupaten,
-                    p.nama_prodi
-                FROM registrasi_kkn r
-                LEFT JOIN desa_kkn d ON r.id_desa = d.id_desa
-                LEFT JOIN program_studi p ON r.id_prodi = p.id_prodi
-                WHERE r.id_user = $1
-                ORDER BY r.created_at DESC
-                LIMIT 1
-            `;
-            
-            const registrasiResult = await pool.query(registrasiQuery, [userId]);
-            const registrasi = registrasiResult.rows[0] || null;
-            
-            // Query luaran
-            let luaran = [];
-            if (registrasi) {
-                const luaranQuery = `
-                    SELECT * FROM luaran_kkn 
-                    WHERE id_registrasi = $1 
-                    ORDER BY created_at DESC
-                `;
-                const luaranResult = await pool.query(luaranQuery, [registrasi.id_registrasi]);
-                luaran = luaranResult.rows;
+            // Ambil data registrasi
+            const { data: registrasi, error: regError } = await supabase
+                .from(this.tableRegistrasi)
+                .select(`
+                    *,
+                    desa_kkn (
+                        id_desa,
+                        nama_desa,
+                        kabupaten,
+                        kecamatan
+                    ),
+                    program_studi (
+                        nama_prodi
+                    )
+                `)
+                .eq('id_user', userId)
+                .order('created_at', { ascending: false })
+                .limit(1)
+                .single();
+
+            if (regError && regError.code !== 'PGRST116') {
+                throw regError;
             }
-            
+
+            // Ambil data luaran
+            const { data: luaran, error: luarError } = await supabase
+                .from(this.tableLuaran)
+                .select('*')
+                .eq('id_registrasi', registrasi?.id_registrasi)
+                .order('created_at', { ascending: false });
+
+            if (luarError && luarError.code !== 'PGRST116') {
+                throw luarError;
+            }
+
             return {
-                registrasi: registrasi,
-                luaran: luaran,
+                registrasi: registrasi || null,
+                luaran: luaran || [],
                 status_keseluruhan: this.hitungStatusKeseluruhan(registrasi)
             };
         } catch (error) {
@@ -66,35 +67,33 @@ class KKNService {
      */
     async getStatus(userId) {
         try {
-            const query = `
-                SELECT 
-                    status,
-                    tanggal_daftar,
-                    id_desa
-                FROM registrasi_kkn
-                WHERE id_user = $1
-                ORDER BY created_at DESC
-                LIMIT 1
-            `;
-            
-            const result = await pool.query(query, [userId]);
-            const registrasi = result.rows[0];
-            
+            const { data: registrasi, error } = await supabase
+                .from(this.tableRegistrasi)
+                .select('*')
+                .eq('id_user', userId)
+                .order('created_at', { ascending: false })
+                .limit(1)
+                .single();
+
+            if (error && error.code !== 'PGRST116') {
+                throw error;
+            }
+
             // Hitung jumlah luaran
             let jumlahLuaran = 0;
             if (registrasi) {
-                const countResult = await pool.query(
-                    'SELECT COUNT(*) as count FROM luaran_kkn WHERE id_registrasi = $1',
-                    [registrasi.id_registrasi]
-                );
-                jumlahLuaran = parseInt(countResult.rows[0].count) || 0;
+                const { count } = await supabase
+                    .from(this.tableLuaran)
+                    .select('*', { count: 'exact', head: true })
+                    .eq('id_registrasi', registrasi.id_registrasi);
+                jumlahLuaran = count || 0;
             }
-            
+
             return {
                 pendaftaran: {
                     status: registrasi?.status || 'belum_daftar',
                     tanggal: registrasi?.tanggal_daftar || null,
-                    desa: registrasi?.id_desa || null
+                    desa: registrasi?.desa_kkn?.nama_desa || null
                 },
                 luaran: {
                     jumlah: jumlahLuaran,
@@ -108,74 +107,43 @@ class KKNService {
     }
 
     /**
-     * Mendapatkan daftar desa yang tersedia - FIXED VERSION
+     * Mendapatkan daftar desa yang tersedia
      */
     async getAvailableVillages(filters = {}) {
         try {
-            console.log('getAvailableVillages dengan filter:', filters);
-            
-            let query = `
-                SELECT 
-                    d.id_desa,
-                    d.nama_desa,
-                    d.kecamatan,
-                    d.kabupaten,
-                    d.provinsi,
-                    CAST(d.kuota AS INTEGER) as kuota,
-                    COALESCE(d.kuota_terisi, 0) as kuota_terisi,
-                    d.deskripsi,
-                    u.nama_lengkap as nama_pembimbing_lapangan
-                FROM desa_kkn d
-                LEFT JOIN users u ON d.id_dosen_pembimbing = u.id_user
-                WHERE d.status = 'aktif'
-                AND d.kuota > COALESCE(d.kuota_terisi, 0)
-            `;
-            
-            const params = [];
-            let paramCount = 1;
-            
+            let query = supabase
+                .from(this.tableDesa)
+                .select(`
+                    id_desa,
+                    nama_desa,
+                    kecamatan,
+                    kabupaten,
+                    provinsi,
+                    kuota,
+                    kuota_terisi,
+                    deskripsi,
+                    nama_pembimbing_lapangan,
+                    kontak_pembimbing_lapangan
+                `)
+                .eq('status', 'aktif')
+                .lt('kuota_terisi', 'kuota');
+
             if (filters.search) {
-                query += ` AND (d.nama_desa ILIKE $${paramCount} OR d.kecamatan ILIKE $${paramCount})`;
-                params.push(`%${filters.search}%`);
-                paramCount++;
+                query = query.or(`nama_desa.ilike.%${filters.search}%,kecamatan.ilike.%${filters.search}%`);
             }
-            
+
             if (filters.kabupaten) {
-                query += ` AND d.kabupaten = $${paramCount}`;
-                params.push(filters.kabupaten);
-                paramCount++;
+                query = query.eq('kabupaten', filters.kabupaten);
             }
-            
-            query += ` ORDER BY d.nama_desa ASC LIMIT 50`;
-            
-            console.log('Executing query:', query);
-            console.log('Params:', params);
-            
-            const result = await pool.query(query, params);
-            
-            const formattedData = result.rows.map(row => {
-                const kuota = parseInt(row.kuota) || 0;
-                const kuotaTerisi = parseInt(row.kuota_terisi) || 0;
-                const sisaKuota = kuota - kuotaTerisi;
-                const persentaseTerisi = kuota > 0 ? (kuotaTerisi / kuota * 100) : 0;
-                
-                return {
-                    id_desa: row.id_desa,
-                    nama_desa: row.nama_desa,
-                    kecamatan: row.kecamatan,
-                    kabupaten: row.kabupaten,
-                    provinsi: row.provinsi,
-                    kuota: kuota,
-                    kuota_terisi: kuotaTerisi,
-                    sisa_kuota: sisaKuota,
-                    persentase_terisi: Math.round(persentaseTerisi),
-                    deskripsi: row.deskripsi,
-                    nama_pembimbing_lapangan: row.nama_pembimbing_lapangan || 'Belum ditentukan'
-                };
-            });
-            
-            console.log(`Ditemukan ${formattedData.length} desa tersedia`);
-            return formattedData;
+
+            const { data, error } = await query.order('nama_desa');
+
+            if (error) throw error;
+
+            return data.map(desa => ({
+                ...desa,
+                sisa_kuota: desa.kuota - (desa.kuota_terisi || 0)
+            }));
         } catch (error) {
             console.error('Error in getAvailableVillages:', error);
             throw error;
@@ -185,48 +153,37 @@ class KKNService {
     /**
      * Mendapatkan riwayat pengajuan
      */
-    async getRiwayat(userId, { page = 1, limit = 10, jenis = null }) {
+    async getRiwayat(userId, { page = 1, limit = 10 }) {
         try {
             const offset = (page - 1) * limit;
             
-            const query = `
-                SELECT 
-                    r.id_registrasi as id,
-                    'pendaftaran' as jenis,
-                    r.tanggal_daftar as tanggal,
-                    r.status,
-                    r.angkatan as semester,
-                    d.nama_desa,
-                    r.ukuran_jaket,
-                    r.no_hp
-                FROM registrasi_kkn r
-                LEFT JOIN desa_kkn d ON r.id_desa = d.id_desa
-                WHERE r.id_user = $1
-                ORDER BY r.created_at DESC
-                LIMIT $2 OFFSET $3
-            `;
-            
-            const result = await pool.query(query, [userId, limit, offset]);
-            
-            // Get total count
-            const countResult = await pool.query(
-                'SELECT COUNT(*) as total FROM registrasi_kkn WHERE id_user = $1',
-                [userId]
-            );
-            
-            const formattedData = result.rows.map(item => ({
-                id: item.id,
-                jenis: item.jenis,
-                tanggal: item.tanggal,
+            // Ambil data registrasi
+            const { data: registrasi, error: regError, count: regCount } = await supabase
+                .from(this.tableRegistrasi)
+                .select(`
+                    *,
+                    desa_kkn (nama_desa, kabupaten)
+                `, { count: 'exact' })
+                .eq('id_user', userId)
+                .order('created_at', { ascending: false })
+                .range(offset, offset + limit - 1);
+
+            if (regError) throw regError;
+
+            // Format data
+            const formattedData = registrasi.map(item => ({
+                id: item.id_registrasi,
+                jenis: 'pendaftaran',
+                tanggal: item.tanggal_daftar,
                 status: item.status,
-                judul: `Pendaftaran KKN`,
-                keterangan: `Semester ${item.semester || '-'}, Desa: ${item.nama_desa || '-'}, Ukuran: ${item.ukuran_jaket || '-'}`,
+                judul: `Pendaftaran KKN - ${item.desa_kkn?.nama_desa || '-'}`,
+                keterangan: `Semester ${item.angkatan || '-'}, Ukuran: ${item.ukuran_jaket || '-'}`,
                 detail: item
             }));
-            
+
             return {
                 data: formattedData,
-                total: parseInt(countResult.rows[0].total) || 0
+                total: regCount || 0
             };
         } catch (error) {
             console.error('Error in getRiwayat:', error);
@@ -240,29 +197,60 @@ class KKNService {
     async getLuaran(userId) {
         try {
             // Cari registrasi terlebih dahulu
-            const registrasiQuery = `
-                SELECT id_registrasi 
-                FROM registrasi_kkn 
-                WHERE id_user = $1 
-                ORDER BY created_at DESC 
-                LIMIT 1
-            `;
-            const registrasiResult = await pool.query(registrasiQuery, [userId]);
-            
-            if (!registrasiResult.rows[0]) {
+            const { data: registrasi } = await supabase
+                .from(this.tableRegistrasi)
+                .select('id_registrasi')
+                .eq('id_user', userId)
+                .order('created_at', { ascending: false })
+                .limit(1)
+                .single();
+
+            if (!registrasi) {
                 return [];
             }
-            
-            const luaranQuery = `
-                SELECT * FROM luaran_kkn 
-                WHERE id_registrasi = $1 
-                ORDER BY created_at DESC
-            `;
-            const luaranResult = await pool.query(luaranQuery, [registrasiResult.rows[0].id_registrasi]);
-            
-            return luaranResult.rows;
+
+            const { data, error } = await supabase
+                .from(this.tableLuaran)
+                .select('*')
+                .eq('id_registrasi', registrasi.id_registrasi)
+                .order('created_at', { ascending: false });
+
+            if (error) throw error;
+
+            return data;
         } catch (error) {
             console.error('Error in getLuaran:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Mendapatkan detail luaran
+     */
+    async getLuaranDetail(id, userId) {
+        try {
+            const { data, error } = await supabase
+                .from(this.tableLuaran)
+                .select(`
+                    *,
+                    registrasi_kkn!inner (
+                        id_user,
+                        desa_kkn (nama_desa, kabupaten)
+                    )
+                `)
+                .eq('id_luaran', id)
+                .single();
+
+            if (error) throw error;
+            
+            // Validasi kepemilikan
+            if (data.registrasi_kkn.id_user !== userId) {
+                throw new Error('Anda tidak memiliki akses ke luaran ini');
+            }
+
+            return data;
+        } catch (error) {
+            console.error('Error in getLuaranDetail:', error);
             throw error;
         }
     }
@@ -273,27 +261,28 @@ class KKNService {
     async getTimeline(userId) {
         try {
             const timeline = [];
-            
-            const registrasiQuery = `
-                SELECT * FROM registrasi_kkn 
-                WHERE id_user = $1 
-                ORDER BY created_at DESC 
-                LIMIT 1
-            `;
-            const registrasiResult = await pool.query(registrasiQuery, [userId]);
-            const registrasi = registrasiResult.rows[0];
-            
+
+            // Cek registrasi
+            const { data: registrasi } = await supabase
+                .from(this.tableRegistrasi)
+                .select('*')
+                .eq('id_user', userId)
+                .order('created_at', { ascending: false })
+                .limit(1)
+                .single();
+
             if (registrasi) {
                 timeline.push({
                     id: 1,
                     title: 'Pendaftaran KKN',
-                    status: registrasi.status,
+                    status: this.mapStatus(registrasi.status),
                     description: this.getRegistrasiDescription(registrasi),
                     date: registrasi.tanggal_daftar,
                     is_completed: ['approved', 'verified'].includes(registrasi.status),
                     is_active: registrasi.status === 'pending'
                 });
-                
+
+                // Jika sudah disetujui
                 if (registrasi.status === 'approved' || registrasi.status === 'verified') {
                     timeline.push({
                         id: 2,
@@ -304,22 +293,34 @@ class KKNService {
                         is_completed: false,
                         is_active: true
                     });
-                    
-                    const countResult = await pool.query(
-                        'SELECT COUNT(*) as count FROM luaran_kkn WHERE id_registrasi = $1',
-                        [registrasi.id_registrasi]
-                    );
-                    const count = parseInt(countResult.rows[0].count) || 0;
-                    
-                    timeline.push({
-                        id: 3,
-                        title: 'Input Luaran',
-                        status: count > 0 ? 'completed' : 'pending',
-                        description: count > 0 ? `${count} luaran telah diupload` : 'Upload luaran setelah pelaksanaan KKN',
-                        date: null,
-                        is_completed: count > 0,
-                        is_active: false
-                    });
+
+                    // Cek luaran
+                    const { count } = await supabase
+                        .from(this.tableLuaran)
+                        .select('*', { count: 'exact', head: true })
+                        .eq('id_registrasi', registrasi.id_registrasi);
+
+                    if (count > 0) {
+                        timeline.push({
+                            id: 3,
+                            title: 'Input Luaran',
+                            status: 'completed',
+                            description: `${count} luaran telah diupload`,
+                            date: null,
+                            is_completed: true,
+                            is_active: false
+                        });
+                    } else {
+                        timeline.push({
+                            id: 3,
+                            title: 'Input Luaran',
+                            status: 'pending',
+                            description: 'Upload luaran setelah pelaksanaan KKN',
+                            date: null,
+                            is_completed: false,
+                            is_active: false
+                        });
+                    }
                 }
             } else {
                 timeline.push({
@@ -332,7 +333,7 @@ class KKNService {
                     is_active: false
                 });
             }
-            
+
             return timeline;
         } catch (error) {
             console.error('Error in getTimeline:', error);
@@ -340,30 +341,279 @@ class KKNService {
         }
     }
 
+    /**
+     * Mendaftar KKN
+     */
+    async daftarKKN(userId, data) {
+        try {
+            // Validasi apakah sudah pernah daftar
+            const { data: existing } = await supabase
+                .from(this.tableRegistrasi)
+                .select('id_registrasi')
+                .eq('id_user', userId)
+                .in('status', ['pending', 'approved', 'verified'])
+                .maybeSingle();
+
+            if (existing) {
+                throw new Error('Anda sudah memiliki pendaftaran KKN yang aktif');
+            }
+
+            // Validasi kuota desa
+            const { data: desa } = await supabase
+                .from(this.tableDesa)
+                .select('kuota, kuota_terisi')
+                .eq('id_desa', data.id_desa)
+                .single();
+
+            if (!desa) {
+                throw new Error('Desa tidak ditemukan');
+            }
+
+            if (desa.kuota_terisi >= desa.kuota) {
+                throw new Error('Kuota desa sudah penuh');
+            }
+
+            // Ambil data user
+            const { data: user } = await supabase
+                .from(this.tableUsers)
+                .select('nama_lengkap, email, nim')
+                .eq('id_user', userId)
+                .single();
+
+            // Simpan data registrasi
+            const registrasiData = {
+                id_user: userId,
+                id_desa: data.id_desa,
+                nim: user.nim,
+                nama_lengkap: user.nama_lengkap,
+                email: user.email,
+                id_prodi: data.id_prodi,
+                no_hp: data.no_hp,
+                angkatan: data.semester,
+                ukuran_jaket: data.ukuran_jaket,
+                krs_file: data.krs_file ? data.krs_file.path : null,
+                khs_file: data.khs_file ? data.khs_file.path : null,
+                payment_file: data.payment_file ? data.payment_file.path : null,
+                status: 'pending',
+                tanggal_daftar: new Date(),
+                created_at: new Date(),
+                updated_at: new Date()
+            };
+
+            const { data: result, error } = await supabase
+                .from(this.tableRegistrasi)
+                .insert([registrasiData])
+                .select()
+                .single();
+
+            if (error) throw error;
+
+            return result;
+        } catch (error) {
+            console.error('Error in daftarKKN:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Simpan luaran
+     */
+    async simpanLuaran(userId, data) {
+        try {
+            // Cari registrasi terbaru
+            const { data: registrasi } = await supabase
+                .from(this.tableRegistrasi)
+                .select('id_registrasi')
+                .eq('id_user', userId)
+                .eq('status', 'approved')
+                .order('created_at', { ascending: false })
+                .limit(1)
+                .single();
+
+            if (!registrasi) {
+                throw new Error('Anda harus terdaftar KKN untuk mengupload luaran');
+            }
+
+            const luaranData = {
+                id_registrasi: registrasi.id_registrasi,
+                judul_kegiatan: data.judul_kegiatan,
+                link_video: data.link_video,
+                file_poster: data.link_poster, // Sesuaikan dengan field di database
+                file_mou: data.file_mou ? data.file_mou.path : null,
+                status: 'pending',
+                tanggal_submit: new Date(),
+                created_at: new Date(),
+                updated_at: new Date()
+            };
+
+            const { data: result, error } = await supabase
+                .from(this.tableLuaran)
+                .insert([luaranData])
+                .select()
+                .single();
+
+            if (error) throw error;
+
+            return result;
+        } catch (error) {
+            console.error('Error in simpanLuaran:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Update luaran
+     */
+    async updateLuaran(id, userId, data) {
+        try {
+            // Validasi kepemilikan
+            const { data: existing } = await supabase
+                .from(this.tableLuaran)
+                .select(`
+                    *,
+                    registrasi_kkn!inner (id_user)
+                `)
+                .eq('id_luaran', id)
+                .single();
+
+            if (!existing) {
+                throw new Error('Luaran tidak ditemukan');
+            }
+
+            if (existing.registrasi_kkn.id_user !== userId) {
+                throw new Error('Anda tidak memiliki akses ke luaran ini');
+            }
+
+            if (existing.status !== 'pending') {
+                throw new Error('Luaran tidak dapat diupdate karena sudah diproses');
+            }
+
+            // Hapus file lama jika ada file baru
+            if (data.file_mou && existing.file_mou) {
+                await deleteFile(existing.file_mou);
+            }
+
+            const updateData = {
+                judul_kegiatan: data.judul_kegiatan,
+                link_video: data.link_video,
+                file_poster: data.link_poster,
+                keterangan: data.keterangan,
+                updated_at: new Date()
+            };
+
+            if (data.file_mou) {
+                updateData.file_mou = data.file_mou.path;
+            }
+
+            const { data: result, error } = await supabase
+                .from(this.tableLuaran)
+                .update(updateData)
+                .eq('id_luaran', id)
+                .select()
+                .single();
+
+            if (error) throw error;
+
+            return result;
+        } catch (error) {
+            console.error('Error in updateLuaran:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Hapus luaran
+     */
+    async hapusLuaran(id, userId) {
+        try {
+            // Validasi kepemilikan
+            const { data: existing } = await supabase
+                .from(this.tableLuaran)
+                .select(`
+                    *,
+                    registrasi_kkn!inner (id_user)
+                `)
+                .eq('id_luaran', id)
+                .single();
+
+            if (!existing) {
+                throw new Error('Luaran tidak ditemukan');
+            }
+
+            if (existing.registrasi_kkn.id_user !== userId) {
+                throw new Error('Anda tidak memiliki akses ke luaran ini');
+            }
+
+            if (existing.status !== 'pending') {
+                throw new Error('Hanya luaran dengan status pending yang dapat dihapus');
+            }
+
+            // Hapus file
+            if (existing.file_mou) {
+                await deleteFile(existing.file_mou);
+            }
+
+            const { error } = await supabase
+                .from(this.tableLuaran)
+                .delete()
+                .eq('id_luaran', id);
+
+            if (error) throw error;
+
+            return { success: true };
+        } catch (error) {
+            console.error('Error in hapusLuaran:', error);
+            throw error;
+        }
+    }
+
     // ==================== HELPER METHODS ====================
-    
+
+    mapStatus(status) {
+        const statusMap = {
+            'pending': 'pending',
+            'approved': 'approved',
+            'rejected': 'rejected',
+            'verified': 'verified'
+        };
+        return statusMap[status] || 'pending';
+    }
+
     hitungStatusKeseluruhan(registrasi) {
         if (!registrasi) {
             return { status: 'pending', text: 'Belum Daftar' };
         }
-        const statusMap = {
-            'pending': { status: 'pending', text: 'Menunggu Verifikasi' },
-            'approved': { status: 'active', text: 'Aktif' },
-            'verified': { status: 'completed', text: 'Selesai' },
-            'rejected': { status: 'rejected', text: 'Ditolak' }
-        };
-        return statusMap[registrasi.status] || { status: 'pending', text: 'Dalam Proses' };
+
+        if (registrasi.status === 'pending') {
+            return { status: 'pending', text: 'Menunggu Verifikasi' };
+        }
+
+        if (registrasi.status === 'approved') {
+            return { status: 'active', text: 'Aktif' };
+        }
+
+        if (registrasi.status === 'verified') {
+            return { status: 'completed', text: 'Selesai' };
+        }
+
+        return { status: 'pending', text: 'Dalam Proses' };
     }
-    
+
     getRegistrasiDescription(registrasi) {
         if (!registrasi) return 'Belum melakukan pendaftaran KKN';
-        const descMap = {
-            'pending': 'Pendaftaran sedang dalam proses verifikasi',
-            'approved': 'Pendaftaran telah disetujui',
-            'verified': 'Pendaftaran telah diverifikasi',
-            'rejected': 'Pendaftaran ditolak'
-        };
-        return descMap[registrasi.status] || `Status: ${registrasi.status}`;
+        
+        switch (registrasi.status) {
+            case 'pending':
+                return 'Pendaftaran sedang dalam proses verifikasi';
+            case 'approved':
+                return 'Pendaftaran telah disetujui';
+            case 'verified':
+                return 'Pendaftaran telah diverifikasi';
+            case 'rejected':
+                return 'Pendaftaran ditolak';
+            default:
+                return `Status: ${registrasi.status}`;
+        }
     }
 }
 
