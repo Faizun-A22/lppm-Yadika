@@ -363,10 +363,7 @@ async getProgramStudi() {
         }
     }
 
-    /**
-     * Mendaftar KKN
-     */
-    async daftarKKN(userId, data) {
+     async daftarKKN(userId, data) {
         try {
             // Validasi apakah sudah pernah daftar
             const { data: existing } = await supabase
@@ -398,9 +395,16 @@ async getProgramStudi() {
             // Ambil data user
             const { data: user } = await supabase
                 .from(this.tableUsers)
-                .select('nama_lengkap, email, nim')
+                .select('nama_lengkap, email, nim, no_hp')
                 .eq('id_user', userId)
                 .single();
+
+            // SIMPAN PATH FILE DENGAN BENAR
+            const krsPath = data.krs_file ? data.krs_file.path : null;
+            const khsPath = data.khs_file ? data.khs_file.path : null;
+            const paymentPath = data.payment_file ? data.payment_file.path : null;
+
+            console.log('📁 Saving files to:', { krsPath, khsPath, paymentPath }); // Debug log
 
             // Simpan data registrasi
             const registrasiData = {
@@ -410,12 +414,12 @@ async getProgramStudi() {
                 nama_lengkap: user.nama_lengkap,
                 email: user.email,
                 id_prodi: data.id_prodi,
-                no_hp: data.no_hp,
+                no_hp: data.no_hp || user.no_hp,
                 angkatan: data.semester,
                 ukuran_jaket: data.ukuran_jaket,
-                krs_file: data.krs_file ? data.krs_file.path : null,
-                khs_file: data.khs_file ? data.khs_file.path : null,
-                payment_file: data.payment_file ? data.payment_file.path : null,
+                krs_file: krsPath,        // Path lengkap: uploads/kkn/krs/xxxx.pdf
+                khs_file: khsPath,        // Path lengkap: uploads/kkn/khs/xxxx.pdf
+                payment_file: paymentPath, // Path lengkap: uploads/kkn/pembayaran/xxxx.pdf
                 status: 'pending',
                 tanggal_daftar: new Date(),
                 created_at: new Date(),
@@ -430,6 +434,16 @@ async getProgramStudi() {
 
             if (error) throw error;
 
+            // UPDATE kuota desa
+            await supabase
+                .from(this.tableDesa)
+                .update({ 
+                    kuota_terisi: (desa.kuota_terisi || 0) + 1,
+                    updated_at: new Date()
+                })
+                .eq('id_desa', data.id_desa);
+
+            console.log('✅ KKN registration saved successfully');
             return result;
         } catch (error) {
             console.error('Error in daftarKKN:', error);
@@ -437,9 +451,6 @@ async getProgramStudi() {
         }
     }
 
-    /**
-     * Simpan luaran
-     */
     async simpanLuaran(userId, data) {
         try {
             // Cari registrasi terbaru
@@ -456,12 +467,18 @@ async getProgramStudi() {
                 throw new Error('Anda harus terdaftar KKN untuk mengupload luaran');
             }
 
+            // SIMPAN PATH FILE MOU
+            const mouPath = data.file_mou ? data.file_mou.path : null;
+            console.log('📁 Saving MOU file to:', mouPath); // Debug log
+
             const luaranData = {
                 id_registrasi: registrasi.id_registrasi,
                 judul_kegiatan: data.judul_kegiatan,
-                link_video: data.link_video,
-                file_poster: data.link_poster, // Sesuaikan dengan field di database
-                file_mou: data.file_mou ? data.file_mou.path : null,
+                link_video: data.link_video || null,
+                link_poster: data.link_poster || null,
+                link_foto: data.link_foto || null,
+                file_mou: mouPath,  // Path lengkap: uploads/kkn/mou/xxxx.pdf
+                keterangan: data.keterangan || null,
                 status: 'pending',
                 tanggal_submit: new Date(),
                 created_at: new Date(),
@@ -476,12 +493,35 @@ async getProgramStudi() {
 
             if (error) throw error;
 
+            console.log('✅ Luaran saved successfully');
             return result;
         } catch (error) {
             console.error('Error in simpanLuaran:', error);
             throw error;
         }
     }
+
+    async getKabupatenList() {
+        try {
+            const { data, error } = await supabase
+                .from(this.tableDesa)
+                .select('kabupaten')
+                .eq('status', 'aktif');
+
+            if (error) throw error;
+
+            const kabupatenSet = new Set();
+            data.forEach(item => {
+                if (item.kabupaten) kabupatenSet.add(item.kabupaten);
+            });
+
+            return Array.from(kabupatenSet).sort();
+        } catch (error) {
+            console.error('Error in getKabupatenList:', error);
+            throw error;
+        }
+    }
+
 
     /**
      * Update luaran

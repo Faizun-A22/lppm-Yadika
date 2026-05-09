@@ -21,6 +21,16 @@ class KKNController {
         }
     }
 
+
+    async getKabupatenList(req, res, next) {
+        try {
+            const kabupaten = await kknService.getKabupatenList();
+            return res.json(formatResponse('success', 'Data kabupaten berhasil diambil', kabupaten));
+        } catch (error) {
+            next(error);
+        }
+    }
+    
     /**
      * Mendapatkan status KKN
      */

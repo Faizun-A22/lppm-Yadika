@@ -1,92 +1,74 @@
 const express = require('express');
 const router = express.Router();
 
-const multer = require('multer');
-const path = require('path');
-
 const { authenticateToken } = require('../../middleware/auth');
 const kknController = require('../../controllers/mahasiswa/kknController');
-
-// ================== MULTER CONFIG ==================
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/');
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + '-' + file.originalname);
-    }
-});
-
-const upload = multer({ storage });
-
-// ================== MIDDLEWARE ==================
-router.use(authenticateToken);
+const { uploadKKNDocument, upload } = require('../../middleware/upload'); // IMPORT YANG BARU
 
 // ================== DASHBOARD ==================
-router.get('/dashboard', kknController.getDashboard);
-router.get('/status', kknController.getStatus);
-router.get('/timeline', kknController.getTimeline);
+router.get('/dashboard', authenticateToken, kknController.getDashboard);
+router.get('/status', authenticateToken, kknController.getStatus);
+router.get('/timeline', authenticateToken, kknController.getTimeline);
 
 // ================== DESA ==================
-router.get('/desa', kknController.getAvailableVillages);
+router.get('/desa', authenticateToken, kknController.getAvailableVillages);
+router.get('/kabupaten-list', authenticateToken, kknController.getKabupatenList);
+router.get('/program-studi', authenticateToken, kknController.getProgramStudi);
 
 // ================== RIWAYAT ==================
-router.get('/riwayat', kknController.getRiwayat);
-
-// ================== PROPOSAL ==================
-router.get('/proposal/status', kknController.getProposalStatus);
-router.get('/proposal/:id', kknController.getProposalDetail);
-router.get('/proposal/:id/review', kknController.getReviewHistory);
+router.get('/riwayat', authenticateToken, kknController.getRiwayat);
 
 // ================== DAFTAR KKN ==================
+// GUNakan uploadKKNDocument yang sudah dikonfigurasi khusus untuk KKN
 router.post(
     '/daftar',
-    upload.fields([
-        { name: 'krs_file', maxCount: 1 },
-        { name: 'khs_file', maxCount: 1 },
-        { name: 'payment_file', maxCount: 1 }
-    ]),
+    authenticateToken,
+    uploadKKNDocument,  // ← Gunakan ini
     kknController.daftarKKN
 );
 
 // ================== PROPOSAL ==================
 router.post(
     '/proposal',
+    authenticateToken,
     upload.single('file_proposal'),
     kknController.ajukanProposal
 );
 
 router.post(
     '/proposal/draft',
+    authenticateToken,
     upload.single('file_proposal'),
     kknController.simpanDraftProposal
 );
 
 router.put(
     '/proposal/:id',
+    authenticateToken,
     upload.single('file_proposal'),
     kknController.updateProposal
 );
 
-router.delete('/proposal/:id', kknController.batalkanProposal);
+router.delete('/proposal/:id', authenticateToken, kknController.batalkanProposal);
 
 // ================== LUARAN ==================
-router.get('/luaran', kknController.getLuaran);
-router.get('/luaran/:id', kknController.getLuaranDetail);
+router.get('/luaran', authenticateToken, kknController.getLuaran);
+router.get('/luaran/:id', authenticateToken, kknController.getLuaranDetail);
 
 router.post(
-    '/luaran',
-    upload.single('mou_file'),
+    '/luaran/simpan',
+    authenticateToken,
+    upload.single('mou_file'),  // Gunakan upload.single untuk MOU
     kknController.simpanLuaran
 );
 
 router.put(
     '/luaran/:id',
+    authenticateToken,
     upload.single('mou_file'),
     kknController.updateLuaran
 );
 
-router.delete('/luaran/:id', kknController.hapusLuaran);
+router.delete('/luaran/:id', authenticateToken, kknController.hapusLuaran);
 
-// ================== EXPORT ==================
 module.exports = router;

@@ -16,14 +16,19 @@ const createUploadDirs = () => {
         'uploads/magang/logbook',
         'uploads/magang/others',
         
-        // KKN folders
+        // KKN folders - DIPERBAIKI
         'uploads/kkn/krs',
         'uploads/kkn/khs',
         'uploads/kkn/pembayaran',
         'uploads/kkn/proposal',
         'uploads/kkn/mou',
         'uploads/kkn/laporan',
+        'uploads/kkn/poster',
+        'uploads/kkn/video',
+        'uploads/kkn/foto',
+        'uploads/kkn/uploads',  // folder default untuk upload KKN
         'uploads/kkn/others',
+        'uploads/kkn/luaran',   // folder untuk luaran KKN
         
         // Berita & Kegiatan folders
         'uploads/berita',
@@ -54,14 +59,24 @@ const createUploadDirs = () => {
 // Create directories on startup
 createUploadDirs();
 
-// Configure storage
+// Configure storage - PERBAIKI LOGIC UNTUK KKN
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         let uploadPath = 'uploads/';
         
-        // KKN routes
-        if (req.baseUrl?.includes('kkn')) {
-            uploadPath += 'kkn/';
+        // Cek apakah ini request KKN
+        const isKKN = req.baseUrl?.includes('kkn') || 
+                      req.originalUrl?.includes('/api/mahasiswa/kkn') ||
+                      req.originalUrl?.includes('/api/admin/luaran-kkn') ||
+                      req.originalUrl?.includes('/api/admin/registrasi-kkn');
+        
+        // Cek apakah ini request Magang
+        const isMagang = req.baseUrl?.includes('magang') || 
+                         req.originalUrl?.includes('/api/magang') ||
+                         req.originalUrl?.includes('/api/admin/magang');
+        
+        if (isKKN) {
+            uploadPath = 'uploads/kkn/';
             switch (file.fieldname) {
                 case 'krs_file':
                     uploadPath += 'krs';
@@ -70,9 +85,11 @@ const storage = multer.diskStorage({
                     uploadPath += 'khs';
                     break;
                 case 'payment_file':
+                case 'paymentFile':
                     uploadPath += 'pembayaran';
                     break;
                 case 'proposal_file':
+                case 'file_proposal':
                     uploadPath += 'proposal';
                     break;
                 case 'mou_file':
@@ -81,12 +98,24 @@ const storage = multer.diskStorage({
                 case 'laporan_file':
                     uploadPath += 'laporan';
                     break;
+                case 'poster_file':
+                case 'file_poster':
+                    uploadPath += 'poster';
+                    break;
+                case 'video_file':
+                    uploadPath += 'video';
+                    break;
+                case 'foto_file':
+                    uploadPath += 'foto';
+                    break;
+                case 'luaran_file':
+                    uploadPath += 'luaran';
+                    break;
                 default:
-                    uploadPath += 'others';
+                    uploadPath += 'uploads';
             }
         }
-        // Magang routes
-        else if (req.baseUrl?.includes('magang')) {
+        else if (isMagang) {
             uploadPath += 'magang/';
             switch (file.fieldname) {
                 case 'krs_file':
@@ -143,6 +172,12 @@ const storage = multer.diskStorage({
             uploadPath += 'others';
         }
         
+        // Pastikan folder tujuan sudah ada
+        if (!fs.existsSync(uploadPath)) {
+            fs.mkdirSync(uploadPath, { recursive: true });
+        }
+        
+        console.log(`📁 Uploading file to: ${uploadPath}`); // Debug log
         cb(null, uploadPath);
     },
     filename: (req, file, cb) => {
@@ -154,9 +189,12 @@ const storage = multer.diskStorage({
             .replace(/\.[^/.]+$/, '') // Remove extension
             .replace(/[^a-zA-Z0-9]/g, '-') // Replace special chars with hyphen
             .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
-            .toLowerCase();
+            .toLowerCase()
+            .substring(0, 50); // Limit length
         
-        cb(null, `${sanitizedName}-${uniqueSuffix}${ext}`);
+        const finalName = `${sanitizedName}-${uniqueSuffix}${ext}`;
+        console.log(`📄 Generated filename: ${finalName}`); // Debug log
+        cb(null, finalName);
     }
 });
 
@@ -184,7 +222,7 @@ const fileFilter = (req, file, cb) => {
     const allowedExts = [
         '.jpg', '.jpeg', '.png', '.gif', '.webp',
         '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx',
-        '.txt', '.zip', '.rar'
+        '.txt', '.zip', '.rar', '.mp4', '.mov', '.avi'  // Added video formats
     ];
     
     const extname = allowedExts.includes(path.extname(file.originalname).toLowerCase());
@@ -206,7 +244,7 @@ const upload = multer({
     fileFilter: fileFilter
 });
 
-// Upload for KKN with multiple files
+// Upload for KKN with multiple files - KHUSUS UNTUK KKN
 const uploadKKN = multer({
     storage: storage,
     limits: {
@@ -214,6 +252,24 @@ const uploadKKN = multer({
     },
     fileFilter: fileFilter
 });
+
+// Upload untuk KKN dengan field names yang spesifik
+const uploadKKNDocument = multer({
+    storage: storage,
+    limits: {
+        fileSize: 10 * 1024 * 1024
+    },
+    fileFilter: fileFilter
+}).fields([
+    { name: 'krs_file', maxCount: 1 },
+    { name: 'khs_file', maxCount: 1 },
+    { name: 'payment_file', maxCount: 1 },
+    { name: 'paymentFile', maxCount: 1 },
+    { name: 'mou_file', maxCount: 1 },
+    { name: 'proposal_file', maxCount: 1 },
+    { name: 'file_proposal', maxCount: 1 },
+    { name: 'luaran_file', maxCount: 1 }
+]);
 
 // Special upload for repository (allows larger files)
 const uploadRepository = multer({
@@ -259,8 +315,9 @@ const handleUploadError = (err, req, res, next) => {
 // Helper function to delete file
 const deleteFile = async (filePath) => {
     try {
-        if (fs.existsSync(filePath)) {
+        if (filePath && fs.existsSync(filePath)) {
             await fs.promises.unlink(filePath);
+            console.log(`🗑️ Deleted file: ${filePath}`);
             return true;
         }
     } catch (error) {
@@ -281,12 +338,21 @@ const getFileInfo = (file) => {
     };
 };
 
+// Helper function to get URL path for file
+const getFileUrl = (filePath, req) => {
+    if (!filePath) return null;
+    const relativePath = filePath.replace(/\\/g, '/');
+    return `/uploads/${relativePath.split('uploads/')[1] || relativePath}`;
+};
+
 module.exports = {
     upload,
     uploadKKN,
+    uploadKKNDocument,
     uploadRepository,
     handleUploadError,
     deleteFile,
     getFileInfo,
+    getFileUrl,
     createUploadDirs
 };
