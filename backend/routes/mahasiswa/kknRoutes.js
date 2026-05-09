@@ -37,7 +37,7 @@ router.get('/riwayat', kknController.getRiwayat);
 router.get('/proposal/status', kknController.getProposalStatus);
 router.get('/proposal/:id', kknController.getProposalDetail);
 router.get('/proposal/:id/review', kknController.getReviewHistory);
-
+router.get('/program-studi', authenticateToken, kknController.getProgramStudi);
 // ================== DAFTAR KKN ==================
 router.post(
     '/daftar',

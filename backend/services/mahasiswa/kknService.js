@@ -12,6 +12,25 @@ class KKNService {
     }
 
     /**
+ * Mendapatkan daftar program studi
+ */
+async getProgramStudi() {
+    try {
+        const { data, error } = await supabase
+            .from('program_studi')
+            .select('id_prodi, nama_prodi, jenjang, kode_prodi')
+            .order('nama_prodi');
+
+        if (error) throw error;
+
+        return data || [];
+    } catch (error) {
+        console.error('Error in getProgramStudi:', error);
+        throw error;
+    }
+}
+
+    /**
      * Mendapatkan dashboard KKN mahasiswa
      */
     async getDashboard(userId) {

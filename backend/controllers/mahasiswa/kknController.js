@@ -105,6 +105,22 @@ class KKNController {
     }
 
     /**
+ * Mendapatkan daftar program studi
+ */
+async getProgramStudi(req, res, next) {
+    try {
+        // Panggil service yang sama seperti magang
+        const prodi = await kknService.getProgramStudi();
+        
+        return res.status(200).json(
+            formatResponse('success', 'Data program studi berhasil didapatkan', prodi)
+        );
+    } catch (error) {
+        next(error);
+    }
+}
+
+    /**
      * Mendapatkan daftar luaran
      */
     async getLuaran(req, res, next) {
