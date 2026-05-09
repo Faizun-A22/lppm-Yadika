@@ -1,3 +1,4 @@
+// controllers/mahasiswa/kknController.js
 const kknService = require('../../services/mahasiswa/kknService');
 const { formatResponse, formatError, formatPaginatedResponse } = require('../../utils/responseFormatter');
 const { deleteFile, getFileInfo } = require('../../middleware/upload');
@@ -46,6 +47,19 @@ class KKNController {
             const villages = await kknService.getAvailableVillages({ search, kabupaten });
             
             return res.json(formatResponse('success', 'Data desa berhasil diambil', villages));
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    /**
+     * Mendapatkan daftar kabupaten untuk filter
+     */
+    async getKabupatenList(req, res, next) {
+        try {
+            const kabupatenList = await kknService.getKabupatenList();
+            
+            return res.json(formatResponse('success', 'Data kabupaten berhasil diambil', kabupatenList));
         } catch (error) {
             next(error);
         }
@@ -105,20 +119,19 @@ class KKNController {
     }
 
     /**
- * Mendapatkan daftar program studi
- */
-async getProgramStudi(req, res, next) {
-    try {
-        // Panggil service yang sama seperti magang
-        const prodi = await kknService.getProgramStudi();
-        
-        return res.status(200).json(
-            formatResponse('success', 'Data program studi berhasil didapatkan', prodi)
-        );
-    } catch (error) {
-        next(error);
+     * Mendapatkan daftar program studi
+     */
+    async getProgramStudi(req, res, next) {
+        try {
+            const prodi = await kknService.getProgramStudi();
+            
+            return res.status(200).json(
+                formatResponse('success', 'Data program studi berhasil didapatkan', prodi)
+            );
+        } catch (error) {
+            next(error);
+        }
     }
-}
 
     /**
      * Mendapatkan daftar luaran
@@ -192,11 +205,12 @@ async getProgramStudi(req, res, next) {
             
             // Validasi file upload
             if (!files || !files.krs_file || !files.khs_file || !files.payment_file) {
-                // Hapus file yang sudah terupload jika ada
                 if (files) {
                     for (const key in files) {
-                        for (const file of files[key]) {
-                            await deleteFile(file.path);
+                        if (files[key] && Array.isArray(files[key])) {
+                            for (const file of files[key]) {
+                                await deleteFile(file.path);
+                            }
                         }
                     }
                 }
@@ -219,11 +233,12 @@ async getProgramStudi(req, res, next) {
             
             return res.status(201).json(formatResponse('success', 'Pendaftaran KKN berhasil', result));
         } catch (error) {
-            // Hapus file yang sudah terupload jika terjadi error
             if (req.files) {
                 for (const key in req.files) {
-                    for (const file of req.files[key]) {
-                        await deleteFile(file.path);
+                    if (req.files[key] && Array.isArray(req.files[key])) {
+                        for (const file of req.files[key]) {
+                            await deleteFile(file.path);
+                        }
                     }
                 }
             }
@@ -409,6 +424,35 @@ async getProgramStudi(req, res, next) {
             const result = await kknService.hapusLuaran(id, userId);
             
             return res.json(formatResponse('success', 'Luaran berhasil dihapus', result));
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    /**
+     * Mendapatkan detail registrasi KKN
+     */
+    async getRegistrasiDetail(req, res, next) {
+        try {
+            const { id } = req.params;
+            const userId = req.user.id_user;
+            
+            const registrasi = await kknService.getRegistrasiDetail(id, userId);
+            
+            return res.json(formatResponse('success', 'Detail registrasi berhasil diambil', registrasi));
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    /**
+     * Mendapatkan count program KKN yang tersedia
+     */
+    async getCount(req, res, next) {
+        try {
+            const count = await kknService.getAvailableVillagesCount();
+            
+            return res.json(formatResponse('success', 'Data count berhasil diambil', { total: count }));
         } catch (error) {
             next(error);
         }

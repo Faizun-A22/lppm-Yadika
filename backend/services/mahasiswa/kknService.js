@@ -1,40 +1,33 @@
-// services/mahasiswa/kknService.js (Disesuaikan)
+// services/mahasiswa/kknService.js
 const supabase = require('../../config/database');
 const { deleteFile } = require('../../middleware/upload');
 
 class KKNService {
-        constructor() {
-        // Perbaiki nama tabel sesuai dengan yang ada di database
-        this.tableRegistrasi = 'registrasi_kkn';  // ← Ganti jadi ini
-       this.tableLuaran = 'luaran_kkn'; 
+    constructor() {
+        this.tableRegistrasi = 'registrasi_kkn';
+        this.tableLuaran = 'luaran_kkn';
         this.tableDesa = 'desa_kkn';
         this.tableUsers = 'users';
         this.tableProgramStudi = 'program_studi';
     }
 
+    async getProgramStudi() {
+        try {
+            const { data, error } = await supabase
+                .from('program_studi')
+                .select('id_prodi, nama_prodi, jenjang, kode_prodi')
+                .order('nama_prodi');
 
-async getProgramStudi() {
-    try {
-        const { data, error } = await supabase
-            .from('program_studi')
-            .select('id_prodi, nama_prodi, jenjang, kode_prodi')
-            .order('nama_prodi');
-
-        if (error) throw error;
-
-        return data || [];
-    } catch (error) {
-        console.error('Error in getProgramStudi:', error);
-        throw error;
+            if (error) throw error;
+            return data || [];
+        } catch (error) {
+            console.error('Error in getProgramStudi:', error);
+            throw error;
+        }
     }
-}
 
-    /**
-     * Mendapatkan dashboard KKN mahasiswa
-     */
     async getDashboard(userId) {
         try {
-            // Ambil data registrasi
             const { data: registrasi, error: regError } = await supabase
                 .from(this.tableRegistrasi)
                 .select(`
@@ -58,7 +51,6 @@ async getProgramStudi() {
                 throw regError;
             }
 
-            // Ambil data luaran
             const { data: luaran, error: luarError } = await supabase
                 .from(this.tableLuaran)
                 .select('*')
@@ -80,9 +72,6 @@ async getProgramStudi() {
         }
     }
 
-    /**
-     * Mendapatkan status KKN
-     */
     async getStatus(userId) {
         try {
             const { data: registrasi, error } = await supabase
@@ -97,7 +86,6 @@ async getProgramStudi() {
                 throw error;
             }
 
-            // Hitung jumlah luaran
             let jumlahLuaran = 0;
             if (registrasi) {
                 const { count } = await supabase
@@ -125,61 +113,55 @@ async getProgramStudi() {
     }
 
     async getAvailableVillages(filters = {}) {
-    try {
-        let query = supabase
-            .from(this.tableDesa)
-            .select(`
-                id_desa,
-                nama_desa,
-                kecamatan,
-                kabupaten,
-                provinsi,
-                kuota,
-                kuota_terisi,
-                deskripsi,
-                nama_pembimbing_lapangan,
-                kontak_pembimbing_lapangan
-            `)
-            .eq('status', 'aktif');
+        try {
+            let query = supabase
+                .from(this.tableDesa)
+                .select(`
+                    id_desa,
+                    nama_desa,
+                    kecamatan,
+                    kabupaten,
+                    provinsi,
+                    kuota,
+                    kuota_terisi,
+                    deskripsi,
+                    nama_pembimbing_lapangan,
+                    kontak_pembimbing_lapangan
+                `)
+                .eq('status', 'aktif');
 
-        if (filters.search) {
-            query = query.or(`nama_desa.ilike.%${filters.search}%,kecamatan.ilike.%${filters.search}%`);
+            if (filters.search) {
+                query = query.or(`nama_desa.ilike.%${filters.search}%,kecamatan.ilike.%${filters.search}%`);
+            }
+
+            if (filters.kabupaten) {
+                query = query.eq('kabupaten', filters.kabupaten);
+            }
+
+            const { data, error } = await query.order('nama_desa');
+
+            if (error) throw error;
+
+            const filteredData = data.filter(desa => {
+                const sisaKuota = desa.kuota - (desa.kuota_terisi || 0);
+                return sisaKuota > 0;
+            });
+
+            return filteredData.map(desa => ({
+                ...desa,
+                sisa_kuota: desa.kuota - (desa.kuota_terisi || 0),
+                persentase_terisi: Math.round(((desa.kuota_terisi || 0) / desa.kuota) * 100)
+            }));
+        } catch (error) {
+            console.error('Error in getAvailableVillages:', error);
+            throw error;
         }
-
-        if (filters.kabupaten) {
-            query = query.eq('kabupaten', filters.kabupaten);
-        }
-
-        const { data, error } = await query.order('nama_desa');
-
-        if (error) throw error;
-
-        // Filter setelah data diambil (lebih aman)
-        const filteredData = data.filter(desa => {
-            const sisaKuota = desa.kuota - (desa.kuota_terisi || 0);
-            return sisaKuota > 0; // Hanya desa dengan sisa kuota > 0
-        });
-
-        return filteredData.map(desa => ({
-            ...desa,
-            sisa_kuota: desa.kuota - (desa.kuota_terisi || 0),
-            persentase_terisi: Math.round(((desa.kuota_terisi || 0) / desa.kuota) * 100)
-        }));
-    } catch (error) {
-        console.error('Error in getAvailableVillages:', error);
-        throw error;
     }
-}
 
-
-    /**
-     * Mendapatkan riwayat pengajuan
-     */
     async getRiwayat(userId, { page = 1, limit = 10 }) {
         try {
             const offset = (page - 1) * limit;
             
-            // Ambil data registrasi
             const { data: registrasi, error: regError, count: regCount } = await supabase
                 .from(this.tableRegistrasi)
                 .select(`
@@ -192,7 +174,6 @@ async getProgramStudi() {
 
             if (regError) throw regError;
 
-            // Format data
             const formattedData = registrasi.map(item => ({
                 id: item.id_registrasi,
                 jenis: 'pendaftaran',
@@ -213,12 +194,8 @@ async getProgramStudi() {
         }
     }
 
-    /**
-     * Mendapatkan daftar luaran
-     */
     async getLuaran(userId) {
         try {
-            // Cari registrasi terlebih dahulu
             const { data: registrasi } = await supabase
                 .from(this.tableRegistrasi)
                 .select('id_registrasi')
@@ -238,7 +215,6 @@ async getProgramStudi() {
                 .order('created_at', { ascending: false });
 
             if (error) throw error;
-
             return data;
         } catch (error) {
             console.error('Error in getLuaran:', error);
@@ -246,9 +222,6 @@ async getProgramStudi() {
         }
     }
 
-    /**
-     * Mendapatkan detail luaran
-     */
     async getLuaranDetail(id, userId) {
         try {
             const { data, error } = await supabase
@@ -265,7 +238,6 @@ async getProgramStudi() {
 
             if (error) throw error;
             
-            // Validasi kepemilikan
             if (data.registrasi_kkn.id_user !== userId) {
                 throw new Error('Anda tidak memiliki akses ke luaran ini');
             }
@@ -277,14 +249,10 @@ async getProgramStudi() {
         }
     }
 
-    /**
-     * Mendapatkan timeline KKN
-     */
     async getTimeline(userId) {
         try {
             const timeline = [];
 
-            // Cek registrasi
             const { data: registrasi } = await supabase
                 .from(this.tableRegistrasi)
                 .select('*')
@@ -304,7 +272,6 @@ async getProgramStudi() {
                     is_active: registrasi.status === 'pending'
                 });
 
-                // Jika sudah disetujui
                 if (registrasi.status === 'approved' || registrasi.status === 'verified') {
                     timeline.push({
                         id: 2,
@@ -316,7 +283,6 @@ async getProgramStudi() {
                         is_active: true
                     });
 
-                    // Cek luaran
                     const { count } = await supabase
                         .from(this.tableLuaran)
                         .select('*', { count: 'exact', head: true })
@@ -363,9 +329,6 @@ async getProgramStudi() {
         }
     }
 
-    /**
-     * Mendaftar KKN
-     */
     async daftarKKN(userId, data) {
         try {
             // Validasi apakah sudah pernah daftar
@@ -402,7 +365,7 @@ async getProgramStudi() {
                 .eq('id_user', userId)
                 .single();
 
-            // Simpan data registrasi
+            // Simpan data registrasi dengan path file yang benar
             const registrasiData = {
                 id_user: userId,
                 id_desa: data.id_desa,
@@ -430,6 +393,12 @@ async getProgramStudi() {
 
             if (error) throw error;
 
+            // Update kuota desa
+            await supabase
+                .from(this.tableDesa)
+                .update({ kuota_terisi: (desa.kuota_terisi || 0) + 1 })
+                .eq('id_desa', data.id_desa);
+
             return result;
         } catch (error) {
             console.error('Error in daftarKKN:', error);
@@ -437,12 +406,8 @@ async getProgramStudi() {
         }
     }
 
-    /**
-     * Simpan luaran
-     */
     async simpanLuaran(userId, data) {
         try {
-            // Cari registrasi terbaru
             const { data: registrasi } = await supabase
                 .from(this.tableRegistrasi)
                 .select('id_registrasi')
@@ -460,10 +425,11 @@ async getProgramStudi() {
                 id_registrasi: registrasi.id_registrasi,
                 judul_kegiatan: data.judul_kegiatan,
                 link_video: data.link_video,
-                file_poster: data.link_poster, // Sesuaikan dengan field di database
+                link_poster: data.link_poster,
+                link_foto: data.link_foto,
                 file_mou: data.file_mou ? data.file_mou.path : null,
+                keterangan: data.keterangan || null,
                 status: 'pending',
-                tanggal_submit: new Date(),
                 created_at: new Date(),
                 updated_at: new Date()
             };
@@ -475,7 +441,6 @@ async getProgramStudi() {
                 .single();
 
             if (error) throw error;
-
             return result;
         } catch (error) {
             console.error('Error in simpanLuaran:', error);
@@ -483,12 +448,8 @@ async getProgramStudi() {
         }
     }
 
-    /**
-     * Update luaran
-     */
     async updateLuaran(id, userId, data) {
         try {
-            // Validasi kepemilikan
             const { data: existing } = await supabase
                 .from(this.tableLuaran)
                 .select(`
@@ -510,7 +471,6 @@ async getProgramStudi() {
                 throw new Error('Luaran tidak dapat diupdate karena sudah diproses');
             }
 
-            // Hapus file lama jika ada file baru
             if (data.file_mou && existing.file_mou) {
                 await deleteFile(existing.file_mou);
             }
@@ -518,7 +478,8 @@ async getProgramStudi() {
             const updateData = {
                 judul_kegiatan: data.judul_kegiatan,
                 link_video: data.link_video,
-                file_poster: data.link_poster,
+                link_poster: data.link_poster,
+                link_foto: data.link_foto,
                 keterangan: data.keterangan,
                 updated_at: new Date()
             };
@@ -535,7 +496,6 @@ async getProgramStudi() {
                 .single();
 
             if (error) throw error;
-
             return result;
         } catch (error) {
             console.error('Error in updateLuaran:', error);
@@ -543,12 +503,8 @@ async getProgramStudi() {
         }
     }
 
-    /**
-     * Hapus luaran
-     */
     async hapusLuaran(id, userId) {
         try {
-            // Validasi kepemilikan
             const { data: existing } = await supabase
                 .from(this.tableLuaran)
                 .select(`
@@ -570,7 +526,6 @@ async getProgramStudi() {
                 throw new Error('Hanya luaran dengan status pending yang dapat dihapus');
             }
 
-            // Hapus file
             if (existing.file_mou) {
                 await deleteFile(existing.file_mou);
             }
@@ -581,7 +536,6 @@ async getProgramStudi() {
                 .eq('id_luaran', id);
 
             if (error) throw error;
-
             return { success: true };
         } catch (error) {
             console.error('Error in hapusLuaran:', error);
@@ -589,8 +543,7 @@ async getProgramStudi() {
         }
     }
 
-    // ==================== HELPER METHODS ====================
-
+    // Helper Methods
     mapStatus(status) {
         const statusMap = {
             'pending': 'pending',

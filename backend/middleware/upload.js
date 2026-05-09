@@ -16,6 +16,15 @@ const createUploadDirs = () => {
         'uploads/magang/logbook',
         'uploads/magang/others',
         
+        // KKN folders
+        'uploads/kkn/krs',
+        'uploads/kkn/khs',
+        'uploads/kkn/pembayaran',
+        'uploads/kkn/proposal',
+        'uploads/kkn/mou',
+        'uploads/kkn/laporan',
+        'uploads/kkn/others',
+        
         // Berita & Kegiatan folders
         'uploads/berita',
         'uploads/kegiatan',
@@ -47,68 +56,95 @@ createUploadDirs();
 
 // Configure storage
 const storage = multer.diskStorage({
-    // Di uploads.js - bagian destination
-destination: (req, file, cb) => {
-    let uploadPath = 'uploads/';
-    
-    if (req.baseUrl?.includes('berita')) {
-        uploadPath += 'berita';
-    } 
-    else if (req.baseUrl?.includes('kegiatan')) {
-        uploadPath += 'kegiatan';
-    }
-    else if (req.baseUrl?.includes('repository')) {
-        uploadPath += 'repository/';
-        const kategori = req.body?.kategori || req.query?.kategori || 'documents';
+    destination: (req, file, cb) => {
+        let uploadPath = 'uploads/';
         
-        const categoryFolders = {
-            'jurnal': 'jurnal',
-            'penelitian': 'penelitian',
-            'pengabdian': 'pengabdian',
-            'buku': 'buku',
-            'haki': 'haki',
-            'prosiding': 'prosiding',
-            'laporan': 'laporan'
-        };
-        
-        uploadPath += categoryFolders[kategori] || 'documents';
-    }
-    else {
-        uploadPath += 'magang/';
-        
-        // Sesuaikan dengan nama field dari form
-        switch (file.fieldname) {
-            case 'krs_file':  // <-- GANTI dari 'krs' ke 'krs_file'
-                uploadPath += 'krs';
-                break;
-            case 'khs_file':  // <-- GANTI dari 'khs' ke 'khs_file'
-                uploadPath += 'khs';
-                break;
-            case 'payment_file':  // <-- GANTI dari 'bukti_pembayaran' ke 'payment_file'
-                uploadPath += 'pembayaran';
-                break;
-            case 'mou_file':  // Untuk upload luaran
-                uploadPath += 'mou';
-                break;
-            case 'surat_keterangan':
-                uploadPath += 'surat_keterangan';
-                break;
-            case 'struktur_organisasi':
-                uploadPath += 'struktur_organisasi';
-                break;
-            case 'sertifikat':
-                uploadPath += 'sertifikat';
-                break;
-            case 'logbook':
-                uploadPath += 'logbook';
-                break;
-            default:
-                uploadPath += 'others';
+        // KKN routes
+        if (req.baseUrl?.includes('kkn')) {
+            uploadPath += 'kkn/';
+            switch (file.fieldname) {
+                case 'krs_file':
+                    uploadPath += 'krs';
+                    break;
+                case 'khs_file':
+                    uploadPath += 'khs';
+                    break;
+                case 'payment_file':
+                    uploadPath += 'pembayaran';
+                    break;
+                case 'proposal_file':
+                    uploadPath += 'proposal';
+                    break;
+                case 'mou_file':
+                    uploadPath += 'mou';
+                    break;
+                case 'laporan_file':
+                    uploadPath += 'laporan';
+                    break;
+                default:
+                    uploadPath += 'others';
+            }
         }
-    }
-    
-    cb(null, uploadPath);
-},
+        // Magang routes
+        else if (req.baseUrl?.includes('magang')) {
+            uploadPath += 'magang/';
+            switch (file.fieldname) {
+                case 'krs_file':
+                    uploadPath += 'krs';
+                    break;
+                case 'khs_file':
+                    uploadPath += 'khs';
+                    break;
+                case 'payment_file':
+                    uploadPath += 'pembayaran';
+                    break;
+                case 'mou_file':
+                    uploadPath += 'mou';
+                    break;
+                case 'surat_keterangan':
+                    uploadPath += 'surat_keterangan';
+                    break;
+                case 'struktur_organisasi':
+                    uploadPath += 'struktur_organisasi';
+                    break;
+                case 'sertifikat':
+                    uploadPath += 'sertifikat';
+                    break;
+                case 'logbook':
+                    uploadPath += 'logbook';
+                    break;
+                default:
+                    uploadPath += 'others';
+            }
+        }
+        else if (req.baseUrl?.includes('berita')) {
+            uploadPath += 'berita';
+        }
+        else if (req.baseUrl?.includes('kegiatan')) {
+            uploadPath += 'kegiatan';
+        }
+        else if (req.baseUrl?.includes('repository')) {
+            uploadPath += 'repository/';
+            const kategori = req.body?.kategori || req.query?.kategori || 'documents';
+            
+            const categoryFolders = {
+                'jurnal': 'jurnal',
+                'penelitian': 'penelitian',
+                'pengabdian': 'pengabdian',
+                'buku': 'buku',
+                'haki': 'haki',
+                'prosiding': 'prosiding',
+                'laporan': 'laporan'
+            };
+            
+            uploadPath += categoryFolders[kategori] || 'documents';
+        }
+        else {
+            uploadPath += 'others';
+        }
+        
+        cb(null, uploadPath);
+    },
     filename: (req, file, cb) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
         const ext = path.extname(file.originalname);
@@ -165,7 +201,16 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
     storage: storage,
     limits: {
-        fileSize: 10 * 1024 * 1024 // 10MB limit (increased from 5MB)
+        fileSize: 10 * 1024 * 1024 // 10MB limit
+    },
+    fileFilter: fileFilter
+});
+
+// Upload for KKN with multiple files
+const uploadKKN = multer({
+    storage: storage,
+    limits: {
+        fileSize: 10 * 1024 * 1024 // 10MB limit per file
     },
     fileFilter: fileFilter
 });
@@ -238,9 +283,10 @@ const getFileInfo = (file) => {
 
 module.exports = {
     upload,
+    uploadKKN,
     uploadRepository,
     handleUploadError,
     deleteFile,
     getFileInfo,
-    createUploadDirs // Export for manual calling if needed
+    createUploadDirs
 };
