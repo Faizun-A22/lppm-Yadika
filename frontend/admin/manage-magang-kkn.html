@@ -1181,6 +1181,88 @@ function getStatusText(status) {
     return texts[status] || status;
 }
 
+async function deleteKknRegistration(id, nim, nama) {
+    const result = await Swal.fire({
+        title: 'Konfirmasi Hapus',
+        text: `Apakah Anda yakin ingin menghapus pendaftaran KKN atas nama ${nama} (NIM: ${nim})?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Ya, Hapus',
+        cancelButtonText: 'Batal',
+        reverseButtons: true
+    });
+    
+    if (!result.isConfirmed) return;
+    
+    showLoading();
+    try {
+        const response = await fetch(`${API_BASE_URL}/admin/registrasi-kkn/${id}`, {
+            method: 'DELETE',
+            headers: getHeaders()
+        });
+        
+        const resultData = await response.json();
+        
+        if (resultData.success) {
+            showAlert('Pendaftaran KKN berhasil dihapus', 'success');
+            // Refresh data registrasi
+            loadRegistrationData();
+            // Refresh stats
+            loadStatsData();
+        } else {
+            showAlert(resultData.message || 'Gagal menghapus pendaftaran', 'error');
+        }
+    } catch (error) {
+        console.error('Error deleting KKN registration:', error);
+        showAlert('Gagal menghapus pendaftaran', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+async function deleteMagangRegistration(id, nim, nama) {
+    const result = await Swal.fire({
+        title: 'Konfirmasi Hapus',
+        text: `Apakah Anda yakin ingin menghapus pendaftaran Magang atas nama ${nama} (NIM: ${nim})?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Ya, Hapus',
+        cancelButtonText: 'Batal',
+        reverseButtons: true
+    });
+    
+    if (!result.isConfirmed) return;
+    
+    showLoading();
+    try {
+        const response = await fetch(`${API_BASE_URL}/admin/registrasi-magang/${id}`, {
+            method: 'DELETE',
+            headers: getHeaders()
+        });
+        
+        const resultData = await response.json();
+        
+        if (resultData.success) {
+            showAlert('Pendaftaran Magang berhasil dihapus', 'success');
+            // Refresh data registrasi
+            loadRegistrationData();
+            // Refresh stats
+            loadStatsData();
+        } else {
+            showAlert(resultData.message || 'Gagal menghapus pendaftaran', 'error');
+        }
+    } catch (error) {
+        console.error('Error deleting Magang registration:', error);
+        showAlert('Gagal menghapus pendaftaran', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
 // ==================== SECTION NAVIGATION ====================
 function showSection(sectionId) {
     document.querySelectorAll('.content-section').forEach(section => {
@@ -1862,8 +1944,15 @@ function renderKKNRegistrationTable(registrations) {
             <td class="px-4 py-3">${formatDate(reg.tanggal_daftar)}</td>
             <td class="px-4 py-3"><span class="${getStatusBadgeClass(reg.status)}">${getStatusText(reg.status)}</span></td>
             <td class="px-4 py-3 text-center">
-                <button onclick="viewRegistrationDetail('kkn', '${reg.id_registrasi}')" class="text-blue-600 hover:text-blue-900 mr-2 action-btn"><i class="fas fa-eye"></i></button>
-                <button onclick="openStatusModal('kkn', '${reg.id_registrasi}', '${reg.status}')" class="text-green-600 hover:text-green-900 action-btn"><i class="fas fa-edit"></i></button>
+                <button onclick="viewRegistrationDetail('kkn', '${reg.id_registrasi}')" class="text-blue-600 hover:text-blue-900 mr-2 action-btn" title="Lihat Detail">
+                    <i class="fas fa-eye"></i>
+                </button>
+                <button onclick="openStatusModal('kkn', '${reg.id_registrasi}', '${reg.status}')" class="text-green-600 hover:text-green-900 mr-2 action-btn" title="Ubah Status">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button onclick="deleteKknRegistration('${reg.id_registrasi}', '${reg.nim}', '${reg.nama_lengkap.replace(/'/g, "\\'")}')" class="text-red-600 hover:text-red-900 action-btn" title="Hapus">
+                    <i class="fas fa-trash"></i>
+                </button>
             </td>
         </tr>
     `).join('');
@@ -1884,12 +1973,20 @@ function renderMagangRegistrationTable(registrations) {
             <td class="px-4 py-3">${formatDate(reg.created_at)}</td>
             <td class="px-4 py-3"><span class="${getStatusBadgeClass(reg.status)}">${getStatusText(reg.status)}</span></td>
             <td class="px-4 py-3 text-center">
-                <button onclick="viewRegistrationDetail('magang', '${reg.id_registrasi}')" class="text-blue-600 hover:text-blue-900 mr-2 action-btn"><i class="fas fa-eye"></i></button>
-                <button onclick="openStatusModal('magang', '${reg.id_registrasi}', '${reg.status}')" class="text-green-600 hover:text-green-900 action-btn"><i class="fas fa-edit"></i></button>
+                <button onclick="viewRegistrationDetail('magang', '${reg.id_registrasi}')" class="text-blue-600 hover:text-blue-900 mr-2 action-btn" title="Lihat Detail">
+                    <i class="fas fa-eye"></i>
+                </button>
+                <button onclick="openStatusModal('magang', '${reg.id_registrasi}', '${reg.status}')" class="text-green-600 hover:text-green-900 mr-2 action-btn" title="Ubah Status">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button onclick="deleteMagangRegistration('${reg.id_registrasi}', '${reg.nim}', '${reg.nama_lengkap.replace(/'/g, "\\'")}')" class="text-red-600 hover:text-red-900 action-btn" title="Hapus">
+                    <i class="fas fa-trash"></i>
+                </button>
             </td>
         </tr>
     `).join('');
 }
+
 
 async function viewRegistrationDetail(type, id) {
     showLoading();
