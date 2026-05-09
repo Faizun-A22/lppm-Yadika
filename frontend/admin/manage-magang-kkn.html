@@ -2012,7 +2012,7 @@ async function viewRegistrationDetail(type, id) {
                     </div>
                     <h4 class="font-bold mt-4 mb-2">File Dokumen:</h4>
                     <div class="grid grid-cols-3 gap-2">
-                        ${data.krs_file ? `<div><a href="${API_BASE_URL}/uploads/${data.krs_file}" target="_blank" class="text-blue-600"><i class="fas fa-file-pdf"></i> KRS</a></div>` : '<div>-</div>'}
+                        ${data.krs_file ? `<div><a href="/uploads/${data.krs_file.replace(/^uploads[\/\\]/, '')}" target="_blank" class="text-blue-600"><i class="fas fa-file-pdf"></i> KRS</a></div>` : '<div>-</div>'}
                         ${data.khs_file ? `<div><a href="${API_BASE_URL}/uploads/${data.khs_file}" target="_blank" class="text-blue-600"><i class="fas fa-file-pdf"></i> KHS</a></div>` : '<div>-</div>'}
                         ${data.payment_file ? `<div><a href="${API_BASE_URL}/uploads/${data.payment_file}" target="_blank" class="text-blue-600"><i class="fas fa-file-pdf"></i> Bukti Bayar</a></div>` : '<div>-</div>'}
                     </div>
@@ -2137,7 +2137,7 @@ function renderLuaranTable(data) {
             <td class="px-4 py-3">${item.judul_kegiatan}</td>
             <td class="px-4 py-3">${item.link_video ? `<a href="${item.link_video}" target="_blank" class="text-blue-600"><i class="fab fa-youtube"></i> Lihat</a>` : '<span class="text-gray-400">-</span>'}</td>
             <td class="px-4 py-3">${item.file_poster ? `<a href="${API_BASE_URL}/uploads/${item.file_poster}" target="_blank" class="text-blue-600"><i class="fas fa-image"></i> Lihat</a>` : '<span class="text-gray-400">-</span>'}</td>
-            <td class="px-4 py-3">${item.file_mou ? `<a href="/uploads/${item.file_mou}" target="_blank" class="text-blue-600"><i class="fas fa-file-pdf"></i> Download</a>` : '<span class="text-gray-400">-</span>'}</td>
+            ${item.file_mou ? `<a href="/uploads/${item.file_mou.replace(/^uploads[\/\\]/, '')}" target="_blank" class="text-blue-600"><i class="fas fa-file-pdf"></i> Download</a>` : '<span class="text-gray-400">-</span>'}
             <td class="px-4 py-3"><span class="${getStatusBadgeClass(item.status)}">${getStatusText(item.status)}</span></td>
             <td class="px-4 py-3 text-center"><button onclick="openVerificationModal('${item.id_luaran}')" class="text-blue-600 hover:text-blue-900 action-btn"><i class="fas fa-check-circle"></i></button></td>
         </tr>
@@ -2231,7 +2231,7 @@ function renderLuaranMagangTable(data) {
             <td class="px-4 py-3">${item.judul_proyek || '-'}</td>
             <td class="px-4 py-3">${item.link_poster ? `<a href="${item.link_poster}" target="_blank" class="text-blue-600"><i class="fab fa-google-drive"></i> Lihat</a>` : '<span class="text-gray-400">-</span>'}</td>
             <td class="px-4 py-3">${item.link_laporan ? `<a href="${item.link_laporan}" target="_blank" class="text-blue-600"><i class="fab fa-google-drive"></i> Lihat</a>` : '<span class="text-gray-400">-</span>'}</td>
-            <td class="px-4 py-3">${item.file_mou ? `<a href="/uploads/${item.file_mou}" target="_blank" class="text-blue-600"><i class="fas fa-file-pdf"></i> Download</a>` : '<span class="text-gray-400">-</span>'}</td>
+            ${item.file_mou ? `<a href="/uploads/${item.file_mou.replace(/^uploads[\/\\]/, '')}" target="_blank" class="text-blue-600"><i class="fas fa-file-pdf"></i> Download</a>` : '<span class="text-gray-400">-</span>'}
             <td class="px-4 py-3"><span class="${getStatusBadgeClass(item.status)}">${getStatusText(item.status)}</span></td>
             <td class="px-4 py-3 text-center">
                 <button onclick="viewLuaranMagangDetail('${item.id_luaran}')" class="text-blue-600 hover:text-blue-900 mr-2 action-btn" title="Lihat Detail">
