@@ -978,7 +978,7 @@
 
         async function loadDesaTersedia(search = '', kabupaten = '') {
             try {
-                let url = `${API_BASE_URL}/mahasiswa/kkn/desa-tersedia`;
+                let url = `${API_BASE_URL}/mahasiswa/kkn/desa`; 
                 const params = new URLSearchParams();
                 if (search) params.append('search', search);
                 if (kabupaten) params.append('kabupaten', kabupaten);
