@@ -3,17 +3,16 @@ const supabase = require('../../config/database');
 const { deleteFile } = require('../../middleware/upload');
 
 class KKNService {
-    constructor() {
-         this.tableRegistrasi = 'kkn_registration';
+        constructor() {
+        // Perbaiki nama tabel sesuai dengan yang ada di database
+        this.tableRegistrasi = 'registrasi_kkn';  // ← Ganti jadi ini
         this.tableLuaran = 'kkn_outputs'; 
         this.tableDesa = 'desa_kkn';
         this.tableUsers = 'users';
         this.tableProgramStudi = 'program_studi';
     }
 
-    /**
- * Mendapatkan daftar program studi
- */
+    
 async getProgramStudi() {
     try {
         const { data, error } = await supabase
