@@ -125,49 +125,53 @@ async getProgramStudi() {
         }
     }
 
-    /**
-     * Mendapatkan daftar desa yang tersedia
-     */
     async getAvailableVillages(filters = {}) {
-        try {
-            let query = supabase
-                .from(this.tableDesa)
-                .select(`
-                    id_desa,
-                    nama_desa,
-                    kecamatan,
-                    kabupaten,
-                    provinsi,
-                    kuota,
-                    kuota_terisi,
-                    deskripsi,
-                    nama_pembimbing_lapangan,
-                    kontak_pembimbing_lapangan
-                `)
-                .eq('status', 'aktif')
-                .lt('kuota_terisi', 'kuota');
+    try {
+        let query = supabase
+            .from(this.tableDesa)
+            .select(`
+                id_desa,
+                nama_desa,
+                kecamatan,
+                kabupaten,
+                provinsi,
+                kuota,
+                kuota_terisi,
+                deskripsi,
+                nama_pembimbing_lapangan,
+                kontak_pembimbing_lapangan
+            `)
+            .eq('status', 'aktif');
 
-            if (filters.search) {
-                query = query.or(`nama_desa.ilike.%${filters.search}%,kecamatan.ilike.%${filters.search}%`);
-            }
-
-            if (filters.kabupaten) {
-                query = query.eq('kabupaten', filters.kabupaten);
-            }
-
-            const { data, error } = await query.order('nama_desa');
-
-            if (error) throw error;
-
-            return data.map(desa => ({
-                ...desa,
-                sisa_kuota: desa.kuota - (desa.kuota_terisi || 0)
-            }));
-        } catch (error) {
-            console.error('Error in getAvailableVillages:', error);
-            throw error;
+        if (filters.search) {
+            query = query.or(`nama_desa.ilike.%${filters.search}%,kecamatan.ilike.%${filters.search}%`);
         }
+
+        if (filters.kabupaten) {
+            query = query.eq('kabupaten', filters.kabupaten);
+        }
+
+        const { data, error } = await query.order('nama_desa');
+
+        if (error) throw error;
+
+        // Filter setelah data diambil (lebih aman)
+        const filteredData = data.filter(desa => {
+            const sisaKuota = desa.kuota - (desa.kuota_terisi || 0);
+            return sisaKuota > 0; // Hanya desa dengan sisa kuota > 0
+        });
+
+        return filteredData.map(desa => ({
+            ...desa,
+            sisa_kuota: desa.kuota - (desa.kuota_terisi || 0),
+            persentase_terisi: Math.round(((desa.kuota_terisi || 0) / desa.kuota) * 100)
+        }));
+    } catch (error) {
+        console.error('Error in getAvailableVillages:', error);
+        throw error;
     }
+}
+
 
     /**
      * Mendapatkan riwayat pengajuan
