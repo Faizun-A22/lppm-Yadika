@@ -6,13 +6,13 @@ class KKNService {
         constructor() {
         // Perbaiki nama tabel sesuai dengan yang ada di database
         this.tableRegistrasi = 'registrasi_kkn';  // ← Ganti jadi ini
-        this.tableLuaran = 'kkn_outputs'; 
+       this.tableLuaran = 'luaran_kkn'; 
         this.tableDesa = 'desa_kkn';
         this.tableUsers = 'users';
         this.tableProgramStudi = 'program_studi';
     }
 
-    
+
 async getProgramStudi() {
     try {
         const { data, error } = await supabase
