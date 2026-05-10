@@ -255,15 +255,6 @@
             }
         }
 
-        /* Perbaikan: Memberi jarak yang tepat untuk konten di bawah navbar fixed */
-        body {
-            padding-top: 0;
-        }
-        
-        main {
-            margin-top: 0;
-        }
-
         @media (max-width: 768px) {
             .greeting-banner {
                 padding: 1.25rem;
@@ -345,7 +336,7 @@
     </div>
 
     <!-- Navbar -->
-    <header class="fixed top-0 left-0 right-0 navbar-custom z-50">
+    <header id="mainHeader" class="fixed top-0 left-0 right-0 navbar-custom z-50">
         <nav class="container mx-auto px-4 md:px-6 py-3 flex justify-between items-center">
             <!-- Logo and Brand -->
             <a href="dosen-dashboard.html" class="flex items-center space-x-3 group">
@@ -445,8 +436,8 @@
         </nav>
     </header>
 
-    <!-- Main Content - Perbaikan padding top agar tidak tertutup navbar -->
-    <main class="pt-20 md:pt-24 pb-12">
+    <!-- Main Content - padding akan diatur oleh JavaScript -->
+    <main id="mainContent" class="pb-12">
         <div class="container mx-auto px-4 sm:px-6 py-6">
             <!-- Greeting Banner -->
             <div class="greeting-banner text-white" data-aos="fade-down">
@@ -644,6 +635,30 @@
     let refreshInterval = null;
     let statusChart = null;
     let tahunanChart = null;
+
+    // ==================== PERBAIKAN: Fungsi untuk mengatur padding main content ====================
+    function adjustMainContentPadding() {
+        const header = document.getElementById('mainHeader');
+        const main = document.getElementById('mainContent');
+        
+        if (header && main) {
+            // Dapatkan tinggi header yang sebenarnya (termasuk padding)
+            const headerHeight = header.offsetHeight;
+            // Set padding top pada main
+            main.style.paddingTop = headerHeight + 'px';
+        }
+    }
+
+    // Panggil saat halaman dimuat dan saat window di-resize
+    window.addEventListener('load', adjustMainContentPadding);
+    window.addEventListener('resize', adjustMainContentPadding);
+    
+    // Observer untuk mendeteksi perubahan pada header (misal jika ada gambar yang loading)
+    const observer = new ResizeObserver(adjustMainContentPadding);
+    const headerElement = document.getElementById('mainHeader');
+    if (headerElement) {
+        observer.observe(headerElement);
+    }
 
     // Helper Functions
     function showToast(message, type = 'info') {
@@ -1307,6 +1322,9 @@
         initDropdown();
         initMobileNav();
         setActiveNavLink();
+        
+        // Panggil adjust padding setelah semua konten dimuat
+        adjustMainContentPadding();
         
         await refreshAllData();
         
