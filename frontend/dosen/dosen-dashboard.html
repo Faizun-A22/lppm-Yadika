@@ -10,6 +10,7 @@
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
@@ -267,6 +268,28 @@
             }
         }
 
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .loading-spinner-custom {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3B82F6;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .stat-card {
@@ -287,10 +310,10 @@
 </head>
 <body class="bg-gray-50 font-sans antialiased">
     <!-- Loading Overlay -->
-    <div id="loadingOverlay" class="fixed inset-0 bg-white bg-opacity-90 z-50 flex items-center justify-center hidden">
+    <div id="loadingOverlay" class="loading-overlay hidden">
         <div class="text-center">
-            <div class="loading-spinner"></div>
-            <p class="mt-4 text-gray-600">Memuat dashboard dosen...</p>
+            <div class="loading-spinner-custom mx-auto"></div>
+            <p class="mt-4 text-gray-600">Memuat dashboard...</p>
         </div>
     </div>
 
@@ -337,10 +360,6 @@
                     <span>Profil</span>
                 </a>
                 <div class="border-t border-gray-100 my-4 mx-4"></div>
-                <a href="dosen-profil.html" class="mobile-nav-link">
-                    <i class="fas fa-user-cog w-5"></i>
-                    <span>Pengaturan Akun</span>
-                </a>
                 <a href="dosen-ubah-password.html" class="mobile-nav-link">
                     <i class="fas fa-key w-5"></i>
                     <span>Ubah Password</span>
@@ -455,8 +474,8 @@
     </header>
 
     <!-- Main Content -->
-    <main class="pt-[72px] md:pt-[84px] pb-12">
-        <div class="container mx-auto px-4 sm:px-6 py-6">
+    <main class="pt-[90px] md:pt-[105px] pb-12">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Greeting Banner -->
             <div class="greeting-banner text-white" data-aos="fade-down">
                 <div class="flex justify-between items-center flex-wrap gap-4">
@@ -534,7 +553,6 @@
 
             <!-- Charts Row -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-6" data-aos="fade-up">
-                <!-- Chart Status Pengajuan -->
                 <div class="bg-white rounded-xl shadow-lg p-4 md:p-6">
                     <h3 class="text-base md:text-lg font-bold text-gray-800 mb-4 flex items-center">
                         <i class="fas fa-chart-pie mr-2 text-blue-500"></i>
@@ -545,7 +563,6 @@
                     </div>
                 </div>
 
-                <!-- Chart Statistik Tahunan -->
                 <div class="bg-white rounded-xl shadow-lg p-4 md:p-6">
                     <h3 class="text-base md:text-lg font-bold text-gray-800 mb-4 flex items-center">
                         <i class="fas fa-chart-line mr-2 text-green-500"></i>
@@ -559,7 +576,7 @@
 
             <!-- Main Content Grid -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
-                <!-- Left Column - Recent Submissions -->
+                <!-- Left Column -->
                 <div class="lg:col-span-2 space-y-4 md:space-y-6">
                     <div class="bg-white rounded-xl shadow-lg p-4 md:p-6" data-aos="fade-right">
                         <div class="flex justify-between items-center mb-4">
@@ -571,7 +588,6 @@
                                 <i class="fas fa-sync-alt"></i> Refresh
                             </button>
                         </div>
-                        
                         <div class="space-y-3" id="recentSubmissions">
                             <div class="text-center py-8">
                                 <i class="fas fa-spinner fa-spin text-gray-400 text-2xl"></i>
@@ -580,13 +596,11 @@
                         </div>
                     </div>
 
-                    <!-- Timeline Kegiatan -->
                     <div class="bg-white rounded-xl shadow-lg p-4 md:p-6" data-aos="fade-right">
                         <h3 class="text-base md:text-lg font-bold text-gray-800 mb-4 flex items-center">
                             <i class="fas fa-history mr-2 text-purple-500"></i>
                             Timeline Kegiatan
                         </h3>
-                        
                         <div class="relative">
                             <div class="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-200"></div>
                             <div class="space-y-6 relative" id="timelineActivities">
@@ -600,7 +614,6 @@
 
                 <!-- Right Column -->
                 <div class="space-y-4 md:space-y-6">
-                    <!-- Profile Summary -->
                     <div class="bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl shadow-lg p-4 md:p-6 text-white" data-aos="fade-left">
                         <div class="flex items-center space-x-3 mb-4">
                             <img id="profileAvatar" src="" alt="Profile" class="w-12 h-12 md:w-16 md:h-16 rounded-full border-4 border-white/30 object-cover">
@@ -610,14 +623,12 @@
                                 <p class="text-blue-100 text-xs mt-1" id="profileProdi">-</p>
                             </div>
                         </div>
-                        
                         <div class="grid grid-cols-2 gap-2 md:gap-3 text-xs md:text-sm" id="profileDetails">
                             <div><i class="fas fa-envelope mr-2"></i> <span id="profileEmail">-</span></div>
                             <div><i class="fas fa-phone mr-2"></i> <span id="profilePhone">-</span></div>
                         </div>
                     </div>
 
-                    <!-- Repository Stats -->
                     <div class="bg-white rounded-xl shadow-lg p-4 md:p-6" data-aos="fade-left">
                         <h3 class="text-base md:text-lg font-bold text-gray-800 mb-4 flex items-center">
                             <i class="fas fa-archive mr-2 text-orange-500"></i>
@@ -630,7 +641,6 @@
                         </div>
                     </div>
 
-                    <!-- Publikasi Terbaru -->
                     <div class="bg-white rounded-xl shadow-lg p-4 md:p-6" data-aos="fade-left">
                         <div class="flex justify-between items-center mb-4">
                             <h3 class="text-base md:text-lg font-bold text-gray-800 flex items-center">
@@ -641,7 +651,6 @@
                                 Kelola <i class="fas fa-arrow-right ml-1"></i>
                             </a>
                         </div>
-                        
                         <div class="space-y-3" id="recentPublications">
                             <div class="text-center py-4">
                                 <i class="fas fa-spinner fa-spin text-gray-400 text-xl"></i>
@@ -652,9 +661,6 @@
             </div>
         </div>
     </main>
-
-    <!-- Toast Container -->
-    <div id="toastContainer"></div>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
@@ -667,24 +673,7 @@
 
     // Helper Functions
     function showToast(message, type = 'info') {
-        const container = document.getElementById('toastContainer');
-        if (!container) return;
-        
-        const toast = document.createElement('div');
-        toast.className = `toast-notification ${type === 'error' ? 'border-red-500' : 'border-blue-500'}`;
-        toast.innerHTML = `
-            <div class="flex items-start gap-3">
-                <i class="fas ${type === 'error' ? 'fa-exclamation-circle text-red-500' : 'fa-check-circle text-green-500'} text-xl"></i>
-                <div>
-                    <p class="text-sm text-gray-700">${message}</p>
-                </div>
-                <button onclick="this.parentElement.parentElement.remove()" class="ml-auto text-gray-400 hover:text-gray-600">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-        `;
-        container.appendChild(toast);
-        setTimeout(() => toast.remove(), 5000);
+        Swal.fire({ icon: type, title: type === 'success' ? 'Berhasil' : 'Informasi', text: message, timer: 2000, showConfirmButton: false });
     }
 
     function showLoading() { document.getElementById('loadingOverlay').classList.remove('hidden'); }
@@ -724,51 +713,30 @@
     function updateLastUpdateTime() {
         const now = new Date();
         const lastUpdate = document.getElementById('lastUpdateTime');
-        if (lastUpdate) {
-            lastUpdate.textContent = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        }
+        if (lastUpdate) lastUpdate.textContent = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
     }
 
-    // ===========================================
-    // NAVBAR FUNCTIONS
-    // ===========================================
+    // ==================== NAVBAR FUNCTIONS ====================
     function updateNavbarUserInfo(profile) {
         if (!profile) return;
         
         const avatarUrl = profile.foto_profil ? `/${profile.foto_profil}` : `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.nama_lengkap || 'Dosen')}&background=3B82F6&color=fff&bold=true`;
         
-        const navAvatar = document.getElementById('navAvatar');
-        const dropdownAvatar = document.getElementById('dropdownAvatar');
-        const mobileNavAvatar = document.getElementById('mobileNavAvatar');
-        const navUserName = document.getElementById('navUserName');
-        const dropdownUserName = document.getElementById('dropdownUserName');
-        const dropdownUserNidn = document.getElementById('dropdownUserNidn');
-        const mobileNavUserName = document.getElementById('mobileNavUserName');
-        
-        if (navAvatar) navAvatar.src = avatarUrl;
-        if (dropdownAvatar) dropdownAvatar.src = avatarUrl;
-        if (mobileNavAvatar) mobileNavAvatar.src = avatarUrl;
-        if (navUserName) navUserName.textContent = profile.nama_lengkap || 'Dosen';
-        if (dropdownUserName) dropdownUserName.textContent = profile.nama_lengkap || 'Dosen';
-        if (mobileNavUserName) mobileNavUserName.textContent = profile.nama_lengkap || 'Dosen';
-        if (dropdownUserNidn) dropdownUserNidn.textContent = profile.nidn ? `NIDN: ${profile.nidn}` : '-';
+        document.getElementById('navAvatar').src = avatarUrl;
+        document.getElementById('dropdownAvatar').src = avatarUrl;
+        document.getElementById('mobileNavAvatar').src = avatarUrl;
+        document.getElementById('navUserName').textContent = profile.nama_lengkap || 'Dosen';
+        document.getElementById('dropdownUserName').textContent = profile.nama_lengkap || 'Dosen';
+        document.getElementById('mobileNavUserName').textContent = profile.nama_lengkap || 'Dosen';
+        document.getElementById('dropdownUserNidn').textContent = profile.nidn ? `NIDN: ${profile.nidn}` : '-';
     }
 
     function initDropdown() {
         const userMenuBtn = document.getElementById('userMenuBtn');
         const userDropdown = document.getElementById('userDropdown');
-        
         if (userMenuBtn && userDropdown) {
-            userMenuBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                userDropdown.classList.toggle('hidden');
-            });
-            
-            document.addEventListener('click', function(e) {
-                if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) {
-                    userDropdown.classList.add('hidden');
-                }
-            });
+            userMenuBtn.addEventListener('click', (e) => { e.stopPropagation(); userDropdown.classList.toggle('hidden'); });
+            document.addEventListener('click', (e) => { if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) userDropdown.classList.add('hidden'); });
         }
     }
 
@@ -776,55 +744,35 @@
         const hamburger = document.getElementById('hamburgerBtn');
         const mobileNav = document.getElementById('mobileNav');
         const closeBtn = document.getElementById('closeMobileNav');
-        
         if (hamburger && mobileNav) {
             hamburger.addEventListener('click', () => mobileNav.classList.add('active'));
             closeBtn.addEventListener('click', () => mobileNav.classList.remove('active'));
-            mobileNav.addEventListener('click', (e) => {
-                if (e.target === mobileNav) mobileNav.classList.remove('active');
-            });
+            mobileNav.addEventListener('click', (e) => { if (e.target === mobileNav) mobileNav.classList.remove('active'); });
         }
     }
 
     function setActiveNavLink() {
         const currentPage = window.location.pathname.split('/').pop();
-        const navLinks = document.querySelectorAll('.nav-link-modern');
-        const mobileLinks = document.querySelectorAll('.mobile-nav-link');
-        
-        navLinks.forEach(link => {
+        document.querySelectorAll('.nav-link-modern').forEach(link => {
             const href = link.getAttribute('href');
-            if (href === currentPage) {
-                link.classList.add('active');
-            } else {
-                link.classList.remove('active');
-            }
+            if (href === currentPage) link.classList.add('active');
+            else link.classList.remove('active');
         });
-        
-        mobileLinks.forEach(link => {
+        document.querySelectorAll('.mobile-nav-link').forEach(link => {
             const href = link.getAttribute('href');
-            if (href === currentPage) {
-                link.classList.add('active');
-            } else {
-                link.classList.remove('active');
-            }
+            if (href === currentPage) link.classList.add('active');
+            else link.classList.remove('active');
         });
     }
 
-    // ===========================================
-    // LOAD PROFILE DATA
-    // ===========================================
+    // ==================== LOAD DATA ====================
     async function loadProfile() {
         try {
-            const response = await fetch(`${API_BASE}/dosen/profil`, {
-                headers: { 'Authorization': `Bearer ${getToken()}` }
-            });
-            
+            const response = await fetch(`${API_BASE}/dosen/profil`, { headers: { 'Authorization': `Bearer ${getToken()}` } });
             if (response.ok) {
                 const result = await response.json();
                 const profile = result.data;
-                
                 updateNavbarUserInfo(profile);
-                
                 document.getElementById('userName').textContent = profile.nama_lengkap || '-';
                 document.getElementById('userNidn').textContent = profile.nidn || '-';
                 document.getElementById('userProdi').textContent = profile.nama_prodi || '-';
@@ -833,150 +781,71 @@
                 document.getElementById('profileProdi').textContent = profile.nama_prodi || '-';
                 document.getElementById('profileEmail').textContent = profile.email || '-';
                 document.getElementById('profilePhone').textContent = profile.no_hp || '-';
-                
                 const profileAvatar = document.getElementById('profileAvatar');
                 if (profileAvatar) {
-                    if (profile.foto_profil) {
-                        profileAvatar.src = `/${profile.foto_profil}`;
-                    } else {
-                        profileAvatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.nama_lengkap || 'Dosen')}&background=ffffff&color=3B82F6&bold=true`;
-                    }
+                    profileAvatar.src = profile.foto_profil ? `/${profile.foto_profil}` : `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.nama_lengkap || 'Dosen')}&background=ffffff&color=3B82F6&bold=true`;
                 }
-                
                 return profile;
             }
-        } catch (error) {
-            console.error('Error loading profile:', error);
-        }
+        } catch (error) { console.error(error); }
         return null;
     }
 
-    // ===========================================
-    // LOAD STATISTICS
-    // ===========================================
     async function loadStatistics() {
         try {
-            const response = await fetch(`${API_BASE}/dosen/penelitian/statistik`, {
-                headers: { 'Authorization': `Bearer ${getToken()}` }
-            });
-            
+            const response = await fetch(`${API_BASE}/dosen/penelitian/statistik`, { headers: { 'Authorization': `Bearer ${getToken()}` } });
             if (response.ok) {
                 const result = await response.json();
                 const stats = result.data;
-                
-                const aktifCount = (stats.status?.penelitian?.draft || 0) + 
-                                  (stats.status?.penelitian?.submit || 0) +
-                                  (stats.status?.penelitian?.review || 0) +
-                                  (stats.status?.penelitian?.revisi || 0) +
-                                  (stats.status?.pengabdian?.draft || 0) +
-                                  (stats.status?.pengabdian?.submit || 0) +
-                                  (stats.status?.pengabdian?.review || 0) +
-                                  (stats.status?.pengabdian?.revisi || 0);
-                
+                const aktifCount = (stats.status?.penelitian?.draft || 0) + (stats.status?.penelitian?.submit || 0) +
+                                  (stats.status?.penelitian?.review || 0) + (stats.status?.penelitian?.revisi || 0) +
+                                  (stats.status?.pengabdian?.draft || 0) + (stats.status?.pengabdian?.submit || 0) +
+                                  (stats.status?.pengabdian?.review || 0) + (stats.status?.pengabdian?.revisi || 0);
                 document.getElementById('statAktif').textContent = aktifCount;
                 document.getElementById('statAktifDetail').textContent = `${stats.status?.penelitian?.review || 0} dalam review`;
                 document.getElementById('statPublikasi').textContent = stats.luaran?.publikasi || 0;
                 document.getElementById('statPublikasiDetail').textContent = `${stats.luaran?.buku || 0} Buku, ${stats.luaran?.publikasi || 0} Publikasi`;
                 document.getElementById('statHKI').textContent = stats.luaran?.haki || 0;
                 document.getElementById('statHKIDetail').textContent = `${stats.luaran?.haki || 0} HKI terdaftar`;
-                
                 return stats;
             }
-        } catch (error) {
-            console.error('Error loading statistics:', error);
-        }
+        } catch (error) { console.error(error); }
         return null;
     }
 
-    // ===========================================
-    // LOAD REPOSITORY STATS
-    // ===========================================
     async function loadRepositoryStats() {
         try {
-            const response = await fetch(`${API_BASE}/dosen/repository/my/statistics`, {
-                headers: { 'Authorization': `Bearer ${getToken()}` }
-            });
-            
+            const response = await fetch(`${API_BASE}/dosen/repository/my/statistics`, { headers: { 'Authorization': `Bearer ${getToken()}` } });
             if (response.ok) {
                 const result = await response.json();
                 const stats = result.data;
-                
                 document.getElementById('statRepository').textContent = stats.total_dokumen || 0;
                 document.getElementById('statRepositoryDetail').textContent = `${stats.total_downloads || 0} downloads, ${stats.total_views || 0} views`;
-                
-                const container = document.getElementById('repositoryStats');
-                if (container) {
-                    container.innerHTML = `
-                        <div class="flex justify-between items-center p-2 bg-gray-50 rounded-lg">
-                            <span class="text-xs md:text-sm">Total Dokumen</span>
-                            <span class="font-bold text-orange-600 text-sm md:text-base">${stats.total_dokumen || 0}</span>
-                        </div>
-                        <div class="flex justify-between items-center p-2 bg-gray-50 rounded-lg">
-                            <span class="text-xs md:text-sm">Total Downloads</span>
-                            <span class="font-bold text-orange-600 text-sm md:text-base">${stats.total_downloads || 0}</span>
-                        </div>
-                        <div class="flex justify-between items-center p-2 bg-gray-50 rounded-lg">
-                            <span class="text-xs md:text-sm">Total Views</span>
-                            <span class="font-bold text-orange-600 text-sm md:text-base">${stats.total_views || 0}</span>
-                        </div>
-                        <div class="flex justify-between items-center p-2 bg-gray-50 rounded-lg">
-                            <span class="text-xs md:text-sm">Storage Used</span>
-                            <span class="font-bold text-orange-600 text-sm md:text-base">${formatFileSize(stats.total_storage || 0)}</span>
-                        </div>
-                    `;
-                }
-                
+                document.getElementById('repositoryStats').innerHTML = `
+                    <div class="flex justify-between items-center p-2 bg-gray-50 rounded-lg"><span class="text-xs md:text-sm">Total Dokumen</span><span class="font-bold text-orange-600">${stats.total_dokumen || 0}</span></div>
+                    <div class="flex justify-between items-center p-2 bg-gray-50 rounded-lg"><span class="text-xs md:text-sm">Total Downloads</span><span class="font-bold text-orange-600">${stats.total_downloads || 0}</span></div>
+                    <div class="flex justify-between items-center p-2 bg-gray-50 rounded-lg"><span class="text-xs md:text-sm">Total Views</span><span class="font-bold text-orange-600">${stats.total_views || 0}</span></div>
+                `;
                 return stats;
             }
-        } catch (error) {
-            console.error('Error loading repository stats:', error);
-            const container = document.getElementById('repositoryStats');
-            if (container) {
-                container.innerHTML = '<div class="text-center text-gray-400 py-4">Gagal memuat data</div>';
-            }
-        }
+        } catch (error) { console.error(error); document.getElementById('repositoryStats').innerHTML = '<div class="text-center text-gray-400 py-4">Gagal memuat data</div>'; }
         return null;
     }
 
-    // ===========================================
-    // LOAD RECENT SUBMISSIONS
-    // ===========================================
     async function loadRecentSubmissions() {
         try {
             const [penelitianRes, pengabdianRes] = await Promise.all([
-                fetch(`${API_BASE}/dosen/penelitian/penelitian?limit=5`, {
-                    headers: { 'Authorization': `Bearer ${getToken()}` }
-                }),
-                fetch(`${API_BASE}/dosen/penelitian/pengabdian?limit=5`, {
-                    headers: { 'Authorization': `Bearer ${getToken()}` }
-                })
+                fetch(`${API_BASE}/dosen/penelitian/penelitian?limit=5`, { headers: { 'Authorization': `Bearer ${getToken()}` } }),
+                fetch(`${API_BASE}/dosen/penelitian/pengabdian?limit=5`, { headers: { 'Authorization': `Bearer ${getToken()}` } })
             ]);
-            
             let submissions = [];
-            
-            if (penelitianRes.ok) {
-                const result = await penelitianRes.json();
-                const data = result.data || [];
-                submissions.push(...data.map(item => ({ ...item, jenis: 'penelitian' })));
-            }
-            
-            if (pengabdianRes.ok) {
-                const result = await pengabdianRes.json();
-                const data = result.data || [];
-                submissions.push(...data.map(item => ({ ...item, jenis: 'pengabdian' })));
-            }
-            
+            if (penelitianRes.ok) { const result = await penelitianRes.json(); (result.data || []).forEach(item => submissions.push({ ...item, jenis: 'penelitian' })); }
+            if (pengabdianRes.ok) { const result = await pengabdianRes.json(); (result.data || []).forEach(item => submissions.push({ ...item, jenis: 'pengabdian' })); }
             submissions.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
             const latest = submissions.slice(0, 5);
-            
             const container = document.getElementById('recentSubmissions');
             if (!container) return;
-            
-            if (latest.length === 0) {
-                container.innerHTML = '<div class="text-center text-gray-400 py-8">Belum ada pengajuan</div>';
-                return;
-            }
-            
+            if (latest.length === 0) { container.innerHTML = '<div class="text-center text-gray-400 py-8">Belum ada pengajuan</div>'; return; }
             container.innerHTML = latest.map(item => `
                 <div class="activity-item p-2 md:p-3 rounded-lg">
                     <div class="flex justify-between items-start flex-wrap gap-2">
@@ -986,81 +855,32 @@
                                 <span class="text-xs text-gray-400">${item.jenis === 'penelitian' ? 'Penelitian' : 'Pengabdian'}</span>
                             </div>
                             <h4 class="font-semibold text-gray-800 text-sm md:text-base truncate">${escapeHtml(item.judul)}</h4>
-                            <p class="text-xs text-gray-500 mt-1">
-                                ${item.skema_penelitian || item.skema_pengabdian || '-'} • ${item.tahun || '-'}
-                            </p>
+                            <p class="text-xs text-gray-500 mt-1">${item.skema_penelitian || item.skema_pengabdian || '-'} • ${item.tahun || '-'}</p>
                         </div>
                         <div class="text-right">
                             <p class="text-xs text-gray-400">${formatDate(item.created_at)}</p>
-                            <a href="dosen-penelitian-pengabdian.html?id=${item.id_penelitian || item.id_pengabdian}" 
-                               class="text-xs text-blue-600 hover:text-blue-800 mt-1 inline-block">
-                                Detail <i class="fas fa-arrow-right"></i>
-                            </a>
+                            <a href="dosen-penelitian-pengabdian.html?id=${item.id_penelitian || item.id_pengabdian}" class="text-xs text-blue-600 hover:text-blue-800 mt-1 inline-block">Detail <i class="fas fa-arrow-right"></i></a>
                         </div>
                     </div>
                 </div>
             `).join('');
-            
-        } catch (error) {
-            console.error('Error loading submissions:', error);
-            const container = document.getElementById('recentSubmissions');
-            if (container) {
-                container.innerHTML = '<div class="text-center text-gray-400 py-8">Gagal memuat data</div>';
-            }
-        }
+        } catch (error) { console.error(error); document.getElementById('recentSubmissions').innerHTML = '<div class="text-center text-gray-400 py-8">Gagal memuat data</div>'; }
     }
 
-    // ===========================================
-    // LOAD TIMELINE
-    // ===========================================
     async function loadTimeline() {
         try {
             const [penelitianRes, pengabdianRes] = await Promise.all([
-                fetch(`${API_BASE}/dosen/penelitian/penelitian?limit=10`, {
-                    headers: { 'Authorization': `Bearer ${getToken()}` }
-                }),
-                fetch(`${API_BASE}/dosen/penelitian/pengabdian?limit=10`, {
-                    headers: { 'Authorization': `Bearer ${getToken()}` }
-                })
+                fetch(`${API_BASE}/dosen/penelitian/penelitian?limit=10`, { headers: { 'Authorization': `Bearer ${getToken()}` } }),
+                fetch(`${API_BASE}/dosen/penelitian/pengabdian?limit=10`, { headers: { 'Authorization': `Bearer ${getToken()}` } })
             ]);
-            
             let events = [];
-            
-            if (penelitianRes.ok) {
-                const result = await penelitianRes.json();
-                (result.data || []).forEach(item => {
-                    if (item.created_at) events.push({
-                        title: `Pengajuan Penelitian: ${item.judul}`,
-                        date: item.created_at,
-                        status: item.status,
-                        type: 'penelitian'
-                    });
-                });
-            }
-            
-            if (pengabdianRes.ok) {
-                const result = await pengabdianRes.json();
-                (result.data || []).forEach(item => {
-                    if (item.created_at) events.push({
-                        title: `Pengajuan Pengabdian: ${item.judul}`,
-                        date: item.created_at,
-                        status: item.status,
-                        type: 'pengabdian'
-                    });
-                });
-            }
-            
+            if (penelitianRes.ok) { const result = await penelitianRes.json(); (result.data || []).forEach(item => { if (item.created_at) events.push({ title: `Pengajuan Penelitian: ${item.judul}`, date: item.created_at, status: item.status, type: 'penelitian' }); }); }
+            if (pengabdianRes.ok) { const result = await pengabdianRes.json(); (result.data || []).forEach(item => { if (item.created_at) events.push({ title: `Pengajuan Pengabdian: ${item.judul}`, date: item.created_at, status: item.status, type: 'pengabdian' }); }); }
             events.sort((a, b) => new Date(b.date) - new Date(a.date));
             const latest = events.slice(0, 5);
-            
             const container = document.getElementById('timelineActivities');
             if (!container) return;
-            
-            if (latest.length === 0) {
-                container.innerHTML = '<div class="text-center text-gray-400 py-8">Belum ada aktivitas</div>';
-                return;
-            }
-            
+            if (latest.length === 0) { container.innerHTML = '<div class="text-center text-gray-400 py-8">Belum ada aktivitas</div>'; return; }
             container.innerHTML = latest.map((event, index) => `
                 <div class="flex items-start gap-3">
                     <div class="relative">
@@ -1076,37 +896,18 @@
                     </div>
                 </div>
             `).join('');
-            
-        } catch (error) {
-            console.error('Error loading timeline:', error);
-            const container = document.getElementById('timelineActivities');
-            if (container) {
-                container.innerHTML = '<div class="text-center text-gray-400 py-8">Gagal memuat data</div>';
-            }
-        }
+        } catch (error) { console.error(error); }
     }
 
-    // ===========================================
-    // LOAD RECENT PUBLICATIONS
-    // ===========================================
     async function loadRecentPublications() {
         try {
-            const response = await fetch(`${API_BASE}/dosen/profil/publikasi?limit=3`, {
-                headers: { 'Authorization': `Bearer ${getToken()}` }
-            });
-            
+            const response = await fetch(`${API_BASE}/dosen/profil/publikasi?limit=3`, { headers: { 'Authorization': `Bearer ${getToken()}` } });
             const container = document.getElementById('recentPublications');
             if (!container) return;
-            
             if (response.ok) {
                 const result = await response.json();
                 const publications = result.data || [];
-                
-                if (publications.length === 0) {
-                    container.innerHTML = '<div class="text-center text-gray-400 py-8">Belum ada publikasi</div>';
-                    return;
-                }
-                
+                if (publications.length === 0) { container.innerHTML = '<div class="text-center text-gray-400 py-8">Belum ada publikasi</div>'; return; }
                 container.innerHTML = publications.map(pub => `
                     <div class="p-2 md:p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
                         <h4 class="font-semibold text-xs md:text-sm text-gray-800 truncate">${escapeHtml(pub.judul)}</h4>
@@ -1114,31 +915,16 @@
                         <p class="text-xs text-gray-400 mt-1">${formatDate(pub.tanggal)}</p>
                     </div>
                 `).join('');
-            } else {
-                container.innerHTML = '<div class="text-center text-gray-400 py-8">Gagal memuat publikasi</div>';
-            }
-        } catch (error) {
-            console.error('Error loading publications:', error);
-            const container = document.getElementById('recentPublications');
-            if (container) {
-                container.innerHTML = '<div class="text-center text-gray-400 py-8">Gagal memuat data</div>';
-            }
-        }
+            } else { container.innerHTML = '<div class="text-center text-gray-400 py-8">Gagal memuat publikasi</div>'; }
+        } catch (error) { console.error(error); }
     }
 
-    // ===========================================
-    // LOAD CHARTS
-    // ===========================================
     async function loadCharts() {
         try {
-            const response = await fetch(`${API_BASE}/dosen/penelitian/statistik`, {
-                headers: { 'Authorization': `Bearer ${getToken()}` }
-            });
-            
+            const response = await fetch(`${API_BASE}/dosen/penelitian/statistik`, { headers: { 'Authorization': `Bearer ${getToken()}` } });
             if (response.ok) {
                 const result = await response.json();
                 const stats = result.data;
-                
                 const statusData = {
                     draft: (stats.status?.penelitian?.draft || 0) + (stats.status?.pengabdian?.draft || 0),
                     submit: (stats.status?.penelitian?.submit || 0) + (stats.status?.pengabdian?.submit || 0),
@@ -1147,135 +933,54 @@
                     diterima: (stats.status?.penelitian?.diterima || 0) + (stats.status?.pengabdian?.diterima || 0),
                     ditolak: (stats.status?.penelitian?.ditolak || 0) + (stats.status?.pengabdian?.ditolak || 0)
                 };
-                
                 const ctx = document.getElementById('statusChart');
                 if (ctx) {
                     if (statusChart) statusChart.destroy();
                     statusChart = new Chart(ctx.getContext('2d'), {
                         type: 'doughnut',
-                        data: {
-                            labels: ['Draft', 'Submit', 'Review', 'Revisi', 'Diterima', 'Ditolak'],
-                            datasets: [{
-                                data: [statusData.draft, statusData.submit, statusData.review, statusData.revisi, statusData.diterima, statusData.ditolak],
-                                backgroundColor: ['#F59E0B', '#3B82F6', '#8B5CF6', '#EF4444', '#10B981', '#6B7280'],
-                                borderWidth: 0
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: true,
-                            plugins: {
-                                legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } }
-                            }
-                        }
+                        data: { labels: ['Draft', 'Submit', 'Review', 'Revisi', 'Diterima', 'Ditolak'], datasets: [{ data: [statusData.draft, statusData.submit, statusData.review, statusData.revisi, statusData.diterima, statusData.ditolak], backgroundColor: ['#F59E0B', '#3B82F6', '#8B5CF6', '#EF4444', '#10B981', '#6B7280'], borderWidth: 0 }] },
+                        options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } } }
                     });
                 }
-                
                 const currentYear = new Date().getFullYear();
                 const ctx2 = document.getElementById('tahunanChart');
                 if (ctx2) {
                     if (tahunanChart) tahunanChart.destroy();
                     tahunanChart = new Chart(ctx2.getContext('2d'), {
                         type: 'bar',
-                        data: {
-                            labels: [currentYear-3, currentYear-2, currentYear-1, currentYear],
-                            datasets: [
-                                { label: 'Penelitian', data: [2, 3, 4, 2], backgroundColor: '#3B82F6', borderRadius: 8 },
-                                { label: 'Pengabdian', data: [1, 2, 3, 1], backgroundColor: '#10B981', borderRadius: 8 }
-                            ]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: true,
-                            plugins: {
-                                legend: { position: 'top', labels: { boxWidth: 10, font: { size: 10 } } }
-                            },
-                            scales: {
-                                y: { beginAtZero: true, ticks: { stepSize: 1 } }
-                            }
-                        }
+                        data: { labels: [currentYear-3, currentYear-2, currentYear-1, currentYear], datasets: [{ label: 'Penelitian', data: [2, 3, 4, 2], backgroundColor: '#3B82F6', borderRadius: 8 }, { label: 'Pengabdian', data: [1, 2, 3, 1], backgroundColor: '#10B981', borderRadius: 8 }] },
+                        options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'top', labels: { boxWidth: 10, font: { size: 10 } } } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
                     });
                 }
             }
-        } catch (error) {
-            console.error('Error loading charts:', error);
-        }
+        } catch (error) { console.error(error); }
     }
 
-    // ===========================================
-    // REFRESH ALL DATA
-    // ===========================================
-    window.refreshSubmissions = async () => {
-        await loadRecentSubmissions();
-        showToast('Pengajuan diperbarui', 'success');
-    };
+    window.refreshSubmissions = async () => { await loadRecentSubmissions(); showToast('Pengajuan diperbarui', 'success'); };
     
     async function refreshAllData() {
         showLoading();
         try {
-            await Promise.all([
-                loadProfile(),
-                loadStatistics(),
-                loadRepositoryStats(),
-                loadRecentSubmissions(),
-                loadTimeline(),
-                loadRecentPublications(),
-                loadCharts()
-            ]);
+            await Promise.all([loadProfile(), loadStatistics(), loadRepositoryStats(), loadRecentSubmissions(), loadTimeline(), loadRecentPublications(), loadCharts()]);
             updateLastUpdateTime();
             showToast('Data dashboard diperbarui', 'success');
-        } catch (error) {
-            console.error('Error refreshing data:', error);
-        } finally {
-            hideLoading();
-        }
+        } catch (error) { console.error(error); } finally { hideLoading(); }
     }
 
-    // ===========================================
-    // HELPER FUNCTIONS
-    // ===========================================
-    function escapeHtml(text) {
-        if (!text) return '';
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
-
+    // Helper Functions
+    function escapeHtml(text) { if (!text) return ''; const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
     function formatDate(dateString) {
         if (!dateString) return '-';
         const date = new Date(dateString);
         const now = new Date();
         const diff = Math.floor((now - date) / (1000 * 60 * 60 * 24));
-        
-        if (diff === 0) return 'Hari ini';
-        if (diff === 1) return 'Kemarin';
-        if (diff < 7) return `${diff} hari lalu`;
+        if (diff === 0) return 'Hari ini'; if (diff === 1) return 'Kemarin'; if (diff < 7) return `${diff} hari lalu`;
         return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
     }
-
-    function formatFileSize(bytes) {
-        if (!bytes || bytes === 0) return '0 Bytes';
-        const k = 1024;
-        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-    }
-
     function getStatusLabel(status) {
-        const labels = {
-            'draft': 'Draft',
-            'submit': 'Disubmit',
-            'review': 'Direview',
-            'revisi': 'Revisi',
-            'diterima': 'Diterima',
-            'ditolak': 'Ditolak',
-            'pending': 'Pending',
-            'approved': 'Disetujui',
-            'publish': 'Published'
-        };
+        const labels = { 'draft': 'Draft', 'submit': 'Disubmit', 'review': 'Direview', 'revisi': 'Revisi', 'diterima': 'Diterima', 'ditolak': 'Ditolak', 'pending': 'Pending', 'approved': 'Disetujui', 'publish': 'Published' };
         return labels[status] || status;
     }
-
     function getTimelineColor(status) {
         if (status === 'diterima' || status === 'approved') return 'bg-green-500';
         if (status === 'draft' || status === 'submit') return 'bg-blue-500';
@@ -1284,28 +989,14 @@
         if (status === 'ditolak') return 'bg-red-500';
         return 'bg-gray-400';
     }
+    function getTimelineIcon(type) { return type === 'penelitian' ? 'fa-flask' : 'fa-hands-helping'; }
 
-    function getTimelineIcon(type) {
-        return type === 'penelitian' ? 'fa-flask' : 'fa-hands-helping';
-    }
-
-    // ===========================================
-    // INITIALIZE
-    // ===========================================
+    // ==================== INITIALIZE ====================
     document.addEventListener('DOMContentLoaded', async function() {
         if (!checkAuth()) return;
-        
-        initDropdown();
-        initMobileNav();
-        setActiveNavLink();
-        
+        initDropdown(); initMobileNav(); setActiveNavLink();
         await refreshAllData();
-        
-        refreshInterval = setInterval(() => {
-            if (!document.hidden) {
-                refreshAllData();
-            }
-        }, 30000);
+        refreshInterval = setInterval(() => { if (!document.hidden) refreshAllData(); }, 30000);
     });
     </script>
 </body>
