@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <title>Dashboard Dosen - LPPM ITB Yadika</title>
     
     <!-- CSS External Libraries -->
@@ -12,88 +12,81 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
-    
-    .nav-link-modern {
-        position: relative;
-        transition: all 0.2s ease;
-    }
-    
-    .nav-link-modern.active {
-        background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
-        color: white !important;
-    }
-    
-    .nav-link-modern.active i {
-        color: white !important;
-    }
-    
-    .nav-link-modern:not(.active):hover {
-        transform: translateY(-1px);
-    }
-    
-    /* Dropdown Animation */
-    #userDropdown {
-        transform-origin: top right;
-        animation: dropdownFade 0.2s ease;
-    }
-    
-    @keyframes dropdownFade {
-        from {
-            opacity: 0;
-            transform: scale(0.95) translateY(-10px);
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
         }
-        to {
-            opacity: 1;
-            transform: scale(1) translateY(0);
-        }
-    }
-    
-    /* Active link indicator */
-    .nav-link-modern.active::before {
-        content: '';
-        position: absolute;
-        bottom: -2px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 20px;
-        height: 2px;
-        background: white;
-        border-radius: 2px;
-    }
 
+        /* Navbar Styles */
+        .navbar-custom {
+            background: linear-gradient(135deg, #1E3A5F 0%, #2D4A6E 50%, #1E3A5F 100%);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-link-modern {
+            position: relative;
+            transition: all 0.2s ease;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .nav-link-modern:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .nav-link-modern.active {
+            background: rgba(255, 255, 255, 0.25);
+            color: white !important;
+        }
+
+        .nav-link-modern.active i {
+            color: white !important;
+        }
+
+        .nav-link-modern.active::before {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 2px;
+            background: white;
+            border-radius: 2px;
+        }
+
+        .brand-title {
+            color: white;
+        }
+
+        .brand-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .icon-btn {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .icon-btn:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .user-name, .user-role {
+            color: white;
+        }
+
+        .user-role {
+            opacity: 0.7;
+        }
 
         .gradient-text { 
             background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%); 
             -webkit-background-clip: text; 
             -webkit-text-fill-color: transparent; 
             background-clip: text; 
-        }
-        
-        .nav-link { 
-            position: relative; 
-            transition: color 0.3s ease; 
-        }
-        
-        .nav-link::after { 
-            content: ''; 
-            position: absolute; 
-            width: 0; 
-            height: 2px; 
-            bottom: -5px; 
-            left: 50%; 
-            background-color: #3B82F6; 
-            transition: all 0.3s ease; 
-        }
-        
-        .nav-link:hover::after, 
-        .nav-link.active::after { 
-            width: 100%; 
-            left: 0; 
-        }
-        
-        .nav-link.active { 
-            color: #3B82F6; 
-            font-weight: 600; 
         }
 
         .loading-spinner {
@@ -115,7 +108,7 @@
             transition: all 0.3s ease;
             background: white;
             border-radius: 1rem;
-            padding: 1.5rem;
+            padding: 1rem;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
         .stat-card:hover {
@@ -135,9 +128,9 @@
 
         .greeting-banner {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 1.5rem;
-            padding: 2rem;
-            margin-bottom: 2rem;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
         }
 
         .realtime-badge {
@@ -198,128 +191,280 @@
         .status-diterima { background: #D1FAE5; color: #059669; }
         .status-ditolak { background: #FEE2E2; color: #DC2626; }
         .status-publish { background: #D1FAE5; color: #059669; }
+
+        /* Mobile Navigation */
+        .mobile-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-nav.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .mobile-nav-container {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 280px;
+            height: 100%;
+            background: white;
+            transform: translateX(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mobile-nav.active .mobile-nav-container {
+            transform: translateX(0);
+        }
+
+        .mobile-nav-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #1E3A5F, #2D4A6E);
+            color: white;
+        }
+
+        .mobile-nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            color: #4B5563;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .mobile-nav-link.active {
+            background: #EFF6FF;
+            color: #3B82F6;
+            border-left-color: #3B82F6;
+        }
+
+        /* Dropdown Animation */
+        #userDropdown {
+            transform-origin: top right;
+            animation: dropdownFade 0.2s ease;
+        }
+
+        @keyframes dropdownFade {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .stat-card {
+                padding: 0.75rem;
+            }
+            .greeting-banner {
+                padding: 1rem;
+            }
+            .greeting-banner h2 {
+                font-size: 1.25rem;
+            }
+            .realtime-badge {
+                font-size: 10px;
+                padding: 2px 8px;
+            }
+        }
     </style>
 </head>
 <body class="bg-gray-50 font-sans antialiased">
     <!-- Loading Overlay -->
-    <div id="loadingOverlay" class="fixed inset-0 bg-white bg-opacity-90 z-50 flex items-center justify-center">
+    <div id="loadingOverlay" class="fixed inset-0 bg-white bg-opacity-90 z-50 flex items-center justify-center hidden">
         <div class="text-center">
             <div class="loading-spinner"></div>
             <p class="mt-4 text-gray-600">Memuat dashboard dosen...</p>
         </div>
     </div>
 
-        <header class="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-md shadow-sm z-50 border-b border-gray-100">
-    <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
-        <!-- Logo and Brand -->
-        <a href="dosen-dashboard.html" class="flex items-center space-x-3 group">
-            <div class="relative">
-                <img src="yadika.png" alt="Logo LPPM ITB Yadika" class="h-10 w-10 rounded-xl shadow-sm transition-transform group-hover:scale-105">
-                <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl opacity-0 group-hover:opacity-20 transition"></div>
-            </div>
-            <div>
-                <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                    Portal Dosen
-                </h1>
-                <p class="text-xs text-gray-400">LPPM ITB Yadika</p>
-            </div>
-        </a>
-        
-        <!-- Desktop Navigation Menu -->
-        <div class="hidden md:flex items-center space-x-1">
-            <a href="dosen-dashboard.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
-                <i class="fas fa-home text-gray-400 group-hover:text-blue-500 transition"></i>
-                <span>Dashboard</span>
-            </a>
-            <a href="dosen-berita.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
-                <i class="fas fa-newspaper text-gray-400 group-hover:text-blue-500 transition"></i>
-                <span>Berita</span>
-            </a>
-            <a href="dosen-penelitian-pengabdian.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
-                <i class="fas fa-flask text-gray-400 group-hover:text-blue-500 transition"></i>
-                <span>Penelitian</span>
-            </a>
-            <a href="dosen-repository.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
-                <i class="fas fa-archive text-gray-400 group-hover:text-blue-500 transition"></i>
-                <span>Repository</span>
-            </a>
-            <a href="dosen-profil.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
-                <i class="fas fa-user-circle text-gray-400 group-hover:text-blue-500 transition"></i>
-                <span>Profil</span>
-            </a>
-        </div>
-        
-        <!-- User Info & Actions -->
-        <div class="flex items-center gap-4">
-            <!-- Notifications Dropdown -->
-            <div class="relative">
-                <button id="notificationBtn" class="relative p-2 rounded-lg text-gray-500 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200">
-                    <i class="fas fa-bell text-lg"></i>
-                    <span id="notificationBadge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full hidden"></span>
-                </button>
-            </div>
-            
-            <!-- User Profile Dropdown - Simplified -->
-            <div class="relative">
-                <button id="userMenuBtn" class="flex items-center gap-3 p-1.5 rounded-xl hover:bg-gray-50 transition-all duration-200 border border-transparent hover:border-gray-200">
-                    <div class="relative">
-                        <img id="navAvatar" src="" alt="Avatar" class="w-9 h-9 rounded-full object-cover ring-2 ring-gray-200">
-                        <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full ring-2 ring-white"></div>
+    <!-- Mobile Navigation -->
+    <div id="mobileNav" class="mobile-nav">
+        <div class="mobile-nav-container">
+            <div class="mobile-nav-header">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                        <img src="yadika.png" alt="Logo LPPM ITB Yadika" class="h-8 w-8 rounded-lg bg-white p-1">
+                        <span class="font-bold text-sm">Portal Dosen</span>
                     </div>
-                    <div class="hidden md:block text-left">
-                        <p class="text-sm font-semibold text-gray-800" id="navUserName">Loading...</p>
-                        <p class="text-xs text-gray-400" id="navUserRole">Dosen</p>
-                    </div>
-                    <i class="fas fa-chevron-down text-xs text-gray-400 hidden md:block"></i>
-                </button>
-                
-                <!-- Dropdown Menu - Simplified -->
-                <div id="userDropdown" class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hidden transition-all duration-200 z-50">
-                    <!-- Header with user info -->
-                    <div class="p-3 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-purple-50">
-                        <div class="flex items-center gap-3">
-                            <img id="dropdownAvatar" src="" alt="Avatar" class="w-10 h-10 rounded-full object-cover">
-                            <div>
-                                <p class="font-semibold text-gray-800 text-sm" id="dropdownUserName">Loading...</p>
-                                <p class="text-xs text-gray-500" id="dropdownUserNidn">-</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Menu Items -->
-                    <div class="p-2">
-                        <a href="dosen-profil.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
-                            <i class="fas fa-user-cog w-5 text-gray-400"></i>
-                            <span>Pengaturan Akun</span>
-                        </a>
-                        <a href="dosen-ubah-password.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
-                            <i class="fas fa-key w-5 text-gray-400"></i>
-                            <span>Ubah Password</span>
-                        </a>
-                        <div class="border-t border-gray-100 my-2"></div>
-                        <button onclick="handleLogout()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-600 hover:bg-red-50 transition text-sm">
-                            <i class="fas fa-sign-out-alt w-5 text-red-400"></i>
-                            <span>Logout</span>
-                        </button>
+                    <button id="closeMobileNav" class="text-white">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <div class="flex items-center gap-3 mt-4 pt-2 border-t border-white/20">
+                    <img id="mobileNavAvatar" src="" alt="Avatar" class="w-10 h-10 rounded-full object-cover ring-2 ring-white/50">
+                    <div>
+                        <p class="font-semibold text-sm" id="mobileNavUserName">Loading...</p>
+                        <p class="text-xs opacity-80">Dosen</p>
                     </div>
                 </div>
             </div>
+            <div class="flex-1 overflow-y-auto py-4">
+                <a href="dosen-dashboard.html" class="mobile-nav-link active">
+                    <i class="fas fa-home w-5"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="dosen-berita.html" class="mobile-nav-link">
+                    <i class="fas fa-newspaper w-5"></i>
+                    <span>Berita</span>
+                </a>
+                <a href="dosen-penelitian-pengabdian.html" class="mobile-nav-link">
+                    <i class="fas fa-flask w-5"></i>
+                    <span>Penelitian</span>
+                </a>
+                <a href="dosen-repository.html" class="mobile-nav-link">
+                    <i class="fas fa-archive w-5"></i>
+                    <span>Repository</span>
+                </a>
+                <a href="dosen-profil.html" class="mobile-nav-link">
+                    <i class="fas fa-user-circle w-5"></i>
+                    <span>Profil</span>
+                </a>
+                <div class="border-t border-gray-100 my-4 mx-4"></div>
+                <a href="dosen-profil.html" class="mobile-nav-link">
+                    <i class="fas fa-user-cog w-5"></i>
+                    <span>Pengaturan Akun</span>
+                </a>
+                <a href="dosen-ubah-password.html" class="mobile-nav-link">
+                    <i class="fas fa-key w-5"></i>
+                    <span>Ubah Password</span>
+                </a>
+                <button onclick="handleLogout()" class="mobile-nav-link w-full text-left text-red-600">
+                    <i class="fas fa-sign-out-alt w-5"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
         </div>
-    </nav>
-</header>
+    </div>
 
+    <!-- Navbar -->
+    <header class="fixed top-0 left-0 right-0 navbar-custom z-50">
+        <nav class="container mx-auto px-4 md:px-6 py-3 md:py-4 flex justify-between items-center">
+            <!-- Logo and Brand -->
+            <a href="dosen-dashboard.html" class="flex items-center space-x-3 group">
+                <div class="relative">
+                    <img src="yadika.png" alt="Logo LPPM ITB Yadika" class="h-9 w-9 md:h-10 md:w-10 rounded-lg shadow-sm transition-transform group-hover:scale-105 bg-white p-1">
+                    <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-400 to-purple-400 rounded-lg opacity-0 group-hover:opacity-30 transition"></div>
+                </div>
+                <div>
+                    <h1 class="brand-title text-base md:text-lg font-bold tracking-wide">
+                        Portal Dosen
+                    </h1>
+                    <p class="brand-subtitle text-xs md:text-sm -mt-0.5">LPPM ITB Yadika</p>
+                </div>
+            </a>
+            
+            <!-- Desktop Navigation Menu -->
+            <div class="hidden md:flex items-center space-x-1">
+                <a href="dosen-dashboard.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2 active">
+                    <i class="fas fa-home text-sm"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="dosen-berita.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-newspaper text-sm"></i>
+                    <span>Berita</span>
+                </a>
+                <a href="dosen-penelitian-pengabdian.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-flask text-sm"></i>
+                    <span>Penelitian</span>
+                </a>
+                <a href="dosen-repository.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-archive text-sm"></i>
+                    <span>Repository</span>
+                </a>
+                <a href="dosen-profil.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-user-circle text-sm"></i>
+                    <span>Profil</span>
+                </a>
+            </div>
+            
+            <!-- User Info & Actions -->
+            <div class="flex items-center gap-2 md:gap-3">
+                <!-- Notifications -->
+                <div class="relative">
+                    <button id="notificationBtn" class="icon-btn relative p-2 rounded-lg transition-all duration-200">
+                        <i class="fas fa-bell text-base md:text-lg"></i>
+                        <span id="notificationBadge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full hidden"></span>
+                    </button>
+                </div>
+                
+                <!-- User Profile Dropdown Desktop -->
+                <div class="relative hidden md:block">
+                    <button id="userMenuBtn" class="flex items-center gap-2 p-1.5 rounded-xl hover:bg-white/10 transition-all duration-200">
+                        <div class="relative">
+                            <img id="navAvatar" src="" alt="Avatar" class="w-8 h-8 rounded-full object-cover ring-2 ring-white/50">
+                            <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full ring-2 ring-white"></div>
+                        </div>
+                        <div class="hidden xl:block text-left">
+                            <p class="user-name text-xs font-semibold" id="navUserName">Loading...</p>
+                            <p class="user-role text-[10px]" id="navUserRole">Dosen</p>
+                        </div>
+                        <i class="fas fa-chevron-down text-[10px] text-white/60 hidden xl:block"></i>
+                    </button>
+                    
+                    <div id="userDropdown" class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hidden z-50">
+                        <div class="p-3 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-purple-50">
+                            <div class="flex items-center gap-3">
+                                <img id="dropdownAvatar" src="" alt="Avatar" class="w-10 h-10 rounded-full object-cover">
+                                <div>
+                                    <p class="font-semibold text-gray-800 text-sm" id="dropdownUserName">Loading...</p>
+                                    <p class="text-xs text-gray-500" id="dropdownUserNidn">-</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-2">
+                            <a href="dosen-profil.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
+                                <i class="fas fa-user-cog w-5 text-gray-400"></i>
+                                <span>Pengaturan Akun</span>
+                            </a>
+                            <a href="dosen-ubah-password.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
+                                <i class="fas fa-key w-5 text-gray-400"></i>
+                                <span>Ubah Password</span>
+                            </a>
+                            <div class="border-t border-gray-100 my-2"></div>
+                            <button onclick="handleLogout()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-600 hover:bg-red-50 transition text-sm">
+                                <i class="fas fa-sign-out-alt w-5 text-red-400"></i>
+                                <span>Logout</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hamburger Menu Button -->
+                <button id="hamburgerBtn" class="md:hidden icon-btn p-2 rounded-lg transition-all duration-200">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </nav>
+    </header>
 
     <!-- Main Content -->
-    <main class="pt-24">
+    <main class="pt-[72px] md:pt-[84px] pb-12">
         <div class="container mx-auto px-4 sm:px-6 py-6">
             <!-- Greeting Banner -->
             <div class="greeting-banner text-white" data-aos="fade-down">
                 <div class="flex justify-between items-center flex-wrap gap-4">
                     <div>
-                        <h2 class="text-2xl md:text-3xl font-bold mb-2">
+                        <h2 class="text-xl md:text-2xl font-bold mb-2">
                             Selamat Datang, <span id="userName">Loading...</span>
                         </h2>
-                        <p class="text-white/80 text-sm md:text-base">
+                        <p class="text-white/80 text-xs md:text-sm">
                             <i class="fas fa-building mr-1"></i> <span id="userProdi">-</span>
                             <i class="fas fa-id-card ml-3 mr-1"></i> <span id="userNidn">-</span>
                         </p>
@@ -333,92 +478,96 @@
             </div>
 
             <!-- Statistics Cards -->
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6" data-aos="fade-up">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6" data-aos="fade-up">
                 <div class="stat-card border-l-4 border-blue-500">
                     <div class="flex justify-between items-start">
                         <div>
-                            <p class="text-xs text-gray-500">Pengajuan Aktif</p>
-                            <p class="text-2xl font-bold text-blue-600" id="statAktif">0</p>
+                            <p class="text-[10px] md:text-xs text-gray-500">Pengajuan Aktif</p>
+                            <p class="text-xl md:text-2xl font-bold text-blue-600" id="statAktif">0</p>
                         </div>
-                        <div class="bg-blue-100 rounded-full p-3">
-                            <i class="fas fa-file-alt text-blue-600 text-xl"></i>
+                        <div class="bg-blue-100 rounded-full p-2 md:p-3">
+                            <i class="fas fa-file-alt text-blue-600 text-sm md:text-xl"></i>
                         </div>
                     </div>
-                    <p class="text-xs text-gray-400 mt-2" id="statAktifDetail">Dalam proses review</p>
+                    <p class="text-[10px] md:text-xs text-gray-400 mt-2" id="statAktifDetail">Dalam proses review</p>
                 </div>
                 
                 <div class="stat-card border-l-4 border-purple-500">
                     <div class="flex justify-between items-start">
                         <div>
-                            <p class="text-xs text-gray-500">Publikasi Ilmiah</p>
-                            <p class="text-2xl font-bold text-purple-600" id="statPublikasi">0</p>
+                            <p class="text-[10px] md:text-xs text-gray-500">Publikasi Ilmiah</p>
+                            <p class="text-xl md:text-2xl font-bold text-purple-600" id="statPublikasi">0</p>
                         </div>
-                        <div class="bg-purple-100 rounded-full p-3">
-                            <i class="fas fa-quote-right text-purple-600 text-xl"></i>
+                        <div class="bg-purple-100 rounded-full p-2 md:p-3">
+                            <i class="fas fa-quote-right text-purple-600 text-sm md:text-xl"></i>
                         </div>
                     </div>
-                    <p class="text-xs text-gray-400 mt-2" id="statPublikasiDetail">Jurnal & Prosiding</p>
+                    <p class="text-[10px] md:text-xs text-gray-400 mt-2" id="statPublikasiDetail">Jurnal & Prosiding</p>
                 </div>
                 
                 <div class="stat-card border-l-4 border-green-500">
                     <div class="flex justify-between items-start">
                         <div>
-                            <p class="text-xs text-gray-500">HKI/Paten</p>
-                            <p class="text-2xl font-bold text-green-600" id="statHKI">0</p>
+                            <p class="text-[10px] md:text-xs text-gray-500">HKI/Paten</p>
+                            <p class="text-xl md:text-2xl font-bold text-green-600" id="statHKI">0</p>
                         </div>
-                        <div class="bg-green-100 rounded-full p-3">
-                            <i class="fas fa-certificate text-green-600 text-xl"></i>
+                        <div class="bg-green-100 rounded-full p-2 md:p-3">
+                            <i class="fas fa-certificate text-green-600 text-sm md:text-xl"></i>
                         </div>
                     </div>
-                    <p class="text-xs text-gray-400 mt-2" id="statHKIDetail">Hak Kekayaan Intelektual</p>
+                    <p class="text-[10px] md:text-xs text-gray-400 mt-2" id="statHKIDetail">Hak Kekayaan Intelektual</p>
                 </div>
                 
                 <div class="stat-card border-l-4 border-orange-500">
                     <div class="flex justify-between items-start">
                         <div>
-                            <p class="text-xs text-gray-500">Repository</p>
-                            <p class="text-2xl font-bold text-orange-600" id="statRepository">0</p>
+                            <p class="text-[10px] md:text-xs text-gray-500">Repository</p>
+                            <p class="text-xl md:text-2xl font-bold text-orange-600" id="statRepository">0</p>
                         </div>
-                        <div class="bg-orange-100 rounded-full p-3">
-                            <i class="fas fa-archive text-orange-600 text-xl"></i>
+                        <div class="bg-orange-100 rounded-full p-2 md:p-3">
+                            <i class="fas fa-archive text-orange-600 text-sm md:text-xl"></i>
                         </div>
                     </div>
-                    <p class="text-xs text-gray-400 mt-2" id="statRepositoryDetail">Dokumen terupload</p>
+                    <p class="text-[10px] md:text-xs text-gray-400 mt-2" id="statRepositoryDetail">Dokumen terupload</p>
                 </div>
             </div>
 
             <!-- Charts Row -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6" data-aos="fade-up">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-6" data-aos="fade-up">
                 <!-- Chart Status Pengajuan -->
-                <div class="bg-white rounded-xl shadow-lg p-6">
-                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                <div class="bg-white rounded-xl shadow-lg p-4 md:p-6">
+                    <h3 class="text-base md:text-lg font-bold text-gray-800 mb-4 flex items-center">
                         <i class="fas fa-chart-pie mr-2 text-blue-500"></i>
                         Status Pengajuan
                     </h3>
-                    <canvas id="statusChart" height="200"></canvas>
+                    <div class="h-[200px]">
+                        <canvas id="statusChart"></canvas>
+                    </div>
                 </div>
 
                 <!-- Chart Statistik Tahunan -->
-                <div class="bg-white rounded-xl shadow-lg p-6">
-                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                <div class="bg-white rounded-xl shadow-lg p-4 md:p-6">
+                    <h3 class="text-base md:text-lg font-bold text-gray-800 mb-4 flex items-center">
                         <i class="fas fa-chart-line mr-2 text-green-500"></i>
                         Statistik Tahunan
                     </h3>
-                    <canvas id="tahunanChart" height="200"></canvas>
+                    <div class="h-[200px]">
+                        <canvas id="tahunanChart"></canvas>
+                    </div>
                 </div>
             </div>
 
             <!-- Main Content Grid -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
                 <!-- Left Column - Recent Submissions -->
-                <div class="lg:col-span-2 space-y-6">
-                    <div class="bg-white rounded-xl shadow-lg p-6" data-aos="fade-right">
+                <div class="lg:col-span-2 space-y-4 md:space-y-6">
+                    <div class="bg-white rounded-xl shadow-lg p-4 md:p-6" data-aos="fade-right">
                         <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-lg font-bold text-gray-800 flex items-center">
+                            <h3 class="text-base md:text-lg font-bold text-gray-800 flex items-center">
                                 <i class="fas fa-tasks mr-2 text-blue-500"></i>
                                 Pengajuan Terbaru
                             </h3>
-                            <button onclick="refreshSubmissions()" class="text-sm text-blue-600 hover:text-blue-800">
+                            <button onclick="refreshSubmissions()" class="text-xs md:text-sm text-blue-600 hover:text-blue-800">
                                 <i class="fas fa-sync-alt"></i> Refresh
                             </button>
                         </div>
@@ -432,8 +581,8 @@
                     </div>
 
                     <!-- Timeline Kegiatan -->
-                    <div class="bg-white rounded-xl shadow-lg p-6" data-aos="fade-right">
-                        <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                    <div class="bg-white rounded-xl shadow-lg p-4 md:p-6" data-aos="fade-right">
+                        <h3 class="text-base md:text-lg font-bold text-gray-800 mb-4 flex items-center">
                             <i class="fas fa-history mr-2 text-purple-500"></i>
                             Timeline Kegiatan
                         </h3>
@@ -450,27 +599,27 @@
                 </div>
 
                 <!-- Right Column -->
-                <div class="space-y-6">
+                <div class="space-y-4 md:space-y-6">
                     <!-- Profile Summary -->
-                    <div class="bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl shadow-lg p-6 text-white" data-aos="fade-left">
+                    <div class="bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl shadow-lg p-4 md:p-6 text-white" data-aos="fade-left">
                         <div class="flex items-center space-x-3 mb-4">
-                            <img id="profileAvatar" src="" alt="Profile" class="w-16 h-16 rounded-full border-4 border-white/30 object-cover">
+                            <img id="profileAvatar" src="" alt="Profile" class="w-12 h-12 md:w-16 md:h-16 rounded-full border-4 border-white/30 object-cover">
                             <div>
-                                <h4 class="font-bold text-lg" id="profileName">Loading...</h4>
-                                <p class="text-blue-100 text-sm" id="profileNidn">-</p>
+                                <h4 class="font-bold text-base md:text-lg" id="profileName">Loading...</h4>
+                                <p class="text-blue-100 text-xs md:text-sm" id="profileNidn">-</p>
                                 <p class="text-blue-100 text-xs mt-1" id="profileProdi">-</p>
                             </div>
                         </div>
                         
-                        <div class="grid grid-cols-2 gap-3 text-sm" id="profileDetails">
+                        <div class="grid grid-cols-2 gap-2 md:gap-3 text-xs md:text-sm" id="profileDetails">
                             <div><i class="fas fa-envelope mr-2"></i> <span id="profileEmail">-</span></div>
                             <div><i class="fas fa-phone mr-2"></i> <span id="profilePhone">-</span></div>
                         </div>
                     </div>
 
                     <!-- Repository Stats -->
-                    <div class="bg-white rounded-xl shadow-lg p-6" data-aos="fade-left">
-                        <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                    <div class="bg-white rounded-xl shadow-lg p-4 md:p-6" data-aos="fade-left">
+                        <h3 class="text-base md:text-lg font-bold text-gray-800 mb-4 flex items-center">
                             <i class="fas fa-archive mr-2 text-orange-500"></i>
                             Repository Saya
                         </h3>
@@ -482,9 +631,9 @@
                     </div>
 
                     <!-- Publikasi Terbaru -->
-                    <div class="bg-white rounded-xl shadow-lg p-6" data-aos="fade-left">
+                    <div class="bg-white rounded-xl shadow-lg p-4 md:p-6" data-aos="fade-left">
                         <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-lg font-bold text-gray-800 flex items-center">
+                            <h3 class="text-base md:text-lg font-bold text-gray-800 flex items-center">
                                 <i class="fas fa-quote-right mr-2 text-green-500"></i>
                                 Publikasi Terbaru
                             </h3>
@@ -509,7 +658,7 @@
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-    AOS.init({ duration: 800, once: true });
+    AOS.init({ duration: 800, once: true, easing: 'ease-out-cubic' });
 
     const API_BASE = '/api';
     let refreshInterval = null;
@@ -538,22 +687,10 @@
         setTimeout(() => toast.remove(), 5000);
     }
 
-    function showLoading() {
-        const overlay = document.getElementById('loadingOverlay');
-        if (overlay) overlay.classList.remove('hidden');
-    }
-
-    function hideLoading() {
-        const overlay = document.getElementById('loadingOverlay');
-        if (overlay) overlay.classList.add('hidden');
-    }
-
+    function showLoading() { document.getElementById('loadingOverlay').classList.remove('hidden'); }
+    function hideLoading() { document.getElementById('loadingOverlay').classList.add('hidden'); }
     function getToken() { return localStorage.getItem('token'); }
-    
-    function getUser() {
-        const userStr = localStorage.getItem('user');
-        return userStr ? JSON.parse(userStr) : null;
-    }
+    function getUser() { const userStr = localStorage.getItem('user'); return userStr ? JSON.parse(userStr) : null; }
 
     function checkAuth() {
         const token = getToken();
@@ -565,11 +702,24 @@
         return true;
     }
 
-    window.handleLogout = function() {
-        if (refreshInterval) clearInterval(refreshInterval);
-        localStorage.clear();
-        window.location.href = '../login.html';
-    };
+    function handleLogout() {
+        Swal.fire({
+            title: 'Konfirmasi Logout',
+            text: 'Apakah Anda yakin ingin keluar dari sistem?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, Logout',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                if (refreshInterval) clearInterval(refreshInterval);
+                localStorage.clear();
+                window.location.href = '../login.html';
+            }
+        });
+    }
 
     function updateLastUpdateTime() {
         const now = new Date();
@@ -580,23 +730,84 @@
     }
 
     // ===========================================
-    // UPDATE NAVBAR DENGAN DATA PROFIL
+    // NAVBAR FUNCTIONS
     // ===========================================
     function updateNavbarUserInfo(profile) {
         if (!profile) return;
         
-        const avatarUrl = profile.foto_profil ? `/${profile.foto_profil}` : `...`;
+        const avatarUrl = profile.foto_profil ? `/${profile.foto_profil}` : `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.nama_lengkap || 'Dosen')}&background=3B82F6&color=fff&bold=true`;
+        
         const navAvatar = document.getElementById('navAvatar');
         const dropdownAvatar = document.getElementById('dropdownAvatar');
+        const mobileNavAvatar = document.getElementById('mobileNavAvatar');
         const navUserName = document.getElementById('navUserName');
         const dropdownUserName = document.getElementById('dropdownUserName');
         const dropdownUserNidn = document.getElementById('dropdownUserNidn');
+        const mobileNavUserName = document.getElementById('mobileNavUserName');
         
         if (navAvatar) navAvatar.src = avatarUrl;
         if (dropdownAvatar) dropdownAvatar.src = avatarUrl;
+        if (mobileNavAvatar) mobileNavAvatar.src = avatarUrl;
         if (navUserName) navUserName.textContent = profile.nama_lengkap || 'Dosen';
         if (dropdownUserName) dropdownUserName.textContent = profile.nama_lengkap || 'Dosen';
+        if (mobileNavUserName) mobileNavUserName.textContent = profile.nama_lengkap || 'Dosen';
         if (dropdownUserNidn) dropdownUserNidn.textContent = profile.nidn ? `NIDN: ${profile.nidn}` : '-';
+    }
+
+    function initDropdown() {
+        const userMenuBtn = document.getElementById('userMenuBtn');
+        const userDropdown = document.getElementById('userDropdown');
+        
+        if (userMenuBtn && userDropdown) {
+            userMenuBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                userDropdown.classList.toggle('hidden');
+            });
+            
+            document.addEventListener('click', function(e) {
+                if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) {
+                    userDropdown.classList.add('hidden');
+                }
+            });
+        }
+    }
+
+    function initMobileNav() {
+        const hamburger = document.getElementById('hamburgerBtn');
+        const mobileNav = document.getElementById('mobileNav');
+        const closeBtn = document.getElementById('closeMobileNav');
+        
+        if (hamburger && mobileNav) {
+            hamburger.addEventListener('click', () => mobileNav.classList.add('active'));
+            closeBtn.addEventListener('click', () => mobileNav.classList.remove('active'));
+            mobileNav.addEventListener('click', (e) => {
+                if (e.target === mobileNav) mobileNav.classList.remove('active');
+            });
+        }
+    }
+
+    function setActiveNavLink() {
+        const currentPage = window.location.pathname.split('/').pop();
+        const navLinks = document.querySelectorAll('.nav-link-modern');
+        const mobileLinks = document.querySelectorAll('.mobile-nav-link');
+        
+        navLinks.forEach(link => {
+            const href = link.getAttribute('href');
+            if (href === currentPage) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
+        
+        mobileLinks.forEach(link => {
+            const href = link.getAttribute('href');
+            if (href === currentPage) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
     }
 
     // ===========================================
@@ -612,44 +823,21 @@
                 const result = await response.json();
                 const profile = result.data;
                 
-                // Update navbar
                 updateNavbarUserInfo(profile);
                 
-                // Update UI elements
-                const userName = document.getElementById('userName');
-                if (userName) userName.textContent = profile.nama_lengkap || '-';
-                
-                const userNameDisplay = document.getElementById('userNameDisplay');
-                if (userNameDisplay) userNameDisplay.textContent = profile.nama_lengkap || '-';
-                
-                const userNidn = document.getElementById('userNidn');
-                if (userNidn) userNidn.textContent = profile.nidn || '-';
-                
-                const userNidnDisplay = document.getElementById('userNidnDisplay');
-                if (userNidnDisplay) userNidnDisplay.textContent = profile.nidn ? `NIDN: ${profile.nidn}` : '-';
-                
-                const userProdi = document.getElementById('userProdi');
-                if (userProdi) userProdi.textContent = profile.nama_prodi || '-';
-                
-                const profileName = document.getElementById('profileName');
-                if (profileName) profileName.textContent = profile.nama_lengkap || '-';
-                
-                const profileNidn = document.getElementById('profileNidn');
-                if (profileNidn) profileNidn.textContent = profile.nidn || '-';
-                
-                const profileProdi = document.getElementById('profileProdi');
-                if (profileProdi) profileProdi.textContent = profile.nama_prodi || '-';
-                
-                const profileEmail = document.getElementById('profileEmail');
-                if (profileEmail) profileEmail.textContent = profile.email || '-';
-                
-                const profilePhone = document.getElementById('profilePhone');
-                if (profilePhone) profilePhone.textContent = profile.no_hp || '-';
+                document.getElementById('userName').textContent = profile.nama_lengkap || '-';
+                document.getElementById('userNidn').textContent = profile.nidn || '-';
+                document.getElementById('userProdi').textContent = profile.nama_prodi || '-';
+                document.getElementById('profileName').textContent = profile.nama_lengkap || '-';
+                document.getElementById('profileNidn').textContent = profile.nidn || '-';
+                document.getElementById('profileProdi').textContent = profile.nama_prodi || '-';
+                document.getElementById('profileEmail').textContent = profile.email || '-';
+                document.getElementById('profilePhone').textContent = profile.no_hp || '-';
                 
                 const profileAvatar = document.getElementById('profileAvatar');
                 if (profileAvatar) {
                     if (profile.foto_profil) {
-                    profileAvatar.src = `/${profile.foto_profil}`;
+                        profileAvatar.src = `/${profile.foto_profil}`;
                     } else {
                         profileAvatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.nama_lengkap || 'Dosen')}&background=ffffff&color=3B82F6&bold=true`;
                     }
@@ -676,7 +864,6 @@
                 const result = await response.json();
                 const stats = result.data;
                 
-                // Hitung pengajuan aktif (draft, submit, review, revisi)
                 const aktifCount = (stats.status?.penelitian?.draft || 0) + 
                                   (stats.status?.penelitian?.submit || 0) +
                                   (stats.status?.penelitian?.review || 0) +
@@ -686,23 +873,12 @@
                                   (stats.status?.pengabdian?.review || 0) +
                                   (stats.status?.pengabdian?.revisi || 0);
                 
-                const statAktif = document.getElementById('statAktif');
-                if (statAktif) statAktif.textContent = aktifCount;
-                
-                const statAktifDetail = document.getElementById('statAktifDetail');
-                if (statAktifDetail) statAktifDetail.textContent = `${stats.status?.penelitian?.review || 0} dalam review`;
-                
-                const statPublikasi = document.getElementById('statPublikasi');
-                if (statPublikasi) statPublikasi.textContent = stats.luaran?.publikasi || 0;
-                
-                const statPublikasiDetail = document.getElementById('statPublikasiDetail');
-                if (statPublikasiDetail) statPublikasiDetail.textContent = `${stats.luaran?.buku || 0} Buku, ${stats.luaran?.publikasi || 0} Publikasi`;
-                
-                const statHKI = document.getElementById('statHKI');
-                if (statHKI) statHKI.textContent = stats.luaran?.haki || 0;
-                
-                const statHKIDetail = document.getElementById('statHKIDetail');
-                if (statHKIDetail) statHKIDetail.textContent = `${stats.luaran?.haki || 0} HKI terdaftar`;
+                document.getElementById('statAktif').textContent = aktifCount;
+                document.getElementById('statAktifDetail').textContent = `${stats.status?.penelitian?.review || 0} dalam review`;
+                document.getElementById('statPublikasi').textContent = stats.luaran?.publikasi || 0;
+                document.getElementById('statPublikasiDetail').textContent = `${stats.luaran?.buku || 0} Buku, ${stats.luaran?.publikasi || 0} Publikasi`;
+                document.getElementById('statHKI').textContent = stats.luaran?.haki || 0;
+                document.getElementById('statHKIDetail').textContent = `${stats.luaran?.haki || 0} HKI terdaftar`;
                 
                 return stats;
             }
@@ -725,30 +901,27 @@
                 const result = await response.json();
                 const stats = result.data;
                 
-                const statRepository = document.getElementById('statRepository');
-                if (statRepository) statRepository.textContent = stats.total_dokumen || 0;
-                
-                const statRepositoryDetail = document.getElementById('statRepositoryDetail');
-                if (statRepositoryDetail) statRepositoryDetail.textContent = `${stats.total_downloads || 0} downloads, ${stats.total_views || 0} views`;
+                document.getElementById('statRepository').textContent = stats.total_dokumen || 0;
+                document.getElementById('statRepositoryDetail').textContent = `${stats.total_downloads || 0} downloads, ${stats.total_views || 0} views`;
                 
                 const container = document.getElementById('repositoryStats');
                 if (container) {
                     container.innerHTML = `
                         <div class="flex justify-between items-center p-2 bg-gray-50 rounded-lg">
-                            <span class="text-sm">Total Dokumen</span>
-                            <span class="font-bold text-orange-600">${stats.total_dokumen || 0}</span>
+                            <span class="text-xs md:text-sm">Total Dokumen</span>
+                            <span class="font-bold text-orange-600 text-sm md:text-base">${stats.total_dokumen || 0}</span>
                         </div>
                         <div class="flex justify-between items-center p-2 bg-gray-50 rounded-lg">
-                            <span class="text-sm">Total Downloads</span>
-                            <span class="font-bold text-orange-600">${stats.total_downloads || 0}</span>
+                            <span class="text-xs md:text-sm">Total Downloads</span>
+                            <span class="font-bold text-orange-600 text-sm md:text-base">${stats.total_downloads || 0}</span>
                         </div>
                         <div class="flex justify-between items-center p-2 bg-gray-50 rounded-lg">
-                            <span class="text-sm">Total Views</span>
-                            <span class="font-bold text-orange-600">${stats.total_views || 0}</span>
+                            <span class="text-xs md:text-sm">Total Views</span>
+                            <span class="font-bold text-orange-600 text-sm md:text-base">${stats.total_views || 0}</span>
                         </div>
                         <div class="flex justify-between items-center p-2 bg-gray-50 rounded-lg">
-                            <span class="text-sm">Storage Used</span>
-                            <span class="font-bold text-orange-600">${formatFileSize(stats.total_storage || 0)}</span>
+                            <span class="text-xs md:text-sm">Storage Used</span>
+                            <span class="font-bold text-orange-600 text-sm md:text-base">${formatFileSize(stats.total_storage || 0)}</span>
                         </div>
                     `;
                 }
@@ -805,14 +978,14 @@
             }
             
             container.innerHTML = latest.map(item => `
-                <div class="activity-item p-3 rounded-lg">
-                    <div class="flex justify-between items-start">
-                        <div class="flex-1">
-                            <div class="flex items-center gap-2 mb-1">
+                <div class="activity-item p-2 md:p-3 rounded-lg">
+                    <div class="flex justify-between items-start flex-wrap gap-2">
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1 flex-wrap">
                                 <span class="status-badge status-${item.status}">${getStatusLabel(item.status)}</span>
                                 <span class="text-xs text-gray-400">${item.jenis === 'penelitian' ? 'Penelitian' : 'Pengabdian'}</span>
                             </div>
-                            <h4 class="font-semibold text-gray-800">${escapeHtml(item.judul)}</h4>
+                            <h4 class="font-semibold text-gray-800 text-sm md:text-base truncate">${escapeHtml(item.judul)}</h4>
                             <p class="text-xs text-gray-500 mt-1">
                                 ${item.skema_penelitian || item.skema_pengabdian || '-'} • ${item.tahun || '-'}
                             </p>
@@ -862,12 +1035,6 @@
                         status: item.status,
                         type: 'penelitian'
                     });
-                    if (item.tanggal_pengajuan) events.push({
-                        title: `Submit Penelitian: ${item.judul}`,
-                        date: item.tanggal_pengajuan,
-                        status: item.status,
-                        type: 'penelitian'
-                    });
                 });
             }
             
@@ -877,12 +1044,6 @@
                     if (item.created_at) events.push({
                         title: `Pengajuan Pengabdian: ${item.judul}`,
                         date: item.created_at,
-                        status: item.status,
-                        type: 'pengabdian'
-                    });
-                    if (item.tanggal_pengajuan) events.push({
-                        title: `Submit Pengabdian: ${item.judul}`,
-                        date: item.tanggal_pengajuan,
                         status: item.status,
                         type: 'pengabdian'
                     });
@@ -909,7 +1070,7 @@
                         ${index !== latest.length - 1 ? '<div class="absolute top-8 left-4 w-0.5 h-8 bg-gray-200"></div>' : ''}
                     </div>
                     <div class="flex-1 pb-4">
-                        <p class="font-semibold text-sm">${escapeHtml(event.title)}</p>
+                        <p class="font-semibold text-sm">${escapeHtml(event.title.substring(0, 50))}${event.title.length > 50 ? '...' : ''}</p>
                         <span class="status-badge status-${event.status} mt-1 inline-block">${getStatusLabel(event.status)}</span>
                         <p class="text-xs text-gray-400 mt-1">${formatDate(event.date)}</p>
                     </div>
@@ -947,8 +1108,8 @@
                 }
                 
                 container.innerHTML = publications.map(pub => `
-                    <div class="p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
-                        <h4 class="font-semibold text-sm text-gray-800">${escapeHtml(pub.judul)}</h4>
+                    <div class="p-2 md:p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+                        <h4 class="font-semibold text-xs md:text-sm text-gray-800 truncate">${escapeHtml(pub.judul)}</h4>
                         <p class="text-xs text-gray-500 mt-1">${pub.jenis || 'Publikasi'} • ${pub.peran || 'Penulis'}</p>
                         <p class="text-xs text-gray-400 mt-1">${formatDate(pub.tanggal)}</p>
                     </div>
@@ -978,7 +1139,6 @@
                 const result = await response.json();
                 const stats = result.data;
                 
-                // Status Chart
                 const statusData = {
                     draft: (stats.status?.penelitian?.draft || 0) + (stats.status?.pengabdian?.draft || 0),
                     submit: (stats.status?.penelitian?.submit || 0) + (stats.status?.pengabdian?.submit || 0),
@@ -988,10 +1148,9 @@
                     ditolak: (stats.status?.penelitian?.ditolak || 0) + (stats.status?.pengabdian?.ditolak || 0)
                 };
                 
-                if (statusChart) statusChart.destroy();
-                
                 const ctx = document.getElementById('statusChart');
                 if (ctx) {
+                    if (statusChart) statusChart.destroy();
                     statusChart = new Chart(ctx.getContext('2d'), {
                         type: 'doughnut',
                         data: {
@@ -1006,48 +1165,30 @@
                             responsive: true,
                             maintainAspectRatio: true,
                             plugins: {
-                                legend: { position: 'bottom' }
+                                legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } }
                             }
                         }
                     });
                 }
                 
-                // Tahunan Chart
                 const currentYear = new Date().getFullYear();
-                const tahunanData = {
-                    labels: [currentYear-3, currentYear-2, currentYear-1, currentYear],
-                    penelitian: [2, 3, 4, 2],
-                    pengabdian: [1, 2, 3, 1]
-                };
-                
-                if (tahunanChart) tahunanChart.destroy();
-                
                 const ctx2 = document.getElementById('tahunanChart');
                 if (ctx2) {
+                    if (tahunanChart) tahunanChart.destroy();
                     tahunanChart = new Chart(ctx2.getContext('2d'), {
                         type: 'bar',
                         data: {
-                            labels: tahunanData.labels,
+                            labels: [currentYear-3, currentYear-2, currentYear-1, currentYear],
                             datasets: [
-                                {
-                                    label: 'Penelitian',
-                                    data: tahunanData.penelitian,
-                                    backgroundColor: '#3B82F6',
-                                    borderRadius: 8
-                                },
-                                {
-                                    label: 'Pengabdian',
-                                    data: tahunanData.pengabdian,
-                                    backgroundColor: '#10B981',
-                                    borderRadius: 8
-                                }
+                                { label: 'Penelitian', data: [2, 3, 4, 2], backgroundColor: '#3B82F6', borderRadius: 8 },
+                                { label: 'Pengabdian', data: [1, 2, 3, 1], backgroundColor: '#10B981', borderRadius: 8 }
                             ]
                         },
                         options: {
                             responsive: true,
                             maintainAspectRatio: true,
                             plugins: {
-                                legend: { position: 'top' }
+                                legend: { position: 'top', labels: { boxWidth: 10, font: { size: 10 } } }
                             },
                             scales: {
                                 y: { beginAtZero: true, ticks: { stepSize: 1 } }
@@ -1149,58 +1290,23 @@
     }
 
     // ===========================================
-    // DROPDOWN & NAVBAR INITIALIZATION
-    // ===========================================
-    function initDropdown() {
-        const userMenuBtn = document.getElementById('userMenuBtn');
-        const userDropdown = document.getElementById('userDropdown');
-        
-        if (userMenuBtn && userDropdown) {
-            userMenuBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                userDropdown.classList.toggle('hidden');
-            });
-            
-            document.addEventListener('click', function(e) {
-                if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) {
-                    userDropdown.classList.add('hidden');
-                }
-            });
-        }
-    }
-
-    function setActiveNavLink() {
-        const currentPage = window.location.pathname.split('/').pop();
-        const navLinks = document.querySelectorAll('.nav-link-modern');
-        
-        navLinks.forEach(link => {
-            const href = link.getAttribute('href');
-            if (href === currentPage || (currentPage === 'dosen-dashboard.html' && href === 'dosen-dashboard.html')) {
-                link.classList.add('active');
-            } else {
-                link.classList.remove('active');
-            }
-        });
-    }
-
-    // ===========================================
     // INITIALIZE
     // ===========================================
     document.addEventListener('DOMContentLoaded', async function() {
         if (!checkAuth()) return;
         
         initDropdown();
+        initMobileNav();
         setActiveNavLink();
         
         await refreshAllData();
         
-        // Auto-refresh every 30 seconds
         refreshInterval = setInterval(() => {
             if (!document.hidden) {
                 refreshAllData();
             }
         }, 30000);
     });
-</script>
+    </script>
 </body>
 </html>
