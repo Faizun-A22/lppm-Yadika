@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <title>Dashboard Admin - LPPM ITB Yadika</title>
     
     <!-- CSS External Libraries -->
@@ -15,6 +15,12 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
         .gradient-text { 
             background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%); 
             -webkit-background-clip: text; 
@@ -22,53 +28,69 @@
             background-clip: text; 
         }
 
-.nav-link-modern {
-    position: relative;
-    transition: all 0.2s ease;
-}
+        /* Navbar Styles */
+        .navbar-custom {
+            background: linear-gradient(135deg, #1E3A5F 0%, #2D4A6E 50%, #1E3A5F 100%);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
 
-.nav-link-modern.active {
-    background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
-    color: white !important;
-}
+        .nav-link-modern {
+            position: relative;
+            transition: all 0.2s ease;
+            color: rgba(255, 255, 255, 0.8);
+        }
 
-.nav-link-modern.active i {
-    color: white !important;
-}
+        .nav-link-modern:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.15);
+        }
 
-.nav-link-modern:not(.active):hover {
-    transform: translateY(-1px);
-}
+        .nav-link-modern.active {
+            background: rgba(255, 255, 255, 0.25);
+            color: white !important;
+        }
 
-/* Dropdown Animation */
-#userDropdown {
-    transform-origin: top right;
-    animation: dropdownFade 0.2s ease;
-}
+        .nav-link-modern.active i {
+            color: white !important;
+        }
 
-@keyframes dropdownFade {
-    from {
-        opacity: 0;
-        transform: scale(0.95) translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-    }
-}
+        .nav-link-modern.active::before {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 2px;
+            background: white;
+            border-radius: 2px;
+        }
 
-/* Active link indicator */
-.nav-link-modern.active::before {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 20px;
-    height: 2px;
-    background: white;
-    border-radius: 2px;
-}
+        .brand-title {
+            color: white;
+        }
+
+        .brand-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .icon-btn {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .icon-btn:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .user-name, .user-role {
+            color: white;
+        }
+
+        .user-role {
+            opacity: 0.7;
+        }
 
         /* Card Styles */
         .stat-card {
@@ -159,7 +181,6 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Loading Overlay */
         .loading-overlay {
             position: fixed;
             top: 0;
@@ -210,6 +231,104 @@
             background: rgba(255,255,255,0.1);
             border-radius: 50%;
         }
+
+        /* Mobile Navigation */
+        .mobile-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-nav.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .mobile-nav-container {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 280px;
+            height: 100%;
+            background: white;
+            transform: translateX(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mobile-nav.active .mobile-nav-container {
+            transform: translateX(0);
+        }
+
+        .mobile-nav-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #1E3A5F, #2D4A6E);
+            color: white;
+        }
+
+        .mobile-nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            color: #4B5563;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .mobile-nav-link.active {
+            background: #EFF6FF;
+            color: #3B82F6;
+            border-left-color: #3B82F6;
+        }
+
+        /* Dropdown Animation */
+        #userDropdown {
+            transform-origin: top right;
+            animation: dropdownFade 0.2s ease;
+        }
+
+        @keyframes dropdownFade {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .welcome-banner {
+                padding: 1.5rem;
+            }
+            .welcome-banner h2 {
+                font-size: 1.5rem;
+            }
+            .stat-card {
+                margin-bottom: 1rem;
+            }
+            .quick-action-card {
+                padding: 0.75rem;
+            }
+            .quick-action-card .w-12 {
+                width: 2.5rem;
+                height: 2.5rem;
+            }
+            .quick-action-card p {
+                font-size: 0.7rem;
+            }
+        }
     </style>
 </head>
 <body class="bg-gray-50 font-sans antialiased">
@@ -221,215 +340,272 @@
         </div>
     </div>
 
-    <!-- Ganti bagian <header> sampai </header> dengan kode di bawah ini -->
-
-<header class="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-md shadow-sm z-50 border-b border-gray-100">
-    <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
-        <!-- Logo and Brand -->
-        <a href="admin-dashboard.html" class="flex items-center space-x-3 group">
-            <div class="relative">
-                <img src="yadika.png" alt="Logo LPPM ITB Yadika" class="h-10 w-10 rounded-xl shadow-sm transition-transform group-hover:scale-105">
-                <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl opacity-0 group-hover:opacity-20 transition"></div>
-            </div>
-            <div>
-                <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                    LPPM Admin
-                </h1>
-                <p class="text-xs text-gray-400">ITB Yadika</p>
-            </div>
-        </a>
-        
-        <!-- Desktop Navigation Menu -->
-        <div class="hidden md:flex items-center space-x-1">
-            <a href="admin-dashboard.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2 active">
-                <i class="fas fa-tachometer-alt text-gray-400 group-hover:text-blue-500 transition"></i>
-                <span>Dashboard</span>
-            </a>
-            <a href="manage-kegiatan.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
-                <i class="fas fa-calendar-alt text-gray-400 group-hover:text-blue-500 transition"></i>
-                <span>Kegiatan & Berita</span>
-            </a>
-            <a href="manage-repository.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
-                <i class="fas fa-book text-gray-400 group-hover:text-blue-500 transition"></i>
-                <span>Repository</span>
-            </a>
-            <a href="admin_penelitian.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
-                <i class="fas fa-flask text-gray-400 group-hover:text-blue-500 transition"></i>
-                <span>Penelitian</span>
-            </a>
-            <a href="manage-magang-kkn.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
-                <i class="fas fa-briefcase text-gray-400 group-hover:text-blue-500 transition"></i>
-                <span>Magang & KKN</span>
-            </a>
-        </div>
-        
-        <!-- User Info & Actions -->
-        <div class="flex items-center gap-4">
-            <!-- Notifications Dropdown -->
-            <div class="relative">
-                <button id="notificationBtn" class="relative p-2 rounded-lg text-gray-500 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200">
-                    <i class="fas fa-bell text-lg"></i>
-                    <span id="notificationBadge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full hidden"></span>
-                </button>
-            </div>
-            
-            <!-- User Profile Dropdown -->
-            <div class="relative">
-                <button id="userMenuBtn" class="flex items-center gap-3 p-1.5 rounded-xl hover:bg-gray-50 transition-all duration-200 border border-transparent hover:border-gray-200">
-                    <div class="relative">
-                        <img id="navAvatar" src="https://ui-avatars.com/api/?name=Admin+LPPM&background=3B82F6&color=fff" alt="Avatar" class="w-9 h-9 rounded-full object-cover ring-2 ring-gray-200">
-                        <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full ring-2 ring-white"></div>
+    <!-- Mobile Navigation -->
+    <div id="mobileNav" class="mobile-nav">
+        <div class="mobile-nav-container">
+            <div class="mobile-nav-header">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                        <img src="yadika.png" alt="Logo LPPM ITB Yadika" class="h-8 w-8 rounded-lg bg-white p-1">
+                        <span class="font-bold text-sm">LPPM Admin</span>
                     </div>
-                    <div class="hidden md:block text-left">
-                        <p class="text-sm font-semibold text-gray-800" id="navUserName">Loading...</p>
-                        <p class="text-xs text-gray-400" id="navUserRole">Admin</p>
-                    </div>
-                    <i class="fas fa-chevron-down text-xs text-gray-400 hidden md:block"></i>
-                </button>
-                
-                <!-- Dropdown Menu -->
-                <div id="userDropdown" class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hidden transition-all duration-200 z-50">
-                    <!-- Header with user info -->
-                    <div class="p-3 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-purple-50">
-                        <div class="flex items-center gap-3">
-                            <img id="dropdownAvatar" src="https://ui-avatars.com/api/?name=Admin+LPPM&background=3B82F6&color=fff" alt="Avatar" class="w-10 h-10 rounded-full object-cover">
-                            <div>
-                                <p class="font-semibold text-gray-800 text-sm" id="dropdownUserName">Loading...</p>
-                                <p class="text-xs text-gray-500" id="dropdownUserRole">Administrator</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Menu Items -->
-                    <div class="p-2">
-                        <a href="admin-profile.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
-                            <i class="fas fa-user-cog w-5 text-gray-400"></i>
-                            <span>Pengaturan Akun</span>
-                        </a>
-                        <a href="admin-ubah-password.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
-                            <i class="fas fa-key w-5 text-gray-400"></i>
-                            <span>Ubah Password</span>
-                        </a>
-                        <div class="border-t border-gray-100 my-2"></div>
-                        <button onclick="handleLogout()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-600 hover:bg-red-50 transition text-sm">
-                            <i class="fas fa-sign-out-alt w-5 text-red-400"></i>
-                            <span>Logout</span>
-                        </button>
+                    <button id="closeMobileNav" class="text-white">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <div class="flex items-center gap-3 mt-4 pt-2 border-t border-white/20">
+                    <img id="mobileNavAvatar" src="" alt="Avatar" class="w-10 h-10 rounded-full object-cover ring-2 ring-white/50">
+                    <div>
+                        <p class="font-semibold text-sm" id="mobileNavUserName">Loading...</p>
+                        <p class="text-xs opacity-80">Administrator</p>
                     </div>
                 </div>
             </div>
+            <div class="flex-1 overflow-y-auto py-4">
+                <a href="admin-dashboard.html" class="mobile-nav-link active">
+                    <i class="fas fa-tachometer-alt w-5"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="manage-kegiatan.html" class="mobile-nav-link">
+                    <i class="fas fa-calendar-alt w-5"></i>
+                    <span>Kegiatan & Berita</span>
+                </a>
+                <a href="manage-repository.html" class="mobile-nav-link">
+                    <i class="fas fa-book w-5"></i>
+                    <span>Repository</span>
+                </a>
+                <a href="admin_penelitian.html" class="mobile-nav-link">
+                    <i class="fas fa-flask w-5"></i>
+                    <span>Penelitian</span>
+                </a>
+                <a href="manage-magang-kkn.html" class="mobile-nav-link">
+                    <i class="fas fa-briefcase w-5"></i>
+                    <span>Magang & KKN</span>
+                </a>
+                <div class="border-t border-gray-100 my-4 mx-4"></div>
+                <a href="admin-profile.html" class="mobile-nav-link">
+                    <i class="fas fa-user-cog w-5"></i>
+                    <span>Pengaturan Akun</span>
+                </a>
+                <a href="admin-ubah-password.html" class="mobile-nav-link">
+                    <i class="fas fa-key w-5"></i>
+                    <span>Ubah Password</span>
+                </a>
+                <button onclick="handleLogout()" class="mobile-nav-link w-full text-left text-red-600">
+                    <i class="fas fa-sign-out-alt w-5"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
         </div>
-    </nav>
-</header>
+    </div>
+
+    <!-- Navbar -->
+    <header class="fixed top-0 left-0 right-0 navbar-custom z-50">
+        <nav class="container mx-auto px-4 md:px-6 py-3 md:py-4 flex justify-between items-center">
+            <!-- Logo and Brand -->
+            <a href="admin-dashboard.html" class="flex items-center space-x-3 group">
+                <div class="relative">
+                    <img src="yadika.png" alt="Logo LPPM ITB Yadika" class="h-9 w-9 md:h-10 md:w-10 rounded-lg shadow-sm transition-transform group-hover:scale-105 bg-white p-1">
+                    <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-400 to-purple-400 rounded-lg opacity-0 group-hover:opacity-30 transition"></div>
+                </div>
+                <div>
+                    <h1 class="brand-title text-base md:text-lg font-bold tracking-wide">
+                        LPPM Admin
+                    </h1>
+                    <p class="brand-subtitle text-xs md:text-sm -mt-0.5">ITB Yadika</p>
+                </div>
+            </a>
+            
+            <!-- Desktop Navigation Menu -->
+            <div class="hidden md:flex items-center space-x-1">
+                <a href="admin-dashboard.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2 active">
+                    <i class="fas fa-tachometer-alt text-sm"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="manage-kegiatan.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-calendar-alt text-sm"></i>
+                    <span>Kegiatan & Berita</span>
+                </a>
+                <a href="manage-repository.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-book text-sm"></i>
+                    <span>Repository</span>
+                </a>
+                <a href="admin_penelitian.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-flask text-sm"></i>
+                    <span>Penelitian</span>
+                </a>
+                <a href="manage-magang-kkn.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-briefcase text-sm"></i>
+                    <span>Magang & KKN</span>
+                </a>
+            </div>
+            
+            <!-- User Info & Actions -->
+            <div class="flex items-center gap-2 md:gap-3">
+                <!-- Notifications -->
+                <div class="relative">
+                    <button id="notificationBtn" class="icon-btn relative p-2 rounded-lg transition-all duration-200">
+                        <i class="fas fa-bell text-base md:text-lg"></i>
+                        <span id="notificationBadge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full hidden"></span>
+                    </button>
+                </div>
+                
+                <!-- User Profile Dropdown Desktop -->
+                <div class="relative hidden md:block">
+                    <button id="userMenuBtn" class="flex items-center gap-2 p-1.5 rounded-xl hover:bg-white/10 transition-all duration-200">
+                        <div class="relative">
+                            <img id="navAvatar" src="" alt="Avatar" class="w-8 h-8 rounded-full object-cover ring-2 ring-white/50">
+                            <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full ring-2 ring-white"></div>
+                        </div>
+                        <div class="hidden xl:block text-left">
+                            <p class="user-name text-xs font-semibold" id="navUserName">Loading...</p>
+                            <p class="user-role text-[10px]" id="navUserRole">Admin</p>
+                        </div>
+                        <i class="fas fa-chevron-down text-[10px] text-white/60 hidden xl:block"></i>
+                    </button>
+                    
+                    <div id="userDropdown" class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hidden z-50">
+                        <div class="p-3 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-purple-50">
+                            <div class="flex items-center gap-3">
+                                <img id="dropdownAvatar" src="" alt="Avatar" class="w-10 h-10 rounded-full object-cover">
+                                <div>
+                                    <p class="font-semibold text-gray-800 text-sm" id="dropdownUserName">Loading...</p>
+                                    <p class="text-xs text-gray-500" id="dropdownUserRole">Administrator</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-2">
+                            <a href="admin-profile.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
+                                <i class="fas fa-user-cog w-5 text-gray-400"></i>
+                                <span>Pengaturan Akun</span>
+                            </a>
+                            <a href="admin-ubah-password.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
+                                <i class="fas fa-key w-5 text-gray-400"></i>
+                                <span>Ubah Password</span>
+                            </a>
+                            <div class="border-t border-gray-100 my-2"></div>
+                            <button onclick="handleLogout()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-600 hover:bg-red-50 transition text-sm">
+                                <i class="fas fa-sign-out-alt w-5 text-red-400"></i>
+                                <span>Logout</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hamburger Menu Button -->
+                <button id="hamburgerBtn" class="md:hidden icon-btn p-2 rounded-lg transition-all duration-200">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </nav>
+    </header>
 
     <!-- Main Content -->
-    <main class="pt-20">
-        <div class="container mx-auto px-6 py-8">
+    <main class="pt-[72px] md:pt-[84px] pb-12">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Welcome Banner -->
-            <div class="welcome-banner mb-8" data-aos="fade-down">
+            <div class="welcome-banner mb-6 md:mb-8" data-aos="fade-down">
                 <div class="relative z-10">
-                    <h2 class="text-3xl font-bold mb-2" id="welcomeMessage">Selamat Datang kembali, <span id="adminName">Admin</span>!</h2>
-                    <p class="text-lg opacity-90 mb-4" id="currentDate">Kamis, 4 Maret 2026</p>
-                    <div class="flex space-x-4" id="welcomeStats">
-                        <!-- Stats will be loaded here -->
-                    </div>
+                    <h2 class="text-2xl md:text-3xl font-bold mb-2" id="welcomeMessage">Selamat Datang kembali, <span id="adminName">Admin</span>!</h2>
+                    <p class="text-base md:text-lg opacity-90 mb-3 md:mb-4" id="currentDate">Kamis, 4 Maret 2026</p>
+                    <div class="flex flex-wrap gap-2 md:gap-4" id="welcomeStats"></div>
                 </div>
             </div>
 
             <!-- Stats Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
                 <!-- Total Berita Card -->
-                <div class="stat-card bg-white shadow-lg p-6" data-aos="fade-up" data-aos-delay="100">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="bg-blue-100 p-3 rounded-lg">
-                            <i class="fas fa-newspaper text-blue-600 text-xl"></i>
+                <div class="stat-card bg-white shadow-lg p-4 md:p-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="flex items-center justify-between mb-3 md:mb-4">
+                        <div class="bg-blue-100 p-2 md:p-3 rounded-lg">
+                            <i class="fas fa-newspaper text-blue-600 text-lg md:text-xl"></i>
                         </div>
                         <span class="text-sm text-green-600 font-semibold">
                             <i class="fas fa-arrow-up"></i> +12%
                         </span>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-1" id="totalBerita">0</h3>
-                    <p class="text-gray-500 text-sm mb-3">Total Berita</p>
+                    <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-1" id="totalBerita">0</h3>
+                    <p class="text-gray-500 text-xs md:text-sm mb-2 md:mb-3">Total Berita</p>
                     <div class="progress-bar">
                         <div class="progress-fill" id="beritaProgress" style="width: 0%"></div>
                     </div>
                     <div class="flex justify-between text-xs text-gray-500 mt-2">
-                        <span><i class="fas fa-check-circle text-green-500"></i> <span id="beritaPublished">0</span> Published</span>
+                        <span><i class="fas fa-check-circle text-green-500"></i> <span id="beritaPublished">0</span> Pub</span>
                         <span><i class="fas fa-clock text-yellow-500"></i> <span id="beritaDraft">0</span> Draft</span>
                     </div>
                 </div>
 
                 <!-- Kegiatan Card -->
-                <div class="stat-card bg-white shadow-lg p-6" data-aos="fade-up" data-aos-delay="200">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="bg-green-100 p-3 rounded-lg">
-                            <i class="fas fa-calendar-check text-green-600 text-xl"></i>
+                <div class="stat-card bg-white shadow-lg p-4 md:p-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="flex items-center justify-between mb-3 md:mb-4">
+                        <div class="bg-green-100 p-2 md:p-3 rounded-lg">
+                            <i class="fas fa-calendar-check text-green-600 text-lg md:text-xl"></i>
                         </div>
                         <span class="text-sm text-green-600 font-semibold">
                             <i class="fas fa-arrow-up"></i> +8%
                         </span>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-1" id="totalKegiatan">0</h3>
-                    <p class="text-gray-500 text-sm mb-3">Total Kegiatan</p>
-                    <div class="flex justify-between text-sm">
+                    <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-1" id="totalKegiatan">0</h3>
+                    <p class="text-gray-500 text-xs md:text-sm mb-2 md:mb-3">Total Kegiatan</p>
+                    <div class="flex justify-between text-xs md:text-sm">
                         <div>
-                            <p class="text-xs text-gray-500">Akan Datang</p>
+                            <p class="text-gray-500">Akan Datang</p>
                             <p class="font-semibold" id="kegiatanUpcoming">0</p>
                         </div>
                         <div>
-                            <p class="text-xs text-gray-500">Berlangsung</p>
+                            <p class="text-gray-500">Berlangsung</p>
                             <p class="font-semibold" id="kegiatanOngoing">0</p>
                         </div>
                         <div>
-                            <p class="text-xs text-gray-500">Selesai</p>
+                            <p class="text-gray-500">Selesai</p>
                             <p class="font-semibold" id="kegiatanCompleted">0</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- Repository Card -->
-                <div class="stat-card bg-white shadow-lg p-6" data-aos="fade-up" data-aos-delay="300">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="bg-purple-100 p-3 rounded-lg">
-                            <i class="fas fa-file-alt text-purple-600 text-xl"></i>
+                <div class="stat-card bg-white shadow-lg p-4 md:p-6" data-aos="fade-up" data-aos-delay="300">
+                    <div class="flex items-center justify-between mb-3 md:mb-4">
+                        <div class="bg-purple-100 p-2 md:p-3 rounded-lg">
+                            <i class="fas fa-file-alt text-purple-600 text-lg md:text-xl"></i>
                         </div>
                         <span class="text-sm text-green-600 font-semibold">
                             <i class="fas fa-arrow-up"></i> +15%
                         </span>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-1" id="totalDokumen">0</h3>
-                    <p class="text-gray-500 text-sm mb-3">Dokumen Repository</p>
-                    <div class="flex justify-between text-sm">
+                    <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-1" id="totalDokumen">0</h3>
+                    <p class="text-gray-500 text-xs md:text-sm mb-2 md:mb-3">Dokumen Repository</p>
+                    <div class="flex justify-between text-xs md:text-sm">
                         <div>
-                            <p class="text-xs text-gray-500">Downloads</p>
+                            <p class="text-gray-500">Downloads</p>
                             <p class="font-semibold" id="totalDownloads">0</p>
                         </div>
                         <div>
-                            <p class="text-xs text-gray-500">Views</p>
+                            <p class="text-gray-500">Views</p>
                             <p class="font-semibold" id="totalViews">0</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- Program Magang & KKN Card -->
-                <div class="stat-card bg-white shadow-lg p-6" data-aos="fade-up" data-aos-delay="400">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="bg-pink-100 p-3 rounded-lg">
-                            <i class="fas fa-users text-pink-600 text-xl"></i>
+                <div class="stat-card bg-white shadow-lg p-4 md:p-6" data-aos="fade-up" data-aos-delay="400">
+                    <div class="flex items-center justify-between mb-3 md:mb-4">
+                        <div class="bg-pink-100 p-2 md:p-3 rounded-lg">
+                            <i class="fas fa-users text-pink-600 text-lg md:text-xl"></i>
                         </div>
                         <span class="text-sm text-green-600 font-semibold">
                             <i class="fas fa-arrow-up"></i> +5%
                         </span>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-1" id="totalProgram">0</h3>
-                    <p class="text-gray-500 text-sm mb-3">Program Berjalan</p>
-                    <div class="flex justify-between text-sm">
+                    <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-1" id="totalProgram">0</h3>
+                    <p class="text-gray-500 text-xs md:text-sm mb-2 md:mb-3">Program Berjalan</p>
+                    <div class="flex justify-between text-xs md:text-sm">
                         <div>
-                            <p class="text-xs text-gray-500">Pendaftar</p>
+                            <p class="text-gray-500">Pendaftar</p>
                             <p class="font-semibold" id="totalPendaftar">0</p>
                         </div>
                         <div>
-                            <p class="text-xs text-gray-500">Kuota</p>
+                            <p class="text-gray-500">Kuota</p>
                             <p class="font-semibold" id="totalKuota">0</p>
                         </div>
                     </div>
@@ -437,345 +613,245 @@
             </div>
 
             <!-- Charts Row -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
                 <!-- Aktivitas Bulanan Chart -->
-                <div class="bg-white rounded-xl shadow-lg p-6" data-aos="fade-up" data-aos-delay="500">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-semibold text-gray-800">Aktivitas Bulanan</h3>
-                        <select id="yearSelect" class="text-sm border rounded-lg px-2 py-1" onchange="updateMonthlyChart()">
+                <div class="bg-white rounded-xl shadow-lg p-4 md:p-6" data-aos="fade-up" data-aos-delay="500">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4">
+                        <h3 class="text-base md:text-lg font-semibold text-gray-800">Aktivitas Bulanan</h3>
+                        <select id="yearSelect" class="text-sm border rounded-lg px-2 py-1 w-full sm:w-auto" onchange="updateMonthlyChart()">
                             <option value="2024">2024</option>
                             <option value="2023">2023</option>
                             <option value="2022">2022</option>
                         </select>
                     </div>
-                    <div style="height: 250px; position: relative;">
+                    <div style="height: 220px; position: relative;">
                         <canvas id="monthlyChart"></canvas>
                     </div>
                 </div>
 
                 <!-- Distribusi Kategori Chart -->
-                <div class="bg-white rounded-xl shadow-lg p-6" data-aos="fade-up" data-aos-delay="600">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Distribusi Kategori</h3>
-                    <div style="height: 250px; position: relative;">
+                <div class="bg-white rounded-xl shadow-lg p-4 md:p-6" data-aos="fade-up" data-aos-delay="600">
+                    <h3 class="text-base md:text-lg font-semibold text-gray-800 mb-4">Distribusi Kategori</h3>
+                    <div style="height: 220px; position: relative;">
                         <canvas id="categoryChart"></canvas>
                     </div>
                 </div>
             </div>
 
             <!-- Quick Actions -->
-            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-8" data-aos="fade-up" data-aos-delay="700">
+            <div class="grid grid-cols-3 md:grid-cols-6 gap-2 md:gap-4 mb-6 md:mb-8" data-aos="fade-up" data-aos-delay="700">
                 <div class="quick-action-card" onclick="quickAction('berita')">
-                    <div class="bg-blue-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-2">
-                        <i class="fas fa-plus text-blue-600"></i>
+                    <div class="bg-blue-100 w-8 h-8 md:w-12 md:h-12 rounded-full flex items-center justify-center mx-auto mb-1 md:mb-2">
+                        <i class="fas fa-plus text-blue-600 text-sm md:text-base"></i>
                     </div>
-                    <p class="text-sm font-medium">Tulis Berita</p>
+                    <p class="text-xs font-medium">Tulis Berita</p>
                 </div>
                 <div class="quick-action-card" onclick="quickAction('kegiatan')">
-                    <div class="bg-green-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-2">
-                        <i class="fas fa-calendar-plus text-green-600"></i>
+                    <div class="bg-green-100 w-8 h-8 md:w-12 md:h-12 rounded-full flex items-center justify-center mx-auto mb-1 md:mb-2">
+                        <i class="fas fa-calendar-plus text-green-600 text-sm md:text-base"></i>
                     </div>
-                    <p class="text-sm font-medium">Buat Kegiatan</p>
+                    <p class="text-xs font-medium">Buat Kegiatan</p>
                 </div>
                 <div class="quick-action-card" onclick="quickAction('dokumen')">
-                    <div class="bg-purple-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-2">
-                        <i class="fas fa-upload text-purple-600"></i>
+                    <div class="bg-purple-100 w-8 h-8 md:w-12 md:h-12 rounded-full flex items-center justify-center mx-auto mb-1 md:mb-2">
+                        <i class="fas fa-upload text-purple-600 text-sm md:text-base"></i>
                     </div>
-                    <p class="text-sm font-medium">Upload Dokumen</p>
+                    <p class="text-xs font-medium">Upload Dokumen</p>
                 </div>
                 <div class="quick-action-card" onclick="quickAction('magang')">
-                    <div class="bg-pink-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-2">
-                        <i class="fas fa-briefcase text-pink-600"></i>
+                    <div class="bg-pink-100 w-8 h-8 md:w-12 md:h-12 rounded-full flex items-center justify-center mx-auto mb-1 md:mb-2">
+                        <i class="fas fa-briefcase text-pink-600 text-sm md:text-base"></i>
                     </div>
-                    <p class="text-sm font-medium">Buka Program</p>
+                    <p class="text-xs font-medium">Buka Program</p>
                 </div>
                 <div class="quick-action-card" onclick="quickAction('penelitian')">
-                    <div class="bg-orange-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-2">
-                        <i class="fas fa-flask text-orange-600"></i>
+                    <div class="bg-orange-100 w-8 h-8 md:w-12 md:h-12 rounded-full flex items-center justify-center mx-auto mb-1 md:mb-2">
+                        <i class="fas fa-flask text-orange-600 text-sm md:text-base"></i>
                     </div>
-                    <p class="text-sm font-medium">Ajukan Penelitian</p>
+                    <p class="text-xs font-medium">Ajukan Penelitian</p>
                 </div>
                 <div class="quick-action-card" onclick="quickAction('laporan')">
-                    <div class="bg-red-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-2">
-                        <i class="fas fa-file-pdf text-red-600"></i>
+                    <div class="bg-red-100 w-8 h-8 md:w-12 md:h-12 rounded-full flex items-center justify-center mx-auto mb-1 md:mb-2">
+                        <i class="fas fa-file-pdf text-red-600 text-sm md:text-base"></i>
                     </div>
-                    <p class="text-sm font-medium">Buat Laporan</p>
+                    <p class="text-xs font-medium">Buat Laporan</p>
                 </div>
             </div>
 
             <!-- Recent Activity & Pending Tasks -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
                 <!-- Recent Activity Timeline -->
-                <div class="bg-white rounded-xl shadow-lg p-6" data-aos="fade-up" data-aos-delay="800">
+                <div class="bg-white rounded-xl shadow-lg p-4 md:p-6" data-aos="fade-up" data-aos-delay="800">
                     <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-semibold text-gray-800">Aktivitas Terkini</h3>
-                        <a href="#" class="text-sm text-blue-600 hover:text-blue-800">Lihat Semua</a>
+                        <h3 class="text-base md:text-lg font-semibold text-gray-800">Aktivitas Terkini</h3>
+                        <a href="#" class="text-xs md:text-sm text-blue-600 hover:text-blue-800">Lihat Semua</a>
                     </div>
-                    <div class="space-y-4" id="activityTimeline">
-                        <!-- Activities will be loaded here -->
-                        <div class="text-center text-gray-500 py-4">Memuat aktivitas...</div>
-                    </div>
+                    <div class="space-y-3 md:space-y-4" id="activityTimeline"></div>
                 </div>
 
                 <!-- Pending Tasks -->
-                <div class="bg-white rounded-xl shadow-lg p-6" data-aos="fade-up" data-aos-delay="900">
+                <div class="bg-white rounded-xl shadow-lg p-4 md:p-6" data-aos="fade-up" data-aos-delay="900">
                     <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-semibold text-gray-800">Tugas Perlu Ditindaklanjuti</h3>
+                        <h3 class="text-base md:text-lg font-semibold text-gray-800">Tugas Perlu Ditindaklanjuti</h3>
                         <span class="bg-red-100 text-red-600 text-xs font-semibold px-2 py-1 rounded-full" id="pendingCount">0</span>
                     </div>
-                    <div class="space-y-3" id="pendingTasks">
-                        <!-- Tasks will be loaded here -->
-                        <div class="text-center text-gray-500 py-4">Memuat tugas...</div>
-                    </div>
+                    <div class="space-y-2 md:space-y-3" id="pendingTasks"></div>
                 </div>
             </div>
 
             <!-- Footer Stats -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8" data-aos="fade-up" data-aos-delay="1000">
-                <div class="text-center">
-                    <p class="text-2xl font-bold text-gray-800" id="todayVisitors">0</p>
-                    <p class="text-xs text-gray-500">Pengunjung Hari Ini</p>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4 mt-6 md:mt-8" data-aos="fade-up" data-aos-delay="1000">
+                <div class="text-center bg-white rounded-lg p-3 md:p-4 shadow-sm">
+                    <p class="text-xl md:text-2xl font-bold text-gray-800" id="todayVisitors">0</p>
+                    <p class="text-[10px] md:text-xs text-gray-500">Pengunjung Hari Ini</p>
                 </div>
-                <div class="text-center">
-                    <p class="text-2xl font-bold text-gray-800" id="weeklyVisitors">0</p>
-                    <p class="text-xs text-gray-500">Pengunjung Minggu Ini</p>
+                <div class="text-center bg-white rounded-lg p-3 md:p-4 shadow-sm">
+                    <p class="text-xl md:text-2xl font-bold text-gray-800" id="weeklyVisitors">0</p>
+                    <p class="text-[10px] md:text-xs text-gray-500">Pengunjung Minggu Ini</p>
                 </div>
-                <div class="text-center">
-                    <p class="text-2xl font-bold text-gray-800" id="monthlyVisitors">0</p>
-                    <p class="text-xs text-gray-500">Pengunjung Bulan Ini</p>
+                <div class="text-center bg-white rounded-lg p-3 md:p-4 shadow-sm">
+                    <p class="text-xl md:text-2xl font-bold text-gray-800" id="monthlyVisitors">0</p>
+                    <p class="text-[10px] md:text-xs text-gray-500">Pengunjung Bulan Ini</p>
                 </div>
-                <div class="text-center">
-                    <p class="text-2xl font-bold text-gray-800" id="totalVisitors">0</p>
-                    <p class="text-xs text-gray-500">Total Pengunjung</p>
+                <div class="text-center bg-white rounded-lg p-3 md:p-4 shadow-sm">
+                    <p class="text-xl md:text-2xl font-bold text-gray-800" id="totalVisitors">0</p>
+                    <p class="text-[10px] md:text-xs text-gray-500">Total Pengunjung</p>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- Modal Konfirmasi Logout -->
-    <div id="confirmLogoutModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50 flex items-center justify-center">
-        <div class="relative bg-white rounded-lg shadow-xl w-11/12 md:w-1/3">
-            <div class="p-6">
-                <div class="text-center">
-                    <i class="fas fa-exclamation-triangle text-yellow-500 text-5xl mb-4"></i>
-                    <h3 class="text-lg font-bold text-gray-900 mb-2">Konfirmasi Logout</h3>
-                    <p class="text-gray-600 mb-6">Apakah Anda yakin ingin keluar dari sistem?</p>
-                    <div class="flex justify-center space-x-3">
-                        <button onclick="closeLogoutModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
-                            Batal
-                        </button>
-                        <button onclick="performLogout()" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
-                            Ya, Logout
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
         // ==================== INITIALIZATION ====================
-        AOS.init({ duration: 800, once: true });
+        AOS.init({ duration: 800, once: true, easing: 'ease-out-cubic' });
 
-        // ==================== AUTHENTICATION & LOGOUT ====================
-        // Cek autentikasi
+        // ==================== AUTHENTICATION ====================
         let token = localStorage.getItem('token');
         if (!token) {
             window.location.href = '../login.html';
         }
 
-        // Set user name
         const user = JSON.parse(localStorage.getItem('user') || '{}');
         const adminName = user.nama_lengkap || 'Admin LPPM';
-        document.getElementById('userName').textContent = adminName;
-        document.getElementById('adminName').textContent = adminName.split(' ')[0]; // First name only for welcome
 
-        // Fungsi untuk mengecek session expiry
-        function checkSession() {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                window.location.href = '../login.html';
-                return;
-            }
+        // ==================== NAVBAR FUNCTIONS ====================
+        function updateNavbarUserInfo() {
+            const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(adminName)}&background=3B82F6&color=fff&bold=true`;
             
-            // Decode token untuk cek expiry
-            try {
-                const base64Url = token.split('.')[1];
-                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-                const payload = JSON.parse(window.atob(base64));
+            const navAvatar = document.getElementById('navAvatar');
+            const dropdownAvatar = document.getElementById('dropdownAvatar');
+            const mobileNavAvatar = document.getElementById('mobileNavAvatar');
+            
+            if (navAvatar) navAvatar.src = avatarUrl;
+            if (dropdownAvatar) dropdownAvatar.src = avatarUrl;
+            if (mobileNavAvatar) mobileNavAvatar.src = avatarUrl;
+            
+            document.getElementById('navUserName').textContent = adminName;
+            document.getElementById('dropdownUserName').textContent = adminName;
+            document.getElementById('mobileNavUserName').textContent = adminName;
+            document.getElementById('adminName').textContent = adminName.split(' ')[0];
+        }
+
+        function initDropdown() {
+            const userMenuBtn = document.getElementById('userMenuBtn');
+            const userDropdown = document.getElementById('userDropdown');
+            
+            if (userMenuBtn && userDropdown) {
+                userMenuBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    userDropdown.classList.toggle('hidden');
+                });
                 
-                // Cek if token expired
-                if (payload.exp && payload.exp < Date.now() / 1000) {
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('user');
-                    window.location.href = '../login.html?session=expired';
-                }
-            } catch (e) {
-                console.error('Error checking session:', e);
+                document.addEventListener('click', function(e) {
+                    if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) {
+                        userDropdown.classList.add('hidden');
+                    }
+                });
             }
         }
 
-        // Panggil checkSession setiap 5 menit
-        setInterval(checkSession, 5 * 60 * 1000);
+        function initMobileNav() {
+            const hamburger = document.getElementById('hamburgerBtn');
+            const mobileNav = document.getElementById('mobileNav');
+            const closeBtn = document.getElementById('closeMobileNav');
+            
+            if (hamburger && mobileNav) {
+                hamburger.addEventListener('click', () => mobileNav.classList.add('active'));
+                closeBtn.addEventListener('click', () => mobileNav.classList.remove('active'));
+                mobileNav.addEventListener('click', (e) => {
+                    if (e.target === mobileNav) mobileNav.classList.remove('active');
+                });
+            }
+        }
+
+        function setActiveNavLink() {
+            const currentPage = window.location.pathname.split('/').pop();
+            const navLinks = document.querySelectorAll('.nav-link-modern');
+            const mobileLinks = document.querySelectorAll('.mobile-nav-link');
+            
+            navLinks.forEach(link => {
+                const href = link.getAttribute('href');
+                if (href === currentPage) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+            
+            mobileLinks.forEach(link => {
+                const href = link.getAttribute('href');
+                if (href === currentPage) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+        }
 
         // ==================== MOCK DATA ====================
         const dashboardData = {
-            berita: {
-                total: 24,
-                published: 18,
-                draft: 6
-            },
-            kegiatan: {
-                total: 12,
-                upcoming: 5,
-                ongoing: 3,
-                completed: 4
-            },
-            repository: {
-                total: 112,
-                downloads: 1234,
-                views: 2567
-            },
-            program: {
-                total: 3,
-                pendaftar: 45,
-                kuota: 60
-            },
-            visitors: {
-                today: 147,
-                weekly: 892,
-                monthly: 3200,
-                total: 15800
-            },
+            berita: { total: 24, published: 18, draft: 6 },
+            kegiatan: { total: 12, upcoming: 5, ongoing: 3, completed: 4 },
+            repository: { total: 112, downloads: 1234, views: 2567 },
+            program: { total: 3, pendaftar: 45, kuota: 60 },
+            visitors: { today: 147, weekly: 892, monthly: 3200, total: 15800 },
             activities: [
-                {
-                    icon: 'fa-plus',
-                    bgColor: 'bg-blue-100',
-                    iconColor: 'text-blue-600',
-                    text: 'Berita baru <span class="font-semibold">"Workshop Penulisan Jurnal Internasional"</span> telah ditambahkan.',
-                    time: '2 jam yang lalu'
-                },
-                {
-                    icon: 'fa-check',
-                    bgColor: 'bg-green-100',
-                    iconColor: 'text-green-600',
-                    text: 'Kegiatan <span class="font-semibold">"Seminar Nasional"</span> telah selesai.',
-                    time: '1 hari yang lalu'
-                },
-                {
-                    icon: 'fa-upload',
-                    bgColor: 'bg-purple-100',
-                    iconColor: 'text-purple-600',
-                    text: 'Dokumen baru <span class="font-semibold">"Analisis Sistem IoT.pdf"</span> diunggah ke repository.',
-                    time: '3 hari yang lalu'
-                },
-                {
-                    icon: 'fa-user-plus',
-                    bgColor: 'bg-pink-100',
-                    iconColor: 'text-pink-600',
-                    text: 'Pendaftaran baru program <span class="font-semibold">"Magang Batch 4"</span>.',
-                    time: '5 hari yang lalu'
-                }
+                { icon: 'fa-plus', bgColor: 'bg-blue-100', iconColor: 'text-blue-600', text: 'Berita baru <span class="font-semibold">"Workshop Penulisan Jurnal Internasional"</span> telah ditambahkan.', time: '2 jam yang lalu' },
+                { icon: 'fa-check', bgColor: 'bg-green-100', iconColor: 'text-green-600', text: 'Kegiatan <span class="font-semibold">"Seminar Nasional"</span> telah selesai.', time: '1 hari yang lalu' },
+                { icon: 'fa-upload', bgColor: 'bg-purple-100', iconColor: 'text-purple-600', text: 'Dokumen baru <span class="font-semibold">"Analisis Sistem IoT.pdf"</span> diunggah ke repository.', time: '3 hari yang lalu' },
+                { icon: 'fa-user-plus', bgColor: 'bg-pink-100', iconColor: 'text-pink-600', text: 'Pendaftaran baru program <span class="font-semibold">"Magang Batch 4"</span>.', time: '5 hari yang lalu' }
             ],
             pendingTasks: [
-                {
-                    title: 'Review Proposal Penelitian',
-                    count: 3,
-                    priority: 'high',
-                    link: '#'
-                },
-                {
-                    title: 'Verifikasi Luaran KKN',
-                    count: 5,
-                    priority: 'medium',
-                    link: '#'
-                },
-                {
-                    title: 'Persetujuan Draft Berita',
-                    count: 2,
-                    priority: 'low',
-                    link: '#'
-                },
-                {
-                    title: 'Konfirmasi Kehadiran Kegiatan',
-                    count: 8,
-                    priority: 'medium',
-                    link: '#'
-                }
-            ],
-            notifications: [
-                {
-                    icon: 'fa-info-circle',
-                    bgColor: 'bg-blue-100',
-                    iconColor: 'text-blue-600',
-                    title: 'Sistem akan dimatikan untuk maintenance',
-                    time: '30 menit yang lalu',
-                    read: false
-                },
-                {
-                    icon: 'fa-check-circle',
-                    bgColor: 'bg-green-100',
-                    iconColor: 'text-green-600',
-                    title: 'Proposal penelitian Anda telah disetujui',
-                    time: '2 jam yang lalu',
-                    read: false
-                },
-                {
-                    icon: 'fa-exclamation-triangle',
-                    bgColor: 'bg-yellow-100',
-                    iconColor: 'text-yellow-600',
-                    title: 'Batas akhir upload laporan kemajuan',
-                    time: '5 jam yang lalu',
-                    read: true
-                }
+                { title: 'Review Proposal Penelitian', count: 3, priority: 'high' },
+                { title: 'Verifikasi Luaran KKN', count: 5, priority: 'medium' },
+                { title: 'Persetujuan Draft Berita', count: 2, priority: 'low' },
+                { title: 'Konfirmasi Kehadiran Kegiatan', count: 8, priority: 'medium' }
             ]
         };
 
-        // ==================== INITIALIZATION ====================
-        document.addEventListener('DOMContentLoaded', function() {
-            showLoading();
-            
-            // Simulate API call
-            setTimeout(() => {
-                updateStats();
-                renderActivities();
-                renderPendingTasks();
-                renderNotifications();
-                updateWelcomeStats();
-                initCharts();
-                updateWelcomeDate();
-                hideLoading();
-            }, 1000);
-        });
-
         // ==================== STATS FUNCTIONS ====================
         function updateStats() {
-            // Berita stats
             document.getElementById('totalBerita').textContent = dashboardData.berita.total;
             document.getElementById('beritaPublished').textContent = dashboardData.berita.published;
             document.getElementById('beritaDraft').textContent = dashboardData.berita.draft;
             
-            // Berita progress (published percentage)
             const beritaProgress = (dashboardData.berita.published / dashboardData.berita.total) * 100;
             document.getElementById('beritaProgress').style.width = beritaProgress + '%';
             
-            // Kegiatan stats
             document.getElementById('totalKegiatan').textContent = dashboardData.kegiatan.total;
             document.getElementById('kegiatanUpcoming').textContent = dashboardData.kegiatan.upcoming;
             document.getElementById('kegiatanOngoing').textContent = dashboardData.kegiatan.ongoing;
             document.getElementById('kegiatanCompleted').textContent = dashboardData.kegiatan.completed;
             
-            // Repository stats
             document.getElementById('totalDokumen').textContent = dashboardData.repository.total;
             document.getElementById('totalDownloads').textContent = dashboardData.repository.downloads.toLocaleString();
             document.getElementById('totalViews').textContent = dashboardData.repository.views.toLocaleString();
             
-            // Program stats
             document.getElementById('totalProgram').textContent = dashboardData.program.total;
             document.getElementById('totalPendaftar').textContent = dashboardData.program.pendaftar;
             document.getElementById('totalKuota').textContent = dashboardData.program.kuota;
             
-            // Visitor stats
             document.getElementById('todayVisitors').textContent = dashboardData.visitors.today.toLocaleString();
             document.getElementById('weeklyVisitors').textContent = dashboardData.visitors.weekly.toLocaleString();
             document.getElementById('monthlyVisitors').textContent = (dashboardData.visitors.monthly / 1000).toFixed(1) + 'k';
@@ -785,31 +861,30 @@
         function updateWelcomeStats() {
             const welcomeStats = document.getElementById('welcomeStats');
             welcomeStats.innerHTML = `
-                <span class="bg-white bg-opacity-20 rounded-lg px-4 py-2 text-sm">
-                    <i class="fas fa-newspaper mr-2"></i> ${dashboardData.berita.total} Berita
+                <span class="bg-white bg-opacity-20 rounded-lg px-3 py-1 md:px-4 md:py-2 text-xs md:text-sm">
+                    <i class="fas fa-newspaper mr-1 md:mr-2"></i> ${dashboardData.berita.total} Berita
                 </span>
-                <span class="bg-white bg-opacity-20 rounded-lg px-4 py-2 text-sm">
-                    <i class="fas fa-calendar mr-2"></i> ${dashboardData.kegiatan.ongoing} Kegiatan Aktif
+                <span class="bg-white bg-opacity-20 rounded-lg px-3 py-1 md:px-4 md:py-2 text-xs md:text-sm">
+                    <i class="fas fa-calendar mr-1 md:mr-2"></i> ${dashboardData.kegiatan.ongoing} Kegiatan Aktif
                 </span>
-                <span class="bg-white bg-opacity-20 rounded-lg px-4 py-2 text-sm">
-                    <i class="fas fa-file-alt mr-2"></i> ${dashboardData.repository.total} Dokumen
+                <span class="bg-white bg-opacity-20 rounded-lg px-3 py-1 md:px-4 md:py-2 text-xs md:text-sm">
+                    <i class="fas fa-file-alt mr-1 md:mr-2"></i> ${dashboardData.repository.total} Dokumen
                 </span>
             `;
         }
 
-        // ==================== ACTIVITIES FUNCTIONS ====================
         function renderActivities() {
             const timeline = document.getElementById('activityTimeline');
             timeline.innerHTML = dashboardData.activities.map(activity => `
                 <div class="timeline-item">
                     <div class="timeline-dot"></div>
-                    <div class="flex items-start space-x-3">
-                        <div class="${activity.bgColor} p-2 rounded-full flex-shrink-0">
-                            <i class="fas ${activity.icon} ${activity.iconColor} text-sm"></i>
+                    <div class="flex items-start space-x-2 md:space-x-3">
+                        <div class="${activity.bgColor} p-1.5 md:p-2 rounded-full flex-shrink-0">
+                            <i class="fas ${activity.icon} ${activity.iconColor} text-xs md:text-sm"></i>
                         </div>
                         <div class="flex-1">
-                            <p class="text-sm text-gray-800">${activity.text}</p>
-                            <p class="text-xs text-gray-500 mt-1">${activity.time}</p>
+                            <p class="text-xs md:text-sm text-gray-800">${activity.text}</p>
+                            <p class="text-[10px] md:text-xs text-gray-500 mt-1">${activity.time}</p>
                         </div>
                     </div>
                 </div>
@@ -825,13 +900,13 @@
             };
             
             tasks.innerHTML = dashboardData.pendingTasks.map(task => `
-                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition cursor-pointer" onclick="window.location.href='${task.link}'">
-                    <div class="flex items-center space-x-3">
-                        <span class="w-2 h-2 rounded-full ${priorityColors[task.priority]}"></span>
-                        <span class="text-sm text-gray-700">${task.title}</span>
+                <div class="flex items-center justify-between p-2 md:p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+                    <div class="flex items-center space-x-2 md:space-x-3">
+                        <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full ${priorityColors[task.priority]}"></span>
+                        <span class="text-xs md:text-sm text-gray-700">${task.title}</span>
                     </div>
-                    <span class="bg-white px-2 py-1 rounded-full text-xs font-semibold ${priorityColors[task.priority]}">
-                        ${task.count} perlu ditindaklanjuti
+                    <span class="bg-white px-1.5 py-0.5 md:px-2 md:py-1 rounded-full text-[10px] md:text-xs font-semibold ${priorityColors[task.priority]}">
+                        ${task.count}
                     </span>
                 </div>
             `).join('');
@@ -840,121 +915,29 @@
             document.getElementById('pendingCount').textContent = totalPending;
         }
 
-        // ==================== NOTIFICATION FUNCTIONS ====================
-        function toggleNotifications() {
-            const dropdown = document.getElementById('notificationDropdown');
-            dropdown.classList.toggle('hidden');
-        }
-
-        function renderNotifications() {
-            const list = document.getElementById('notificationList');
-            const unreadCount = dashboardData.notifications.filter(n => !n.read).length;
-            
-            document.getElementById('notificationBadge').textContent = unreadCount;
-            
-            list.innerHTML = dashboardData.notifications.map(notif => `
-                <div class="p-3 border-b hover:bg-gray-50 ${!notif.read ? 'bg-blue-50' : ''}">
-                    <div class="flex items-start space-x-3">
-                        <div class="${notif.bgColor} p-2 rounded-full flex-shrink-0">
-                            <i class="fas ${notif.icon} ${notif.iconColor} text-xs"></i>
-                        </div>
-                        <div class="flex-1">
-                            <p class="text-sm text-gray-800">${notif.title}</p>
-                            <p class="text-xs text-gray-500 mt-1">${notif.time}</p>
-                        </div>
-                        ${!notif.read ? '<span class="w-2 h-2 bg-blue-600 rounded-full"></span>' : ''}
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function markAllAsRead() {
-            dashboardData.notifications.forEach(n => n.read = true);
-            renderNotifications();
-            document.getElementById('notificationDropdown').classList.add('hidden');
-            showNotification('Semua notifikasi telah ditandai dibaca', 'success');
-        }
-
-        // ==================== USER MENU FUNCTIONS ====================
-        function toggleUserMenu() {
-            const dropdown = document.getElementById('userDropdown');
-            dropdown.classList.toggle('hidden');
-        }
-
-        // Close dropdowns when clicking outside
-        document.addEventListener('click', function(event) {
-            const notificationDropdown = document.getElementById('notificationDropdown');
-            const userDropdown = document.getElementById('userDropdown');
-            const notificationBell = event.target.closest('[onclick="toggleNotifications()"]');
-            const userMenu = event.target.closest('[onclick="toggleUserMenu()"]');
-            
-            if (!notificationBell && notificationDropdown && !notificationDropdown.contains(event.target)) {
-                notificationDropdown.classList.add('hidden');
-            }
-            
-            if (!userMenu && userDropdown && !userDropdown.contains(event.target)) {
-                userDropdown.classList.add('hidden');
-            }
-        });
-
         // ==================== CHART FUNCTIONS ====================
         let monthlyChart, categoryChart;
 
         function initCharts() {
-            // Monthly Activity Chart
             const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
             monthlyChart = new Chart(monthlyCtx, {
                 type: 'line',
                 data: {
                     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
                     datasets: [
-                        {
-                            label: 'Berita',
-                            data: [12, 19, 15, 17, 14, 13, 15, 20, 18, 22, 25, 24],
-                            borderColor: '#3B82F6',
-                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                            tension: 0.4,
-                            fill: true
-                        },
-                        {
-                            label: 'Kegiatan',
-                            data: [8, 12, 10, 9, 11, 8, 10, 12, 14, 13, 15, 12],
-                            borderColor: '#10B981',
-                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                            tension: 0.4,
-                            fill: true
-                        },
-                        {
-                            label: 'Dokumen',
-                            data: [5, 8, 7, 9, 10, 8, 11, 13, 12, 15, 14, 17],
-                            borderColor: '#8B5CF6',
-                            backgroundColor: 'rgba(139, 92, 246, 0.1)',
-                            tension: 0.4,
-                            fill: true
-                        }
+                        { label: 'Berita', data: [12, 19, 15, 17, 14, 13, 15, 20, 18, 22, 25, 24], borderColor: '#3B82F6', backgroundColor: 'rgba(59, 130, 246, 0.1)', tension: 0.4, fill: true },
+                        { label: 'Kegiatan', data: [8, 12, 10, 9, 11, 8, 10, 12, 14, 13, 15, 12], borderColor: '#10B981', backgroundColor: 'rgba(16, 185, 129, 0.1)', tension: 0.4, fill: true },
+                        { label: 'Dokumen', data: [5, 8, 7, 9, 10, 8, 11, 13, 12, 15, 14, 17], borderColor: '#8B5CF6', backgroundColor: 'rgba(139, 92, 246, 0.1)', tension: 0.4, fill: true }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                display: true,
-                                color: 'rgba(0,0,0,0.05)'
-                            }
-                        }
-                    }
+                    plugins: { legend: { position: 'top', labels: { boxWidth: 10, font: { size: 10 } } } },
+                    scales: { y: { beginAtZero: true, grid: { display: true, color: 'rgba(0,0,0,0.05)' } } }
                 }
             });
 
-            // Category Distribution Chart
             const categoryCtx = document.getElementById('categoryChart').getContext('2d');
             categoryChart = new Chart(categoryCtx, {
                 type: 'doughnut',
@@ -962,26 +945,15 @@
                     labels: ['Jurnal', 'Penelitian', 'Pengabdian', 'Buku', 'HKI', 'Prosiding'],
                     datasets: [{
                         data: [45, 38, 25, 20, 15, 12],
-                        backgroundColor: [
-                            '#3B82F6',
-                            '#10B981',
-                            '#F59E0B',
-                            '#8B5CF6',
-                            '#EC4899',
-                            '#6366F1'
-                        ],
+                        backgroundColor: ['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899', '#6366F1'],
                         borderWidth: 0
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'right',
-                        }
-                    },
-                    cutout: '70%'
+                    plugins: { legend: { position: 'right', labels: { boxWidth: 10, font: { size: 10 } } } },
+                    cutout: '65%'
                 }
             });
         }
@@ -994,226 +966,75 @@
         // ==================== QUICK ACTIONS ====================
         function quickAction(action) {
             const actionMessages = {
-                'berita': 'Membuka halaman tambah berita',
-                'kegiatan': 'Membuka halaman buat kegiatan',
-                'dokumen': 'Membuka halaman upload dokumen',
-                'magang': 'Membuka halaman buka program',
-                'penelitian': 'Membuka halaman ajuan penelitian',
-                'laporan': 'Membuka halaman buat laporan'
+                'berita': 'Membuka halaman tambah berita', 'kegiatan': 'Membuka halaman buat kegiatan',
+                'dokumen': 'Membuka halaman upload dokumen', 'magang': 'Membuka halaman buka program',
+                'penelitian': 'Membuka halaman ajuan penelitian', 'laporan': 'Membuka halaman buat laporan'
             };
             
             showNotification(actionMessages[action], 'info');
             
-            // Redirect to appropriate page
             setTimeout(() => {
-                switch(action) {
-                    case 'berita':
-                        window.location.href = 'manage-kegiatan.html?tab=berita';
-                        break;
-                    case 'kegiatan':
-                        window.location.href = 'manage-kegiatan.html?tab=kegiatan';
-                        break;
-                    case 'dokumen':
-                        window.location.href = 'manage-repository.html';
-                        break;
-                    case 'magang':
-                        window.location.href = 'manage-magang-kkn.html';
-                        break;
-                    case 'penelitian':
-                        window.location.href = 'admin-penelitian-pengabdian.html';
-                        break;
-                    case 'laporan':
-                        window.location.href = 'admin-penelitian-pengabdian.html?tab=reports';
-                        break;
-                }
+                const pages = {
+                    'berita': 'manage-kegiatan.html?tab=berita', 'kegiatan': 'manage-kegiatan.html?tab=kegiatan',
+                    'dokumen': 'manage-repository.html', 'magang': 'manage-magang-kkn.html',
+                    'penelitian': 'admin-penelitian-pengabdian.html', 'laporan': 'admin-penelitian-pengabdian.html?tab=reports'
+                };
+                window.location.href = pages[action];
             }, 500);
         }
 
         // ==================== UTILITY FUNCTIONS ====================
-        function showLoading() {
-            document.getElementById('loadingOverlay').classList.remove('hidden');
-        }
-
-        function hideLoading() {
-            document.getElementById('loadingOverlay').classList.add('hidden');
-        }
+        function showLoading() { document.getElementById('loadingOverlay').classList.remove('hidden'); }
+        function hideLoading() { document.getElementById('loadingOverlay').classList.add('hidden'); }
 
         function showNotification(message, type = 'success') {
             Swal.fire({
-                icon: type,
-                title: type === 'success' ? 'Berhasil' : type === 'error' ? 'Gagal' : 'Informasi',
-                text: message,
-                timer: 2000,
-                showConfirmButton: false,
-                toast: true,
-                position: 'top-end'
+                icon: type, title: type === 'success' ? 'Berhasil' : type === 'error' ? 'Gagal' : 'Informasi',
+                text: message, timer: 2000, showConfirmButton: false, toast: true, position: 'top-end'
             });
         }
 
-        // ==================== LOGOUT FUNCTIONS ====================
+        function updateWelcomeDate() {
+            const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+            const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            const now = new Date();
+            document.getElementById('currentDate').textContent = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+        }
+
         function handleLogout() {
-            // Gunakan SweetAlert
             Swal.fire({
-                title: 'Konfirmasi Logout',
-                text: 'Apakah Anda yakin ingin keluar dari sistem?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Ya, Logout',
-                cancelButtonText: 'Batal'
+                title: 'Konfirmasi Logout', text: 'Apakah Anda yakin ingin keluar dari sistem?',
+                icon: 'question', showCancelButton: true, confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6', confirmButtonText: 'Ya, Logout', cancelButtonText: 'Batal'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    performLogout();
+                    showLoading();
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    setTimeout(() => { window.location.href = '../login.html'; }, 1000);
                 }
             });
         }
 
-        function closeLogoutModal() {
-            document.getElementById('confirmLogoutModal').classList.add('hidden');
-        }
-
-        function performLogout() {
+        // ==================== DOM CONTENT LOADED ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            initDropdown();
+            initMobileNav();
+            setActiveNavLink();
+            updateNavbarUserInfo();
+            
             showLoading();
             
-            // Hapus token dan user data dari localStorage
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            
-            // Redirect ke halaman login setelah 1 detik
             setTimeout(() => {
-                window.location.href = '../login.html';
+                updateStats();
+                renderActivities();
+                renderPendingTasks();
+                updateWelcomeStats();
+                initCharts();
+                updateWelcomeDate();
+                hideLoading();
             }, 1000);
-        }
-
-        // ==================== WELCOME MESSAGE WITH DATE ====================
-        function updateWelcomeDate() {
-            const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-            const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-            
-            const now = new Date();
-            const dayName = days[now.getDay()];
-            const date = now.getDate();
-            const month = months[now.getMonth()];
-            const year = now.getFullYear();
-            
-            const dateString = `${dayName}, ${date} ${month} ${year}`;
-            document.getElementById('currentDate').textContent = dateString;
-        }
-
-        // ==================== AUTO REFRESH (DEMO) ====================
-        // Refresh data every 5 minutes (in production, this would be a real API call)
-        setInterval(() => {
-            // Simulate data refresh
-            console.log('Refreshing dashboard data...');
-            // Uncomment untuk refresh data real
-            // location.reload();
-        }, 300000);
-
-        // Tambahkan fungsi-fungsi berikut di dalam tag <script> (setelah fungsi yang sudah ada)
-
-// Fungsi untuk update navbar user info
-function updateNavbarUserInfo() {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    const adminName = user.nama_lengkap || 'Admin LPPM';
-    
-    const navUserName = document.getElementById('navUserName');
-    const dropdownUserName = document.getElementById('dropdownUserName');
-    const dropdownUserRole = document.getElementById('dropdownUserRole');
-    
-    if (navUserName) navUserName.textContent = adminName;
-    if (dropdownUserName) dropdownUserName.textContent = adminName;
-    if (dropdownUserRole) dropdownUserRole.textContent = 'Administrator';
-    
-    // Update avatar
-    const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(adminName)}&background=3B82F6&color=fff&bold=true`;
-    const navAvatar = document.getElementById('navAvatar');
-    const dropdownAvatar = document.getElementById('dropdownAvatar');
-    
-    if (navAvatar) navAvatar.src = avatarUrl;
-    if (dropdownAvatar) dropdownAvatar.src = avatarUrl;
-}
-
-// Fungsi untuk inisialisasi dropdown
-function initDropdown() {
-    const userMenuBtn = document.getElementById('userMenuBtn');
-    const userDropdown = document.getElementById('userDropdown');
-    
-    if (userMenuBtn && userDropdown) {
-        userMenuBtn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            userDropdown.classList.toggle('hidden');
         });
-        
-        document.addEventListener('click', function(e) {
-            if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) {
-                userDropdown.classList.add('hidden');
-            }
-        });
-    }
-}
-
-// Fungsi untuk set active nav link
-function setActiveNavLink() {
-    const currentPage = window.location.pathname.split('/').pop();
-    const navLinks = document.querySelectorAll('.nav-link-modern');
-    
-    navLinks.forEach(link => {
-        const href = link.getAttribute('href');
-        if (href === currentPage) {
-            link.classList.add('active');
-        } else {
-            link.classList.remove('active');
-        }
-    });
-}
-
-// Update DOMContentLoaded
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize navbar components
-    initDropdown();
-    setActiveNavLink();
-    updateNavbarUserInfo();
-    
-    // Rest of existing initialization
-    showLoading();
-    
-    // Set user name for welcome message
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    const adminName = user.nama_lengkap || 'Admin LPPM';
-    document.getElementById('userName').textContent = adminName;
-    document.getElementById('adminName').textContent = adminName.split(' ')[0];
-    
-    // Simulate API call
-    setTimeout(() => {
-        updateStats();
-        renderActivities();
-        renderPendingTasks();
-        renderNotifications();
-        updateWelcomeStats();
-        initCharts();
-        updateWelcomeDate();
-        hideLoading();
-    }, 1000);
-});
-
-// Update handleLogout function
-function handleLogout() {
-    Swal.fire({
-        title: 'Konfirmasi Logout',
-        text: 'Apakah Anda yakin ingin keluar dari sistem?',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Ya, Logout',
-        cancelButtonText: 'Batal'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            performLogout();
-        }
-    });
-}
     </script>
 </body>
 </html>
