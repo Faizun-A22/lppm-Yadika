@@ -2,72 +2,85 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <title>Kelola Repository - LPPM ITB Yadika</title>
     
     <!-- CSS External Libraries -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <style>
-        .gradient-text { 
-            background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%); 
-            -webkit-background-clip: text; 
-            -webkit-text-fill-color: transparent; 
-            background-clip: text; 
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
         }
 
-.nav-link-modern {
-    position: relative;
-    transition: all 0.2s ease;
-}
+        /* Navbar Styles */
+        .navbar-custom {
+            background: linear-gradient(135deg, #1E3A5F 0%, #2D4A6E 50%, #1E3A5F 100%);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
 
-.nav-link-modern.active {
-    background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
-    color: white !important;
-}
+        .nav-link-modern {
+            position: relative;
+            transition: all 0.2s ease;
+            color: rgba(255, 255, 255, 0.8);
+        }
 
-.nav-link-modern.active i {
-    color: white !important;
-}
+        .nav-link-modern:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.15);
+        }
 
-.nav-link-modern:not(.active):hover {
-    transform: translateY(-1px);
-}
+        .nav-link-modern.active {
+            background: rgba(255, 255, 255, 0.25);
+            color: white !important;
+        }
 
-/* Dropdown Animation */
-#userDropdown {
-    transform-origin: top right;
-    animation: dropdownFade 0.2s ease;
-}
+        .nav-link-modern.active i {
+            color: white !important;
+        }
 
-@keyframes dropdownFade {
-    from {
-        opacity: 0;
-        transform: scale(0.95) translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-    }
-}
+        .nav-link-modern.active::before {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 2px;
+            background: white;
+            border-radius: 2px;
+        }
 
-/* Active link indicator */
-.nav-link-modern.active::before {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 20px;
-    height: 2px;
-    background: white;
-    border-radius: 2px;
-}
+        .brand-title {
+            color: white;
+        }
+
+        .brand-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .icon-btn {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .icon-btn:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .user-name, .user-role {
+            color: white;
+        }
+
+        .user-role {
+            opacity: 0.7;
+        }
 
         /* Tab Styles */
         .tab-button {
@@ -103,7 +116,6 @@
         .badge-xls { background: #dcfce7; color: #166534; }
         .badge-ppt { background: #fff3cd; color: #856404; }
         .badge-image { background: #f3e8ff; color: #6b21a8; }
-        .badge-video { background: #ffe4e6; color: #9f1239; }
         .badge-other { background: #f3f4f6; color: #374151; }
 
         /* Modal Styles */
@@ -143,7 +155,7 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Preview Card */
+        /* Document Card */
         .document-card {
             transition: all 0.3s ease;
             border: 1px solid #e5e7eb;
@@ -199,6 +211,109 @@
             height: 50px;
             animation: spin 1s linear infinite;
         }
+
+        /* Mobile Navigation */
+        .mobile-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-nav.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .mobile-nav-container {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 280px;
+            height: 100%;
+            background: white;
+            transform: translateX(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mobile-nav.active .mobile-nav-container {
+            transform: translateX(0);
+        }
+
+        .mobile-nav-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #1E3A5F, #2D4A6E);
+            color: white;
+        }
+
+        .mobile-nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            color: #4B5563;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .mobile-nav-link.active {
+            background: #EFF6FF;
+            color: #3B82F6;
+            border-left-color: #3B82F6;
+        }
+
+        /* Dropdown Animation */
+        #userDropdown {
+            transform-origin: top right;
+            animation: dropdownFade 0.2s ease;
+        }
+
+        @keyframes dropdownFade {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .stat-card {
+                margin-bottom: 1rem;
+            }
+            .tab-button {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.75rem;
+            }
+            .section-tab {
+                padding: 0.5rem 1rem;
+                font-size: 0.875rem;
+            }
+            .action-buttons {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            .action-buttons button {
+                width: 100%;
+            }
+            .table-container {
+                overflow-x: auto;
+            }
+            .grid-view {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body class="bg-gray-50 font-sans antialiased">
@@ -210,180 +325,235 @@
         </div>
     </div>
 
-    <!-- Ganti bagian <header> sampai </header> dengan kode di bawah ini -->
-
-<header class="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-md shadow-sm z-50 border-b border-gray-100">
-    <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
-        <!-- Logo and Brand -->
-        <a href="admin-dashboard.html" class="flex items-center space-x-3 group">
-            <div class="relative">
-                <img src="yadika.png" alt="Logo LPPM ITB Yadika" class="h-10 w-10 rounded-xl shadow-sm transition-transform group-hover:scale-105">
-                <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl opacity-0 group-hover:opacity-20 transition"></div>
+    <!-- Mobile Navigation -->
+    <div id="mobileNav" class="mobile-nav">
+        <div class="mobile-nav-container">
+            <div class="mobile-nav-header">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                        <img src="yadika.png" alt="Logo LPPM ITB Yadika" class="h-8 w-8 rounded-lg bg-white p-1">
+                        <span class="font-bold text-sm">LPPM Admin</span>
+                    </div>
+                    <button id="closeMobileNav" class="text-white">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <div class="flex items-center gap-3 mt-4 pt-2 border-t border-white/20">
+                    <img id="mobileNavAvatar" src="" alt="Avatar" class="w-10 h-10 rounded-full object-cover ring-2 ring-white/50">
+                    <div>
+                        <p class="font-semibold text-sm" id="mobileNavUserName">Loading...</p>
+                        <p class="text-xs opacity-80">Administrator</p>
+                    </div>
+                </div>
             </div>
-            <div>
-                <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                    LPPM Admin
-                </h1>
-                <p class="text-xs text-gray-400">ITB Yadika</p>
-            </div>
-        </a>
-        
-        <!-- Desktop Navigation Menu -->
-        <div class="hidden md:flex items-center space-x-1">
-            <a href="admin-dashboard.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
-                <i class="fas fa-tachometer-alt text-gray-400 group-hover:text-blue-500 transition"></i>
-                <span>Dashboard</span>
-            </a>
-            <a href="manage-kegiatan.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
-                <i class="fas fa-calendar-alt text-gray-400 group-hover:text-blue-500 transition"></i>
-                <span>Kegiatan & Berita</span>
-            </a>
-            <a href="manage-repository.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2 active">
-                <i class="fas fa-book text-gray-400 group-hover:text-blue-500 transition"></i>
-                <span>Repository</span>
-            </a>
-            <a href="admin_penelitian.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
-                <i class="fas fa-flask text-gray-400 group-hover:text-blue-500 transition"></i>
-                <span>Penelitian</span>
-            </a>
-            <a href="manage-magang-kkn.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
-                <i class="fas fa-briefcase text-gray-400 group-hover:text-blue-500 transition"></i>
-                <span>Magang & KKN</span>
-            </a>
-        </div>
-        
-        <!-- User Info & Actions -->
-        <div class="flex items-center gap-4">
-            <!-- Notifications Dropdown -->
-            <div class="relative">
-                <button id="notificationBtn" class="relative p-2 rounded-lg text-gray-500 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200">
-                    <i class="fas fa-bell text-lg"></i>
-                    <span id="notificationBadge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full hidden"></span>
+            <div class="flex-1 overflow-y-auto py-4">
+                <a href="admin-dashboard.html" class="mobile-nav-link">
+                    <i class="fas fa-tachometer-alt w-5"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="manage-kegiatan.html" class="mobile-nav-link">
+                    <i class="fas fa-calendar-alt w-5"></i>
+                    <span>Kegiatan & Berita</span>
+                </a>
+                <a href="manage-repository.html" class="mobile-nav-link active">
+                    <i class="fas fa-book w-5"></i>
+                    <span>Repository</span>
+                </a>
+                <a href="admin_penelitian.html" class="mobile-nav-link">
+                    <i class="fas fa-flask w-5"></i>
+                    <span>Penelitian</span>
+                </a>
+                <a href="manage-magang-kkn.html" class="mobile-nav-link">
+                    <i class="fas fa-briefcase w-5"></i>
+                    <span>Magang & KKN</span>
+                </a>
+                <div class="border-t border-gray-100 my-4 mx-4"></div>
+                <a href="admin-profile.html" class="mobile-nav-link">
+                    <i class="fas fa-user-cog w-5"></i>
+                    <span>Pengaturan Akun</span>
+                </a>
+                <a href="admin-ubah-password.html" class="mobile-nav-link">
+                    <i class="fas fa-key w-5"></i>
+                    <span>Ubah Password</span>
+                </a>
+                <button onclick="handleLogout()" class="mobile-nav-link w-full text-left text-red-600">
+                    <i class="fas fa-sign-out-alt w-5"></i>
+                    <span>Logout</span>
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <header class="fixed top-0 left-0 right-0 navbar-custom z-50">
+        <nav class="container mx-auto px-4 md:px-6 py-3 md:py-4 flex justify-between items-center">
+            <!-- Logo and Brand -->
+            <a href="admin-dashboard.html" class="flex items-center space-x-3 group">
+                <div class="relative">
+                    <img src="yadika.png" alt="Logo LPPM ITB Yadika" class="h-9 w-9 md:h-10 md:w-10 rounded-lg shadow-sm transition-transform group-hover:scale-105 bg-white p-1">
+                    <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-400 to-purple-400 rounded-lg opacity-0 group-hover:opacity-30 transition"></div>
+                </div>
+                <div>
+                    <h1 class="brand-title text-base md:text-lg font-bold tracking-wide">
+                        LPPM Admin
+                    </h1>
+                    <p class="brand-subtitle text-xs md:text-sm -mt-0.5">ITB Yadika</p>
+                </div>
+            </a>
+            
+            <!-- Desktop Navigation Menu -->
+            <div class="hidden md:flex items-center space-x-1">
+                <a href="admin-dashboard.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-tachometer-alt text-sm"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="manage-kegiatan.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-calendar-alt text-sm"></i>
+                    <span>Kegiatan & Berita</span>
+                </a>
+                <a href="manage-repository.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2 active">
+                    <i class="fas fa-book text-sm"></i>
+                    <span>Repository</span>
+                </a>
+                <a href="admin_penelitian.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-flask text-sm"></i>
+                    <span>Penelitian</span>
+                </a>
+                <a href="manage-magang-kkn.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-briefcase text-sm"></i>
+                    <span>Magang & KKN</span>
+                </a>
             </div>
             
-            <!-- User Profile Dropdown -->
-            <div class="relative">
-                <button id="userMenuBtn" class="flex items-center gap-3 p-1.5 rounded-xl hover:bg-gray-50 transition-all duration-200 border border-transparent hover:border-gray-200">
-                    <div class="relative">
-                        <img id="navAvatar" src="https://ui-avatars.com/api/?name=Admin+LPPM&background=3B82F6&color=fff" alt="Avatar" class="w-9 h-9 rounded-full object-cover ring-2 ring-gray-200">
-                        <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full ring-2 ring-white"></div>
-                    </div>
-                    <div class="hidden md:block text-left">
-                        <p class="text-sm font-semibold text-gray-800" id="navUserName">Loading...</p>
-                        <p class="text-xs text-gray-400" id="navUserRole">Admin</p>
-                    </div>
-                    <i class="fas fa-chevron-down text-xs text-gray-400 hidden md:block"></i>
-                </button>
+            <!-- User Info & Actions -->
+            <div class="flex items-center gap-2 md:gap-3">
+                <!-- Notifications -->
+                <div class="relative">
+                    <button id="notificationBtn" class="icon-btn relative p-2 rounded-lg transition-all duration-200">
+                        <i class="fas fa-bell text-base md:text-lg"></i>
+                        <span id="notificationBadge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full hidden"></span>
+                    </button>
+                </div>
                 
-                <!-- Dropdown Menu -->
-                <div id="userDropdown" class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hidden transition-all duration-200 z-50">
-                    <!-- Header with user info -->
-                    <div class="p-3 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-purple-50">
-                        <div class="flex items-center gap-3">
-                            <img id="dropdownAvatar" src="https://ui-avatars.com/api/?name=Admin+LPPM&background=3B82F6&color=fff" alt="Avatar" class="w-10 h-10 rounded-full object-cover">
-                            <div>
-                                <p class="font-semibold text-gray-800 text-sm" id="dropdownUserName">Loading...</p>
-                                <p class="text-xs text-gray-500" id="dropdownUserRole">Administrator</p>
+                <!-- User Profile Dropdown Desktop -->
+                <div class="relative hidden md:block">
+                    <button id="userMenuBtn" class="flex items-center gap-2 p-1.5 rounded-xl hover:bg-white/10 transition-all duration-200">
+                        <div class="relative">
+                            <img id="navAvatar" src="" alt="Avatar" class="w-8 h-8 rounded-full object-cover ring-2 ring-white/50">
+                            <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full ring-2 ring-white"></div>
+                        </div>
+                        <div class="hidden xl:block text-left">
+                            <p class="user-name text-xs font-semibold" id="navUserName">Loading...</p>
+                            <p class="user-role text-[10px]" id="navUserRole">Admin</p>
+                        </div>
+                        <i class="fas fa-chevron-down text-[10px] text-white/60 hidden xl:block"></i>
+                    </button>
+                    
+                    <div id="userDropdown" class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hidden z-50">
+                        <div class="p-3 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-purple-50">
+                            <div class="flex items-center gap-3">
+                                <img id="dropdownAvatar" src="" alt="Avatar" class="w-10 h-10 rounded-full object-cover">
+                                <div>
+                                    <p class="font-semibold text-gray-800 text-sm" id="dropdownUserName">Loading...</p>
+                                    <p class="text-xs text-gray-500" id="dropdownUserRole">Administrator</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    
-                    <!-- Menu Items -->
-                    <div class="p-2">
-                        <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
-                            <i class="fas fa-user-cog w-5 text-gray-400"></i>
-                            <span>Pengaturan Akun</span>
-                        </a>
-                        <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
-                            <i class="fas fa-key w-5 text-gray-400"></i>
-                            <span>Ubah Password</span>
-                        </a>
-                        <div class="border-t border-gray-100 my-2"></div>
-                        <button onclick="handleLogout()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-600 hover:bg-red-50 transition text-sm">
-                            <i class="fas fa-sign-out-alt w-5 text-red-400"></i>
-                            <span>Logout</span>
-                        </button>
+                        <div class="p-2">
+                            <a href="admin-profile.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
+                                <i class="fas fa-user-cog w-5 text-gray-400"></i>
+                                <span>Pengaturan Akun</span>
+                            </a>
+                            <a href="admin-ubah-password.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
+                                <i class="fas fa-key w-5 text-gray-400"></i>
+                                <span>Ubah Password</span>
+                            </a>
+                            <div class="border-t border-gray-100 my-2"></div>
+                            <button onclick="handleLogout()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-600 hover:bg-red-50 transition text-sm">
+                                <i class="fas fa-sign-out-alt w-5 text-red-400"></i>
+                                <span>Logout</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
+
+                <!-- Hamburger Menu Button -->
+                <button id="hamburgerBtn" class="md:hidden icon-btn p-2 rounded-lg transition-all duration-200">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
             </div>
-        </div>
-    </nav>
-</header>
+        </nav>
+    </header>
 
     <!-- Main Content -->
-    <main class="pt-20">
-        <div class="container mx-auto px-6 py-8">
+    <main class="pt-[72px] md:pt-[84px] pb-12">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Header Section -->
-            <header class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between" data-aos="fade-down">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6" data-aos="fade-down">
                 <div>
-                    <h2 class="text-3xl font-bold text-gray-800">Kelola Repository</h2>
-                    <p class="text-gray-600">Unggah dan kelola dokumen penelitian, jurnal, dan luaran lainnya.</p>
+                    <h2 class="text-2xl md:text-3xl font-bold text-gray-800">Kelola Repository</h2>
+                    <p class="text-sm md:text-base text-gray-600">Unggah dan kelola dokumen penelitian, jurnal, dan luaran lainnya.</p>
                 </div>
-                <button onclick="openAddModal()" class="mt-4 md:mt-0 bg-gradient-to-r from-pink-500 to-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:shadow-lg transition-all duration-300">
+                <button onclick="openAddModal()" class="mt-4 md:mt-0 bg-gradient-to-r from-pink-500 to-blue-600 text-white px-4 md:px-6 py-2 rounded-lg font-medium hover:shadow-lg transition-all duration-300 text-sm md:text-base">
                     <i class="fas fa-upload mr-2"></i> Upload Dokumen Baru
                 </button>
-            </header>
+            </div>
 
             <!-- Stats Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6" data-aos="fade-up">
-                <!-- Total Dokumen -->
-                <div class="stat-card bg-white p-6 rounded-xl shadow">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6" data-aos="fade-up">
+                <div class="stat-card bg-white p-4 md:p-6 rounded-xl shadow">
                     <div class="flex justify-between items-center">
                         <div>
-                            <p class="text-sm text-gray-500">Total Dokumen</p>
-                            <h3 class="text-2xl font-bold text-gray-800" id="totalDokumen">0</h3>
+                            <p class="text-xs md:text-sm text-gray-500">Total Dokumen</p>
+                            <h3 class="text-xl md:text-2xl font-bold text-gray-800" id="totalDokumen">0</h3>
                         </div>
-                        <div class="bg-blue-100 rounded-full p-3">
-                            <i class="fas fa-file-alt text-blue-600"></i>
+                        <div class="bg-blue-100 rounded-full p-2 md:p-3">
+                            <i class="fas fa-file-alt text-blue-600 text-sm md:text-base"></i>
                         </div>
                     </div>
-                    <div class="mt-4 text-sm text-gray-500">
+                    <div class="mt-4 text-xs md:text-sm text-gray-500">
                         <i class="fas fa-chart-line mr-1"></i> Total dokumen
                     </div>
                 </div>
 
-                <!-- Total Download -->
-                <div class="stat-card bg-white p-6 rounded-xl shadow">
+                <div class="stat-card bg-white p-4 md:p-6 rounded-xl shadow">
                     <div class="flex justify-between items-center">
                         <div>
-                            <p class="text-sm text-gray-500">Total Download</p>
-                            <h3 class="text-2xl font-bold text-gray-800" id="totalDownload">0</h3>
+                            <p class="text-xs md:text-sm text-gray-500">Total Download</p>
+                            <h3 class="text-xl md:text-2xl font-bold text-gray-800" id="totalDownload">0</h3>
                         </div>
-                        <div class="bg-green-100 rounded-full p-3">
-                            <i class="fas fa-download text-green-600"></i>
+                        <div class="bg-green-100 rounded-full p-2 md:p-3">
+                            <i class="fas fa-download text-green-600 text-sm md:text-base"></i>
                         </div>
                     </div>
-                    <div class="mt-4 text-sm text-gray-500">
+                    <div class="mt-4 text-xs md:text-sm text-gray-500">
                         <i class="fas fa-eye mr-1"></i> <span id="totalViews">0</span> views
                     </div>
                 </div>
 
-                <!-- Kategori Populer -->
-                <div class="stat-card bg-white p-6 rounded-xl shadow">
+                <div class="stat-card bg-white p-4 md:p-6 rounded-xl shadow">
                     <div class="flex justify-between items-center">
                         <div>
-                            <p class="text-sm text-gray-500">Kategori Populer</p>
-                            <h3 class="text-2xl font-bold text-gray-800" id="kategoriPopuler">-</h3>
+                            <p class="text-xs md:text-sm text-gray-500">Kategori Populer</p>
+                            <h3 class="text-xl md:text-2xl font-bold text-gray-800" id="kategoriPopuler">-</h3>
                         </div>
-                        <div class="bg-purple-100 rounded-full p-3">
-                            <i class="fas fa-star text-purple-600"></i>
+                        <div class="bg-purple-100 rounded-full p-2 md:p-3">
+                            <i class="fas fa-star text-purple-600 text-sm md:text-base"></i>
                         </div>
                     </div>
-                    <div class="mt-4 text-sm text-gray-500">
+                    <div class="mt-4">
                         <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded-full text-xs" id="popularCategoryPercentage">-</span>
                     </div>
                 </div>
 
-                <!-- Storage Usage -->
-                <div class="stat-card bg-white p-6 rounded-xl shadow">
+                <div class="stat-card bg-white p-4 md:p-6 rounded-xl shadow">
                     <div class="flex justify-between items-center">
                         <div>
-                            <p class="text-sm text-gray-500">Penggunaan Storage</p>
-                            <h3 class="text-2xl font-bold text-gray-800" id="storageUsed">0 GB</h3>
+                            <p class="text-xs md:text-sm text-gray-500">Penggunaan Storage</p>
+                            <h3 class="text-xl md:text-2xl font-bold text-gray-800" id="storageUsed">0 GB</h3>
                         </div>
-                        <div class="bg-orange-100 rounded-full p-3">
-                            <i class="fas fa-database text-orange-600"></i>
+                        <div class="bg-orange-100 rounded-full p-2 md:p-3">
+                            <i class="fas fa-database text-orange-600 text-sm md:text-base"></i>
                         </div>
                     </div>
                     <div class="mt-4">
@@ -396,41 +566,41 @@
             </div>
 
             <!-- Tab Navigator -->
-            <div class="border-b border-gray-200 mb-6" data-aos="fade-up">
-                <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="tabNav">
+            <div class="border-b border-gray-200 mb-6 overflow-x-auto" data-aos="fade-up">
+                <ul class="flex flex-nowrap -mb-px text-sm font-medium text-center min-w-max" id="tabNav">
                     <li class="mr-2">
-                        <button class="tab-button inline-block p-4 border-b-2 rounded-t-lg active text-blue-600 border-blue-600" id="tabSemuaBtn" data-tab="semua" onclick="activateTab('semua')">
-                            <i class="fas fa-layer-group mr-2"></i>Semua
+                        <button class="tab-button inline-block p-2 md:p-4 border-b-2 rounded-t-lg active text-blue-600 border-blue-600 whitespace-nowrap" data-tab="semua" onclick="activateTab('semua')">
+                            <i class="fas fa-layer-group mr-1 md:mr-2"></i>Semua
                         </button>
                     </li>
                     <li class="mr-2">
-                        <button class="tab-button inline-block p-4 border-b-2 rounded-t-lg" id="tabJurnalBtn" data-tab="jurnal" onclick="activateTab('jurnal')">
-                            <i class="fas fa-book-open mr-2"></i>Jurnal
+                        <button class="tab-button inline-block p-2 md:p-4 border-b-2 rounded-t-lg whitespace-nowrap" data-tab="jurnal" onclick="activateTab('jurnal')">
+                            <i class="fas fa-book-open mr-1 md:mr-2"></i>Jurnal
                         </button>
                     </li>
                     <li class="mr-2">
-                        <button class="tab-button inline-block p-4 border-b-2 rounded-t-lg" id="tabPenelitianBtn" data-tab="penelitian" onclick="activateTab('penelitian')">
-                            <i class="fas fa-flask mr-2"></i>Penelitian
+                        <button class="tab-button inline-block p-2 md:p-4 border-b-2 rounded-t-lg whitespace-nowrap" data-tab="penelitian" onclick="activateTab('penelitian')">
+                            <i class="fas fa-flask mr-1 md:mr-2"></i>Penelitian
                         </button>
                     </li>
                     <li class="mr-2">
-                        <button class="tab-button inline-block p-4 border-b-2 rounded-t-lg" id="tabPengabdianBtn" data-tab="pengabdian" onclick="activateTab('pengabdian')">
-                            <i class="fas fa-hands-helping mr-2"></i>Pengabdian
+                        <button class="tab-button inline-block p-2 md:p-4 border-b-2 rounded-t-lg whitespace-nowrap" data-tab="pengabdian" onclick="activateTab('pengabdian')">
+                            <i class="fas fa-hands-helping mr-1 md:mr-2"></i>Pengabdian
                         </button>
                     </li>
                     <li class="mr-2">
-                        <button class="tab-button inline-block p-4 border-b-2 rounded-t-lg" id="tabBukuBtn" data-tab="buku" onclick="activateTab('buku')">
-                            <i class="fas fa-book mr-2"></i>Buku
+                        <button class="tab-button inline-block p-2 md:p-4 border-b-2 rounded-t-lg whitespace-nowrap" data-tab="buku" onclick="activateTab('buku')">
+                            <i class="fas fa-book mr-1 md:mr-2"></i>Buku
                         </button>
                     </li>
                     <li class="mr-2">
-                        <button class="tab-button inline-block p-4 border-b-2 rounded-t-lg" id="tabHakiBtn" data-tab="haki" onclick="activateTab('haki')">
-                            <i class="fas fa-copyright mr-2"></i>HKI
+                        <button class="tab-button inline-block p-2 md:p-4 border-b-2 rounded-t-lg whitespace-nowrap" data-tab="haki" onclick="activateTab('haki')">
+                            <i class="fas fa-copyright mr-1 md:mr-2"></i>HKI
                         </button>
                     </li>
                     <li class="mr-2">
-                        <button class="tab-button inline-block p-4 border-b-2 rounded-t-lg" id="tabProsidingBtn" data-tab="prosiding" onclick="activateTab('prosiding')">
-                            <i class="fas fa-file-alt mr-2"></i>Prosiding
+                        <button class="tab-button inline-block p-2 md:p-4 border-b-2 rounded-t-lg whitespace-nowrap" data-tab="prosiding" onclick="activateTab('prosiding')">
+                            <i class="fas fa-file-alt mr-1 md:mr-2"></i>Prosiding
                         </button>
                     </li>
                 </ul>
@@ -438,14 +608,14 @@
 
             <!-- Search and Filter Section -->
             <div class="bg-white rounded-xl shadow-lg p-4 mb-6" data-aos="fade-up">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
                     <div class="relative">
                         <input type="text" id="searchInput" placeholder="Cari judul atau penulis..." 
-                               class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500">
+                               class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 text-sm">
                         <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
                     </div>
                     
-                    <select id="kategoriFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500">
+                    <select id="kategoriFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 text-sm">
                         <option value="">Semua Kategori</option>
                         <option value="jurnal">Jurnal</option>
                         <option value="penelitian">Penelitian</option>
@@ -453,10 +623,9 @@
                         <option value="buku">Buku</option>
                         <option value="haki">HKI</option>
                         <option value="prosiding">Prosiding</option>
-                        <option value="laporan">Laporan</option>
                     </select>
 
-                    <select id="tahunFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500">
+                    <select id="tahunFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 text-sm">
                         <option value="">Semua Tahun</option>
                         <option value="2024">2024</option>
                         <option value="2023">2023</option>
@@ -465,49 +634,49 @@
                         <option value="2020">2020</option>
                     </select>
 
-                    <button onclick="applyFilters()" class="bg-gradient-to-r from-pink-500 to-blue-600 text-white px-4 py-2 rounded-lg hover:shadow-lg transition">
+                    <button onclick="applyFilters()" class="bg-gradient-to-r from-pink-500 to-blue-600 text-white px-4 py-2 rounded-lg hover:shadow-lg transition text-sm">
                         <i class="fas fa-filter mr-2"></i>Filter
                     </button>
                 </div>
             </div>
 
             <!-- Quick Stats by Category -->
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6" data-aos="fade-up">
-                <div class="bg-white rounded-lg p-3 text-center shadow-sm cursor-pointer hover:shadow-md transition" onclick="filterByCategory('jurnal')">
-                    <div class="text-blue-600 text-xl mb-1"><i class="fas fa-book-open"></i></div>
-                    <div class="text-xs text-gray-500">Jurnal</div>
-                    <div class="font-bold" id="countJurnal">0</div>
+            <div class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-6 gap-2 md:gap-3 mb-6" data-aos="fade-up">
+                <div class="bg-white rounded-lg p-2 md:p-3 text-center shadow-sm cursor-pointer hover:shadow-md transition" onclick="filterByCategory('jurnal')">
+                    <div class="text-blue-600 text-lg md:text-xl mb-1"><i class="fas fa-book-open"></i></div>
+                    <div class="text-[10px] md:text-xs text-gray-500">Jurnal</div>
+                    <div class="font-bold text-sm md:text-base" id="countJurnal">0</div>
                 </div>
-                <div class="bg-white rounded-lg p-3 text-center shadow-sm cursor-pointer hover:shadow-md transition" onclick="filterByCategory('penelitian')">
-                    <div class="text-purple-600 text-xl mb-1"><i class="fas fa-flask"></i></div>
-                    <div class="text-xs text-gray-500">Penelitian</div>
-                    <div class="font-bold" id="countPenelitian">0</div>
+                <div class="bg-white rounded-lg p-2 md:p-3 text-center shadow-sm cursor-pointer hover:shadow-md transition" onclick="filterByCategory('penelitian')">
+                    <div class="text-purple-600 text-lg md:text-xl mb-1"><i class="fas fa-flask"></i></div>
+                    <div class="text-[10px] md:text-xs text-gray-500">Penelitian</div>
+                    <div class="font-bold text-sm md:text-base" id="countPenelitian">0</div>
                 </div>
-                <div class="bg-white rounded-lg p-3 text-center shadow-sm cursor-pointer hover:shadow-md transition" onclick="filterByCategory('pengabdian')">
-                    <div class="text-green-600 text-xl mb-1"><i class="fas fa-hands-helping"></i></div>
-                    <div class="text-xs text-gray-500">Pengabdian</div>
-                    <div class="font-bold" id="countPengabdian">0</div>
+                <div class="bg-white rounded-lg p-2 md:p-3 text-center shadow-sm cursor-pointer hover:shadow-md transition" onclick="filterByCategory('pengabdian')">
+                    <div class="text-green-600 text-lg md:text-xl mb-1"><i class="fas fa-hands-helping"></i></div>
+                    <div class="text-[10px] md:text-xs text-gray-500">Pengabdian</div>
+                    <div class="font-bold text-sm md:text-base" id="countPengabdian">0</div>
                 </div>
-                <div class="bg-white rounded-lg p-3 text-center shadow-sm cursor-pointer hover:shadow-md transition" onclick="filterByCategory('buku')">
-                    <div class="text-orange-600 text-xl mb-1"><i class="fas fa-book"></i></div>
-                    <div class="text-xs text-gray-500">Buku</div>
-                    <div class="font-bold" id="countBuku">0</div>
+                <div class="bg-white rounded-lg p-2 md:p-3 text-center shadow-sm cursor-pointer hover:shadow-md transition" onclick="filterByCategory('buku')">
+                    <div class="text-orange-600 text-lg md:text-xl mb-1"><i class="fas fa-book"></i></div>
+                    <div class="text-[10px] md:text-xs text-gray-500">Buku</div>
+                    <div class="font-bold text-sm md:text-base" id="countBuku">0</div>
                 </div>
-                <div class="bg-white rounded-lg p-3 text-center shadow-sm cursor-pointer hover:shadow-md transition" onclick="filterByCategory('haki')">
-                    <div class="text-red-600 text-xl mb-1"><i class="fas fa-copyright"></i></div>
-                    <div class="text-xs text-gray-500">HKI</div>
-                    <div class="font-bold" id="countHaki">0</div>
+                <div class="bg-white rounded-lg p-2 md:p-3 text-center shadow-sm cursor-pointer hover:shadow-md transition" onclick="filterByCategory('haki')">
+                    <div class="text-red-600 text-lg md:text-xl mb-1"><i class="fas fa-copyright"></i></div>
+                    <div class="text-[10px] md:text-xs text-gray-500">HKI</div>
+                    <div class="font-bold text-sm md:text-base" id="countHaki">0</div>
                 </div>
-                <div class="bg-white rounded-lg p-3 text-center shadow-sm cursor-pointer hover:shadow-md transition" onclick="filterByCategory('prosiding')">
-                    <div class="text-indigo-600 text-xl mb-1"><i class="fas fa-file-alt"></i></div>
-                    <div class="text-xs text-gray-500">Prosiding</div>
-                    <div class="font-bold" id="countProsiding">0</div>
+                <div class="bg-white rounded-lg p-2 md:p-3 text-center shadow-sm cursor-pointer hover:shadow-md transition" onclick="filterByCategory('prosiding')">
+                    <div class="text-indigo-600 text-lg md:text-xl mb-1"><i class="fas fa-file-alt"></i></div>
+                    <div class="text-[10px] md:text-xs text-gray-500">Prosiding</div>
+                    <div class="font-bold text-sm md:text-base" id="countProsiding">0</div>
                 </div>
             </div>
 
             <!-- Tabs Content -->
             <div id="tabSemua" class="tab-pane active" data-aos="fade-up">
-                <!-- Grid View Toggle -->
+                <!-- Grid/List View Toggle -->
                 <div class="flex justify-end mb-4 space-x-2">
                     <button onclick="setViewMode('grid')" class="p-2 bg-pink-100 text-pink-600 rounded-lg shadow hover:bg-pink-200 transition" id="gridViewBtn">
                         <i class="fas fa-th-large"></i>
@@ -525,16 +694,16 @@
                 <!-- List View -->
                 <div id="listView" class="hidden">
                     <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-                        <div class="overflow-x-auto">
-                            <table class="w-full">
+                        <div class="table-container overflow-x-auto">
+                            <table class="w-full min-w-[800px]">
                                 <thead class="bg-gray-50 text-gray-700">
                                     <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Judul</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Penulis</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Kategori</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Tahun</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Downloads</th>
-                                        <th class="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">Aksi</th>
+                                        <th class="px-4 md:px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Judul</th>
+                                        <th class="px-4 md:px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Penulis</th>
+                                        <th class="px-4 md:px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Kategori</th>
+                                        <th class="px-4 md:px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Tahun</th>
+                                        <th class="px-4 md:px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Downloads</th>
+                                        <th class="px-4 md:px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody id="listViewBody" class="bg-white divide-y divide-gray-200">
@@ -546,14 +715,14 @@
                 </div>
 
                 <!-- Pagination -->
-                <div class="mt-6 flex items-center justify-between">
+                <div class="mt-6 flex flex-col sm:flex-row justify-between items-center gap-3">
                     <div class="text-sm text-gray-500" id="paginationInfo"></div>
                     <div class="flex space-x-2">
-                        <button onclick="changePage('prev')" class="px-3 py-1 border rounded-lg hover:bg-gray-50 transition">
+                        <button onclick="changePage('prev')" class="px-3 py-1 border rounded-lg hover:bg-gray-50 transition text-sm">
                             <i class="fas fa-chevron-left"></i>
                         </button>
-                        <span id="currentPage" class="px-3 py-1">1</span>
-                        <button onclick="changePage('next')" class="px-3 py-1 border rounded-lg hover:bg-gray-50 transition">
+                        <span id="currentPage" class="px-3 py-1 text-sm">1</span>
+                        <button onclick="changePage('next')" class="px-3 py-1 border rounded-lg hover:bg-gray-50 transition text-sm">
                             <i class="fas fa-chevron-right"></i>
                         </button>
                     </div>
@@ -565,26 +734,24 @@
     <!-- Modal Upload/Edit Dokumen -->
     <div id="crudModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50 flex items-center justify-center">
         <div class="relative bg-white rounded-lg shadow-xl w-11/12 md:w-3/4 lg:w-2/3 max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center p-6 border-b sticky top-0 bg-white">
-                <h3 class="text-xl font-bold text-gray-900" id="modalTitle">Upload Dokumen Baru</h3>
+            <div class="flex justify-between items-center p-4 md:p-6 border-b sticky top-0 bg-white">
+                <h3 class="text-lg md:text-xl font-bold text-gray-900" id="modalTitle">Upload Dokumen Baru</h3>
                 <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
-            <form class="p-6" id="documentForm" enctype="multipart/form-data">
+            <form class="p-4 md:p-6" id="documentForm" enctype="multipart/form-data">
                 <input type="hidden" id="docId">
 
-                <div class="grid grid-cols-2 gap-4 mb-4">
-                    <div class="col-span-2">
-                        <label class="block text-gray-700 text-sm font-bold mb-2">Judul Dokumen <span class="text-red-500">*</span></label>
-                        <input type="text" id="judul" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500" required>
-                    </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Judul Dokumen <span class="text-red-500">*</span></label>
+                    <input type="text" id="judul" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500 text-sm" required>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     <div>
                         <label class="block text-gray-700 text-sm font-bold mb-2">Kategori <span class="text-red-500">*</span></label>
-                        <select id="kategori" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500" required>
+                        <select id="kategori" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500 text-sm" required>
                             <option value="">Pilih Kategori</option>
                             <option value="jurnal">Jurnal</option>
                             <option value="penelitian">Laporan Penelitian</option>
@@ -592,12 +759,11 @@
                             <option value="buku">Buku</option>
                             <option value="haki">HKI/Paten</option>
                             <option value="prosiding">Prosiding</option>
-                            <option value="laporan">Laporan Lainnya</option>
                         </select>
                     </div>
                     <div>
                         <label class="block text-gray-700 text-sm font-bold mb-2">Tahun <span class="text-red-500">*</span></label>
-                        <select id="tahun" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500" required>
+                        <select id="tahun" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500 text-sm" required>
                             <option value="2024">2024</option>
                             <option value="2023">2023</option>
                             <option value="2022">2022</option>
@@ -609,45 +775,40 @@
 
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2">Penulis <span class="text-red-500">*</span></label>
-                    <input type="text" id="penulis" placeholder="Pisahkan dengan koma jika lebih dari satu" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500" required>
+                    <input type="text" id="penulis" placeholder="Pisahkan dengan koma jika lebih dari satu" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500 text-sm" required>
                 </div>
 
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2">Abstrak</label>
-                    <textarea id="abstrak" rows="3" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500" placeholder="Masukkan abstrak atau deskripsi singkat..."></textarea>
+                    <textarea id="abstrak" rows="3" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500 text-sm" placeholder="Masukkan abstrak atau deskripsi singkat..."></textarea>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     <div>
                         <label class="block text-gray-700 text-sm font-bold mb-2">DOI/ISBN</label>
-                        <input type="text" id="doi" placeholder="Contoh: 10.1234/abcde" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500">
+                        <input type="text" id="doi" placeholder="Contoh: 10.1234/abcde" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500 text-sm">
                     </div>
                     <div>
-                        <label class="block text-gray-700 text-sm font-bold mb-2">Link Terkait</label>
-                        <input type="url" id="link" placeholder="https://..." class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Kata Kunci</label>
+                        <input type="text" id="keywords" placeholder="Pisahkan dengan koma" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500 text-sm">
                     </div>
-                </div>
-
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2">Kata Kunci</label>
-                    <input type="text" id="keywords" placeholder="Pisahkan dengan koma" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500">
                 </div>
 
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2">Upload File</label>
                     <div class="file-upload-area" onclick="document.getElementById('fileInput').click()">
-                        <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-2"></i>
-                        <p class="text-sm text-gray-600" id="fileName">Klik untuk upload file (PDF, DOC, XLS, PPT, max 50MB)</p>
+                        <i class="fas fa-cloud-upload-alt text-3xl md:text-4xl text-gray-400 mb-2"></i>
+                        <p class="text-xs md:text-sm text-gray-600" id="fileName">Klik untuk upload file (PDF, DOC, XLS, PPT, max 50MB)</p>
                         <p class="text-xs text-gray-400 mt-1" id="fileSize"></p>
                     </div>
                     <input type="file" id="fileInput" class="hidden" onchange="handleFileSelect(this)" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png,.gif">
                 </div>
 
                 <div class="flex justify-end space-x-3 pt-4 border-t">
-                    <button type="button" onclick="closeModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
+                    <button type="button" onclick="closeModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition text-sm">
                         Batal
                     </button>
-                    <button type="button" onclick="saveDocument()" class="px-4 py-2 bg-gradient-to-r from-pink-500 to-blue-600 text-white rounded-lg hover:shadow-lg transition">
+                    <button type="button" onclick="saveDocument()" class="px-4 py-2 bg-gradient-to-r from-pink-500 to-blue-600 text-white rounded-lg hover:shadow-lg transition text-sm">
                         Upload Dokumen
                     </button>
                 </div>
@@ -658,17 +819,15 @@
     <!-- Modal Detail Dokumen -->
     <div id="detailModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50 flex items-center justify-center">
         <div class="relative bg-white rounded-lg shadow-xl w-11/12 md:w-3/4 lg:w-1/2 max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center p-6 border-b">
-                <h3 class="text-xl font-bold text-gray-900">Detail Dokumen</h3>
+            <div class="flex justify-between items-center p-4 md:p-6 border-b sticky top-0 bg-white">
+                <h3 class="text-lg md:text-xl font-bold text-gray-900">Detail Dokumen</h3>
                 <button onclick="closeDetailModal()" class="text-gray-400 hover:text-gray-600">
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
-            <div class="p-6" id="detailModalContent">
-                <!-- Content will be loaded dynamically -->
-            </div>
-            <div class="flex justify-end p-6 border-t">
-                <button onclick="closeDetailModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
+            <div class="p-4 md:p-6" id="detailModalContent"></div>
+            <div class="flex justify-end p-4 md:p-6 border-t">
+                <button onclick="closeDetailModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition text-sm">
                     Tutup
                 </button>
             </div>
@@ -680,51 +839,15 @@
         <div class="relative bg-white rounded-lg shadow-xl w-11/12 md:w-1/3">
             <div class="p-6">
                 <div class="text-center">
-                    <i class="fas fa-exclamation-triangle text-yellow-500 text-5xl mb-4"></i>
-                    <h3 class="text-lg font-bold text-gray-900 mb-2">Konfirmasi</h3>
-                    <p class="text-gray-600 mb-6" id="confirmMessage">Apakah Anda yakin ingin menghapus dokumen ini?</p>
+                    <i class="fas fa-exclamation-triangle text-yellow-500 text-4xl md:text-5xl mb-4"></i>
+                    <h3 class="text-base md:text-lg font-bold text-gray-900 mb-2">Konfirmasi</h3>
+                    <p class="text-sm md:text-base text-gray-600 mb-6" id="confirmMessage">Apakah Anda yakin ingin menghapus dokumen ini?</p>
                     <div class="flex justify-center space-x-3">
-                        <button onclick="closeConfirmModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
+                        <button onclick="closeConfirmModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition text-sm">
                             Batal
                         </button>
-                        <button id="confirmActionBtn" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+                        <button id="confirmActionBtn" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition text-sm">
                             Hapus
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Preview PDF -->
-    <div id="pdfModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50 flex items-center justify-center">
-        <div class="relative bg-white rounded-lg shadow-xl w-11/12 md:w-4/5 lg:w-3/4 h-4/5">
-            <div class="flex justify-between items-center p-4 border-b">
-                <h3 class="text-lg font-bold text-gray-900" id="pdfModalTitle">Preview Dokumen</h3>
-                <button onclick="closePdfModal()" class="text-gray-400 hover:text-gray-600">
-                    <i class="fas fa-times text-xl"></i>
-                </button>
-            </div>
-            <div class="p-4 h-full">
-                <iframe id="pdfViewer" src="" class="w-full h-full border-0"></iframe>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Konfirmasi Logout -->
-    <div id="confirmLogoutModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50 flex items-center justify-center">
-        <div class="relative bg-white rounded-lg shadow-xl w-11/12 md:w-1/3">
-            <div class="p-6">
-                <div class="text-center">
-                    <i class="fas fa-exclamation-triangle text-yellow-500 text-5xl mb-4"></i>
-                    <h3 class="text-lg font-bold text-gray-900 mb-2">Konfirmasi Logout</h3>
-                    <p class="text-gray-600 mb-6">Apakah Anda yakin ingin logout?</p>
-                    <div class="flex justify-center space-x-3">
-                        <button onclick="closeLogoutModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
-                            Batal
-                        </button>
-                        <button onclick="performLogout()" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
-                            Logout
                         </button>
                     </div>
                 </div>
@@ -734,51 +857,92 @@
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        // ==================== INITIALIZATION ====================
-        AOS.init({ duration: 800, once: true });
+        // Initialize AOS
+        AOS.init({ duration: 800, once: true, easing: 'ease-out-cubic' });
 
-        // API Configuration
-        const API_BASE_URL = '/api/admin/repository';
-        
-        // ==================== AUTHENTICATION & LOGOUT ====================
-        // Cek autentikasi
+        // ==================== AUTHENTICATION ====================
         let token = localStorage.getItem('token');
-        if (!token) {
-            window.location.href = '../login.html';
+        if (!token) window.location.href = '../login.html';
+
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+        // ==================== NAVBAR FUNCTIONS ====================
+        function updateNavbarUserInfo() {
+            const adminName = user.nama_lengkap || 'Admin LPPM';
+            const navUserName = document.getElementById('navUserName');
+            const dropdownUserName = document.getElementById('dropdownUserName');
+            const mobileNavUserName = document.getElementById('mobileNavUserName');
+            
+            if (navUserName) navUserName.textContent = adminName;
+            if (dropdownUserName) dropdownUserName.textContent = adminName;
+            if (mobileNavUserName) mobileNavUserName.textContent = adminName;
+            
+            const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(adminName)}&background=3B82F6&color=fff&bold=true`;
+            const navAvatar = document.getElementById('navAvatar');
+            const dropdownAvatar = document.getElementById('dropdownAvatar');
+            const mobileNavAvatar = document.getElementById('mobileNavAvatar');
+            
+            if (navAvatar) navAvatar.src = avatarUrl;
+            if (dropdownAvatar) dropdownAvatar.src = avatarUrl;
+            if (mobileNavAvatar) mobileNavAvatar.src = avatarUrl;
         }
 
-        // Set user name
-        const user = JSON.parse(localStorage.getItem('user') || '{}');
-        document.getElementById('userName').textContent = user.nama_lengkap || 'Admin LPPM';
+        function initDropdown() {
+            const userMenuBtn = document.getElementById('userMenuBtn');
+            const userDropdown = document.getElementById('userDropdown');
+            if (userMenuBtn && userDropdown) {
+                userMenuBtn.addEventListener('click', (e) => { e.stopPropagation(); userDropdown.classList.toggle('hidden'); });
+                document.addEventListener('click', (e) => { if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) userDropdown.classList.add('hidden'); });
+            }
+        }
 
-        // State variables
+        function initMobileNav() {
+            const hamburger = document.getElementById('hamburgerBtn');
+            const mobileNav = document.getElementById('mobileNav');
+            const closeBtn = document.getElementById('closeMobileNav');
+            if (hamburger && mobileNav) {
+                hamburger.addEventListener('click', () => mobileNav.classList.add('active'));
+                closeBtn.addEventListener('click', () => mobileNav.classList.remove('active'));
+                mobileNav.addEventListener('click', (e) => { if (e.target === mobileNav) mobileNav.classList.remove('active'); });
+            }
+        }
+
+        function setActiveNavLink() {
+            const currentPageName = window.location.pathname.split('/').pop();
+            document.querySelectorAll('.nav-link-modern').forEach(link => {
+                const href = link.getAttribute('href');
+                if (href === currentPageName) link.classList.add('active');
+                else link.classList.remove('active');
+            });
+            document.querySelectorAll('.mobile-nav-link').forEach(link => {
+                const href = link.getAttribute('href');
+                if (href === currentPageName) link.classList.add('active');
+                else link.classList.remove('active');
+            });
+        }
+
+        // ==================== API CONFIGURATION ====================
+        const API_BASE_URL = '/api/admin/repository';
+
+        // ==================== STATE VARIABLES ====================
         let documents = [];
         let currentView = 'grid';
         let currentPage = 1;
         let currentTab = 'semua';
-        let currentFilter = {
-            search: '',
-            kategori: '',
-            tahun: ''
-        };
+        let currentFilter = { search: '', kategori: '', tahun: '' };
         let totalPages = 1;
         let totalItems = 0;
         const itemsPerPage = 6;
         let selectedFile = null;
 
         // ==================== API FUNCTIONS ====================
-        async function apiCall(endpoint, options = {}) {
-            const headers = {
-                'Authorization': `Bearer ${token}`,
-                ...options.headers
-            };
+        function getHeaders() {
+            return { 'Authorization': `Bearer ${token}` };
+        }
 
-            // Don't set Content-Type for FormData
-            if (options.body instanceof FormData) {
-                delete headers['Content-Type'];
-            } else {
-                headers['Content-Type'] = 'application/json';
-            }
+        async function apiCall(endpoint, options = {}) {
+            const headers = { 'Authorization': `Bearer ${token}` };
+            if (!(options.body instanceof FormData)) headers['Content-Type'] = 'application/json';
 
             const response = await fetch(`${API_BASE_URL}${endpoint}`, {
                 ...options,
@@ -795,7 +959,6 @@
                 const error = await response.json();
                 throw new Error(error.message || 'Terjadi kesalahan');
             }
-
             return response.json();
         }
 
@@ -805,68 +968,36 @@
                 const response = await apiCall('/dashboard-stats');
                 if (response.success) {
                     const stats = response.data;
-                    
                     document.getElementById('totalDokumen').textContent = stats.total_documents || 0;
                     document.getElementById('totalDownload').textContent = (stats.total_downloads || 0).toLocaleString();
                     document.getElementById('totalViews').textContent = (stats.total_views || 0).toLocaleString();
                     
-                    // Storage info
                     const usedGB = (stats.storage_used / (1024 * 1024 * 1024)).toFixed(1);
                     const percentage = stats.storage_percentage || 0;
-                    
                     document.getElementById('storageUsed').textContent = usedGB + ' GB';
                     document.getElementById('storageProgress').style.width = percentage + '%';
                     document.getElementById('storageInfo').textContent = `dari 5 GB total (${percentage.toFixed(1)}% terpakai)`;
                     
-                    // Popular category
                     if (stats.popular_category) {
-                        const categoryNames = {
-                            'jurnal': 'Jurnal',
-                            'penelitian': 'Penelitian',
-                            'pengabdian': 'Pengabdian',
-                            'buku': 'Buku',
-                            'haki': 'HKI',
-                            'prosiding': 'Prosiding'
-                        };
-                        
-                        document.getElementById('kategoriPopuler').textContent = 
-                            categoryNames[stats.popular_category.kategori] || stats.popular_category.kategori;
-                        
-                        const total = stats.total_documents || 0;
-                        const percentage = total > 0 ? Math.round((stats.popular_category.jumlah / total) * 100) : 0;
-                        document.getElementById('popularCategoryPercentage').textContent = `${percentage}% dari total`;
+                        const categoryNames = { 'jurnal': 'Jurnal', 'penelitian': 'Penelitian', 'pengabdian': 'Pengabdian', 'buku': 'Buku', 'haki': 'HKI', 'prosiding': 'Prosiding' };
+                        document.getElementById('kategoriPopuler').textContent = categoryNames[stats.popular_category.kategori] || stats.popular_category.kategori;
+                        const percent = stats.total_documents > 0 ? Math.round((stats.popular_category.jumlah / stats.total_documents) * 100) : 0;
+                        document.getElementById('popularCategoryPercentage').textContent = `${percent}% dari total`;
                     }
                 }
-            } catch (error) {
-                console.error('Error loading dashboard stats:', error);
-            }
+            } catch (error) { console.error(error); }
         }
 
         async function loadCategoryCounts() {
             try {
                 const response = await apiCall('/categories/count');
                 if (response.success) {
-                    const categories = response.data;
-                    
-                    // Reset all counts
-                    document.getElementById('countJurnal').textContent = '0';
-                    document.getElementById('countPenelitian').textContent = '0';
-                    document.getElementById('countPengabdian').textContent = '0';
-                    document.getElementById('countBuku').textContent = '0';
-                    document.getElementById('countHaki').textContent = '0';
-                    document.getElementById('countProsiding').textContent = '0';
-                    
-                    // Update counts
-                    categories.forEach(cat => {
+                    response.data.forEach(cat => {
                         const element = document.getElementById(`count${cat.kategori.charAt(0).toUpperCase() + cat.kategori.slice(1)}`);
-                        if (element) {
-                            element.textContent = cat.jumlah;
-                        }
+                        if (element) element.textContent = cat.jumlah;
                     });
                 }
-            } catch (error) {
-                console.error('Error loading category counts:', error);
-            }
+            } catch (error) { console.error(error); }
         }
 
         async function loadDocuments() {
@@ -878,24 +1009,20 @@
                     sortBy: 'created_at',
                     sortOrder: 'DESC'
                 });
-
                 if (currentFilter.search) params.append('search', currentFilter.search);
                 if (currentFilter.kategori) params.append('kategori', currentFilter.kategori);
                 if (currentFilter.tahun) params.append('tahun', currentFilter.tahun);
                 if (currentTab !== 'semua') params.append('kategori', currentTab);
 
                 const response = await apiCall(`/documents?${params}`);
-                
                 if (response.success) {
                     documents = response.data.data || [];
                     totalItems = response.data.pagination?.total_data || 0;
                     totalPages = response.data.pagination?.total_pages || 1;
-                    
                     renderCurrentView();
                     updatePagination();
                 }
             } catch (error) {
-                console.error('Error loading documents:', error);
                 showNotification('Gagal memuat dokumen', 'error');
             } finally {
                 hideLoading();
@@ -903,68 +1030,29 @@
         }
 
         // ==================== UTILITY FUNCTIONS ====================
-        function showLoading() {
-            document.getElementById('loadingOverlay').classList.remove('hidden');
-        }
-
-        function hideLoading() {
-            document.getElementById('loadingOverlay').classList.add('hidden');
-        }
-
+        function showLoading() { document.getElementById('loadingOverlay').classList.remove('hidden'); }
+        function hideLoading() { document.getElementById('loadingOverlay').classList.add('hidden'); }
         function showNotification(message, type = 'success') {
-            Swal.fire({
-                icon: type,
-                title: type === 'success' ? 'Berhasil' : type === 'error' ? 'Gagal' : 'Informasi',
-                text: message,
-                timer: 2000,
-                showConfirmButton: false
-            });
+            Swal.fire({ icon: type, title: type === 'success' ? 'Berhasil' : 'Gagal', text: message, timer: 2000, showConfirmButton: false });
         }
+        function closeConfirmModal() { document.getElementById('confirmModal').classList.add('hidden'); }
 
-        function showConfirmation(message, callback) {
-            document.getElementById('confirmMessage').textContent = message;
-            document.getElementById('confirmModal').classList.remove('hidden');
-            
-            document.getElementById('confirmActionBtn').onclick = function() {
-                closeConfirmModal();
-                callback();
-            };
-        }
-
-        function closeConfirmModal() {
-            document.getElementById('confirmModal').classList.add('hidden');
-        }
-
-        function formatBytes(bytes, decimals = 2) {
+        function formatBytes(bytes) {
             if (bytes === 0) return '0 Bytes';
             const k = 1024;
-            const dm = decimals < 0 ? 0 : decimals;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
             const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-        }
-
-        function formatDate(dateString) {
-            const options = { year: 'numeric', month: 'long', day: 'numeric' };
-            return new Date(dateString).toLocaleDateString('id-ID', options);
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         }
 
         function getFileIcon(filename) {
             const ext = filename.split('.').pop().toLowerCase();
-            switch(ext) {
-                case 'pdf': return '<i class="fas fa-file-pdf text-red-500 text-2xl"></i>';
-                case 'doc':
-                case 'docx': return '<i class="fas fa-file-word text-blue-500 text-2xl"></i>';
-                case 'xls':
-                case 'xlsx': return '<i class="fas fa-file-excel text-green-500 text-2xl"></i>';
-                case 'ppt':
-                case 'pptx': return '<i class="fas fa-file-powerpoint text-orange-500 text-2xl"></i>';
-                case 'jpg':
-                case 'jpeg':
-                case 'png':
-                case 'gif': return '<i class="fas fa-file-image text-purple-500 text-2xl"></i>';
-                default: return '<i class="fas fa-file text-gray-500 text-2xl"></i>';
-            }
+            if (ext === 'pdf') return '<i class="fas fa-file-pdf text-red-500 text-2xl"></i>';
+            if (ext === 'doc' || ext === 'docx') return '<i class="fas fa-file-word text-blue-500 text-2xl"></i>';
+            if (ext === 'xls' || ext === 'xlsx') return '<i class="fas fa-file-excel text-green-500 text-2xl"></i>';
+            if (ext === 'ppt' || ext === 'pptx') return '<i class="fas fa-file-powerpoint text-orange-500 text-2xl"></i>';
+            if (ext === 'jpg' || ext === 'jpeg' || ext === 'png' || ext === 'gif') return '<i class="fas fa-file-image text-purple-500 text-2xl"></i>';
+            return '<i class="fas fa-file text-gray-500 text-2xl"></i>';
         }
 
         function getCategoryBadge(kategori) {
@@ -974,8 +1062,7 @@
                 'pengabdian': 'bg-green-100 text-green-800',
                 'buku': 'bg-orange-100 text-orange-800',
                 'haki': 'bg-red-100 text-red-800',
-                'prosiding': 'bg-indigo-100 text-indigo-800',
-                'laporan': 'bg-gray-100 text-gray-800'
+                'prosiding': 'bg-indigo-100 text-indigo-800'
             };
             return badges[kategori] || 'bg-gray-100 text-gray-800';
         }
@@ -987,8 +1074,7 @@
                 'pengabdian': 'fa-hands-helping',
                 'buku': 'fa-book',
                 'haki': 'fa-copyright',
-                'prosiding': 'fa-file-alt',
-                'laporan': 'fa-file'
+                'prosiding': 'fa-file-alt'
             };
             return icons[kategori] || 'fa-file';
         }
@@ -1011,7 +1097,6 @@
         // ==================== VIEW FUNCTIONS ====================
         function setViewMode(mode) {
             currentView = mode;
-            
             if (mode === 'grid') {
                 document.getElementById('gridView').classList.remove('hidden');
                 document.getElementById('listView').classList.add('hidden');
@@ -1027,67 +1112,38 @@
                 document.getElementById('gridViewBtn').classList.add('bg-white');
                 document.getElementById('gridViewBtn').classList.remove('bg-pink-100', 'text-pink-600');
             }
-            
             renderCurrentView();
         }
 
         function renderCurrentView() {
-            if (currentView === 'grid') {
-                renderGridView();
-            } else {
-                renderListView();
-            }
+            if (currentView === 'grid') renderGridView();
+            else renderListView();
         }
 
         function renderGridView() {
             const gridView = document.getElementById('gridView');
-            
             if (documents.length === 0) {
-                gridView.innerHTML = `
-                    <div class="col-span-3 text-center py-12">
-                        <i class="fas fa-folder-open text-5xl text-gray-300 mb-4"></i>
-                        <p class="text-gray-500">Tidak ada dokumen ditemukan</p>
-                    </div>
-                `;
+                gridView.innerHTML = `<div class="col-span-3 text-center py-12"><i class="fas fa-folder-open text-4xl md:text-5xl text-gray-300 mb-4"></i><p class="text-gray-500">Tidak ada dokumen ditemukan</p></div>`;
                 return;
             }
-
             gridView.innerHTML = documents.map(doc => `
-                <div class="document-card bg-white rounded-xl shadow p-6 hover:shadow-lg transition">
+                <div class="document-card bg-white rounded-xl shadow p-4 md:p-6 hover:shadow-lg transition">
                     <div class="flex items-start space-x-3">
-                        <div class="flex-shrink-0">
-                            ${getFileIcon(doc.filename)}
-                        </div>
+                        <div class="flex-shrink-0">${getFileIcon(doc.filename)}</div>
                         <div class="flex-1 min-w-0">
-                            <h3 class="font-semibold text-gray-900 mb-1 truncate" title="${doc.judul}">
-                                ${doc.judul}
-                            </h3>
-                            <p class="text-sm text-gray-600 mb-2">${doc.penulis.split(',')[0]} et al.</p>
-                            <div class="flex items-center space-x-2 mb-2">
-                                <span class="category-pill ${getCategoryBadge(doc.kategori)}">
-                                    <i class="fas ${getCategoryIcon(doc.kategori)} mr-1"></i>
-                                    ${doc.kategori}
-                                </span>
+                            <h3 class="font-semibold text-gray-900 mb-1 truncate text-sm md:text-base" title="${doc.judul}">${doc.judul.substring(0, 50)}${doc.judul.length > 50 ? '...' : ''}</h3>
+                            <p class="text-xs md:text-sm text-gray-600 mb-2">${doc.penulis.split(',')[0]} et al.</p>
+                            <div class="flex items-center flex-wrap gap-2 mb-2">
+                                <span class="category-pill ${getCategoryBadge(doc.kategori)}"><i class="fas ${getCategoryIcon(doc.kategori)} mr-1"></i>${doc.kategori}</span>
                                 <span class="text-xs text-gray-500">${doc.tahun}</span>
                             </div>
                             <div class="flex items-center justify-between mt-3 pt-3 border-t">
-                                <div class="text-xs text-gray-500">
-                                    <i class="fas fa-download mr-1"></i> ${doc.downloads || 0}
-                                    <i class="fas fa-eye ml-2 mr-1"></i> ${doc.views || 0}
-                                </div>
+                                <div class="text-xs text-gray-500"><i class="fas fa-download mr-1"></i> ${doc.downloads || 0}<i class="fas fa-eye ml-2 mr-1"></i> ${doc.views || 0}</div>
                                 <div class="flex space-x-2">
-                                    <button onclick="viewDetail('${doc.id_dokumen}')" class="text-blue-600 hover:text-blue-800" title="Detail">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button onclick="downloadDocument('${doc.id_dokumen}')" class="text-green-600 hover:text-green-800" title="Download">
-                                        <i class="fas fa-download"></i>
-                                    </button>
-                                    <button onclick="editDocument('${doc.id_dokumen}')" class="text-purple-600 hover:text-purple-800" title="Edit">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button onclick="confirmDelete('${doc.id_dokumen}')" class="text-red-600 hover:text-red-800" title="Hapus">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
+                                    <button onclick="viewDetail('${doc.id_dokumen}')" class="text-blue-600 hover:text-blue-800" title="Detail"><i class="fas fa-eye"></i></button>
+                                    <button onclick="downloadDocument('${doc.id_dokumen}')" class="text-green-600 hover:text-green-800" title="Download"><i class="fas fa-download"></i></button>
+                                    <button onclick="editDocument('${doc.id_dokumen}')" class="text-purple-600 hover:text-purple-800" title="Edit"><i class="fas fa-edit"></i></button>
+                                    <button onclick="confirmDelete('${doc.id_dokumen}')" class="text-red-600 hover:text-red-800" title="Hapus"><i class="fas fa-trash"></i></button>
                                 </div>
                             </div>
                         </div>
@@ -1098,51 +1154,22 @@
 
         function renderListView() {
             const listView = document.getElementById('listViewBody');
-            
             if (documents.length === 0) {
-                listView.innerHTML = `
-                    <tr>
-                        <td colspan="6" class="text-center py-8 text-gray-500">
-                            <i class="fas fa-folder-open text-4xl mb-3"></i><br>
-                            Tidak ada dokumen ditemukan
-                        </td>
-                    </tr>
-                `;
+                listView.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-gray-500">Tidak ada dokumen ditemukan</td></tr>';
                 return;
             }
-
             listView.innerHTML = documents.map(doc => `
                 <tr class="hover:bg-gray-50">
-                    <td class="px-6 py-4">
-                        <div class="flex items-center">
-                            ${getFileIcon(doc.filename)}
-                            <div class="ml-3">
-                                <div class="font-medium text-gray-900">${doc.judul.substring(0, 50)}${doc.judul.length > 50 ? '...' : ''}</div>
-                                <div class="text-xs text-gray-500">${formatBytes(doc.filesize)}</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="px-6 py-4 text-sm text-gray-600">${doc.penulis.split(',')[0]}</td>
-                    <td class="px-6 py-4">
-                        <span class="px-2 py-1 text-xs rounded-full ${getCategoryBadge(doc.kategori)}">
-                            ${doc.kategori}
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 text-sm text-gray-600">${doc.tahun}</td>
-                    <td class="px-6 py-4 text-sm text-gray-600">${doc.downloads || 0}</td>
-                    <td class="px-6 py-4 text-center">
-                        <button onclick="viewDetail('${doc.id_dokumen}')" class="text-blue-600 hover:text-blue-900 mr-2" title="Detail">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <button onclick="downloadDocument('${doc.id_dokumen}')" class="text-green-600 hover:text-green-900 mr-2" title="Download">
-                            <i class="fas fa-download"></i>
-                        </button>
-                        <button onclick="editDocument('${doc.id_dokumen}')" class="text-purple-600 hover:text-purple-900 mr-2" title="Edit">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button onclick="confirmDelete('${doc.id_dokumen}')" class="text-red-600 hover:text-red-900" title="Hapus">
-                            <i class="fas fa-trash"></i>
-                        </button>
+                    <td class="px-4 md:px-6 py-4"><div class="flex items-center">${getFileIcon(doc.filename)}<div class="ml-3"><div class="font-medium text-gray-900 text-sm">${doc.judul.substring(0, 40)}${doc.judul.length > 40 ? '...' : ''}</div><div class="text-xs text-gray-500">${formatBytes(doc.filesize)}</div></div></div></td>
+                    <td class="px-4 md:px-6 py-4 text-sm text-gray-600">${doc.penulis.split(',')[0]}</td>
+                    <td class="px-4 md:px-6 py-4"><span class="px-2 py-1 text-xs rounded-full ${getCategoryBadge(doc.kategori)}">${doc.kategori}</span></td>
+                    <td class="px-4 md:px-6 py-4 text-sm text-gray-600">${doc.tahun}</td>
+                    <td class="px-4 md:px-6 py-4 text-sm text-gray-600">${doc.downloads || 0}</td>
+                    <td class="px-4 md:px-6 py-4 text-center whitespace-nowrap">
+                        <button onclick="viewDetail('${doc.id_dokumen}')" class="text-blue-600 hover:text-blue-900 mx-1"><i class="fas fa-eye"></i></button>
+                        <button onclick="downloadDocument('${doc.id_dokumen}')" class="text-green-600 hover:text-green-900 mx-1"><i class="fas fa-download"></i></button>
+                        <button onclick="editDocument('${doc.id_dokumen}')" class="text-purple-600 hover:text-purple-900 mx-1"><i class="fas fa-edit"></i></button>
+                        <button onclick="confirmDelete('${doc.id_dokumen}')" class="text-red-600 hover:text-red-900 mx-1"><i class="fas fa-trash"></i></button>
                     </td>
                 </tr>
             `).join('');
@@ -1151,47 +1178,23 @@
         function updatePagination() {
             const start = (currentPage - 1) * itemsPerPage + 1;
             const end = Math.min(currentPage * itemsPerPage, totalItems);
-            
-            document.getElementById('paginationInfo').innerHTML = 
-                totalItems > 0 ? `Menampilkan ${start} - ${end} dari ${totalItems} dokumen` : 'Tidak ada dokumen';
+            document.getElementById('paginationInfo').innerHTML = totalItems > 0 ? `Menampilkan ${start} - ${end} dari ${totalItems} dokumen` : 'Tidak ada dokumen';
             document.getElementById('currentPage').textContent = currentPage;
         }
 
         function changePage(direction) {
-            if (direction === 'prev' && currentPage > 1) {
-                currentPage--;
-                loadDocuments();
-            } else if (direction === 'next' && currentPage < totalPages) {
-                currentPage++;
-                loadDocuments();
-            }
+            if (direction === 'prev' && currentPage > 1) { currentPage--; loadDocuments(); }
+            else if (direction === 'next' && currentPage < totalPages) { currentPage++; loadDocuments(); }
         }
 
         // ==================== TAB FUNCTIONS ====================
         function activateTab(tabId) {
             currentTab = tabId;
             currentPage = 1;
-            
-            // Update tab buttons
-            document.querySelectorAll('.tab-button').forEach(btn => {
-                btn.classList.remove('active', 'text-blue-600', 'border-blue-600');
-            });
-            
-            const tabMap = {
-                'semua': 'tabSemuaBtn',
-                'jurnal': 'tabJurnalBtn',
-                'penelitian': 'tabPenelitianBtn',
-                'pengabdian': 'tabPengabdianBtn',
-                'buku': 'tabBukuBtn',
-                'haki': 'tabHakiBtn',
-                'prosiding': 'tabProsidingBtn'
-            };
-            
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active', 'text-blue-600', 'border-blue-600'));
+            const tabMap = { 'semua': 'tabSemuaBtn', 'jurnal': 'tabJurnalBtn', 'penelitian': 'tabPenelitianBtn', 'pengabdian': 'tabPengabdianBtn', 'buku': 'tabBukuBtn', 'haki': 'tabHakiBtn', 'prosiding': 'tabProsidingBtn' };
             const buttonId = tabMap[tabId];
-            if (buttonId) {
-                document.getElementById(buttonId).classList.add('active', 'text-blue-600', 'border-blue-600');
-            }
-            
+            if (buttonId) document.getElementById(buttonId).classList.add('active', 'text-blue-600', 'border-blue-600');
             loadDocuments();
         }
 
@@ -1206,9 +1209,7 @@
             document.getElementById('crudModal').classList.remove('hidden');
         }
 
-        function closeModal() {
-            document.getElementById('crudModal').classList.add('hidden');
-        }
+        function closeModal() { document.getElementById('crudModal').classList.add('hidden'); }
 
         function handleFileSelect(input) {
             if (input.files && input.files[0]) {
@@ -1224,52 +1225,25 @@
             const kategori = document.getElementById('kategori').value;
             const tahun = document.getElementById('tahun').value;
             const penulis = document.getElementById('penulis').value;
-            const abstrak = document.getElementById('abstrak').value;
-            const doi = document.getElementById('doi').value;
-            const link = document.getElementById('link').value;
-            const keywords = document.getElementById('keywords').value;
 
-            if (!judul || !kategori || !tahun || !penulis) {
-                showNotification('Harap lengkapi field yang wajib diisi', 'error');
-                return;
-            }
-
-            if (!id && !selectedFile) {
-                showNotification('Harap pilih file untuk diupload', 'error');
-                return;
-            }
+            if (!judul || !kategori || !tahun || !penulis) { showNotification('Harap lengkapi field yang wajib diisi', 'error'); return; }
+            if (!id && !selectedFile) { showNotification('Harap pilih file untuk diupload', 'error'); return; }
 
             showLoading();
-
             try {
                 const formData = new FormData();
                 formData.append('judul', judul);
                 formData.append('kategori', kategori);
                 formData.append('tahun', tahun);
                 formData.append('penulis', penulis);
-                formData.append('abstrak', abstrak);
-                formData.append('doi', doi);
-                formData.append('link', link);
-                formData.append('keywords', keywords);
-                
-                if (selectedFile) {
-                    formData.append('file', selectedFile);
-                }
+                formData.append('abstrak', document.getElementById('abstrak').value);
+                formData.append('doi', document.getElementById('doi').value);
+                formData.append('keywords', document.getElementById('keywords').value);
+                if (selectedFile) formData.append('file', selectedFile);
 
                 let response;
-                if (id) {
-                    // Update
-                    response = await apiCall(`/documents/${id}`, {
-                        method: 'PUT',
-                        body: formData
-                    });
-                } else {
-                    // Create
-                    response = await apiCall('/documents', {
-                        method: 'POST',
-                        body: formData
-                    });
-                }
+                if (id) response = await apiCall(`/documents/${id}`, { method: 'PUT', body: formData });
+                else response = await apiCall('/documents', { method: 'POST', body: formData });
 
                 if (response.success) {
                     showNotification(id ? 'Dokumen berhasil diperbarui' : 'Dokumen berhasil diupload');
@@ -1278,22 +1252,15 @@
                     await loadDashboardStats();
                     await loadCategoryCounts();
                 }
-            } catch (error) {
-                console.error('Error saving document:', error);
-                showNotification(error.message || 'Gagal menyimpan dokumen', 'error');
-            } finally {
-                hideLoading();
-            }
+            } catch (error) { showNotification(error.message || 'Gagal menyimpan dokumen', 'error'); } finally { hideLoading(); }
         }
 
         async function editDocument(id) {
             try {
                 showLoading();
                 const response = await apiCall(`/documents/${id}`);
-                
                 if (response.success) {
                     const doc = response.data;
-                    
                     document.getElementById('modalTitle').textContent = 'Edit Dokumen';
                     document.getElementById('docId').value = doc.id_dokumen;
                     document.getElementById('judul').value = doc.judul;
@@ -1302,178 +1269,76 @@
                     document.getElementById('penulis').value = doc.penulis;
                     document.getElementById('abstrak').value = doc.abstrak || '';
                     document.getElementById('doi').value = doc.doi || '';
-                    document.getElementById('link').value = doc.link || '';
                     document.getElementById('keywords').value = doc.keywords || '';
                     document.getElementById('fileName').textContent = doc.filename;
                     document.getElementById('fileSize').textContent = formatBytes(doc.filesize);
-                    
                     document.getElementById('crudModal').classList.remove('hidden');
                 }
-            } catch (error) {
-                console.error('Error loading document:', error);
-                showNotification('Gagal memuat data dokumen', 'error');
-            } finally {
-                hideLoading();
-            }
+            } catch (error) { showNotification('Gagal memuat data dokumen', 'error'); } finally { hideLoading(); }
         }
 
         function confirmDelete(id) {
-            showConfirmation('Apakah Anda yakin ingin menghapus dokumen ini?', () => {
-                deleteDocument(id);
-            });
+            document.getElementById('confirmMessage').textContent = 'Apakah Anda yakin ingin menghapus dokumen ini?';
+            document.getElementById('confirmModal').classList.remove('hidden');
+            document.getElementById('confirmActionBtn').onclick = () => { closeConfirmModal(); deleteDocument(id); };
         }
 
         async function deleteDocument(id) {
             showLoading();
             try {
-                const response = await apiCall(`/documents/${id}`, {
-                    method: 'DELETE'
-                });
-
+                const response = await apiCall(`/documents/${id}`, { method: 'DELETE' });
                 if (response.success) {
                     showNotification('Dokumen berhasil dihapus');
                     await loadDocuments();
                     await loadDashboardStats();
                     await loadCategoryCounts();
                 }
-            } catch (error) {
-                console.error('Error deleting document:', error);
-                showNotification(error.message || 'Gagal menghapus dokumen', 'error');
-            } finally {
-                hideLoading();
-            }
+            } catch (error) { showNotification(error.message || 'Gagal menghapus dokumen', 'error'); } finally { hideLoading(); }
         }
 
         async function viewDetail(id) {
             try {
                 showLoading();
                 const response = await apiCall(`/documents/${id}`);
-                
                 if (response.success) {
                     const doc = response.data;
-                    
-                    // Increment view count
-                    await apiCall(`/documents/${id}/increment-view`, {
-                        method: 'POST'
-                    });
-
+                    await apiCall(`/documents/${id}/increment-view`, { method: 'POST' });
                     const content = `
-                        <div class="space-y-4">
-                            <h4 class="font-bold text-lg">${doc.judul}</h4>
-                            
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <p class="text-sm text-gray-500">Penulis</p>
-                                    <p class="font-medium">${doc.penulis}</p>
-                                </div>
-                                <div>
-                                    <p class="text-sm text-gray-500">Kategori</p>
-                                    <p><span class="px-2 py-1 text-xs rounded-full ${getCategoryBadge(doc.kategori)}">
-                                        <i class="fas ${getCategoryIcon(doc.kategori)} mr-1"></i>${doc.kategori}
-                                    </span></p>
-                                </div>
-                                <div>
-                                    <p class="text-sm text-gray-500">Tahun</p>
-                                    <p class="font-medium">${doc.tahun}</p>
-                                </div>
-                                <div>
-                                    <p class="text-sm text-gray-500">DOI/ISBN</p>
-                                    <p class="font-medium">${doc.doi || '-'}</p>
-                                </div>
-                            </div>
-
-                            <div>
-                                <p class="text-sm text-gray-500">Abstrak</p>
-                                <p class="mt-1 text-gray-700">${doc.abstrak || 'Tidak ada abstrak'}</p>
-                            </div>
-
-                            <div>
-                                <p class="text-sm text-gray-500">Kata Kunci</p>
-                                <div class="flex flex-wrap gap-1 mt-1">
-                                    ${doc.keywords ? doc.keywords.split(',').map(k => 
-                                        `<span class="px-2 py-1 bg-gray-100 rounded-full text-xs">${k.trim()}</span>`
-                                    ).join('') : '-'}
-                                </div>
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <p class="text-sm text-gray-500">Downloads</p>
-                                    <p class="font-medium">${doc.downloads || 0}</p>
-                                </div>
-                                <div>
-                                    <p class="text-sm text-gray-500">Views</p>
-                                    <p class="font-medium">${doc.views || 0}</p>
-                                </div>
-                                <div>
-                                    <p class="text-sm text-gray-500">Ukuran File</p>
-                                    <p class="font-medium">${formatBytes(doc.filesize)}</p>
-                                </div>
-                                <div>
-                                    <p class="text-sm text-gray-500">Tanggal Upload</p>
-                                    <p class="font-medium">${formatDate(doc.created_at)}</p>
-                                </div>
-                            </div>
-
-                            ${doc.link ? `
-                                <div>
-                                    <p class="text-sm text-gray-500">Link Terkait</p>
-                                    <a href="${doc.link}" target="_blank" class="text-blue-600 hover:underline">${doc.link}</a>
-                                </div>
-                            ` : ''}
-                            
-                            <div class="flex justify-end">
-                                <button onclick="downloadDocument('${doc.id_dokumen}')" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
-                                    <i class="fas fa-download mr-2"></i>Download
-                                </button>
-                            </div>
+                        <h4 class="font-bold text-base md:text-lg mb-3">${doc.judul}</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div><p class="text-gray-500">Penulis</p><p class="font-medium">${doc.penulis}</p></div>
+                            <div><p class="text-gray-500">Kategori</p><span class="px-2 py-1 text-xs rounded-full ${getCategoryBadge(doc.kategori)}"><i class="fas ${getCategoryIcon(doc.kategori)} mr-1"></i>${doc.kategori}</span></div>
+                            <div><p class="text-gray-500">Tahun</p><p class="font-medium">${doc.tahun}</p></div>
+                            <div><p class="text-gray-500">DOI/ISBN</p><p class="font-medium">${doc.doi || '-'}</p></div>
+                            <div><p class="text-gray-500">Downloads</p><p class="font-medium">${doc.downloads || 0}</p></div>
+                            <div><p class="text-gray-500">Views</p><p class="font-medium">${doc.views || 0}</p></div>
+                            <div><p class="text-gray-500">Ukuran File</p><p class="font-medium">${formatBytes(doc.filesize)}</p></div>
+                            <div><p class="text-gray-500">Tanggal Upload</p><p class="font-medium">${new Date(doc.created_at).toLocaleDateString('id-ID')}</p></div>
                         </div>
+                        <div class="mt-4"><p class="text-gray-500">Abstrak</p><p class="text-sm">${doc.abstrak || 'Tidak ada abstrak'}</p></div>
+                        <div class="mt-4 flex justify-end"><button onclick="downloadDocument('${doc.id_dokumen}')" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm"><i class="fas fa-download mr-2"></i>Download</button></div>
                     `;
-
                     document.getElementById('detailModalContent').innerHTML = content;
                     document.getElementById('detailModal').classList.remove('hidden');
-                    
-                    // Update view count in UI
                     await loadDocuments();
                 }
-            } catch (error) {
-                console.error('Error loading document detail:', error);
-                showNotification('Gagal memuat detail dokumen', 'error');
-            } finally {
-                hideLoading();
-            }
+            } catch (error) { showNotification('Gagal memuat detail dokumen', 'error'); } finally { hideLoading(); }
         }
 
-        function closeDetailModal() {
-            document.getElementById('detailModal').classList.add('hidden');
-        }
+        function closeDetailModal() { document.getElementById('detailModal').classList.add('hidden'); }
 
         async function downloadDocument(id) {
             try {
                 showLoading();
-                
-                // Increment download count
-                await apiCall(`/documents/${id}/increment-download`, {
-                    method: 'POST'
-                });
-
-                // Trigger download
+                await apiCall(`/documents/${id}/increment-download`, { method: 'POST' });
                 window.open(`${API_BASE_URL}/documents/${id}/download`, '_blank');
-                
                 showNotification('Mengunduh dokumen...', 'success');
-                
-                // Update download count in UI
                 await loadDocuments();
                 await loadDashboardStats();
-            } catch (error) {
-                console.error('Error downloading document:', error);
-                showNotification('Gagal mengunduh dokumen', 'error');
-            } finally {
-                hideLoading();
-            }
+            } catch (error) { showNotification('Gagal mengunduh dokumen', 'error'); } finally { hideLoading(); }
         }
 
-        // ==================== LOGOUT FUNCTIONS ====================
+        // ==================== LOGOUT ====================
         function handleLogout() {
             Swal.fire({
                 title: 'Konfirmasi Logout',
@@ -1481,148 +1346,33 @@
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
                 confirmButtonText: 'Ya, Logout',
                 cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    performLogout();
-                }
-            });
-        }
-
-        function closeLogoutModal() {
-            document.getElementById('confirmLogoutModal').classList.add('hidden');
-        }
-
-        function performLogout() {
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            window.location.href = '../login.html';
+            }).then((result) => { if (result.isConfirmed) { localStorage.removeItem('token'); localStorage.removeItem('user'); window.location.href = '../login.html'; } });
         }
 
         // ==================== INITIALIZATION ====================
         document.addEventListener('DOMContentLoaded', () => {
+            initDropdown();
+            initMobileNav();
+            setActiveNavLink();
+            updateNavbarUserInfo();
+            
             loadDashboardStats();
             loadCategoryCounts();
             loadDocuments();
-            
-            // Set default view
             document.getElementById('gridViewBtn').classList.add('bg-pink-100', 'text-pink-600');
         });
 
-        // Search on input with debounce
         let searchTimeout;
         document.getElementById('searchInput').addEventListener('input', () => {
             clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => {
-                applyFilters();
-            }, 500);
+            searchTimeout = setTimeout(() => applyFilters(), 500);
         });
 
-        // Close modals when clicking outside
-        document.getElementById('crudModal').addEventListener('click', (e) => {
-            if (e.target === document.getElementById('crudModal')) {
-                closeModal();
-            }
-        });
-
-        document.getElementById('detailModal').addEventListener('click', (e) => {
-            if (e.target === document.getElementById('detailModal')) {
-                closeDetailModal();
-            }
-        });
-
-        document.getElementById('pdfModal').addEventListener('click', (e) => {
-            if (e.target === document.getElementById('pdfModal')) {
-                closePdfModal();
-            }
-        });
-
-        document.getElementById('confirmModal').addEventListener('click', (e) => {
-            if (e.target === document.getElementById('confirmModal')) {
-                closeConfirmModal();
-            }
-        });
-
-        document.getElementById('confirmLogoutModal').addEventListener('click', (e) => {
-            if (e.target === document.getElementById('confirmLogoutModal')) {
-                closeLogoutModal();
-            }
-        });
-
-        // Tambahkan fungsi-fungsi berikut di dalam tag <script> (setelah fungsi yang sudah ada)
-
-// Fungsi untuk update navbar user info
-function updateNavbarUserInfo() {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    const adminName = user.nama_lengkap || 'Admin LPPM';
-    
-    const navUserName = document.getElementById('navUserName');
-    const dropdownUserName = document.getElementById('dropdownUserName');
-    const dropdownUserRole = document.getElementById('dropdownUserRole');
-    
-    if (navUserName) navUserName.textContent = adminName;
-    if (dropdownUserName) dropdownUserName.textContent = adminName;
-    if (dropdownUserRole) dropdownUserRole.textContent = 'Administrator';
-    
-    // Update avatar
-    const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(adminName)}&background=3B82F6&color=fff&bold=true`;
-    const navAvatar = document.getElementById('navAvatar');
-    const dropdownAvatar = document.getElementById('dropdownAvatar');
-    
-    if (navAvatar) navAvatar.src = avatarUrl;
-    if (dropdownAvatar) dropdownAvatar.src = avatarUrl;
-}
-
-// Fungsi untuk inisialisasi dropdown
-function initDropdown() {
-    const userMenuBtn = document.getElementById('userMenuBtn');
-    const userDropdown = document.getElementById('userDropdown');
-    
-    if (userMenuBtn && userDropdown) {
-        userMenuBtn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            userDropdown.classList.toggle('hidden');
-        });
-        
-        document.addEventListener('click', function(e) {
-            if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) {
-                userDropdown.classList.add('hidden');
-            }
-        });
-    }
-}
-
-// Fungsi untuk set active nav link
-function setActiveNavLink() {
-    const currentPage = window.location.pathname.split('/').pop();
-    const navLinks = document.querySelectorAll('.nav-link-modern');
-    
-    navLinks.forEach(link => {
-        const href = link.getAttribute('href');
-        if (href === currentPage) {
-            link.classList.add('active');
-        } else {
-            link.classList.remove('active');
-        }
-    });
-}
-
-// Update DOMContentLoaded - tambahkan inisialisasi navbar
-document.addEventListener('DOMContentLoaded', () => {
-    // Initialize navbar components
-    initDropdown();
-    setActiveNavLink();
-    updateNavbarUserInfo();
-    
-    loadDashboardStats();
-    loadCategoryCounts();
-    loadDocuments();
-    
-    // Set default view
-    document.getElementById('gridViewBtn').classList.add('bg-pink-100', 'text-pink-600');
-});
+        document.getElementById('crudModal').addEventListener('click', (e) => { if (e.target === document.getElementById('crudModal')) closeModal(); });
+        document.getElementById('detailModal').addEventListener('click', (e) => { if (e.target === document.getElementById('detailModal')) closeDetailModal(); });
+        document.getElementById('confirmModal').addEventListener('click', (e) => { if (e.target === document.getElementById('confirmModal')) closeConfirmModal(); });
     </script>
 </body>
 </html>
