@@ -255,6 +255,15 @@
             }
         }
 
+        /* Perbaikan: Memberi jarak yang tepat untuk konten di bawah navbar fixed */
+        body {
+            padding-top: 0;
+        }
+        
+        main {
+            margin-top: 0;
+        }
+
         @media (max-width: 768px) {
             .greeting-banner {
                 padding: 1.25rem;
@@ -337,7 +346,7 @@
 
     <!-- Navbar -->
     <header class="fixed top-0 left-0 right-0 navbar-custom z-50">
-        <nav class="container mx-auto px-4 md:px-6 py-3 md:py-4 flex justify-between items-center">
+        <nav class="container mx-auto px-4 md:px-6 py-3 flex justify-between items-center">
             <!-- Logo and Brand -->
             <a href="dosen-dashboard.html" class="flex items-center space-x-3 group">
                 <div class="relative">
@@ -436,8 +445,8 @@
         </nav>
     </header>
 
-    <!-- Main Content -->
-    <main class="pt-[90px] md:pt-[105px] pb-12">
+    <!-- Main Content - Perbaikan padding top agar tidak tertutup navbar -->
+    <main class="pt-20 md:pt-24 pb-12">
         <div class="container mx-auto px-4 sm:px-6 py-6">
             <!-- Greeting Banner -->
             <div class="greeting-banner text-white" data-aos="fade-down">
