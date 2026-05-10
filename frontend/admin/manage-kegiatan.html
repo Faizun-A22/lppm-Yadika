@@ -74,6 +74,7 @@
 
         .icon-btn {
             color: rgba(255, 255, 255, 0.8);
+            cursor: pointer;
         }
 
         .icon-btn:hover {
@@ -172,7 +173,7 @@
             right: 0;
             bottom: 0;
             background: rgba(0,0,0,0.5);
-            z-index: 100;
+            z-index: 9999;
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s ease;
@@ -214,6 +215,12 @@
             color: #4B5563;
             transition: all 0.2s ease;
             border-left: 3px solid transparent;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .mobile-nav-link:hover {
+            background: #F3F4F6;
         }
 
         .mobile-nav-link.active {
@@ -259,6 +266,18 @@
                 overflow-x: auto;
             }
         }
+
+        /* Additional fixes */
+        #hamburgerBtn {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hidden {
+            display: none !important;
+        }
     </style>
 </head>
 <body class="bg-gray-50 font-sans antialiased">
@@ -279,7 +298,7 @@
                         <img src="yadika.png" alt="Logo LPPM ITB Yadika" class="h-8 w-8 rounded-lg bg-white p-1">
                         <span class="font-bold text-sm">LPPM Admin</span>
                     </div>
-                    <button id="closeMobileNav" class="text-white">
+                    <button id="closeMobileNav" class="text-white cursor-pointer">
                         <i class="fas fa-times text-xl"></i>
                     </button>
                 </div>
@@ -949,11 +968,41 @@
             const closeBtn = document.getElementById('closeMobileNav');
             
             if (hamburger && mobileNav) {
-                hamburger.addEventListener('click', () => mobileNav.classList.add('active'));
-                closeBtn.addEventListener('click', () => mobileNav.classList.remove('active'));
-                mobileNav.addEventListener('click', (e) => {
-                    if (e.target === mobileNav) mobileNav.classList.remove('active');
+                // Remove existing event listeners to avoid duplicates
+                const newHamburger = hamburger.cloneNode(true);
+                hamburger.parentNode.replaceChild(newHamburger, hamburger);
+                const newCloseBtn = closeBtn ? closeBtn.cloneNode(true) : null;
+                if (closeBtn && newCloseBtn) {
+                    closeBtn.parentNode.replaceChild(newCloseBtn, closeBtn);
+                }
+                
+                const finalHamburger = document.getElementById('hamburgerBtn');
+                const finalCloseBtn = document.getElementById('closeMobileNav');
+                const finalMobileNav = document.getElementById('mobileNav');
+                
+                finalHamburger.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    finalMobileNav.classList.add('active');
+                    document.body.style.overflow = 'hidden';
                 });
+                
+                if (finalCloseBtn) {
+                    finalCloseBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        finalMobileNav.classList.remove('active');
+                        document.body.style.overflow = '';
+                    });
+                }
+                
+                finalMobileNav.addEventListener('click', function(e) {
+                    if (e.target === finalMobileNav) {
+                        finalMobileNav.classList.remove('active');
+                        document.body.style.overflow = '';
+                    }
+                });
+            } else {
+                console.error('Elemen tidak ditemukan - Hamburger:', hamburger, 'MobileNav:', mobileNav);
             }
         }
 
@@ -987,6 +1036,7 @@
         const itemsPerPage = 10;
         let totalBeritaPages = 1;
         let totalKegiatanPages = 1;
+        const urlParams = new URLSearchParams(window.location.search);
 
         // ==================== UTILITY FUNCTIONS ====================
         function showLoading() {
@@ -1213,7 +1263,7 @@
                 return;
             }
 
-            tbody.innerHTML = berita.map((item, idx) => {
+            tbody.innerHTML = berita.map((item) => {
                 const badgeClass = getStatusBadge(item.status, 'berita');
                 const statusText = getStatusText(item.status, 'berita');
                 return `
@@ -1291,7 +1341,7 @@
                 return;
             }
 
-            tbody.innerHTML = kegiatan.map((item, idx) => {
+            tbody.innerHTML = kegiatan.map((item) => {
                 const badgeClass = getStatusBadge(item.status_kegiatan, 'kegiatan');
                 const statusText = getStatusText(item.status_kegiatan, 'kegiatan');
                 return `
