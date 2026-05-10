@@ -7,6 +7,7 @@
     
     <!-- CSS External Libraries -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -19,26 +20,24 @@
             font-family: 'Inter', sans-serif;
         }
 
-        /* Navbar Styles - Sempurna Responsif */
+        .gradient-text { 
+            background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            background-clip: text; 
+        }
+
+        /* Navbar Styles */
         .navbar-custom {
             background: linear-gradient(135deg, #1E3A5F 0%, #2D4A6E 50%, #1E3A5F 100%);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* Navigasi Desktop - Ukuran proporsional */
         .nav-link-modern {
             position: relative;
             transition: all 0.2s ease;
-            color: rgba(255, 255, 255, 0.85);
-            font-size: 0.875rem;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            font-weight: 500;
-        }
-
-        .nav-link-modern i {
-            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.8);
         }
 
         .nav-link-modern:hover {
@@ -51,85 +50,188 @@
             color: white !important;
         }
 
+        .nav-link-modern.active i {
+            color: white !important;
+        }
+
+        .nav-link-modern.active::before {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 2px;
+            background: white;
+            border-radius: 2px;
+        }
+
         .brand-title {
             color: white;
-            font-size: 1rem;
         }
 
         .brand-subtitle {
             color: rgba(255, 255, 255, 0.7);
-            font-size: 0.7rem;
         }
 
-        /* Stat Cards - Ukuran seimbang */
+        .icon-btn {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .icon-btn:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .user-name, .user-role {
+            color: white;
+        }
+
+        .user-role {
+            opacity: 0.7;
+        }
+
+        /* Card Styles */
         .stat-card {
             transition: all 0.3s ease;
-            background: white;
-            border-radius: 1rem;
-            padding: 1rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            border: 1px solid #f0f0f0;
+            border: none;
+            border-radius: 16px;
+            overflow: hidden;
         }
         .stat-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
         }
 
-        .activity-item {
+        /* Activity Timeline */
+        .timeline-item {
+            position: relative;
+            padding-left: 2rem;
+            padding-bottom: 1.5rem;
+        }
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0.5rem;
+            top: 0.25rem;
+            bottom: 0;
+            width: 2px;
+            background: #e5e7eb;
+        }
+        .timeline-item:last-child::before {
+            display: none;
+        }
+        .timeline-dot {
+            position: absolute;
+            left: 0;
+            width: 1rem;
+            height: 1rem;
+            border-radius: 50%;
+            background: #3B82F6;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            height: 8px;
+            border-radius: 4px;
+            background: #e5e7eb;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3B82F6, #8B5CF6);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        /* Quick Action Cards */
+        .quick-action-card {
             transition: all 0.3s ease;
-            border-left: 3px solid transparent;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
         }
-        .activity-item:hover {
-            background-color: #F9FAFB;
-            border-left-color: #3B82F6;
-            transform: translateX(5px);
-        }
-
-        .greeting-banner {
-            background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
-            border-radius: 1rem;
-            padding: 1.25rem 1.5rem;
-            margin-bottom: 1.5rem;
+        .quick-action-card:hover {
+            background: #f3f4f6;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
-        .realtime-badge {
-            display: inline-flex;
+        /* Loading Spinner */
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3B82F6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            z-index: 9999;
+            display: flex;
             align-items: center;
-            gap: 8px;
-            background: rgba(255,255,255,0.2);
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.7rem;
-            font-weight: 500;
-            backdrop-filter: blur(4px);
+            justify-content: center;
+        }
+        .loading-spinner-custom {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3B82F6;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
         }
 
-        .pulse {
-            animation: pulse 2s infinite;
+        /* Welcome Banner */
+        .welcome-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            padding: 2rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        .welcome-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 400px;
+            height: 400px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+        .welcome-banner::after {
+            content: '';
+            position: absolute;
+            bottom: -50%;
+            left: -10%;
+            width: 400px;
+            height: 400px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 0.125rem 0.5rem;
-            border-radius: 9999px;
-            font-size: 0.65rem;
-            font-weight: 600;
-            line-height: 1.25;
-        }
-        .status-draft { background: #FEF3C7; color: #D97706; }
-        .status-submit { background: #DBEAFE; color: #2563EB; }
-        .status-review { background: #E0E7FF; color: #4F46E5; }
-        .status-revisi { background: #FEE2E2; color: #DC2626; }
-        .status-diterima { background: #D1FAE5; color: #059669; }
-        .status-ditolak { background: #FEE2E2; color: #DC2626; }
-        .status-publish { background: #D1FAE5; color: #059669; }
-
-        /* Mobile Navigation - Sempurna */
+        /* Mobile Navigation */
         .mobile-nav {
             position: fixed;
             top: 0;
@@ -137,7 +239,7 @@
             right: 0;
             bottom: 0;
             background: rgba(0,0,0,0.5);
-            z-index: 1000;
+            z-index: 100;
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s ease;
@@ -159,7 +261,6 @@
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
-            box-shadow: -5px 0 20px rgba(0,0,0,0.1);
         }
 
         .mobile-nav.active .mobile-nav-container {
@@ -167,7 +268,7 @@
         }
 
         .mobile-nav-header {
-            padding: 1.25rem;
+            padding: 20px;
             background: linear-gradient(135deg, #1E3A5F, #2D4A6E);
             color: white;
         }
@@ -176,11 +277,10 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 0.75rem 1.25rem;
+            padding: 12px 20px;
             color: #4B5563;
             transition: all 0.2s ease;
             border-left: 3px solid transparent;
-            font-size: 0.875rem;
         }
 
         .mobile-nav-link.active {
@@ -189,53 +289,59 @@
             border-left-color: #3B82F6;
         }
 
-        /* Loading */
-        .loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(255, 255, 255, 0.95);
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .loading-spinner-custom {
-            border: 3px solid #e5e7eb;
-            border-top: 3px solid #3B82F6;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-        }
-
-        /* User Dropdown */
+        /* Dropdown Animation */
         #userDropdown {
             transform-origin: top right;
             animation: dropdownFade 0.2s ease;
         }
 
         @keyframes dropdownFade {
-            from { opacity: 0; transform: scale(0.95) translateY(-10px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
         }
 
-        /* Responsive breakpoints */
+        /* Status Badges */
+        .status-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+        .status-draft { background: #FEF3C7; color: #D97706; }
+        .status-submit { background: #DBEAFE; color: #2563EB; }
+        .status-review { background: #E0E7FF; color: #4F46E5; }
+        .status-revisi { background: #FEE2E2; color: #DC2626; }
+        .status-diterima { background: #D1FAE5; color: #059669; }
+        .status-ditolak { background: #FEE2E2; color: #DC2626; }
+        .status-publish { background: #D1FAE5; color: #059669; }
+
+        /* Responsive adjustments */
         @media (max-width: 768px) {
-            .greeting-banner {
-                padding: 1rem;
+            .welcome-banner {
+                padding: 1.5rem;
             }
-            .greeting-banner h2 {
-                font-size: 1.1rem;
+            .welcome-banner h2 {
+                font-size: 1.5rem;
             }
             .stat-card {
+                margin-bottom: 1rem;
+            }
+            .quick-action-card {
                 padding: 0.75rem;
             }
-            .realtime-badge {
-                font-size: 0.6rem;
-                padding: 0.2rem 0.6rem;
+            .quick-action-card .w-12 {
+                width: 2.5rem;
+                height: 2.5rem;
+            }
+            .quick-action-card p {
+                font-size: 0.7rem;
             }
         }
     </style>
@@ -245,7 +351,7 @@
     <div id="loadingOverlay" class="loading-overlay hidden">
         <div class="text-center">
             <div class="loading-spinner-custom mx-auto"></div>
-            <p class="mt-3 text-gray-500 text-sm">Memuat dashboard...</p>
+            <p class="mt-4 text-gray-600">Memuat dashboard dosen...</p>
         </div>
     </div>
 
@@ -255,105 +361,109 @@
             <div class="mobile-nav-header">
                 <div class="flex items-center justify-between mb-4">
                     <div class="flex items-center gap-2">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23ffffff'/%3E%3Ctext x='50' y='67' font-size='50' text-anchor='middle' fill='%231E3A5F' font-weight='bold'%3EY%3C/text%3E%3C/svg%3E" alt="Logo" class="h-8 w-8 rounded-lg bg-white p-1 shadow">
+                        <img src="yadika.png" alt="Logo LPPM ITB Yadika" class="h-8 w-8 rounded-lg bg-white p-1">
                         <span class="font-bold text-sm">Portal Dosen</span>
                     </div>
-                    <button id="closeMobileNav" class="text-white/80 hover:text-white">
+                    <button id="closeMobileNav" class="text-white">
                         <i class="fas fa-times text-xl"></i>
                     </button>
                 </div>
-                <div class="flex items-center gap-3 mt-2 pt-3 border-t border-white/20">
+                <div class="flex items-center gap-3 mt-4 pt-2 border-t border-white/20">
                     <img id="mobileNavAvatar" src="" alt="Avatar" class="w-10 h-10 rounded-full object-cover ring-2 ring-white/50">
                     <div>
                         <p class="font-semibold text-sm" id="mobileNavUserName">Loading...</p>
-                        <p class="text-xs opacity-80">Dosen Tetap</p>
+                        <p class="text-xs opacity-80" id="mobileNavUserRole">Dosen</p>
                     </div>
                 </div>
             </div>
-            <div class="flex-1 overflow-y-auto py-3">
-                <a href="#" class="mobile-nav-link active">
-                    <i class="fas fa-home w-5 text-center"></i>
+            <div class="flex-1 overflow-y-auto py-4">
+                <a href="dosen-dashboard.html" class="mobile-nav-link active">
+                    <i class="fas fa-home w-5"></i>
                     <span>Dashboard</span>
                 </a>
-                <a href="#" class="mobile-nav-link">
-                    <i class="fas fa-newspaper w-5 text-center"></i>
-                    <span>Berita & Pengumuman</span>
+                <a href="dosen-berita.html" class="mobile-nav-link">
+                    <i class="fas fa-newspaper w-5"></i>
+                    <span>Berita</span>
                 </a>
-                <a href="#" class="mobile-nav-link">
-                    <i class="fas fa-flask w-5 text-center"></i>
-                    <span>Penelitian & PKM</span>
+                <a href="dosen-penelitian-pengabdian.html" class="mobile-nav-link">
+                    <i class="fas fa-flask w-5"></i>
+                    <span>Penelitian</span>
                 </a>
-                <a href="#" class="mobile-nav-link">
-                    <i class="fas fa-archive w-5 text-center"></i>
+                <a href="dosen-repository.html" class="mobile-nav-link">
+                    <i class="fas fa-archive w-5"></i>
                     <span>Repository</span>
                 </a>
-                <a href="#" class="mobile-nav-link">
-                    <i class="fas fa-user-circle w-5 text-center"></i>
-                    <span>Profil Dosen</span>
+                <div class="border-t border-gray-100 my-4 mx-4"></div>
+                <a href="dosen-profil.html" class="mobile-nav-link">
+                    <i class="fas fa-user-cog w-5"></i>
+                    <span>Pengaturan Akun</span>
                 </a>
-                <div class="border-t border-gray-100 my-3 mx-4"></div>
-                <a href="#" class="mobile-nav-link">
-                    <i class="fas fa-key w-5 text-center"></i>
+                <a href="dosen-ubah-password.html" class="mobile-nav-link">
+                    <i class="fas fa-key w-5"></i>
                     <span>Ubah Password</span>
                 </a>
                 <button onclick="handleLogout()" class="mobile-nav-link w-full text-left text-red-600">
-                    <i class="fas fa-sign-out-alt w-5 text-center"></i>
-                    <span>Keluar</span>
+                    <i class="fas fa-sign-out-alt w-5"></i>
+                    <span>Logout</span>
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Navbar Utama -->
+    <!-- Navbar -->
     <header class="fixed top-0 left-0 right-0 navbar-custom z-50">
-        <nav class="container mx-auto px-4 md:px-6 py-3 flex justify-between items-center">
-            <!-- Brand Area -->
-            <a href="#" class="flex items-center space-x-3 group">
+        <nav class="container mx-auto px-4 md:px-6 py-3 md:py-4 flex justify-between items-center">
+            <!-- Logo and Brand -->
+            <a href="dosen-dashboard.html" class="flex items-center space-x-3 group">
                 <div class="relative">
-                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23ffffff'/%3E%3Ctext x='50' y='67' font-size='50' text-anchor='middle' fill='%231E3A5F' font-weight='bold'%3EY%3C/text%3E%3C/svg%3E" alt="Logo" class="h-9 w-9 rounded-lg shadow-sm bg-white p-1">
+                    <img src="yadika.png" alt="Logo LPPM ITB Yadika" class="h-9 w-9 md:h-10 md:w-10 rounded-lg shadow-sm transition-transform group-hover:scale-105 bg-white p-1">
+                    <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-400 to-purple-400 rounded-lg opacity-0 group-hover:opacity-30 transition"></div>
                 </div>
                 <div>
-                    <h1 class="brand-title font-bold tracking-wide">Portal Dosen</h1>
-                    <p class="brand-subtitle -mt-0.5">LPPM ITB Yadika</p>
+                    <h1 class="brand-title text-base md:text-lg font-bold tracking-wide">
+                        Portal Dosen
+                    </h1>
+                    <p class="brand-subtitle text-xs md:text-sm -mt-0.5">ITB Yadika</p>
                 </div>
             </a>
             
-            <!-- Desktop Navigation Menu - Ukuran sudah proporsional -->
+            <!-- Desktop Navigation Menu -->
             <div class="hidden md:flex items-center space-x-1">
-                <a href="#" class="nav-link-modern active flex items-center gap-2">
-                    <i class="fas fa-home"></i>
+                <a href="dosen-dashboard.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2 active">
+                    <i class="fas fa-home text-sm"></i>
                     <span>Dashboard</span>
                 </a>
-                <a href="#" class="nav-link-modern flex items-center gap-2">
-                    <i class="fas fa-newspaper"></i>
+                <a href="dosen-berita.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-newspaper text-sm"></i>
                     <span>Berita</span>
                 </a>
-                <a href="#" class="nav-link-modern flex items-center gap-2">
-                    <i class="fas fa-flask"></i>
+                <a href="dosen-penelitian-pengabdian.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-flask text-sm"></i>
                     <span>Penelitian</span>
                 </a>
-                <a href="#" class="nav-link-modern flex items-center gap-2">
-                    <i class="fas fa-archive"></i>
+                <a href="dosen-repository.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-archive text-sm"></i>
                     <span>Repository</span>
                 </a>
-                <a href="#" class="nav-link-modern flex items-center gap-2">
-                    <i class="fas fa-user-circle"></i>
+                <a href="dosen-profil.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-user-circle text-sm"></i>
                     <span>Profil</span>
                 </a>
             </div>
             
-            <!-- Right Actions -->
+            <!-- User Info & Actions -->
             <div class="flex items-center gap-2 md:gap-3">
-                <!-- Notif -->
+                <!-- Notifications -->
                 <div class="relative">
-                    <button id="notificationBtn" class="icon-btn relative p-2 rounded-lg hover:bg-white/10 transition">
-                        <i class="fas fa-bell text-white text-base md:text-lg"></i>
+                    <button id="notificationBtn" class="icon-btn relative p-2 rounded-lg transition-all duration-200">
+                        <i class="fas fa-bell text-base md:text-lg"></i>
+                        <span id="notificationBadge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full hidden"></span>
                     </button>
                 </div>
                 
-                <!-- Desktop User Menu -->
+                <!-- User Profile Dropdown Desktop -->
                 <div class="relative hidden md:block">
-                    <button id="userMenuBtn" class="flex items-center gap-2 p-1.5 rounded-xl hover:bg-white/10 transition">
+                    <button id="userMenuBtn" class="flex items-center gap-2 p-1.5 rounded-xl hover:bg-white/10 transition-all duration-200">
                         <div class="relative">
                             <img id="navAvatar" src="" alt="Avatar" class="w-8 h-8 rounded-full object-cover ring-2 ring-white/50">
                             <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full ring-2 ring-white"></div>
@@ -362,7 +472,7 @@
                             <p class="user-name text-xs font-semibold" id="navUserName">Loading...</p>
                             <p class="user-role text-[10px]" id="navUserRole">Dosen</p>
                         </div>
-                        <i class="fas fa-chevron-down text-[10px] text-white/60"></i>
+                        <i class="fas fa-chevron-down text-[10px] text-white/60 hidden xl:block"></i>
                     </button>
                     
                     <div id="userDropdown" class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hidden z-50">
@@ -371,21 +481,21 @@
                                 <img id="dropdownAvatar" src="" alt="Avatar" class="w-10 h-10 rounded-full object-cover">
                                 <div>
                                     <p class="font-semibold text-gray-800 text-sm" id="dropdownUserName">Loading...</p>
-                                    <p class="text-xs text-gray-500" id="dropdownUserNidn">-</p>
+                                    <p class="text-xs text-gray-500" id="dropdownUserRole">Dosen</p>
                                 </div>
                             </div>
                         </div>
                         <div class="p-2">
-                            <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
+                            <a href="dosen-profil.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
                                 <i class="fas fa-user-cog w-5 text-gray-400"></i>
                                 <span>Pengaturan Akun</span>
                             </a>
-                            <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
+                            <a href="dosen-ubah-password.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
                                 <i class="fas fa-key w-5 text-gray-400"></i>
                                 <span>Ubah Password</span>
                             </a>
-                            <div class="border-t border-gray-100 my-1"></div>
-                            <button onclick="handleLogout()" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-red-600 hover:bg-red-50 transition text-sm">
+                            <div class="border-t border-gray-100 my-2"></div>
+                            <button onclick="handleLogout()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-600 hover:bg-red-50 transition text-sm">
                                 <i class="fas fa-sign-out-alt w-5 text-red-400"></i>
                                 <span>Logout</span>
                             </button>
@@ -393,190 +503,212 @@
                     </div>
                 </div>
 
-                <!-- Hamburger Mobile -->
-                <button id="hamburgerBtn" class="md:hidden p-2 rounded-lg hover:bg-white/10 transition">
-                    <i class="fas fa-bars text-white text-xl"></i>
+                <!-- Hamburger Menu Button -->
+                <button id="hamburgerBtn" class="md:hidden icon-btn p-2 rounded-lg transition-all duration-200">
+                    <i class="fas fa-bars text-xl"></i>
                 </button>
             </div>
         </nav>
     </header>
 
-    <!-- MAIN CONTENT - Ukuran dan Spacing sudah proporsional -->
-    <main class="pt-[72px] md:pt-[88px] pb-10">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+    <!-- Main Content -->
+    <main class="pt-[90px] md:pt-[105px] pb-12">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Welcome Banner -->
-            <div class="greeting-banner text-white" data-aos="fade-down">
-                <div class="flex justify-between items-center flex-wrap gap-3">
-                    <div>
-                        <h2 class="text-xl md:text-2xl font-bold mb-1">
-                            Selamat Datang, <span id="userName">Loading...</span>
-                        </h2>
-                        <div class="flex flex-wrap gap-x-4 gap-y-1 text-white/80 text-xs md:text-sm">
-                            <span><i class="fas fa-building mr-1"></i> <span id="userProdi">Program Studi</span></span>
-                            <span><i class="fas fa-id-card mr-1"></i> NIDN: <span id="userNidn">-</span></span>
+            <div class="welcome-banner mb-6 md:mb-8" data-aos="fade-down">
+                <div class="relative z-10">
+                    <h2 class="text-2xl md:text-3xl font-bold mb-2" id="welcomeMessage">Selamat Datang kembali, <span id="userNameDisplay">Dosen</span>!</h2>
+                    <p class="text-base md:text-lg opacity-90 mb-3 md:mb-4" id="currentDate"></p>
+                    <div class="flex flex-wrap gap-2 md:gap-4" id="welcomeStats"></div>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
+                <!-- Pengajuan Aktif Card -->
+                <div class="stat-card bg-white shadow-lg p-4 md:p-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="flex items-center justify-between mb-3 md:mb-4">
+                        <div class="bg-blue-100 p-2 md:p-3 rounded-lg">
+                            <i class="fas fa-file-alt text-blue-600 text-lg md:text-xl"></i>
                         </div>
                     </div>
-                    <div class="realtime-badge">
-                        <i class="fas fa-circle pulse text-green-300"></i>
-                        <span>Live Data</span>
-                        <span id="lastUpdateTime" class="text-xs font-mono"></span>
+                    <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-1" id="statAktif">0</h3>
+                    <p class="text-gray-500 text-xs md:text-sm mb-2 md:mb-3">Pengajuan Aktif</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="pengajuanProgress" style="width: 0%"></div>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-2" id="statAktifDetail">Dalam proses review</p>
+                </div>
+
+                <!-- Publikasi Ilmiah Card -->
+                <div class="stat-card bg-white shadow-lg p-4 md:p-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="flex items-center justify-between mb-3 md:mb-4">
+                        <div class="bg-purple-100 p-2 md:p-3 rounded-lg">
+                            <i class="fas fa-quote-right text-purple-600 text-lg md:text-xl"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-1" id="statPublikasi">0</h3>
+                    <p class="text-gray-500 text-xs md:text-sm mb-2 md:mb-3">Publikasi Ilmiah</p>
+                    <div class="flex justify-between text-xs md:text-sm">
+                        <div>
+                            <p class="text-gray-500">Jurnal</p>
+                            <p class="font-semibold" id="statJurnal">0</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-500">Buku</p>
+                            <p class="font-semibold" id="statBuku">0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HKI/Paten Card -->
+                <div class="stat-card bg-white shadow-lg p-4 md:p-6" data-aos="fade-up" data-aos-delay="300">
+                    <div class="flex items-center justify-between mb-3 md:mb-4">
+                        <div class="bg-green-100 p-2 md:p-3 rounded-lg">
+                            <i class="fas fa-certificate text-green-600 text-lg md:text-xl"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-1" id="statHKI">0</h3>
+                    <p class="text-gray-500 text-xs md:text-sm mb-2 md:mb-3">HKI/Paten</p>
+                    <p class="text-xs text-gray-400 mt-2" id="statHKIDetail">Hak Kekayaan Intelektual</p>
+                </div>
+
+                <!-- Repository Card -->
+                <div class="stat-card bg-white shadow-lg p-4 md:p-6" data-aos="fade-up" data-aos-delay="400">
+                    <div class="flex items-center justify-between mb-3 md:mb-4">
+                        <div class="bg-orange-100 p-2 md:p-3 rounded-lg">
+                            <i class="fas fa-archive text-orange-600 text-lg md:text-xl"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-1" id="statRepository">0</h3>
+                    <p class="text-gray-500 text-xs md:text-sm mb-2 md:mb-3">Dokumen Repository</p>
+                    <div class="flex justify-between text-xs md:text-sm">
+                        <div>
+                            <p class="text-gray-500">Downloads</p>
+                            <p class="font-semibold" id="statDownloads">0</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-500">Views</p>
+                            <p class="font-semibold" id="statViews">0</p>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Statistik Cards - Grid konsisten -->
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 mb-6" data-aos="fade-up">
-                <div class="stat-card border-l-4 border-blue-500">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-xs text-gray-500 font-medium">Pengajuan Aktif</p>
-                            <p class="text-2xl font-bold text-blue-600" id="statAktif">0</p>
-                        </div>
-                        <div class="bg-blue-100 rounded-xl p-2">
-                            <i class="fas fa-file-alt text-blue-600 text-lg"></i>
-                        </div>
-                    </div>
-                    <p class="text-xs text-gray-400 mt-2" id="statAktifDetail">0 dalam review</p>
-                </div>
-                
-                <div class="stat-card border-l-4 border-purple-500">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-xs text-gray-500 font-medium">Publikasi Ilmiah</p>
-                            <p class="text-2xl font-bold text-purple-600" id="statPublikasi">0</p>
-                        </div>
-                        <div class="bg-purple-100 rounded-xl p-2">
-                            <i class="fas fa-quote-right text-purple-600 text-lg"></i>
-                        </div>
-                    </div>
-                    <p class="text-xs text-gray-400 mt-2" id="statPublikasiDetail">0 Buku, 0 Publikasi</p>
-                </div>
-                
-                <div class="stat-card border-l-4 border-green-500">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-xs text-gray-500 font-medium">HKI/Paten</p>
-                            <p class="text-2xl font-bold text-green-600" id="statHKI">0</p>
-                        </div>
-                        <div class="bg-green-100 rounded-xl p-2">
-                            <i class="fas fa-certificate text-green-600 text-lg"></i>
-                        </div>
-                    </div>
-                    <p class="text-xs text-gray-400 mt-2" id="statHKIDetail">0 HKI terdaftar</p>
-                </div>
-                
-                <div class="stat-card border-l-4 border-orange-500">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-xs text-gray-500 font-medium">Repository</p>
-                            <p class="text-2xl font-bold text-orange-600" id="statRepository">0</p>
-                        </div>
-                        <div class="bg-orange-100 rounded-xl p-2">
-                            <i class="fas fa-archive text-orange-600 text-lg"></i>
-                        </div>
-                    </div>
-                    <p class="text-xs text-gray-400 mt-2" id="statRepositoryDetail">0 downloads, 0 views</p>
-                </div>
-            </div>
-
-            <!-- Row Charts -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-6" data-aos="fade-up">
-                <div class="bg-white rounded-xl shadow-md p-4 md:p-5 border border-gray-100">
-                    <h3 class="font-bold text-gray-800 mb-3 flex items-center text-base">
-                        <i class="fas fa-chart-pie mr-2 text-blue-500"></i>
-                        Status Pengajuan
-                    </h3>
-                    <div class="h-[220px] w-full">
+            <!-- Charts Row -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
+                <!-- Status Pengajuan Chart -->
+                <div class="bg-white rounded-xl shadow-lg p-4 md:p-6" data-aos="fade-up" data-aos-delay="500">
+                    <h3 class="text-base md:text-lg font-semibold text-gray-800 mb-4">Status Pengajuan</h3>
+                    <div style="height: 220px; position: relative;">
                         <canvas id="statusChart"></canvas>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-xl shadow-md p-4 md:p-5 border border-gray-100">
-                    <h3 class="font-bold text-gray-800 mb-3 flex items-center text-base">
-                        <i class="fas fa-chart-line mr-2 text-green-500"></i>
-                        Statistik Tahunan
-                    </h3>
-                    <div class="h-[220px] w-full">
+                <!-- Statistik Tahunan Chart -->
+                <div class="bg-white rounded-xl shadow-lg p-4 md:p-6" data-aos="fade-up" data-aos-delay="600">
+                    <h3 class="text-base md:text-lg font-semibold text-gray-800 mb-4">Statistik Tahunan</h3>
+                    <div style="height: 220px; position: relative;">
                         <canvas id="tahunanChart"></canvas>
                     </div>
                 </div>
             </div>
 
-            <!-- Content Grid 2-1 -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
-                <!-- Left 2/3 -->
-                <div class="lg:col-span-2 space-y-5">
-                    <div class="bg-white rounded-xl shadow-md p-5" data-aos="fade-right">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="font-bold text-gray-800 flex items-center text-base">
-                                <i class="fas fa-tasks mr-2 text-blue-500"></i>
-                                Pengajuan Terbaru
-                            </h3>
-                            <button onclick="refreshSubmissions()" class="text-xs bg-blue-50 hover:bg-blue-100 text-blue-600 px-3 py-1 rounded-full transition">
-                                <i class="fas fa-sync-alt mr-1"></i> Refresh
-                            </button>
-                        </div>
-                        <div class="space-y-3" id="recentSubmissions">
-                            <div class="text-center py-6">
-                                <i class="fas fa-spinner fa-spin text-gray-400 text-xl"></i>
-                                <p class="text-gray-400 text-sm mt-2">Memuat data...</p>
-                            </div>
-                        </div>
+            <!-- Quick Actions -->
+            <div class="grid grid-cols-3 md:grid-cols-5 gap-2 md:gap-4 mb-6 md:mb-8" data-aos="fade-up" data-aos-delay="700">
+                <div class="quick-action-card" onclick="quickAction('penelitian')">
+                    <div class="bg-blue-100 w-8 h-8 md:w-12 md:h-12 rounded-full flex items-center justify-center mx-auto mb-1 md:mb-2">
+                        <i class="fas fa-flask text-blue-600 text-sm md:text-base"></i>
                     </div>
+                    <p class="text-xs font-medium">Ajukan Penelitian</p>
+                </div>
+                <div class="quick-action-card" onclick="quickAction('pengabdian')">
+                    <div class="bg-green-100 w-8 h-8 md:w-12 md:h-12 rounded-full flex items-center justify-center mx-auto mb-1 md:mb-2">
+                        <i class="fas fa-hands-helping text-green-600 text-sm md:text-base"></i>
+                    </div>
+                    <p class="text-xs font-medium">Ajukan Pengabdian</p>
+                </div>
+                <div class="quick-action-card" onclick="quickAction('repository')">
+                    <div class="bg-purple-100 w-8 h-8 md:w-12 md:h-12 rounded-full flex items-center justify-center mx-auto mb-1 md:mb-2">
+                        <i class="fas fa-upload text-purple-600 text-sm md:text-base"></i>
+                    </div>
+                    <p class="text-xs font-medium">Upload Dokumen</p>
+                </div>
+                <div class="quick-action-card" onclick="quickAction('publikasi')">
+                    <div class="bg-pink-100 w-8 h-8 md:w-12 md:h-12 rounded-full flex items-center justify-center mx-auto mb-1 md:mb-2">
+                        <i class="fas fa-book text-pink-600 text-sm md:text-base"></i>
+                    </div>
+                    <p class="text-xs font-medium">Tambah Publikasi</p>
+                </div>
+                <div class="quick-action-card" onclick="quickAction('profile')">
+                    <div class="bg-orange-100 w-8 h-8 md:w-12 md:h-12 rounded-full flex items-center justify-center mx-auto mb-1 md:mb-2">
+                        <i class="fas fa-user-edit text-orange-600 text-sm md:text-base"></i>
+                    </div>
+                    <p class="text-xs font-medium">Edit Profil</p>
+                </div>
+            </div>
 
-                    <div class="bg-white rounded-xl shadow-md p-5" data-aos="fade-right">
-                        <h3 class="font-bold text-gray-800 mb-4 flex items-center text-base">
-                            <i class="fas fa-history mr-2 text-purple-500"></i>
-                            Timeline Kegiatan
-                        </h3>
-                        <div class="relative pl-2">
-                            <div class="absolute left-5 top-2 bottom-2 w-0.5 bg-gray-200"></div>
-                            <div class="space-y-5 relative" id="timelineActivities">
-                                <div class="text-center py-4">
-                                    <i class="fas fa-spinner fa-spin text-gray-400"></i>
-                                </div>
-                            </div>
+            <!-- Recent Activity & Timeline -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+                <!-- Pengajuan Terbaru -->
+                <div class="bg-white rounded-xl shadow-lg p-4 md:p-6" data-aos="fade-up" data-aos-delay="800">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-base md:text-lg font-semibold text-gray-800">Pengajuan Terbaru</h3>
+                        <button onclick="refreshSubmissions()" class="text-xs md:text-sm text-blue-600 hover:text-blue-800">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                    <div class="space-y-3 md:space-y-4" id="recentSubmissions">
+                        <div class="text-center py-8">
+                            <i class="fas fa-spinner fa-spin text-gray-400 text-2xl"></i>
+                            <p class="text-gray-500 text-sm mt-2">Memuat data...</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Right Sidebar -->
-                <div class="space-y-5">
-                    <div class="bg-gradient-to-br from-blue-700 to-indigo-800 rounded-xl shadow-md p-5 text-white" data-aos="fade-left">
-                        <div class="flex items-center gap-4 mb-4">
-                            <img id="profileAvatar" src="" alt="Profile" class="w-16 h-16 rounded-full border-3 border-white/40 object-cover shadow-md">
-                            <div>
-                                <h4 class="font-bold text-lg" id="profileName">Loading...</h4>
-                                <p class="text-blue-100 text-sm" id="profileNidn">NIDN: -</p>
-                                <p class="text-blue-100 text-xs mt-1" id="profileProdi">-</p>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-2 text-xs bg-white/10 rounded-lg p-3">
-                            <div><i class="fas fa-envelope mr-2"></i> <span id="profileEmail">-</span></div>
-                            <div><i class="fas fa-phone mr-2"></i> <span id="profilePhone">-</span></div>
+                <!-- Timeline Kegiatan -->
+                <div class="bg-white rounded-xl shadow-lg p-4 md:p-6" data-aos="fade-up" data-aos-delay="900">
+                    <h3 class="text-base md:text-lg font-semibold text-gray-800 mb-4">Timeline Kegiatan</h3>
+                    <div class="space-y-3 md:space-y-4" id="timelineActivities">
+                        <div class="text-center py-8">
+                            <i class="fas fa-spinner fa-spin text-gray-400 text-2xl"></i>
+                            <p class="text-gray-500 text-sm mt-2">Memuat data...</p>
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    <div class="bg-white rounded-xl shadow-md p-5" data-aos="fade-left">
-                        <h3 class="font-bold text-gray-800 mb-3 flex items-center text-base">
-                            <i class="fas fa-archive mr-2 text-orange-500"></i>
-                            Repository Saya
-                        </h3>
-                        <div id="repositoryStats" class="space-y-2">
-                            <div class="animate-pulse flex space-x-2">...</div>
+            <!-- Profile Summary & Publikasi -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mt-4 md:mt-6">
+                <!-- Profile Summary -->
+                <div class="bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl shadow-lg p-4 md:p-6 text-white" data-aos="fade-up" data-aos-delay="1000">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <img id="profileAvatar" src="" alt="Profile" class="w-16 h-16 rounded-full border-4 border-white/30 object-cover">
+                        <div>
+                            <h4 class="font-bold text-lg" id="profileName">Loading...</h4>
+                            <p class="text-blue-100 text-sm" id="profileNidn">-</p>
+                            <p class="text-blue-100 text-xs mt-1" id="profileProdi">-</p>
                         </div>
                     </div>
+                    
+                    <div class="grid grid-cols-2 gap-3 text-sm" id="profileDetails">
+                        <div><i class="fas fa-envelope mr-2"></i> <span id="profileEmail">-</span></div>
+                        <div><i class="fas fa-phone mr-2"></i> <span id="profilePhone">-</span></div>
+                    </div>
+                </div>
 
-                    <div class="bg-white rounded-xl shadow-md p-5" data-aos="fade-left">
-                        <div class="flex justify-between items-center mb-3">
-                            <h3 class="font-bold text-gray-800 flex items-center text-base">
-                                <i class="fas fa-book-open mr-2 text-green-600"></i>
-                                Publikasi Terbaru
-                            </h3>
-                            <span class="text-xs text-blue-500 cursor-pointer">Kelola <i class="fas fa-arrow-right ml-1"></i></span>
-                        </div>
-                        <div id="recentPublications" class="space-y-3">
-                            <div class="text-center py-4 text-gray-400 text-sm">Memuat...</div>
+                <!-- Publikasi Terbaru -->
+                <div class="bg-white rounded-xl shadow-lg p-4 md:p-6" data-aos="fade-up" data-aos-delay="1100">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-base md:text-lg font-semibold text-gray-800">Publikasi Terbaru</h3>
+                        <a href="dosen-publikasi.html" class="text-xs md:text-sm text-blue-600 hover:text-blue-800">
+                            Kelola <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                    <div class="space-y-3 md:space-y-4" id="recentPublications">
+                        <div class="text-center py-8">
+                            <i class="fas fa-spinner fa-spin text-gray-400 text-2xl"></i>
+                            <p class="text-gray-500 text-sm mt-2">Memuat data...</p>
                         </div>
                     </div>
                 </div>
@@ -586,149 +718,440 @@
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-    AOS.init({ duration: 600, once: true });
-    
-    // MOCK DATA untuk tampilan yang rapi dan proporsional (Simulasi backend)
-    let statusChart, tahunanChart;
-    
-    function updateLastUpdateTime() {
-        const now = new Date();
-        document.getElementById('lastUpdateTime').innerText = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-    }
-    
-    function handleLogout() {
-        Swal.fire({ title: 'Logout', text: 'Terima kasih telah menggunakan portal.', icon: 'success', timer: 1500, showConfirmButton: false }).then(() => {
-            window.location.reload();
-        });
-    }
-    
-    function showLoading(show) {
-        const el = document.getElementById('loadingOverlay');
-        if(show) el.classList.remove('hidden');
-        else el.classList.add('hidden');
-    }
-    
-    function refreshSubmissions() {
-        loadRecentSubmissions();
-        Swal.fire({ icon: 'success', title: 'Refresh', text: 'Data pengajuan diperbarui', toast: true, timer: 1500, showConfirmButton: false });
-    }
-    
-    // Simulasi Load Data
-    function loadProfile() {
-        const dummy = { nama_lengkap: "Budi Gaming", nidn: "4564733", nama_prodi: "Bisnis Digital", email: "budi@itb-yadika.ac.id", no_hp: "08123456789", foto_profil: "" };
-        document.getElementById('userName').innerText = dummy.nama_lengkap;
-        document.getElementById('userNidn').innerText = dummy.nidn;
-        document.getElementById('userProdi').innerText = dummy.nama_prodi;
-        document.getElementById('profileName').innerText = dummy.nama_lengkap;
-        document.getElementById('profileNidn').innerText = dummy.nidn;
-        document.getElementById('profileProdi').innerText = dummy.nama_prodi;
-        document.getElementById('profileEmail').innerText = dummy.email;
-        document.getElementById('profilePhone').innerText = dummy.no_hp;
-        const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(dummy.nama_lengkap)}&background=3B82F6&color=fff&bold=true`;
-        document.getElementById('navAvatar').src = avatarUrl;
-        document.getElementById('dropdownAvatar').src = avatarUrl;
-        document.getElementById('mobileNavAvatar').src = avatarUrl;
-        document.getElementById('navUserName').innerText = dummy.nama_lengkap;
-        document.getElementById('dropdownUserName').innerText = dummy.nama_lengkap;
-        document.getElementById('mobileNavUserName').innerText = dummy.nama_lengkap;
-        document.getElementById('dropdownUserNidn').innerText = `NIDN: ${dummy.nidn}`;
-        document.getElementById('profileAvatar').src = avatarUrl;
-    }
-    
-    function loadStatistics() {
-        // Menggunakan data sesuai gambar: 0 pengajuan, publikasi 0, hki 0, repository 1
-        document.getElementById('statAktif').innerText = "0";
-        document.getElementById('statAktifDetail').innerHTML = "0 dalam review";
-        document.getElementById('statPublikasi').innerText = "0";
-        document.getElementById('statPublikasiDetail').innerHTML = "0 Buku, 0 Publikasi";
-        document.getElementById('statHKI').innerText = "0";
-        document.getElementById('statHKIDetail').innerHTML = "0 HKI terdaftar";
-        document.getElementById('statRepository').innerText = "1";
-        document.getElementById('statRepositoryDetail').innerHTML = "0 downloads, 2 views";
-        document.getElementById('repositoryStats').innerHTML = `
-            <div class="flex justify-between items-center p-2 bg-gray-50 rounded-lg text-sm"><span>Total Dokumen</span><span class="font-bold text-orange-600">1</span></div>
-            <div class="flex justify-between items-center p-2 bg-gray-50 rounded-lg text-sm"><span>Total Downloads</span><span class="font-bold text-orange-600">0</span></div>
-            <div class="flex justify-between items-center p-2 bg-gray-50 rounded-lg text-sm"><span>Total Views</span><span class="font-bold text-orange-600">2</span></div>
-        `;
-    }
-    
-    function loadRecentSubmissions() {
-        const container = document.getElementById('recentSubmissions');
-        container.innerHTML = `
-            <div class="activity-item p-3 rounded-lg border border-gray-100">
-                <div class="flex justify-between items-start flex-wrap gap-2">
-                    <div><span class="status-badge status-draft">Draft</span><span class="text-xs text-gray-400 ml-2">Penelitian</span><h4 class="font-semibold text-sm mt-1">Optimalisasi AI untuk Pendidikan</h4><p class="text-xs text-gray-500 mt-1">Skema PDP • 2025</p></div>
-                    <div class="text-right"><p class="text-xs text-gray-400">2 hari lalu</p><a href="#" class="text-xs text-blue-600">Detail</a></div>
+        AOS.init({ duration: 800, once: true, easing: 'ease-out-cubic' });
+
+        // ==================== AUTHENTICATION ====================
+        let refreshInterval = null;
+        let statusChart = null;
+        let tahunanChart = null;
+
+        function getToken() { return localStorage.getItem('token'); }
+        
+        function getUser() {
+            const userStr = localStorage.getItem('user');
+            return userStr ? JSON.parse(userStr) : null;
+        }
+
+        function checkAuth() {
+            const token = getToken();
+            const user = getUser();
+            if (!token || !user || user.role !== 'dosen') {
+                window.location.href = '../login.html';
+                return false;
+            }
+            return true;
+        }
+
+        window.handleLogout = function() {
+            Swal.fire({
+                title: 'Konfirmasi Logout',
+                text: 'Apakah Anda yakin ingin keluar dari sistem?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Logout',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    if (refreshInterval) clearInterval(refreshInterval);
+                    localStorage.clear();
+                    window.location.href = '../login.html';
+                }
+            });
+        };
+
+        // ==================== NAVBAR FUNCTIONS ====================
+        function updateNavbarUserInfo(profile) {
+            if (!profile) return;
+            
+            const avatarUrl = profile.foto_profil ? `/${profile.foto_profil}` : `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.nama_lengkap || 'Dosen')}&background=3B82F6&color=fff&bold=true`;
+            
+            const navAvatar = document.getElementById('navAvatar');
+            const dropdownAvatar = document.getElementById('dropdownAvatar');
+            const mobileNavAvatar = document.getElementById('mobileNavAvatar');
+            
+            if (navAvatar) navAvatar.src = avatarUrl;
+            if (dropdownAvatar) dropdownAvatar.src = avatarUrl;
+            if (mobileNavAvatar) mobileNavAvatar.src = avatarUrl;
+            
+            document.getElementById('navUserName').textContent = profile.nama_lengkap || 'Dosen';
+            document.getElementById('dropdownUserName').textContent = profile.nama_lengkap || 'Dosen';
+            document.getElementById('mobileNavUserName').textContent = profile.nama_lengkap || 'Dosen';
+            document.getElementById('userNameDisplay').textContent = profile.nama_lengkap?.split(' ')[0] || 'Dosen';
+        }
+
+        function initDropdown() {
+            const userMenuBtn = document.getElementById('userMenuBtn');
+            const userDropdown = document.getElementById('userDropdown');
+            
+            if (userMenuBtn && userDropdown) {
+                userMenuBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    userDropdown.classList.toggle('hidden');
+                });
+                
+                document.addEventListener('click', function(e) {
+                    if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) {
+                        userDropdown.classList.add('hidden');
+                    }
+                });
+            }
+        }
+
+        function initMobileNav() {
+            const hamburger = document.getElementById('hamburgerBtn');
+            const mobileNav = document.getElementById('mobileNav');
+            const closeBtn = document.getElementById('closeMobileNav');
+            
+            if (hamburger && mobileNav) {
+                hamburger.addEventListener('click', () => mobileNav.classList.add('active'));
+                closeBtn.addEventListener('click', () => mobileNav.classList.remove('active'));
+                mobileNav.addEventListener('click', (e) => {
+                    if (e.target === mobileNav) mobileNav.classList.remove('active');
+                });
+            }
+        }
+
+        function setActiveNavLink() {
+            const currentPage = window.location.pathname.split('/').pop();
+            const navLinks = document.querySelectorAll('.nav-link-modern');
+            const mobileLinks = document.querySelectorAll('.mobile-nav-link');
+            
+            navLinks.forEach(link => {
+                const href = link.getAttribute('href');
+                if (href === currentPage) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+            
+            mobileLinks.forEach(link => {
+                const href = link.getAttribute('href');
+                if (href === currentPage) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+        }
+
+        // ==================== MOCK DATA & FUNCTIONS ====================
+        const mockProfile = {
+            nama_lengkap: 'Dr. Ahmad Wijaya, S.Kom., M.Kom.',
+            nidn: '0412345601',
+            nama_prodi: 'Teknik Informatika',
+            email: 'ahmad.wijaya@itb-yadika.ac.id',
+            no_hp: '081234567890',
+            foto_profil: null
+        };
+
+        const mockStats = {
+            status: {
+                penelitian: { draft: 2, submit: 1, review: 1, revisi: 1, diterima: 3, ditolak: 1 },
+                pengabdian: { draft: 1, submit: 0, review: 1, revisi: 0, diterima: 2, ditolak: 0 }
+            },
+            luaran: { publikasi: 8, buku: 2, haki: 2 }
+        };
+
+        const mockRepository = {
+            total_dokumen: 15,
+            total_downloads: 234,
+            total_views: 567,
+            total_storage: 15728640
+        };
+
+        const mockSubmissions = [
+            { id_penelitian: '1', judul: 'Pengembangan Sistem IoT untuk Monitoring Kualitas Udara', status: 'review', jenis: 'penelitian', skema_penelitian: 'Penelitian Dasar', tahun: '2025', created_at: '2026-02-28T10:30:00' },
+            { id_penelitian: '2', judul: 'Analisis Big Data untuk Prediksi Pola Belajar Mahasiswa', status: 'revisi', jenis: 'penelitian', skema_penelitian: 'Penelitian Terapan', tahun: '2025', created_at: '2026-02-20T14:15:00' },
+            { id_pengabdian: '3', judul: 'Pelatihan Digital Marketing untuk UMKM', status: 'submit', jenis: 'pengabdian', skema_pengabdian: 'Pemberdayaan Masyarakat', tahun: '2025', created_at: '2026-02-25T09:00:00' }
+        ];
+
+        const mockPublications = [
+            { judul: 'Implementasi Machine Learning untuk Klasifikasi Citra Medis', jenis: 'Jurnal Internasional', peran: 'Penulis Utama', tanggal: '2026-01-15' },
+            { judul: 'Pengembangan Aplikasi Mobile Pembelajaran Interaktif', jenis: 'Prosiding Seminar', peran: 'Penulis', tanggal: '2025-12-10' }
+        ];
+
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            const now = new Date();
+            const diff = Math.floor((now - date) / (1000 * 60 * 60 * 24));
+            
+            if (diff === 0) return 'Hari ini';
+            if (diff === 1) return 'Kemarin';
+            if (diff < 7) return `${diff} hari lalu`;
+            return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+        }
+
+        function formatFileSize(bytes) {
+            if (!bytes || bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function getStatusLabel(status) {
+            const labels = {
+                'draft': 'Draft', 'submit': 'Disubmit', 'review': 'Direview',
+                'revisi': 'Revisi', 'diterima': 'Diterima', 'ditolak': 'Ditolak'
+            };
+            return labels[status] || status;
+        }
+
+        function updateWelcomeDate() {
+            const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+            const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            const now = new Date();
+            document.getElementById('currentDate').textContent = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+        }
+
+        function updateWelcomeStats() {
+            const welcomeStats = document.getElementById('welcomeStats');
+            welcomeStats.innerHTML = `
+                <span class="bg-white bg-opacity-20 rounded-lg px-3 py-1 md:px-4 md:py-2 text-xs md:text-sm">
+                    <i class="fas fa-file-alt mr-1 md:mr-2"></i> ${Object.values(mockStats.status.penelitian).reduce((a,b)=>a+b,0) + Object.values(mockStats.status.pengabdian).reduce((a,b)=>a+b,0)} Pengajuan
+                </span>
+                <span class="bg-white bg-opacity-20 rounded-lg px-3 py-1 md:px-4 md:py-2 text-xs md:text-sm">
+                    <i class="fas fa-quote-right mr-1 md:mr-2"></i> ${mockStats.luaran.publikasi} Publikasi
+                </span>
+                <span class="bg-white bg-opacity-20 rounded-lg px-3 py-1 md:px-4 md:py-2 text-xs md:text-sm">
+                    <i class="fas fa-certificate mr-1 md:mr-2"></i> ${mockStats.luaran.haki} HKI
+                </span>
+            `;
+        }
+
+        function updateProfile() {
+            document.getElementById('profileName').textContent = mockProfile.nama_lengkap;
+            document.getElementById('profileNidn').textContent = mockProfile.nidn;
+            document.getElementById('profileProdi').textContent = mockProfile.nama_prodi;
+            document.getElementById('profileEmail').textContent = mockProfile.email;
+            document.getElementById('profilePhone').textContent = mockProfile.no_hp;
+            
+            const profileAvatar = document.getElementById('profileAvatar');
+            profileAvatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(mockProfile.nama_lengkap)}&background=ffffff&color=3B82F6&bold=true`;
+        }
+
+        function updateStats() {
+            const aktifCount = (mockStats.status.penelitian.draft + mockStats.status.penelitian.submit + 
+                               mockStats.status.penelitian.review + mockStats.status.penelitian.revisi +
+                               mockStats.status.pengabdian.draft + mockStats.status.pengabdian.submit +
+                               mockStats.status.pengabdian.review + mockStats.status.pengabdian.revisi);
+            
+            document.getElementById('statAktif').textContent = aktifCount;
+            document.getElementById('statAktifDetail').textContent = `${mockStats.status.penelitian.review + mockStats.status.pengabdian.review} dalam review`;
+            
+            document.getElementById('statPublikasi').textContent = mockStats.luaran.publikasi;
+            document.getElementById('statJurnal').textContent = mockStats.luaran.publikasi - 2;
+            document.getElementById('statBuku').textContent = mockStats.luaran.buku;
+            
+            document.getElementById('statHKI').textContent = mockStats.luaran.haki;
+            document.getElementById('statHKIDetail').textContent = `${mockStats.luaran.haki} HKI terdaftar`;
+            
+            document.getElementById('statRepository').textContent = mockRepository.total_dokumen;
+            document.getElementById('statDownloads').textContent = mockRepository.total_downloads;
+            document.getElementById('statViews').textContent = mockRepository.total_views;
+            
+            const pengajuanProgress = (mockStats.status.penelitian.diterima + mockStats.status.pengabdian.diterima) / 
+                (Object.values(mockStats.status.penelitian).reduce((a,b)=>a+b,0) + Object.values(mockStats.status.pengabdian).reduce((a,b)=>a+b,0)) * 100;
+            document.getElementById('pengajuanProgress').style.width = pengajuanProgress + '%';
+        }
+
+        function renderRecentSubmissions() {
+            const container = document.getElementById('recentSubmissions');
+            container.innerHTML = mockSubmissions.map(item => `
+                <div class="p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-1 flex-wrap">
+                                <span class="status-badge status-${item.status}">${getStatusLabel(item.status)}</span>
+                                <span class="text-xs text-gray-400">${item.jenis === 'penelitian' ? 'Penelitian' : 'Pengabdian'}</span>
+                            </div>
+                            <h4 class="font-semibold text-sm text-gray-800">${item.judul}</h4>
+                            <p class="text-xs text-gray-500 mt-1">${item.skema_penelitian || item.skema_pengabdian || '-'} • ${item.tahun || '-'}</p>
+                        </div>
+                        <div class="text-left sm:text-right">
+                            <p class="text-xs text-gray-400">${formatDate(item.created_at)}</p>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="activity-item p-3 rounded-lg border border-gray-100">
-                <div class="flex justify-between items-start flex-wrap gap-2">
-                    <div><span class="status-badge status-submit">Submit</span><span class="text-xs text-gray-400 ml-2">Pengabdian</span><h4 class="font-semibold text-sm mt-1">Pelatihan Digital Marketing UMKM</h4><p class="text-xs text-gray-500 mt-1">Skema PkM • 2025</p></div>
-                    <div class="text-right"><p class="text-xs text-gray-400">5 hari lalu</p><a href="#" class="text-xs text-blue-600">Detail</a></div>
+            `).join('');
+        }
+
+        function renderTimeline() {
+            const timelineData = [
+                { title: 'Pengajuan Penelitian: Pengembangan Sistem IoT', status: 'review', date: '2026-02-28', type: 'penelitian' },
+                { title: 'Submit Pengabdian: Pelatihan UMKM', status: 'submit', date: '2026-02-25', type: 'pengabdian' },
+                { title: 'Revisi Penelitian: Analisis Big Data', status: 'revisi', date: '2026-02-20', type: 'penelitian' },
+                { title: 'Publikasi Diterima: Jurnal Internasional', status: 'diterima', date: '2026-02-15', type: 'publication' }
+            ];
+            
+            const container = document.getElementById('timelineActivities');
+            container.innerHTML = timelineData.map((item, index) => `
+                <div class="timeline-item">
+                    <div class="timeline-dot" style="background: ${getTimelineColor(item.status)}"></div>
+                    <div class="flex items-start space-x-2 md:space-x-3">
+                        <div class="${getTimelineBgColor(item.status)} p-1.5 md:p-2 rounded-full flex-shrink-0">
+                            <i class="fas ${getTimelineIcon(item.type)} ${getTimelineIconColor(item.status)} text-xs md:text-sm"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-xs md:text-sm text-gray-800">${item.title}</p>
+                            <span class="status-badge status-${item.status} mt-1 inline-block text-[10px]">${getStatusLabel(item.status)}</span>
+                            <p class="text-[10px] md:text-xs text-gray-500 mt-1">${formatDate(item.date)}</p>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        `;
-    }
-    
-    function loadTimeline() {
-        const timeline = document.getElementById('timelineActivities');
-        timeline.innerHTML = `
-            <div class="flex items-start gap-3"><div class="w-7 h-7 rounded-full bg-blue-500 flex items-center justify-center"><i class="fas fa-flask text-white text-xs"></i></div><div><p class="font-semibold text-sm">Pengajuan Penelitian: AI untuk Edukasi</p><span class="status-badge status-submit mt-1 inline-block">Submit</span><p class="text-xs text-gray-400 mt-1">12 Mei 2026</p></div></div>
-            <div class="flex items-start gap-3"><div class="w-7 h-7 rounded-full bg-green-500 flex items-center justify-center"><i class="fas fa-hands-helping text-white text-xs"></i></div><div><p class="font-semibold text-sm">Pengabdian: Workshop Digital</p><span class="status-badge status-draft mt-1 inline-block">Draft</span><p class="text-xs text-gray-400 mt-1">8 Mei 2026</p></div></div>
-            <div class="flex items-start gap-3"><div class="w-7 h-7 rounded-full bg-purple-500 flex items-center justify-center"><i class="fas fa-archive text-white text-xs"></i></div><div><p class="font-semibold text-sm">Upload Repository - Modul Ajar</p><span class="status-badge status-publish mt-1 inline-block">Published</span><p class="text-xs text-gray-400 mt-1">1 Mei 2026</p></div></div>
-        `;
-    }
-    
-    function loadRecentPublications() {
-        const container = document.getElementById('recentPublications');
-        container.innerHTML = `<div class="p-2 bg-gray-50 rounded-lg"><p class="font-medium text-sm">Belum ada publikasi terbaru</p><p class="text-xs text-gray-400">Silakan tambah luaran penelitian</p></div>`;
-    }
-    
-    function loadCharts() {
-        const ctx = document.getElementById('statusChart');
-        if(statusChart) statusChart.destroy();
-        statusChart = new Chart(ctx.getContext('2d'), {
-            type: 'doughnut',
-            data: { labels: ['Draft', 'Submit', 'Review', 'Revisi', 'Diterima', 'Ditolak'], datasets: [{ data: [1, 1, 0, 0, 0, 0], backgroundColor: ['#F59E0B', '#3B82F6', '#8B5CF6', '#EF4444', '#10B981', '#6B7280'], borderWidth: 0 }] },
-            options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } } }
+            `).join('');
+        }
+
+        function getTimelineColor(status) {
+            const colors = { diterima: '#10B981', draft: '#3B82F6', submit: '#3B82F6', review: '#8B5CF6', revisi: '#F59E0B', ditolak: '#EF4444' };
+            return colors[status] || '#6B7280';
+        }
+
+        function getTimelineBgColor(status) {
+            const colors = { diterima: 'bg-green-100', draft: 'bg-blue-100', submit: 'bg-blue-100', review: 'bg-purple-100', revisi: 'bg-yellow-100', ditolak: 'bg-red-100' };
+            return colors[status] || 'bg-gray-100';
+        }
+
+        function getTimelineIconColor(status) {
+            const colors = { diterima: 'text-green-600', draft: 'text-blue-600', submit: 'text-blue-600', review: 'text-purple-600', revisi: 'text-yellow-600', ditolak: 'text-red-600' };
+            return colors[status] || 'text-gray-600';
+        }
+
+        function getTimelineIcon(type) {
+            return type === 'penelitian' ? 'fa-flask' : type === 'pengabdian' ? 'fa-hands-helping' : 'fa-file-alt';
+        }
+
+        function renderPublications() {
+            const container = document.getElementById('recentPublications');
+            container.innerHTML = mockPublications.map(pub => `
+                <div class="p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+                    <h4 class="font-semibold text-sm text-gray-800">${pub.judul}</h4>
+                    <p class="text-xs text-gray-500 mt-1">${pub.jenis} • ${pub.peran}</p>
+                    <p class="text-xs text-gray-400 mt-1">${formatDate(pub.tanggal)}</p>
+                </div>
+            `).join('');
+        }
+
+        function initCharts() {
+            const statusData = {
+                draft: mockStats.status.penelitian.draft + mockStats.status.pengabdian.draft,
+                submit: mockStats.status.penelitian.submit + mockStats.status.pengabdian.submit,
+                review: mockStats.status.penelitian.review + mockStats.status.pengabdian.review,
+                revisi: mockStats.status.penelitian.revisi + mockStats.status.pengabdian.revisi,
+                diterima: mockStats.status.penelitian.diterima + mockStats.status.pengabdian.diterima,
+                ditolak: mockStats.status.penelitian.ditolak + mockStats.status.pengabdian.ditolak
+            };
+            
+            const ctx = document.getElementById('statusChart').getContext('2d');
+            statusChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Draft', 'Submit', 'Review', 'Revisi', 'Diterima', 'Ditolak'],
+                    datasets: [{
+                        data: [statusData.draft, statusData.submit, statusData.review, statusData.revisi, statusData.diterima, statusData.ditolak],
+                        backgroundColor: ['#F59E0B', '#3B82F6', '#8B5CF6', '#EF4444', '#10B981', '#6B7280'],
+                        borderWidth: 0
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } } }
+            });
+
+            const ctx2 = document.getElementById('tahunanChart').getContext('2d');
+            tahunanChart = new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: ['2022', '2023', '2024', '2025'],
+                    datasets: [
+                        { label: 'Penelitian', data: [2, 3, 4, 3], backgroundColor: '#3B82F6', borderRadius: 8 },
+                        { label: 'Pengabdian', data: [1, 2, 3, 2], backgroundColor: '#10B981', borderRadius: 8 },
+                        { label: 'Publikasi', data: [1, 2, 3, 2], backgroundColor: '#8B5CF6', borderRadius: 8 }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'top', labels: { boxWidth: 10, font: { size: 10 } } } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+            });
+        }
+
+        window.refreshSubmissions = function() {
+            renderRecentSubmissions();
+            showNotification('Pengajuan diperbarui', 'success');
+        };
+
+        function quickAction(action) {
+            const actionMessages = {
+                'penelitian': 'Membuka halaman ajuan penelitian',
+                'pengabdian': 'Membuka halaman ajuan pengabdian',
+                'repository': 'Membuka halaman upload dokumen',
+                'publikasi': 'Membuka halaman tambah publikasi',
+                'profile': 'Membuka halaman edit profil'
+            };
+            
+            showNotification(actionMessages[action], 'info');
+            
+            setTimeout(() => {
+                const pages = {
+                    'penelitian': 'dosen-penelitian-pengabdian.html?tab=penelitian',
+                    'pengabdian': 'dosen-penelitian-pengabdian.html?tab=pengabdian',
+                    'repository': 'dosen-repository.html',
+                    'publikasi': 'dosen-publikasi.html',
+                    'profile': 'dosen-profil.html'
+                };
+                window.location.href = pages[action];
+            }, 500);
+        }
+
+        function showNotification(message, type = 'success') {
+            Swal.fire({
+                icon: type,
+                title: type === 'success' ? 'Berhasil' : type === 'error' ? 'Gagal' : 'Informasi',
+                text: message,
+                timer: 2000,
+                showConfirmButton: false,
+                toast: true,
+                position: 'top-end'
+            });
+        }
+
+        function showLoading() { document.getElementById('loadingOverlay').classList.remove('hidden'); }
+        function hideLoading() { document.getElementById('loadingOverlay').classList.add('hidden'); }
+
+        function refreshAllData() {
+            showLoading();
+            setTimeout(() => {
+                updateNavbarUserInfo(mockProfile);
+                updateProfile();
+                updateStats();
+                updateWelcomeStats();
+                renderRecentSubmissions();
+                renderTimeline();
+                renderPublications();
+                if (statusChart) statusChart.destroy();
+                if (tahunanChart) tahunanChart.destroy();
+                initCharts();
+                updateWelcomeDate();
+                hideLoading();
+            }, 500);
+        }
+
+        // ==================== DOM CONTENT LOADED ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!checkAuth()) return;
+            
+            initDropdown();
+            initMobileNav();
+            setActiveNavLink();
+            
+            refreshAllData();
+            
+            refreshInterval = setInterval(() => {
+                if (!document.hidden) {
+                    refreshAllData();
+                }
+            }, 30000);
         });
-        const ctx2 = document.getElementById('tahunanChart');
-        if(tahunanChart) tahunanChart.destroy();
-        tahunanChart = new Chart(ctx2.getContext('2d'), {
-            type: 'bar',
-            data: { labels: ['2023', '2024', '2025', '2026'], datasets: [{ label: 'Penelitian', data: [1, 2, 1, 2], backgroundColor: '#3B82F6', borderRadius: 6 }, { label: 'Pengabdian', data: [0, 1, 1, 1], backgroundColor: '#10B981', borderRadius: 6 }] },
-            options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'top', labels: { boxWidth: 10, font: { size: 10 } } } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
-        });
-    }
-    
-    function refreshAll() {
-        showLoading(true);
-        setTimeout(() => {
-            loadProfile(); loadStatistics(); loadRecentSubmissions(); loadTimeline(); loadRecentPublications(); loadCharts(); updateLastUpdateTime();
-            showLoading(false);
-        }, 400);
-    }
-    
-    // UI Interactions
-    function initDropdown() {
-        const btn = document.getElementById('userMenuBtn');
-        const drop = document.getElementById('userDropdown');
-        btn.addEventListener('click', (e) => { e.stopPropagation(); drop.classList.toggle('hidden'); });
-        document.addEventListener('click', (e) => { if(!btn.contains(e.target) && !drop.contains(e.target)) drop.classList.add('hidden'); });
-    }
-    function initMobileNav() {
-        const hamburger = document.getElementById('hamburgerBtn');
-        const mobileNav = document.getElementById('mobileNav');
-        const closeBtn = document.getElementById('closeMobileNav');
-        hamburger.addEventListener('click', () => mobileNav.classList.add('active'));
-        closeBtn.addEventListener('click', () => mobileNav.classList.remove('active'));
-        mobileNav.addEventListener('click', (e) => { if(e.target === mobileNav) mobileNav.classList.remove('active'); });
-    }
-    
-    document.addEventListener('DOMContentLoaded', () => {
-        initDropdown(); initMobileNav(); refreshAll();
-        setInterval(() => { if(!document.hidden) refreshAll(); }, 45000);
-    });
     </script>
 </body>
 </html>
