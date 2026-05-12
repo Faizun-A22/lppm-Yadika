@@ -499,7 +499,7 @@
         </div>
     </div>
 
-   <script>
+    <script>
         
         const API_CONFIG = {
             BASE_URL: ''
@@ -526,7 +526,6 @@
             clearMessages();
             resetForms();
             loadFakultas();
-            setInitialRequiredState();
         }
 
         function switchToLogin() {
@@ -541,51 +540,51 @@
             document.getElementById('registerMessage').innerHTML = '';
         }
 
-        function setInitialRequiredState() {
-            const isAdminChecked = document.getElementById('registerRoleAdmin')?.checked;
-            const isMahasiswaChecked = document.getElementById('registerRoleMahasiswa')?.checked;
-            const isDosenChecked = document.getElementById('registerRoleDosen')?.checked;
-            const nimField = document.getElementById('registerNim');
-            const nidnField = document.getElementById('registerNidn');
-            
-            if (nimField) {
-                nimField.required = isMahasiswaChecked === true;
-                if (!isMahasiswaChecked) {
-                    nimField.value = '';
-                }
-            }
-            
-            if (nidnField) {
-                nidnField.required = isDosenChecked === true;
-                if (!isDosenChecked) {
-                    nidnField.value = '';
-                }
-            }
-        }
-
         function resetForms() {
             document.getElementById('loginForm').reset();
             document.getElementById('registerForm').reset();
             
             // Reset role indicators login
-            document.getElementById('adminIndicator').style.display = 'none';
-            document.getElementById('dosenIndicator').style.display = 'none';
-            document.getElementById('mahasiswaIndicator').style.display = 'block';
+            const adminIndicator = document.getElementById('adminIndicator');
+            const dosenIndicator = document.getElementById('dosenIndicator');
+            const mahasiswaIndicator = document.getElementById('mahasiswaIndicator');
             
-            // Reset role indicators register
-            document.getElementById('registerMahasiswaIndicator').style.display = 'block';
-            document.getElementById('registerDosenIndicator').style.display = 'none';
-            document.getElementById('registerAdminIndicator').style.display = 'none';
+            if (adminIndicator) adminIndicator.style.display = 'none';
+            if (dosenIndicator) dosenIndicator.style.display = 'none';
+            if (mahasiswaIndicator) mahasiswaIndicator.style.display = 'block';
             
-            // Tampilkan/hide fields berdasarkan role default (mahasiswa)
-            document.getElementById('mahasiswaFields').style.display = 'block';
-            document.getElementById('dosenFields').style.display = 'none';
-            document.getElementById('adminFields').style.display = 'none';
-            document.getElementById('academicFields').style.display = 'block';
+            // Reset role indicators register - default ke mahasiswa
+            const registerMahasiswaIndicator = document.getElementById('registerMahasiswaIndicator');
+            const registerDosenIndicator = document.getElementById('registerDosenIndicator');
+            const registerAdminIndicator = document.getElementById('registerAdminIndicator');
             
-            // Set required attributes default
-            document.getElementById('registerNim').required = true;
-            document.getElementById('registerNidn').required = false;
+            if (registerMahasiswaIndicator) registerMahasiswaIndicator.style.display = 'block';
+            if (registerDosenIndicator) registerDosenIndicator.style.display = 'none';
+            if (registerAdminIndicator) registerAdminIndicator.style.display = 'none';
+            
+            // Tampilkan/hide fields - default mahasiswa
+            const mahasiswaFields = document.getElementById('mahasiswaFields');
+            const dosenFields = document.getElementById('dosenFields');
+            const adminFields = document.getElementById('adminFields');
+            const academicFields = document.getElementById('academicFields');
+            
+            if (mahasiswaFields) mahasiswaFields.style.display = 'block';
+            if (dosenFields) dosenFields.style.display = 'none';
+            if (adminFields) adminFields.style.display = 'none';
+            if (academicFields) academicFields.style.display = 'block';
+            
+            // Set required attributes default untuk mahasiswa
+            const registerNim = document.getElementById('registerNim');
+            const registerNidn = document.getElementById('registerNidn');
+            
+            if (registerNim) {
+                registerNim.required = true;
+                registerNim.value = '';
+            }
+            if (registerNidn) {
+                registerNidn.required = false;
+                registerNidn.value = '';
+            }
             
             // Reset dropdown prodi untuk mahasiswa/dosen
             const prodiSelect = document.getElementById('registerProdi');
@@ -611,6 +610,12 @@
             if (adminProdi) {
                 adminProdi.innerHTML = '<option value="">Pilih Fakultas Terlebih Dahulu</option>';
                 adminProdi.disabled = true;
+            }
+            
+            // Pastikan radio button mahasiswa terpilih
+            const registerRoleMahasiswa = document.getElementById('registerRoleMahasiswa');
+            if (registerRoleMahasiswa) {
+                registerRoleMahasiswa.checked = true;
             }
         }
 
@@ -890,14 +895,25 @@
                     if (adminFields) adminFields.style.display = isAdmin ? 'block' : 'none';
                     if (academicFields) academicFields.style.display = (isMahasiswa || isDosen) ? 'block' : 'none';
                     
-                    // Update required attributes berdasarkan role yang dipilih
+                    // Kunci: required NIM hanya jika role MAHASISWA
                     if (registerNim) {
                         registerNim.required = isMahasiswa;
-                        if (!isMahasiswa) registerNim.value = '';
+                        if (!isMahasiswa) {
+                            registerNim.value = '';
+                            registerNim.removeAttribute('required');
+                        } else {
+                            registerNim.setAttribute('required', 'required');
+                        }
                     }
+                    
                     if (registerNidn) {
                         registerNidn.required = isDosen;
-                        if (!isDosen) registerNidn.value = '';
+                        if (!isDosen) {
+                            registerNidn.value = '';
+                            registerNidn.removeAttribute('required');
+                        } else {
+                            registerNidn.setAttribute('required', 'required');
+                        }
                     }
                     
                     if (registerFakultas) registerFakultas.required = !isAdmin;
@@ -929,13 +945,7 @@
             registerForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
                 
-                const name = document.getElementById('registerName').value.trim();
-                const email = document.getElementById('registerEmail').value.trim();
-                const fakultas = document.getElementById('registerFakultas').value;
-                const prodi = document.getElementById('registerProdi').value;
-                const noHp = document.getElementById('registerNoHp').value.trim();
-                const password = document.getElementById('registerPassword').value;
-                const confirmPassword = document.getElementById('registerConfirmPassword').value;
+                // Ambil role yang dipilih
                 const roleRadio = document.querySelector('input[name="registerUserRole"]:checked');
                 const role = roleRadio ? roleRadio.value : 'mahasiswa';
                 
@@ -943,7 +953,14 @@
                 const isDosen = role === 'dosen';
                 const isAdmin = role === 'admin';
                 
-                // Validasi dasar
+                // Ambil nilai field berdasarkan role
+                const name = document.getElementById('registerName').value.trim();
+                const email = document.getElementById('registerEmail').value.trim();
+                const noHp = document.getElementById('registerNoHp').value.trim();
+                const password = document.getElementById('registerPassword').value;
+                const confirmPassword = document.getElementById('registerConfirmPassword').value;
+                
+                // Validasi dasar (semua role wajib)
                 if (!name || !email || !noHp || !password || !confirmPassword) {
                     showMessage('registerMessage', 'Semua field harus diisi!');
                     return;
@@ -971,9 +988,12 @@
                     return;
                 }
                 
-                // Validasi spesifik per role
+                // Validasi spesifik MAHASISWA
                 if (isMahasiswa) {
                     const nim = document.getElementById('registerNim').value.trim();
+                    const fakultas = document.getElementById('registerFakultas').value;
+                    const prodi = document.getElementById('registerProdi').value;
+                    
                     if (!nim) {
                         showMessage('registerMessage', 'NIM harus diisi untuk mahasiswa!');
                         return;
@@ -992,8 +1012,12 @@
                     }
                 }
                 
+                // Validasi spesifik DOSEN
                 if (isDosen) {
                     const nidn = document.getElementById('registerNidn').value.trim();
+                    const fakultas = document.getElementById('registerFakultas').value;
+                    const prodi = document.getElementById('registerProdi').value;
+                    
                     if (!nidn) {
                         showMessage('registerMessage', 'NIDN harus diisi untuk dosen!');
                         return;
@@ -1012,6 +1036,7 @@
                     }
                 }
                 
+                // Validasi spesifik ADMIN
                 if (isAdmin) {
                     const adminProdiValue = document.getElementById('adminProdi').value;
                     if (!adminProdiValue) {
@@ -1031,16 +1056,15 @@
                 if (isMahasiswa) {
                     registerData.isDosen = false;
                     registerData.nim = document.getElementById('registerNim').value.trim();
-                    registerData.id_prodi = prodi;
+                    registerData.id_prodi = document.getElementById('registerProdi').value;
                 } else if (isDosen) {
                     registerData.isDosen = true;
                     registerData.nidn = document.getElementById('registerNidn').value.trim();
-                    registerData.id_prodi = prodi;
+                    registerData.id_prodi = document.getElementById('registerProdi').value;
                 } else if (isAdmin) {
                     registerData.isAdmin = true;
                     registerData.isDosen = false;
-                    const adminProdiValue = document.getElementById('adminProdi').value;
-                    registerData.id_prodi = adminProdiValue;
+                    registerData.id_prodi = document.getElementById('adminProdi').value;
                 }
                 
                 console.log('Register data:', registerData);
@@ -1061,38 +1085,6 @@
                     
                     if (response.status === 201 && data.success) {
                         showMessage('registerMessage', data.message, true);
-                        
-                        registerForm.reset();
-                        const defaultRole = document.getElementById('registerRoleMahasiswa');
-                        if (defaultRole) defaultRole.checked = true;
-                        
-                        const mahasiswaFields = document.getElementById('mahasiswaFields');
-                        const dosenFields = document.getElementById('dosenFields');
-                        const adminFields = document.getElementById('adminFields');
-                        const academicFields = document.getElementById('academicFields');
-                        const registerMahasiswaIndicator = document.getElementById('registerMahasiswaIndicator');
-                        const registerDosenIndicator = document.getElementById('registerDosenIndicator');
-                        const registerAdminIndicator = document.getElementById('registerAdminIndicator');
-                        const registerProdi = document.getElementById('registerProdi');
-                        
-                        if (mahasiswaFields) mahasiswaFields.style.display = 'block';
-                        if (dosenFields) dosenFields.style.display = 'none';
-                        if (adminFields) adminFields.style.display = 'none';
-                        if (academicFields) academicFields.style.display = 'block';
-                        if (registerMahasiswaIndicator) registerMahasiswaIndicator.style.display = 'block';
-                        if (registerDosenIndicator) registerDosenIndicator.style.display = 'none';
-                        if (registerAdminIndicator) registerAdminIndicator.style.display = 'none';
-                        
-                        if (registerProdi) {
-                            registerProdi.innerHTML = '<option value="">Pilih Fakultas Terlebih Dahulu</option>';
-                            registerProdi.disabled = true;
-                        }
-                        
-                        // Reset required attributes kembali ke default mahasiswa
-                        const registerNim = document.getElementById('registerNim');
-                        const registerNidn = document.getElementById('registerNidn');
-                        if (registerNim) registerNim.required = true;
-                        if (registerNidn) registerNidn.required = false;
                         
                         setTimeout(() => {
                             switchToLogin();
