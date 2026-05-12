@@ -870,14 +870,12 @@
                 registerData.nidn = document.getElementById('registerNidn').value.trim();
                 registerData.id_prodi = prodi;
             } else if (isAdmin) {
-                // Untuk admin, kita kirim flag isAdmin ke backend
-                // Catatan: Di backend authService, register saat ini hanya menerima isDosen
-                // Kita perlu menambahkan flag isAdmin di service nanti
-                // Untuk sementara, admin akan didaftarkan dengan role = 'admin'
-                registerData.isAdmin = true;
-                registerData.isDosen = false;
-                // Admin tidak perlu nim/nidn/prodi
-            }
+    // Perbaikan: Kirim isAdmin flag dan id_prodi dummy/null
+    registerData.isAdmin = true;
+    registerData.isDosen = false;
+    registerData.id_prodi = null;  // Kirim null untuk admin
+    // Admin tidak perlu nim/nidn
+}
             
             console.log('Register data:', registerData);
             
