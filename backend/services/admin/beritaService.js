@@ -152,74 +152,75 @@ async getBeritaById(id) {
         return data;
     }
 
-    // Update berita
-    async updateBerita(id, beritaData, file, adminId) {
-        const { judul, kategori, konten, status } = beritaData;
+    // Update method updateBerita
+async updateBerita(id, beritaData, file, adminId) {
+    const { judul, kategori, konten, status } = beritaData;
 
-        // Check if berita exists
-        const { data: existingBerita, error: checkError } = await supabase
-            .from('berita')
-            .select('*')
-            .eq('id_berita', id)
-            .single();
-
-        if (checkError || !existingBerita) {
-            if (file) {
-                this.deleteFile(file.path);
-            }
-            throw new Error('Berita tidak ditemukan');
-        }
-
-        // Handle thumbnail
-        let gambar_thumbnail = existingBerita.gambar_thumbnail;
-        if (file) {
-            // Delete old thumbnail
-            if (existingBerita.gambar_thumbnail) {
-                this.deleteFile(path.join('uploads/berita', existingBerita.gambar_thumbnail));
-            }
-            gambar_thumbnail = file.filename;
-        }
-
-        // Set publish date if status changes to publish
-        let tanggal_publish = existingBerita.tanggal_publish;
-        if (status === 'publish' && existingBerita.status !== 'publish') {
-            tanggal_publish = new Date().toISOString();
-        }
-
-        // Update database
-        const { data, error } = await supabase
-            .from('berita')
-            .update({
-                judul,
-                isi_berita: konten,
-                kategori,
-                gambar_thumbnail,
-                status,
-                tanggal_publish,
-                updated_at: new Date().toISOString()
-            })
-            .eq('id_berita', id)
-            .select()
-            .single();
-
-        if (error) {
-            if (file) {
-                this.deleteFile(file.path);
-            }
-            throw error;
-        }
-
-        // Log activity
-        await supabase
-            .from('log_aktivitas')
-            .insert([{
-                id_user: adminId,
-                aktivitas: `Mengupdate berita: ${data.judul}`,
-                waktu: new Date().toISOString()
-            }]);
-
-        return data;
+    // VALIDASI: Pastikan data tidak undefined
+    if (!judul || !kategori || !konten) {
+        if (file) this.deleteFile(file.path);
+        throw new Error('Judul, kategori, dan konten wajib diisi');
     }
+
+    // Check if berita exists
+    const { data: existingBerita, error: checkError } = await supabase
+        .from('berita')
+        .select('*')
+        .eq('id_berita', id)
+        .single();
+
+    if (checkError || !existingBerita) {
+        if (file) this.deleteFile(file.path);
+        throw new Error('Berita tidak ditemukan');
+    }
+
+    // Handle thumbnail
+    let gambar_thumbnail = existingBerita.gambar_thumbnail;
+    if (file) {
+        if (existingBerita.gambar_thumbnail) {
+            this.deleteFile(path.join('uploads/berita', existingBerita.gambar_thumbnail));
+        }
+        gambar_thumbnail = file.filename;
+    }
+
+    // Set publish date if status changes to publish
+    let tanggal_publish = existingBerita.tanggal_publish;
+    if (status === 'publish' && existingBerita.status !== 'publish') {
+        tanggal_publish = new Date().toISOString();
+    }
+
+    // Update database
+    const { data, error } = await supabase
+        .from('berita')
+        .update({
+            judul: judul,
+            isi_berita: konten,
+            kategori: kategori,
+            gambar_thumbnail: gambar_thumbnail,
+            status: status || existingBerita.status,
+            tanggal_publish: tanggal_publish,
+            updated_at: new Date().toISOString()
+        })
+        .eq('id_berita', id)
+        .select()
+        .single();
+
+    if (error) {
+        if (file) this.deleteFile(file.path);
+        throw error;
+    }
+
+    // Log activity
+    await supabase
+        .from('log_aktivitas')
+        .insert([{
+            id_user: adminId,
+            aktivitas: `Mengupdate berita: ${data.judul}`,
+            waktu: new Date().toISOString()
+        }]);
+
+    return data;
+}
 
     // Delete berita
     async deleteBerita(id, adminId) {

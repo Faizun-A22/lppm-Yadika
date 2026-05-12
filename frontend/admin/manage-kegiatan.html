@@ -919,30 +919,33 @@
             window.location.href = '../login.html';
         }
 
-        // ==================== NAVBAR FUNCTIONS ====================
         function updateNavbarUserInfo() {
-            const user = JSON.parse(localStorage.getItem('user') || '{}');
-            const adminName = user.nama_lengkap || 'Admin LPPM';
-            
-            const navUserName = document.getElementById('navUserName');
-            const dropdownUserName = document.getElementById('dropdownUserName');
-            const dropdownUserRole = document.getElementById('dropdownUserRole');
-            const mobileNavUserName = document.getElementById('mobileNavUserName');
-            
-            if (navUserName) navUserName.textContent = adminName;
-            if (dropdownUserName) dropdownUserName.textContent = adminName;
-            if (dropdownUserRole) dropdownUserRole.textContent = 'Administrator';
-            if (mobileNavUserName) mobileNavUserName.textContent = adminName;
-            
-            const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(adminName)}&background=3B82F6&color=fff&bold=true`;
-            const navAvatar = document.getElementById('navAvatar');
-            const dropdownAvatar = document.getElementById('dropdownAvatar');
-            const mobileNavAvatar = document.getElementById('mobileNavAvatar');
-            
-            if (navAvatar) navAvatar.src = avatarUrl;
-            if (dropdownAvatar) dropdownAvatar.src = avatarUrl;
-            if (mobileNavAvatar) mobileNavAvatar.src = avatarUrl;
-        }
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const adminName = user.nama_lengkap || 'Admin LPPM';
+    
+    // Safe update function
+    const safeSetText = (elementId, text) => {
+        const el = document.getElementById(elementId);
+        if (el) el.textContent = text;
+    };
+    
+    const safeSetSrc = (elementId, src) => {
+        const el = document.getElementById(elementId);
+        if (el) el.src = src;
+    };
+    
+    safeSetText('navUserName', adminName);
+    safeSetText('dropdownUserName', adminName);
+    safeSetText('dropdownUserRole', 'Administrator');
+    safeSetText('mobileNavUserName', adminName);
+    
+    const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(adminName)}&background=3B82F6&color=fff&bold=true`;
+    
+    safeSetSrc('navAvatar', avatarUrl);
+    safeSetSrc('dropdownAvatar', avatarUrl);
+    safeSetSrc('mobileNavAvatar', avatarUrl);
+}
+
 
         function initDropdown() {
             const userMenuBtn = document.getElementById('userMenuBtn');
@@ -1165,20 +1168,31 @@
             return classes[kategori] || 'bg-gray-100 text-gray-800';
         }
 
-        // ==================== API CALLS ====================
         async function apiCall(url, method = 'GET', data = null, isFormData = false) {
-            const headers = { 'Authorization': `Bearer ${token}` };
-            if (!isFormData) headers['Content-Type'] = 'application/json';
+    const headers = { 'Authorization': `Bearer ${token}` };
+    if (!isFormData) headers['Content-Type'] = 'application/json';
 
-            const options = { method, headers };
-            if (data) options.body = isFormData ? data : JSON.stringify(data);
+    const options = { method, headers };
+    if (data) options.body = isFormData ? data : JSON.stringify(data);
 
-            const response = await fetch(url, options);
-            const result = await response.json();
-
-            if (!response.ok) throw new Error(result.message || 'Terjadi kesalahan');
-            return result;
+    try {
+        const response = await fetch(url, options);
+        const result = await response.json();
+        
+        if (!response.ok) {
+            console.error('API Error Details:', {
+                url, method, status: response.status, result
+            });
+            throw new Error(result.message || `HTTP ${response.status}: Gagal mengambil data`);
         }
+        
+        return result;
+    } catch (error) {
+        console.error('API Call Failed:', error);
+        throw error;
+    }
+}
+
 
         // ==================== TAB FUNCTIONALITY ====================
         const tabButtons = document.querySelectorAll('.tab-button');

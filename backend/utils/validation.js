@@ -264,6 +264,5 @@ module.exports = {
     pendaftaranMagangValidation,
     perusahaanMagangValidation,
     luaranMagangValidation,
-    handleValidationErrors,
-    validateAdmin 
+    handleValidationErrors
 };
