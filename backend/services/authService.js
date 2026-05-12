@@ -19,63 +19,175 @@ class AuthService {
    * @param {Object} userData - Data user yang akan didaftarkan
    * @returns {Object} - Hasil registrasi
    */
-  async register(userData) {
-    // Destructure dengan menangani baik nim maupun nidn
-    const { 
-      name, 
-      email, 
-      password, 
-      isDosen, 
-      nim,        // Untuk mahasiswa
-      nidn,       // Untuk dosen (opsional, bisa dari frontend)
-      id_prodi,
-      no_hp 
-    } = userData;
-    
-    console.log('=== REGISTER ATTEMPT ===');
-    console.log('Input data:', { 
-      name, 
-      email, 
-      isDosen, 
-      nim, 
-      nidn,
-      id_prodi, 
-      no_hp 
-    });
 
-    // ==================== VALIDASI INPUT DASAR ====================
-    this._validateBasicInput(name, email, password, no_hp, id_prodi);
+  // services/authService.js
 
-    // ==================== VALIDASI NIM/NIDN ====================
-    const identifier = this._validateAndGetIdentifier(isDosen, nim, nidn);
+async register(userData) {
+  // Destructure dengan menambahkan isAdmin
+  const { 
+    name, 
+    email, 
+    password, 
+    isDosen, 
+    isAdmin,    // <<< TAMBAHKAN INI
+    nim,        
+    nidn,       
+    id_prodi,
+    no_hp 
+  } = userData;
+  
+  console.log('=== REGISTER ATTEMPT ===');
+  console.log('Input data:', { 
+    name, 
+    email, 
+    isDosen,
+    isAdmin,    // <<< TAMBAHKAN INI
+    nim, 
+    nidn,
+    id_prodi, 
+    no_hp 
+  });
 
-    // ==================== CEK DUPLIKAT ====================
+  // ==================== VALIDASI INPUT DASAR ====================
+  this._validateBasicInput(name, email, password, no_hp, id_prodi, isAdmin);
+
+  // ==================== VALIDASI NIM/NIDN (HANYA UNTUK NON-ADMIN) ====================
+  let identifier = null;
+  if (!isAdmin) {
+    identifier = this._validateAndGetIdentifier(isDosen, nim, nidn);
+    // Cek duplikat untuk mahasiswa/dosen (email dan NIM/NIDN)
     await this._checkDuplicates(email, isDosen, identifier);
-
-    // ==================== CEK VALIDITAS PRODI ====================
-    const prodi = await this._validateProdi(id_prodi);
-
-    // ==================== HASH PASSWORD ====================
-    const hashedPassword = await this._hashPassword(password);
-
-    // ==================== SIAPKAN DATA USER ====================
-    const newUser = this._prepareUserData({
-      name,
-      email,
-      hashedPassword,
-      isDosen,
-      identifier,
-      id_prodi,
-      no_hp,
-      prodi
-    });
-
-    // ==================== INSERT KE DATABASE ====================
-    const registeredUser = await this._insertUser(newUser);
-
-    // ==================== KEMBALIKAN RESPON ====================
-    return this._formatRegisterResponse(registeredUser);
+    // Validasi prodi untuk mahasiswa/dosen
+    await this._validateProdi(id_prodi);
+  } else {
+    // Untuk admin, hanya cek duplikat email saja
+    await this._checkAdminEmailDuplicate(email);
   }
+
+  // ==================== HASH PASSWORD ====================
+  const hashedPassword = await this._hashPassword(password);
+
+  // ==================== SIAPKAN DATA USER ====================
+  const newUser = this._prepareUserData({
+    name,
+    email,
+    hashedPassword,
+    isDosen,
+    isAdmin,    // <<< TAMBAHKAN INI
+    identifier,
+    id_prodi,
+    no_hp
+  });
+
+  // ==================== INSERT KE DATABASE ====================
+  const registeredUser = await this._insertUser(newUser);
+
+  // ==================== KEMBALIKAN RESPON ====================
+  return this._formatRegisterResponse(registeredUser);
+}
+
+// ==================== TAMBAHKAN METHOD BARU INI ====================
+
+/**
+ * Cek duplikat email untuk admin (tanpa NIM/NIDN)
+ * @private
+ */
+async _checkAdminEmailDuplicate(email) {
+  const { data: existingUser } = await supabase
+    .from('users')
+    .select('email')
+    .eq('email', email.toLowerCase())
+    .maybeSingle();
+  
+  if (existingUser) {
+    throw new Error('Email sudah terdaftar');
+  }
+}
+
+// ==================== UPDATE METHOD INI ====================
+
+/**
+ * Validasi input dasar untuk registrasi (diupdate untuk admin)
+ * @private
+ */
+_validateBasicInput(name, email, password, no_hp, id_prodi, isAdmin) {
+  if (!validateName(name)) {
+    throw new Error('Nama harus memiliki minimal 3 karakter');
+  }
+  
+  if (!validateEmail(email)) {
+    throw new Error('Format email tidak valid');
+  }
+  
+  if (!validatePassword(password)) {
+    throw new Error('Password harus memiliki minimal 6 karakter');
+  }
+  
+  if (no_hp && !validateNoHP(no_hp)) {
+    throw new Error('Nomor HP harus berisi 10-15 digit angka');
+  }
+
+  // Admin tidak perlu prodi
+  if (!isAdmin && !id_prodi) {
+    throw new Error('Program studi harus dipilih');
+  }
+
+  if (!isAdmin && !validateProdiId(id_prodi)) {
+    throw new Error('Format ID program studi tidak valid');
+  }
+}
+
+/**
+ * Siapkan data user untuk insert (diupdate untuk admin)
+ * @private
+ */
+_prepareUserData({ name, email, hashedPassword, isDosen, isAdmin, identifier, id_prodi, no_hp }) {
+  let role = 'mahasiswa';
+  if (isAdmin) {
+    role = 'admin';
+  } else if (isDosen) {
+    role = 'dosen';
+  }
+  
+  const newUser = {
+    nama_lengkap: name,
+    email: email.toLowerCase(),
+    password: hashedPassword,
+    role: role,
+    status: 'aktif',
+    id_prodi: isAdmin ? null : id_prodi,  // Admin tidak punya prodi
+    no_hp: no_hp || null
+  };
+  
+  // Tambahkan field spesifik berdasarkan role
+  if (isAdmin) {
+    // Admin tidak punya NIM maupun NIDN
+    newUser.nim = null;
+    newUser.nidn = null;
+    console.log('Data untuk ADMIN:', { 
+      role: 'admin',
+      email: newUser.email
+    });
+  } else if (isDosen) {
+    newUser.nidn = identifier.value;
+    newUser.nim = null;
+    console.log('Data untuk DOSEN:', { 
+      nidn: newUser.nidn,
+      prodi: id_prodi
+    });
+  } else {
+    newUser.nim = identifier.value;
+    newUser.nidn = null;
+    console.log('Data untuk MAHASISWA:', { 
+      nim: newUser.nim,
+      prodi: id_prodi
+    });
+  }
+  
+  console.log('Final user object:', JSON.stringify(newUser, null, 2));
+  
+  return newUser;
+}
   
   /**
    * Login user
