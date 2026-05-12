@@ -526,6 +526,7 @@
             clearMessages();
             resetForms();
             loadFakultas();
+            setInitialRequiredState();
         }
 
         function switchToLogin() {
@@ -538,6 +539,28 @@
         function clearMessages() {
             document.getElementById('loginMessage').innerHTML = '';
             document.getElementById('registerMessage').innerHTML = '';
+        }
+
+        function setInitialRequiredState() {
+            const isAdminChecked = document.getElementById('registerRoleAdmin')?.checked;
+            const isMahasiswaChecked = document.getElementById('registerRoleMahasiswa')?.checked;
+            const isDosenChecked = document.getElementById('registerRoleDosen')?.checked;
+            const nimField = document.getElementById('registerNim');
+            const nidnField = document.getElementById('registerNidn');
+            
+            if (nimField) {
+                nimField.required = isMahasiswaChecked === true;
+                if (!isMahasiswaChecked) {
+                    nimField.value = '';
+                }
+            }
+            
+            if (nidnField) {
+                nidnField.required = isDosenChecked === true;
+                if (!isDosenChecked) {
+                    nidnField.value = '';
+                }
+            }
         }
 
         function resetForms() {
@@ -560,7 +583,7 @@
             document.getElementById('adminFields').style.display = 'none';
             document.getElementById('academicFields').style.display = 'block';
             
-            // Set required attributes
+            // Set required attributes default
             document.getElementById('registerNim').required = true;
             document.getElementById('registerNidn').required = false;
             
@@ -624,22 +647,18 @@
                 if (result.success && result.data && result.data.length > 0) {
                     fakultasData = result.data;
                     
-                    // Untuk registerFakultas
                     fakultasSelect.innerHTML = '<option value="">Pilih Fakultas</option>';
                     
-                    // Untuk adminFakultas
                     if (adminFakultasSelect) {
                         adminFakultasSelect.innerHTML = '<option value="">Pilih Fakultas</option>';
                     }
                     
                     result.data.forEach(fakultas => {
-                        // Tambahkan ke registerFakultas
                         const option1 = document.createElement('option');
                         option1.value = fakultas.id_fakultas;
                         option1.textContent = fakultas.nama_fakultas;
                         fakultasSelect.appendChild(option1);
                         
-                        // Tambahkan ke adminFakultas
                         if (adminFakultasSelect) {
                             const option2 = document.createElement('option');
                             option2.value = fakultas.id_fakultas;
@@ -871,8 +890,15 @@
                     if (adminFields) adminFields.style.display = isAdmin ? 'block' : 'none';
                     if (academicFields) academicFields.style.display = (isMahasiswa || isDosen) ? 'block' : 'none';
                     
-                    if (registerNim) registerNim.required = isMahasiswa;
-                    if (registerNidn) registerNidn.required = isDosen;
+                    // Update required attributes berdasarkan role yang dipilih
+                    if (registerNim) {
+                        registerNim.required = isMahasiswa;
+                        if (!isMahasiswa) registerNim.value = '';
+                    }
+                    if (registerNidn) {
+                        registerNidn.required = isDosen;
+                        if (!isDosen) registerNidn.value = '';
+                    }
                     
                     if (registerFakultas) registerFakultas.required = !isAdmin;
                     if (registerProdi) registerProdi.required = !isAdmin;
@@ -1036,7 +1062,6 @@
                     if (response.status === 201 && data.success) {
                         showMessage('registerMessage', data.message, true);
                         
-                        // Reset form setelah sukses
                         registerForm.reset();
                         const defaultRole = document.getElementById('registerRoleMahasiswa');
                         if (defaultRole) defaultRole.checked = true;
@@ -1062,6 +1087,12 @@
                             registerProdi.innerHTML = '<option value="">Pilih Fakultas Terlebih Dahulu</option>';
                             registerProdi.disabled = true;
                         }
+                        
+                        // Reset required attributes kembali ke default mahasiswa
+                        const registerNim = document.getElementById('registerNim');
+                        const registerNidn = document.getElementById('registerNidn');
+                        if (registerNim) registerNim.required = true;
+                        if (registerNidn) registerNidn.required = false;
                         
                         setTimeout(() => {
                             switchToLogin();
