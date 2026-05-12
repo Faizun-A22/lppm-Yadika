@@ -500,11 +500,10 @@
     </div>
 
     <script>
-        // ==================== KONFIGURASI ====================
-        
-        const API_CONFIG = {
-            BASE_URL: 'http://localhost:3000'
-        };
+        // Ganti bagian ini di login.html (baris 420)
+const API_CONFIG = {
+    BASE_URL: window.location.origin// ✅ Otomatis menggunakan domain yang sama
+};
 
         // State untuk menyimpan data
         let fakultasData = [];
