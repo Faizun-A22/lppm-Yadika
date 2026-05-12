@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Jurnal - Login & Daftar</title>
+    <title>Sistem Jurnal - Login & Daftar (Dengan Admin Register)</title>
     <style>
         * {
             margin: 0;
@@ -284,22 +284,10 @@
             margin-bottom: 0;
         }
 
-        .select-loading {
-            position: relative;
-        }
-
-        .select-loading::after {
-            content: '';
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 16px;
-            height: 16px;
-            border: 2px solid #f3f3f3;
-            border-radius: 50%;
-            border-top: 2px solid #667eea;
-            animation: spin 1s linear infinite;
+        .info-text {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 5px;
         }
 
         @media (max-width: 600px) {
@@ -312,12 +300,6 @@
                 flex-direction: column;
                 gap: 20px;
             }
-        }
-
-        .info-text {
-            font-size: 12px;
-            color: #6c757d;
-            margin-top: 5px;
         }
     </style>
 </head>
@@ -376,12 +358,13 @@
             </div>
         </div>
 
-        <!-- Halaman Daftar (UPDATE dengan dropdown dinamis) -->
+        <!-- Halaman Daftar (DENGAN OPSI ADMIN) -->
         <div id="registerPage" class="page">
             <h2>Daftar Akun Baru</h2>
             <div id="registerMessage"></div>
 
             <form id="registerForm">
+                <!-- Role selector untuk pendaftaran (sekarang dengan 3 role) -->
                 <div class="role-selector">
                     <div class="role-option">
                         <input type="radio" id="registerRoleMahasiswa" name="registerUserRole" value="mahasiswa" checked>
@@ -391,6 +374,10 @@
                         <input type="radio" id="registerRoleDosen" name="registerUserRole" value="dosen">
                         <label for="registerRoleDosen">Dosen</label>
                     </div>
+                    <div class="role-option">
+                        <input type="radio" id="registerRoleAdmin" name="registerUserRole" value="admin">
+                        <label for="registerRoleAdmin">Admin</label>
+                    </div>
                 </div>
                 
                 <div id="registerMahasiswaIndicator" class="role-indicator mahasiswa-indicator" style="display: block;">
@@ -399,6 +386,10 @@
                 
                 <div id="registerDosenIndicator" class="role-indicator dosen-indicator" style="display: none;">
                     👨‍🏫 Mendaftar sebagai Dosen
+                </div>
+
+                <div id="registerAdminIndicator" class="role-indicator admin-indicator" style="display: none;">
+                    👑 Mendaftar sebagai Admin
                 </div>
 
                 <!-- Nama Lengkap -->
@@ -415,40 +406,47 @@
                 
                 <!-- Field untuk Mahasiswa -->
                 <div id="mahasiswaFields">
-                    <!-- NIM (hanya untuk Mahasiswa) -->
                     <div id="nimField" class="form-group show">
                         <label for="registerNim">NIM</label>
-                        <input type="text" id="registerNim" required maxlength="15" placeholder="Contoh: 123456789012345">
+                        <input type="text" id="registerNim" maxlength="15" placeholder="Contoh: 123456789012345">
                         <div class="info-text">Hanya angka, maksimal 15 digit</div>
                     </div>
                 </div>
                 
                 <!-- Field untuk Dosen -->
                 <div id="dosenFields" style="display: none;">
-                    <!-- NIDN (hanya untuk Dosen) -->
                     <div id="nidnField" class="form-group">
                         <label for="registerNidn">NIDN</label>
                         <input type="text" id="registerNidn" maxlength="10" placeholder="Contoh: 1234567890">
                         <div class="info-text">Hanya angka, maksimal 10 digit</div>
                     </div>
                 </div>
-                
-                <!-- Field yang sama untuk kedua role - SEKARANG DROPDOWN DINAMIS -->
-                <div class="form-row">
-                    <!-- Fakultas - Dropdown dinamis dari database -->
+
+                <!-- Field untuk Admin (tidak perlu NIM/NIDN) -->
+                <div id="adminFields" style="display: none;">
                     <div class="form-group">
-                        <label for="registerFakultas">Fakultas <span id="fakultasLoading" style="display: none;" class="loading-small"></span></label>
-                        <select id="registerFakultas" required>
-                            <option value="">Memuat data fakultas...</option>
-                        </select>
+                        <label>Role Admin Khusus</label>
+                        <input type="text" value="Administrator" disabled style="background: #e9ecef;">
+                        <div class="info-text">Admin memiliki akses penuh ke sistem</div>
                     </div>
-                    
-                    <!-- Program Studi - Dropdown dinamis tergantung fakultas -->
-                    <div class="form-group">
-                        <label for="registerProdi">Program Studi <span id="prodiLoading" style="display: none;" class="loading-small"></span></label>
-                        <select id="registerProdi" required disabled>
-                            <option value="">Pilih Fakultas Terlebih Dahulu</option>
-                        </select>
+                </div>
+                
+                <!-- Field Fakultas & Prodi (untuk Mahasiswa dan Dosen) -->
+                <div id="academicFields">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="registerFakultas">Fakultas <span id="fakultasLoading" style="display: none;" class="loading-small"></span></label>
+                            <select id="registerFakultas">
+                                <option value="">Memuat data fakultas...</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="registerProdi">Program Studi <span id="prodiLoading" style="display: none;" class="loading-small"></span></label>
+                            <select id="registerProdi" disabled>
+                                <option value="">Pilih Fakultas Terlebih Dahulu</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
                 
@@ -496,9 +494,6 @@
         
         // ==================== FUNGSI UTILITAS ====================
         
-        /**
-         * Menampilkan pesan sukses atau error
-         */
         function showMessage(elementId, message, isSuccess = false) {
             const messageEl = document.getElementById(elementId);
             messageEl.innerHTML = `<div class="${isSuccess ? 'success-message' : 'error-message'}">${message}</div>`;
@@ -508,22 +503,14 @@
             }, 5000);
         }
 
-        /**
-         * Berpindah ke halaman pendaftaran
-         */
         function switchToRegister() {
             document.getElementById('loginPage').classList.remove('active');
             document.getElementById('registerPage').classList.add('active');
             clearMessages();
             resetForms();
-            
-            // Load data fakultas saat halaman register ditampilkan
             loadFakultas();
         }
 
-        /**
-         * Berpindah ke halaman login
-         */
         function switchToLogin() {
             document.getElementById('registerPage').classList.remove('active');
             document.getElementById('loginPage').classList.add('active');
@@ -531,17 +518,11 @@
             resetForms();
         }
 
-        /**
-         * Membersihkan semua pesan
-         */
         function clearMessages() {
             document.getElementById('loginMessage').innerHTML = '';
             document.getElementById('registerMessage').innerHTML = '';
         }
 
-        /**
-         * Reset semua form ke kondisi awal
-         */
         function resetForms() {
             document.getElementById('loginForm').reset();
             document.getElementById('registerForm').reset();
@@ -554,10 +535,13 @@
             // Reset role indicators register
             document.getElementById('registerMahasiswaIndicator').style.display = 'block';
             document.getElementById('registerDosenIndicator').style.display = 'none';
+            document.getElementById('registerAdminIndicator').style.display = 'none';
             
-            // Tampilkan field mahasiswa, sembunyikan field dosen
+            // Tampilkan/hide fields berdasarkan role default (mahasiswa)
             document.getElementById('mahasiswaFields').style.display = 'block';
             document.getElementById('dosenFields').style.display = 'none';
+            document.getElementById('adminFields').style.display = 'none';
+            document.getElementById('academicFields').style.display = 'block';
             
             // Set required attributes
             document.getElementById('registerNim').required = true;
@@ -569,9 +553,6 @@
             prodiSelect.disabled = true;
         }
 
-        /**
-         * Set loading state pada button
-         */
         function setLoading(buttonId, isLoading, originalText) {
             const btn = document.getElementById(buttonId);
             const btnText = document.getElementById(buttonId + 'Text');
@@ -587,15 +568,11 @@
 
         // ==================== FUNGSI API FAKULTAS & PRODI ====================
         
-        /**
-         * Memuat data fakultas dari database
-         */
         async function loadFakultas() {
             const fakultasSelect = document.getElementById('registerFakultas');
             const loadingIndicator = document.getElementById('fakultasLoading');
             
             try {
-                // Tampilkan loading
                 loadingIndicator.style.display = 'inline-block';
                 fakultasSelect.innerHTML = '<option value="">Memuat data fakultas...</option>';
                 
@@ -604,7 +581,6 @@
                 
                 if (result.success && result.data && result.data.length > 0) {
                     fakultasData = result.data;
-                    
                     fakultasSelect.innerHTML = '<option value="">Pilih Fakultas</option>';
                     
                     result.data.forEach(fakultas => {
@@ -613,24 +589,18 @@
                         option.textContent = fakultas.nama_fakultas;
                         fakultasSelect.appendChild(option);
                     });
-                    
-                    console.log('Fakultas loaded:', result.data.length);
                 } else {
                     fakultasSelect.innerHTML = '<option value="">Tidak ada data fakultas</option>';
-                    console.error('Gagal memuat fakultas:', result.message);
                 }
             } catch (error) {
                 console.error('Error loading fakultas:', error);
                 fakultasSelect.innerHTML = '<option value="">Gagal memuat data</option>';
-                showMessage('registerMessage', 'Gagal memuat data fakultas. Periksa koneksi Anda.', false);
+                showMessage('registerMessage', 'Gagal memuat data fakultas.', false);
             } finally {
                 loadingIndicator.style.display = 'none';
             }
         }
 
-        /**
-         * Memuat program studi berdasarkan fakultas yang dipilih
-         */
         async function loadProdiByFakultas(fakultasId) {
             const prodiSelect = document.getElementById('registerProdi');
             const loadingIndicator = document.getElementById('prodiLoading');
@@ -642,7 +612,6 @@
             }
             
             try {
-                // Tampilkan loading
                 loadingIndicator.style.display = 'inline-block';
                 prodiSelect.innerHTML = '<option value="">Memuat data program studi...</option>';
                 prodiSelect.disabled = true;
@@ -652,28 +621,19 @@
                 
                 if (result.success && result.data && result.data.length > 0) {
                     prodiData = result.data;
-                    
                     prodiSelect.innerHTML = '<option value="">Pilih Program Studi</option>';
                     
                     result.data.forEach(prodi => {
                         const option = document.createElement('option');
                         option.value = prodi.id_prodi;
-                        
-                        // Tampilkan nama prodi dengan jenjang jika ada
                         let displayText = prodi.nama_prodi;
-                        if (prodi.jenjang) {
-                            displayText += ` (${prodi.jenjang})`;
-                        }
-                        if (prodi.akreditasi) {
-                            displayText += ` - Akreditasi ${prodi.akreditasi}`;
-                        }
-                        
+                        if (prodi.jenjang) displayText += ` (${prodi.jenjang})`;
+                        if (prodi.akreditasi) displayText += ` - Akreditasi ${prodi.akreditasi}`;
                         option.textContent = displayText;
                         prodiSelect.appendChild(option);
                     });
                     
                     prodiSelect.disabled = false;
-                    console.log('Prodi loaded:', result.data.length);
                 } else {
                     prodiSelect.innerHTML = '<option value="">Tidak ada program studi tersedia</option>';
                     prodiSelect.disabled = true;
@@ -690,7 +650,6 @@
 
         // ==================== LOGIKA HALAMAN LOGIN ====================
 
-        // Event listener untuk perubahan role login
         document.querySelectorAll('input[name="userRole"]').forEach(radio => {
             radio.addEventListener('change', function() {
                 document.getElementById('adminIndicator').style.display = 'none';
@@ -709,7 +668,6 @@
         
         document.getElementById('mahasiswaIndicator').style.display = 'block';
 
-        // Event listener submit form login
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -725,11 +683,8 @@
             let isAdmin = false;
             let isDosen = false;
             
-            if (role === 'admin') {
-                isAdmin = true;
-            } else if (role === 'dosen') {
-                isDosen = true;
-            }
+            if (role === 'admin') isAdmin = true;
+            else if (role === 'dosen') isDosen = true;
 
             setLoading('loginBtn', true, 'Login');
 
@@ -741,12 +696,10 @@
                 });
                     
                 const data = await response.json();
-                console.log('LOGIN RESPONSE:', data);
-                
                 setLoading('loginBtn', false, 'Login');
                 
                 if (!response.ok) {
-                    showMessage('loginMessage', data.message || 'Login gagal! Periksa kembali email dan password Anda.');
+                    showMessage('loginMessage', data.message || 'Login gagal!');
                     return;
                 }
 
@@ -767,80 +720,88 @@
             } catch (error) {
                 console.error('Error:', error);
                 setLoading('loginBtn', false, 'Login');
-                showMessage('loginMessage', 'Terjadi kesalahan jaringan! Silakan coba lagi.');
+                showMessage('loginMessage', 'Terjadi kesalahan jaringan!');
             }
         });
 
-        // ==================== LOGIKA HALAMAN PENDAFTARAN ====================
+        // ==================== LOGIKA PENDAFTARAN (DENGAN ADMIN) ====================
 
-        // Event listener untuk perubahan role pendaftaran
+        // Event listener untuk perubahan role pendaftaran (sekarang dengan 3 role)
         document.querySelectorAll('input[name="registerUserRole"]').forEach(radio => {
             radio.addEventListener('change', function() {
-                const isMahasiswa = this.value === 'mahasiswa';
+                const role = this.value;
+                const isMahasiswa = role === 'mahasiswa';
+                const isDosen = role === 'dosen';
+                const isAdmin = role === 'admin';
                 
+                // Update indicators
                 document.getElementById('registerMahasiswaIndicator').style.display = isMahasiswa ? 'block' : 'none';
-                document.getElementById('registerDosenIndicator').style.display = isMahasiswa ? 'none' : 'block';
+                document.getElementById('registerDosenIndicator').style.display = isDosen ? 'block' : 'none';
+                document.getElementById('registerAdminIndicator').style.display = isAdmin ? 'block' : 'none';
                 
-                const mahasiswaFields = document.getElementById('mahasiswaFields');
-                const dosenFields = document.getElementById('dosenFields');
+                // Update fields visibility
+                document.getElementById('mahasiswaFields').style.display = isMahasiswa ? 'block' : 'none';
+                document.getElementById('dosenFields').style.display = isDosen ? 'block' : 'none';
+                document.getElementById('adminFields').style.display = isAdmin ? 'block' : 'none';
                 
-                if (isMahasiswa) {
-                    mahasiswaFields.style.display = 'block';
-                    dosenFields.style.display = 'none';
-                    document.getElementById('registerNim').required = true;
-                    document.getElementById('registerNidn').required = false;
+                // Academic fields (fakultas & prodi) hanya untuk mahasiswa dan dosen
+                document.getElementById('academicFields').style.display = (isMahasiswa || isDosen) ? 'block' : 'none';
+                
+                // Set required attributes
+                document.getElementById('registerNim').required = isMahasiswa;
+                document.getElementById('registerNidn').required = isDosen;
+                
+                // Reset fakultas/prodi jika admin dipilih (tidak perlu validasi)
+                if (isAdmin) {
+                    document.getElementById('registerFakultas').required = false;
+                    document.getElementById('registerProdi').required = false;
                 } else {
-                    mahasiswaFields.style.display = 'none';
-                    dosenFields.style.display = 'block';
-                    document.getElementById('registerNim').required = false;
-                    document.getElementById('registerNidn').required = true;
+                    document.getElementById('registerFakultas').required = true;
+                    document.getElementById('registerProdi').required = true;
                 }
             });
         });
 
-        // Event listener untuk perubahan fakultas
         document.getElementById('registerFakultas').addEventListener('change', function(e) {
             const fakultasId = e.target.value;
             loadProdiByFakultas(fakultasId);
         });
 
-        // Event listener untuk submit form register (UPDATE)
+        // Submit register form (DENGAN DUKUNGAN ADMIN)
         document.getElementById('registerForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            // Ambil nilai dari form
             const name = document.getElementById('registerName').value.trim();
             const email = document.getElementById('registerEmail').value.trim();
             const fakultas = document.getElementById('registerFakultas').value;
-            const prodi = document.getElementById('registerProdi').value; // Ini adalah id_prodi
+            const prodi = document.getElementById('registerProdi').value;
             const noHp = document.getElementById('registerNoHp').value.trim();
             const password = document.getElementById('registerPassword').value;
             const confirmPassword = document.getElementById('registerConfirmPassword').value;
             const role = document.querySelector('input[name="registerUserRole"]:checked').value;
             
-            // ==================== VALIDASI ====================
+            const isMahasiswa = role === 'mahasiswa';
+            const isDosen = role === 'dosen';
+            const isAdmin = role === 'admin';
             
-            // Validasi semua field terisi
-            if (!name || !email || !fakultas || !prodi || !noHp || !password || !confirmPassword) {
+            // Validasi dasar
+            if (!name || !email || !noHp || !password || !confirmPassword) {
                 showMessage('registerMessage', 'Semua field harus diisi!');
                 return;
             }
             
-            // Validasi email
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) {
                 showMessage('registerMessage', 'Format email tidak valid!');
                 return;
             }
             
-            // Validasi no HP
             const phoneRegex = /^[0-9]{10,15}$/;
             if (!phoneRegex.test(noHp)) {
                 showMessage('registerMessage', 'Nomor HP harus 10-15 digit angka!');
                 return;
             }
             
-            // Validasi password
             if (password !== confirmPassword) {
                 showMessage('registerMessage', 'Password dan konfirmasi password tidak cocok!');
                 return;
@@ -851,139 +812,133 @@
                 return;
             }
             
-            // Validasi NIM/NIDN berdasarkan role
-            if (role === 'mahasiswa') {
+            // Validasi spesifik per role
+            if (isMahasiswa) {
                 const nim = document.getElementById('registerNim').value.trim();
-                
                 if (!nim) {
                     showMessage('registerMessage', 'NIM harus diisi untuk mahasiswa!');
                     return;
                 }
-                
                 if (!/^\d+$/.test(nim)) {
                     showMessage('registerMessage', 'NIM hanya boleh berisi angka!');
                     return;
                 }
-                
                 if (nim.length > 15) {
                     showMessage('registerMessage', 'NIM maksimal 15 digit!');
                     return;
                 }
-                
-            } else if (role === 'dosen') {
+                if (!fakultas || !prodi) {
+                    showMessage('registerMessage', 'Fakultas dan Program Studi harus dipilih!');
+                    return;
+                }
+            }
+            
+            if (isDosen) {
                 const nidn = document.getElementById('registerNidn').value.trim();
-                
                 if (!nidn) {
                     showMessage('registerMessage', 'NIDN harus diisi untuk dosen!');
                     return;
                 }
-                
                 if (!/^\d+$/.test(nidn)) {
                     showMessage('registerMessage', 'NIDN hanya boleh berisi angka!');
                     return;
                 }
-                
                 if (nidn.length > 10) {
                     showMessage('registerMessage', 'NIDN maksimal 10 digit!');
                     return;
                 }
+                if (!fakultas || !prodi) {
+                    showMessage('registerMessage', 'Fakultas dan Program Studi harus dipilih!');
+                    return;
+                }
             }
-
-            // ==================== SIAPKAN DATA ====================
             
+            // Siapkan data untuk dikirim
             let registerData = {
                 name: name,
                 email: email,
                 password: password,
-                isDosen: role === 'dosen',
-                id_prodi: prodi,  // Kirim id_prodi, bukan nama prodi
                 no_hp: noHp
             };
-
-            // Di bagian SIAPKAN DATA, ganti kode ini:
-            if (role === 'mahasiswa') {
+            
+            if (isMahasiswa) {
+                registerData.isDosen = false;
                 registerData.nim = document.getElementById('registerNim').value.trim();
-            } else if (role === 'dosen') {
-                const nidn = document.getElementById('registerNidn').value.trim();
-                // HANYA kirim nidn, jangan kirim nim untuk dosen
-                registerData.nidn = nidn;  // ✅ Gunakan field nidn
-                // HAPUS baris registerData.nim = nidn;
+                registerData.id_prodi = prodi;
+            } else if (isDosen) {
+                registerData.isDosen = true;
+                registerData.nidn = document.getElementById('registerNidn').value.trim();
+                registerData.id_prodi = prodi;
+            } else if (isAdmin) {
+                // Untuk admin, kita kirim flag isAdmin ke backend
+                // Catatan: Di backend authService, register saat ini hanya menerima isDosen
+                // Kita perlu menambahkan flag isAdmin di service nanti
+                // Untuk sementara, admin akan didaftarkan dengan role = 'admin'
+                registerData.isAdmin = true;
+                registerData.isDosen = false;
+                // Admin tidak perlu nim/nidn/prodi
             }
-
-            console.log('Register data being sent:', registerData);
-            // ==================== KIRIM KE BACKEND ====================
+            
+            console.log('Register data:', registerData);
             
             setLoading('registerBtn', true, 'Daftar');
-
+            
             try {
                 const response = await fetch(`${API_CONFIG.BASE_URL}/api/auth/register`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(registerData)
                 });
-
+                
                 const data = await response.json();
                 console.log('Register response:', data);
                 
                 setLoading('registerBtn', false, 'Daftar');
-
+                
                 if (response.status === 201 && data.success) {
-                    // Tampilkan pesan sukses
                     showMessage('registerMessage', data.message, true);
-
-                    // Reset form
-                    document.getElementById('registerForm').reset();
                     
-                    // Kembali ke role mahasiswa sebagai default
+                    // Reset form setelah sukses
+                    document.getElementById('registerForm').reset();
                     document.getElementById('registerRoleMahasiswa').checked = true;
+                    
+                    // Reset visibility
                     document.getElementById('mahasiswaFields').style.display = 'block';
                     document.getElementById('dosenFields').style.display = 'none';
+                    document.getElementById('adminFields').style.display = 'none';
+                    document.getElementById('academicFields').style.display = 'block';
                     document.getElementById('registerMahasiswaIndicator').style.display = 'block';
                     document.getElementById('registerDosenIndicator').style.display = 'none';
+                    document.getElementById('registerAdminIndicator').style.display = 'none';
                     
-                    // Reset dropdown
                     document.getElementById('registerProdi').innerHTML = '<option value="">Pilih Fakultas Terlebih Dahulu</option>';
                     document.getElementById('registerProdi').disabled = true;
-
-                    // Alihkan ke halaman login setelah 2 detik
+                    
                     setTimeout(() => {
                         switchToLogin();
-                        document.getElementById('roleMahasiswa').checked = true;
-                        document.getElementById('mahasiswaIndicator').style.display = 'block';
-                        document.getElementById('dosenIndicator').style.display = 'none';
-                        document.getElementById('adminIndicator').style.display = 'none';
                     }, 2000);
-                    
                 } else {
-                    // Jika gagal, tampilkan pesan error dari backend
-                    showMessage('registerMessage', data.message || 'Pendaftaran gagal! Silakan coba lagi.');
+                    showMessage('registerMessage', data.message || 'Pendaftaran gagal!');
                 }
             } catch (error) {
                 console.error('Network error:', error);
                 setLoading('registerBtn', false, 'Daftar');
-                showMessage('registerMessage', 'Terjadi kesalahan jaringan! Silakan cek koneksi Anda.');
+                showMessage('registerMessage', 'Terjadi kesalahan jaringan!');
             }
         });
 
-        // ==================== CEK TOKEN SAAT HALAMAN DIMUAT ====================
-        
+        // Cek token saat halaman dimuat
         document.addEventListener('DOMContentLoaded', function() {
             const token = localStorage.getItem('token');
             const user = JSON.parse(localStorage.getItem('user') || '{}');
             
             if (token && user.id) {
-                // Jika sudah login, langsung alihkan ke dashboard yang sesuai
                 if (user.isAdmin) {
                     window.location.href = 'admin/admin-dashboard.html';
                 } else if (user.isDosen) {
                     window.location.href = 'dosen/dosen-dashboard.html';
                 } else {
                     window.location.href = 'mahasiswa/mahasiswa-dashboard.html';
-                }
-            } else {
-                // Jika halaman register aktif, load fakultas
-                if (document.getElementById('registerPage').classList.contains('active')) {
-                    loadFakultas();
                 }
             }
         });
