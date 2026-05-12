@@ -500,6 +500,7 @@
     </div>
 
     <script>
+        // JavaScript untuk switch halaman, load fakultas/prodi, dan handle form submission akan ditambahkan di sini<script>
         // ==================== KONFIGURASI ====================
         
         const API_CONFIG = {
@@ -805,7 +806,7 @@
                 try {
                     const response = await fetch(`${API_CONFIG.BASE_URL}/api/auth/login`, {
                         method: 'POST',
-                        headers: { 'Content-Type': application/json' },
+                        headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ email, password, isAdmin, isDosen })
                     });
                         
