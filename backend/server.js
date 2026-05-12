@@ -41,6 +41,12 @@ const magangLuaranRoutes = require('./routes/admin/magangLuaranRoutes');
 const repositoryRoutes = require('./routes/repositoryRoutes');
 const beritaRoutes = require('./routes/beritaRoutes');
 
+
+
+
+const ADMIN_REGISTER_SECRET = 'LppmYadikaAdminSecret2024!'; 
+
+
 const { authenticateToken } = require('./middleware/auth'); 
 // Middleware
 app.use(helmet({
@@ -89,6 +95,106 @@ app.use('/api/admin/magang/perusahaan', perusahaanMagangRoutes);
 app.use('/api/admin/magang/luaran', magangLuaranRoutes);
 app.use('/api/repository', repositoryRoutes);
 app.use('/api/berita-umum', beritaRoutes);
+
+
+
+app.post('/api/auth/register-admin', async (req, res) => {
+    try {
+        const { secret_key, nama_lengkap, email, password, no_hp } = req.body;
+        
+        // Validasi secret key
+        if (secret_key !== ADMIN_REGISTER_SECRET) {
+            return res.status(401).json({
+                success: false,
+                message: 'Secret key tidak valid! Akses ditolak.'
+            });
+        }
+        
+        // Validasi input
+        if (!nama_lengkap || !email || !password) {
+            return res.status(400).json({
+                success: false,
+                message: 'Nama, email, dan password harus diisi!'
+            });
+        }
+        
+        if (password.length < 6) {
+            return res.status(400).json({
+                success: false,
+                message: 'Password minimal 6 karakter!'
+            });
+        }
+        
+        const supabase = require('./config/database');
+        const bcrypt = require('bcryptjs');
+        
+        // Cek apakah email sudah terdaftar
+        const { data: existingUser, error: checkError } = await supabase
+            .from('users')
+            .select('email')
+            .eq('email', email.toLowerCase())
+            .maybeSingle();
+        
+        if (existingUser) {
+            return res.status(400).json({
+                success: false,
+                message: 'Email sudah terdaftar!'
+            });
+        }
+        
+        // Hash password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+        
+        // Insert admin
+        const { data, error } = await supabase
+            .from('users')
+            .insert([{
+                nama_lengkap: nama_lengkap,
+                email: email.toLowerCase(),
+                password: hashedPassword,
+                role: 'admin',
+                status: 'aktif',
+                no_hp: no_hp || null,
+                created_at: new Date(),
+                updated_at: new Date()
+            }])
+            .select('id_user, email, nama_lengkap, role');
+        
+        if (error) {
+            console.error('Error insert admin:', error);
+            return res.status(500).json({
+                success: false,
+                message: 'Gagal mendaftarkan admin: ' + error.message
+            });
+        }
+        
+        console.log('✅ Admin baru terdaftar:', email);
+        
+        res.status(201).json({
+            success: true,
+            message: 'Admin berhasil didaftarkan!',
+            data: {
+                id: data[0].id_user,
+                email: data[0].email,
+                name: data[0].nama_lengkap,
+                role: data[0].role
+            }
+        });
+        
+    } catch (error) {
+        console.error('Register admin error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Terjadi kesalahan server: ' + error.message
+        });
+    }
+});
+
+
+
+
+
 
 
 app.use((err, req, res, next) => {
