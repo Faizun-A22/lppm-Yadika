@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <title>Profil Saya - Portal Dosen LPPM ITB Yadika</title>
     
     <!-- CSS External Libraries -->
@@ -12,39 +12,128 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <style>
-        /* Custom CSS Styles */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Navbar Styles */
+        .navbar-custom {
+            background: linear-gradient(135deg, #1E3A5F 0%, #2D4A6E 50%, #1E3A5F 100%);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-link-modern {
+            position: relative;
+            transition: all 0.2s ease;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .nav-link-modern:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .nav-link-modern.active {
+            background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
+            color: white !important;
+        }
+
+        .nav-link-modern.active i {
+            color: white !important;
+        }
+
+        .brand-title {
+            color: white;
+        }
+
+        .brand-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .icon-btn {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .icon-btn:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .user-name, .user-role {
+            color: white;
+        }
+
+        .user-role {
+            opacity: 0.7;
+        }
+
+        /* Mobile Navigation */
+        .mobile-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-nav.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .mobile-nav-container {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 280px;
+            height: 100%;
+            background: white;
+            transform: translateX(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mobile-nav.active .mobile-nav-container {
+            transform: translateX(0);
+        }
+
+        .mobile-nav-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #1E3A5F, #2D4A6E);
+            color: white;
+        }
+
+        .mobile-nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            color: #4B5563;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .mobile-nav-link.active {
+            background: #EFF6FF;
+            color: #3B82F6;
+            border-left-color: #3B82F6;
+        }
+
+        /* Custom CSS */
         .gradient-text { 
             background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%); 
             -webkit-background-clip: text; 
             -webkit-text-fill-color: transparent; 
             background-clip: text; 
-        }
-        
-        .nav-link { 
-            position: relative; 
-            transition: color 0.3s ease; 
-        }
-        
-        .nav-link::after { 
-            content: ''; 
-            position: absolute; 
-            width: 0; 
-            height: 2px; 
-            bottom: -5px; 
-            left: 50%; 
-            background-color: #3B82F6; 
-            transition: all 0.3s ease; 
-        }
-        
-        .nav-link:hover::after, 
-        .nav-link.active::after { 
-            width: 100%; 
-            left: 0; 
-        }
-        
-        .nav-link.active { 
-            color: #3B82F6; 
-            font-weight: 600; 
         }
 
         .loading-spinner {
@@ -105,54 +194,31 @@
             box-shadow: 0 10px 25px -5px rgba(139, 92, 246, 0.4);
         }
 
+        /* Dropdown Animation */
+        #userDropdown {
+            transform-origin: top right;
+            animation: dropdownFade 0.2s ease;
+        }
 
-         .nav-link-modern {
-        position: relative;
-        transition: all 0.2s ease;
-    }
-    
-    .nav-link-modern.active {
-        background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
-        color: white !important;
-    }
-    
-    .nav-link-modern.active i {
-        color: white !important;
-    }
-    
-    .nav-link-modern:not(.active):hover {
-        transform: translateY(-1px);
-    }
-    
-    /* Dropdown Animation */
-    #userDropdown {
-        transform-origin: top right;
-        animation: dropdownFade 0.2s ease;
-    }
-    
-    @keyframes dropdownFade {
-        from {
-            opacity: 0;
-            transform: scale(0.95) translateY(-10px);
+        @keyframes dropdownFade {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
         }
-        to {
-            opacity: 1;
-            transform: scale(1) translateY(0);
+
+        @media (max-width: 768px) {
+            .stat-card {
+                padding: 0.75rem;
+            }
+            .stat-card .text-2xl {
+                font-size: 1.25rem;
+            }
         }
-    }
-    
-    /* Active link indicator */
-    .nav-link-modern.active::before {
-        content: '';
-        position: absolute;
-        bottom: -2px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 20px;
-        height: 2px;
-        background: white;
-        border-radius: 2px;
-    }
     </style>
 </head>
 <body class="bg-gray-50 font-sans antialiased">
@@ -164,139 +230,196 @@
         </div>
     </div>
 
-    <header class="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-md shadow-sm z-50 border-b border-gray-100">
-    <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
-        <!-- Logo and Brand -->
-        <a href="dosen-dashboard.html" class="flex items-center space-x-3 group">
-            <div class="relative">
-                <img src="yadika.png" alt="Logo LPPM ITB Yadika" class="h-10 w-10 rounded-xl shadow-sm transition-transform group-hover:scale-105">
-                <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl opacity-0 group-hover:opacity-20 transition"></div>
-            </div>
-            <div>
-                <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                    Portal Dosen
-                </h1>
-                <p class="text-xs text-gray-400">LPPM ITB Yadika</p>
-            </div>
-        </a>
-        
-        <!-- Desktop Navigation Menu -->
-        <div class="hidden md:flex items-center space-x-1">
-            <a href="dosen-dashboard.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
-                <i class="fas fa-home text-gray-400 group-hover:text-blue-500 transition"></i>
-                <span>Dashboard</span>
-            </a>
-            <a href="dosen-berita.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
-                <i class="fas fa-newspaper text-gray-400 group-hover:text-blue-500 transition"></i>
-                <span>Berita</span>
-            </a>
-            <a href="dosen-penelitian-pengabdian.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
-                <i class="fas fa-flask text-gray-400 group-hover:text-blue-500 transition"></i>
-                <span>Penelitian</span>
-            </a>
-            <a href="dosen-repository.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
-                <i class="fas fa-archive text-gray-400 group-hover:text-blue-500 transition"></i>
-                <span>Repository</span>
-            </a>
-            <a href="dosen-profil.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2 active">
-                <i class="fas fa-user-circle text-gray-400 group-hover:text-blue-500 transition"></i>
-                <span>Profil</span>
-            </a>
-        </div>
-        
-        <!-- User Info & Actions -->
-        <div class="flex items-center gap-4">
-            <!-- Notifications Dropdown -->
-            <div class="relative">
-                <button id="notificationBtn" class="relative p-2 rounded-lg text-gray-500 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200">
-                    <i class="fas fa-bell text-lg"></i>
-                    <span id="notificationBadge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full hidden"></span>
-                </button>
-            </div>
-            
-            <!-- User Profile Dropdown -->
-            <div class="relative">
-                <button id="userMenuBtn" class="flex items-center gap-3 p-1.5 rounded-xl hover:bg-gray-50 transition-all duration-200 border border-transparent hover:border-gray-200">
-                    <div class="relative">
-                        <img id="navAvatar" src="" alt="Avatar" class="w-9 h-9 rounded-full object-cover ring-2 ring-gray-200">
-                        <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full ring-2 ring-white"></div>
+    <!-- Mobile Navigation -->
+    <div id="mobileNav" class="mobile-nav">
+        <div class="mobile-nav-container">
+            <div class="mobile-nav-header">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                        <img src="yadika.png" alt="Logo" class="h-8 w-8 rounded-lg bg-white p-1">
+                        <span class="font-bold text-sm">Portal Dosen</span>
                     </div>
-                    <div class="hidden md:block text-left">
-                        <p class="text-sm font-semibold text-gray-800" id="navUserName">Loading...</p>
-                        <p class="text-xs text-gray-400" id="navUserRole">Dosen</p>
-                    </div>
-                    <i class="fas fa-chevron-down text-xs text-gray-400 hidden md:block"></i>
-                </button>
-                
-                <!-- Dropdown Menu -->
-                <div id="userDropdown" class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hidden transition-all duration-200 z-50">
-                    <!-- Header with user info -->
-                    <div class="p-3 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-purple-50">
-                        <div class="flex items-center gap-3">
-                            <img id="dropdownAvatar" src="" alt="Avatar" class="w-10 h-10 rounded-full object-cover">
-                            <div>
-                                <p class="font-semibold text-gray-800 text-sm" id="dropdownUserName">Loading...</p>
-                                <p class="text-xs text-gray-500" id="dropdownUserNidn">-</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Menu Items -->
-                    <div class="p-2">
-                        <a href="dosen-profil.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
-                            <i class="fas fa-user-cog w-5 text-gray-400"></i>
-                            <span>Pengaturan Akun</span>
-                        </a>
-                        <a href="dosen-ubah-password.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
-                            <i class="fas fa-key w-5 text-gray-400"></i>
-                            <span>Ubah Password</span>
-                        </a>
-                        <div class="border-t border-gray-100 my-2"></div>
-                        <button onclick="handleLogout()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-600 hover:bg-red-50 transition text-sm">
-                            <i class="fas fa-sign-out-alt w-5 text-red-400"></i>
-                            <span>Logout</span>
-                        </button>
+                    <button id="closeMobileNav" class="text-white">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <div class="flex items-center gap-3 mt-4 pt-2 border-t border-white/20">
+                    <img id="mobileNavAvatar" src="" alt="Avatar" class="w-10 h-10 rounded-full object-cover ring-2 ring-white/50">
+                    <div>
+                        <p class="font-semibold text-sm" id="mobileNavUserName">Loading...</p>
+                        <p class="text-xs opacity-80">Dosen</p>
                     </div>
                 </div>
             </div>
+            <div class="flex-1 overflow-y-auto py-4">
+                <a href="dosen-dashboard.html" class="mobile-nav-link">
+                    <i class="fas fa-home w-5"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="dosen-berita.html" class="mobile-nav-link">
+                    <i class="fas fa-newspaper w-5"></i>
+                    <span>Berita</span>
+                </a>
+                <a href="dosen-penelitian-pengabdian.html" class="mobile-nav-link">
+                    <i class="fas fa-flask w-5"></i>
+                    <span>Penelitian</span>
+                </a>
+                <a href="dosen-repository.html" class="mobile-nav-link">
+                    <i class="fas fa-archive w-5"></i>
+                    <span>Repository</span>
+                </a>
+                <div class="border-t border-gray-100 my-4 mx-4"></div>
+                <a href="dosen-profil.html" class="mobile-nav-link active">
+                    <i class="fas fa-user-cog w-5"></i>
+                    <span>Pengaturan Akun</span>
+                </a>
+                <a href="dosen-ubah-password.html" class="mobile-nav-link">
+                    <i class="fas fa-key w-5"></i>
+                    <span>Ubah Password</span>
+                </a>
+                <button onclick="handleLogout()" class="mobile-nav-link w-full text-left text-red-600">
+                    <i class="fas fa-sign-out-alt w-5"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
         </div>
-    </nav>
-</header>
+    </div>
+
+    <!-- Navbar -->
+    <header id="mainHeader" class="fixed top-0 left-0 right-0 navbar-custom z-50">
+        <nav class="container mx-auto px-4 md:px-6 py-3 flex justify-between items-center">
+            <!-- Logo and Brand -->
+            <a href="dosen-dashboard.html" class="flex items-center space-x-3 group">
+                <div class="relative">
+                    <img src="yadika.png" alt="Logo LPPM ITB Yadika" class="h-9 w-9 md:h-10 md:w-10 rounded-lg shadow-sm transition-transform group-hover:scale-105 bg-white p-1">
+                    <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-400 to-purple-400 rounded-lg opacity-0 group-hover:opacity-30 transition"></div>
+                </div>
+                <div>
+                    <h1 class="brand-title text-base md:text-lg font-bold tracking-wide">
+                        Portal Dosen
+                    </h1>
+                    <p class="brand-subtitle text-xs md:text-sm -mt-0.5">ITB Yadika</p>
+                </div>
+            </a>
+            
+            <!-- Desktop Navigation Menu -->
+            <div class="hidden md:flex items-center space-x-1">
+                <a href="dosen-dashboard.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-home text-sm"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="dosen-berita.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-newspaper text-sm"></i>
+                    <span>Berita</span>
+                </a>
+                <a href="dosen-penelitian-pengabdian.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-flask text-sm"></i>
+                    <span>Penelitian</span>
+                </a>
+                <a href="dosen-repository.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-archive text-sm"></i>
+                    <span>Repository</span>
+                </a>
+                <a href="dosen-profil.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2 active">
+                    <i class="fas fa-user-circle text-sm"></i>
+                    <span>Profil</span>
+                </a>
+            </div>
+            
+            <!-- User Info & Actions -->
+            <div class="flex items-center gap-2 md:gap-4">
+                <!-- Notifications Dropdown -->
+                <div class="relative">
+                    <button id="notificationBtn" class="icon-btn relative p-2 rounded-lg transition-all duration-200">
+                        <i class="fas fa-bell text-base md:text-lg"></i>
+                        <span id="notificationBadge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full hidden"></span>
+                    </button>
+                </div>
+                
+                <!-- User Profile Dropdown Desktop -->
+                <div class="relative hidden md:block">
+                    <button id="userMenuBtn" class="flex items-center gap-2 p-1.5 rounded-xl hover:bg-white/10 transition-all duration-200">
+                        <div class="relative">
+                            <img id="navAvatar" src="" alt="Avatar" class="w-8 h-8 rounded-full object-cover ring-2 ring-white/50">
+                            <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full ring-2 ring-white"></div>
+                        </div>
+                        <div class="hidden xl:block text-left">
+                            <p class="user-name text-xs font-semibold" id="navUserName">Loading...</p>
+                            <p class="user-role text-[10px]" id="navUserRole">Dosen</p>
+                        </div>
+                        <i class="fas fa-chevron-down text-[10px] text-white/60 hidden xl:block"></i>
+                    </button>
+                    
+                    <div id="userDropdown" class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hidden z-50">
+                        <div class="p-3 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-purple-50">
+                            <div class="flex items-center gap-3">
+                                <img id="dropdownAvatar" src="" alt="Avatar" class="w-10 h-10 rounded-full object-cover">
+                                <div>
+                                    <p class="font-semibold text-gray-800 text-sm" id="dropdownUserName">Loading...</p>
+                                    <p class="text-xs text-gray-500" id="dropdownUserNidn">-</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-2">
+                            <a href="dosen-profil.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
+                                <i class="fas fa-user-cog w-5 text-gray-400"></i>
+                                <span>Pengaturan Akun</span>
+                            </a>
+                            <a href="dosen-ubah-password.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
+                                <i class="fas fa-key w-5 text-gray-400"></i>
+                                <span>Ubah Password</span>
+                            </a>
+                            <div class="border-t border-gray-100 my-2"></div>
+                            <button onclick="handleLogout()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-600 hover:bg-red-50 transition text-sm">
+                                <i class="fas fa-sign-out-alt w-5 text-red-400"></i>
+                                <span>Logout</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hamburger Menu Button -->
+                <button id="hamburgerBtn" class="md:hidden icon-btn p-2 rounded-lg transition-all duration-200">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </nav>
+    </header>
 
     <!-- Main Content -->
-    <main class="pt-20">
-        <div class="container mx-auto px-6 py-8">
+    <main id="mainContent" class="pb-12">
+        <div class="container mx-auto px-4 sm:px-6 py-6">
             <!-- Header -->
             <header class="mb-8" data-aos="fade-down">
-                <h2 class="text-3xl font-bold text-gray-800">Profil Saya</h2>
-                <p class="text-gray-600">Kelola informasi pribadi dan lihat riwayat kinerja Anda</p>
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-800">Profil Saya</h2>
+                <p class="text-sm md:text-base text-gray-600">Kelola informasi pribadi dan lihat riwayat kinerja Anda</p>
             </header>
 
             <!-- Statistics Cards -->
-            <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8" data-aos="fade-up" data-aos-delay="50">
-                <div class="stat-card bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-4 text-white text-center">
-                    <i class="fas fa-flask text-2xl mb-2"></i>
-                    <p class="text-2xl font-bold" id="statPenelitian">0</p>
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4 mb-8" data-aos="fade-up" data-aos-delay="50">
+                <div class="stat-card bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-3 md:p-4 text-white text-center">
+                    <i class="fas fa-flask text-xl md:text-2xl mb-1 md:mb-2"></i>
+                    <p class="text-xl md:text-2xl font-bold" id="statPenelitian">0</p>
                     <p class="text-xs">Penelitian</p>
                 </div>
-                <div class="stat-card bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg p-4 text-white text-center">
-                    <i class="fas fa-hands-helping text-2xl mb-2"></i>
-                    <p class="text-2xl font-bold" id="statPengabdian">0</p>
+                <div class="stat-card bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg p-3 md:p-4 text-white text-center">
+                    <i class="fas fa-hands-helping text-xl md:text-2xl mb-1 md:mb-2"></i>
+                    <p class="text-xl md:text-2xl font-bold" id="statPengabdian">0</p>
                     <p class="text-xs">Pengabdian</p>
                 </div>
-                <div class="stat-card bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg p-4 text-white text-center">
-                    <i class="fas fa-book text-2xl mb-2"></i>
-                    <p class="text-2xl font-bold" id="statPublikasi">0</p>
+                <div class="stat-card bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg p-3 md:p-4 text-white text-center">
+                    <i class="fas fa-book text-xl md:text-2xl mb-1 md:mb-2"></i>
+                    <p class="text-xl md:text-2xl font-bold" id="statPublikasi">0</p>
                     <p class="text-xs">Publikasi</p>
                 </div>
-                <div class="stat-card bg-gradient-to-br from-pink-500 to-pink-600 rounded-xl shadow-lg p-4 text-white text-center">
-                    <i class="fas fa-users text-2xl mb-2"></i>
-                    <p class="text-2xl font-bold" id="statMahasiswa">0</p>
+                <div class="stat-card bg-gradient-to-br from-pink-500 to-pink-600 rounded-xl shadow-lg p-3 md:p-4 text-white text-center">
+                    <i class="fas fa-users text-xl md:text-2xl mb-1 md:mb-2"></i>
+                    <p class="text-xl md:text-2xl font-bold" id="statMahasiswa">0</p>
                     <p class="text-xs">Bimbingan</p>
                 </div>
-                <div class="stat-card bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl shadow-lg p-4 text-white text-center">
-                    <i class="fas fa-certificate text-2xl mb-2"></i>
-                    <p class="text-2xl font-bold" id="statHKI">0</p>
+                <div class="stat-card bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl shadow-lg p-3 md:p-4 text-white text-center">
+                    <i class="fas fa-certificate text-xl md:text-2xl mb-1 md:mb-2"></i>
+                    <p class="text-xl md:text-2xl font-bold" id="statHKI">0</p>
                     <p class="text-xs">HKI</p>
                 </div>
             </div>
@@ -304,43 +427,39 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- Profile Card -->
                 <div class="lg:col-span-1" data-aos="fade-right">
-                    <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="bg-white rounded-xl shadow-lg p-5 md:p-6">
                         <!-- Profile Picture -->
                         <div class="text-center mb-6">
                             <div class="profile-pic-container inline-block">
-                                <img id="profilePicture" src="https://i.pravatar.cc/150?img=7" alt="Profile" class="w-28 h-28 rounded-full mx-auto border-4 border-purple-200">
-                                <div class="profile-pic-overlay" onclick="changeProfilePicture()">
-                                    <i class="fas fa-camera text-2xl"></i>
+                                <img id="profilePicture" src="https://i.pravatar.cc/150?img=7" alt="Profile" class="w-24 h-24 md:w-28 md:h-28 rounded-full mx-auto border-4 border-purple-200 object-cover">
+                                <div class="profile-pic-overlay rounded-full" onclick="changeProfilePicture()">
+                                    <i class="fas fa-camera text-xl md:text-2xl"></i>
                                 </div>
                             </div>
                             <input type="file" id="profilePicInput" accept="image/*" class="hidden" onchange="uploadProfilePicture(this)">
-                            <h3 class="text-xl font-bold text-gray-800 mt-3" id="profileName">-</h3>
+                            <h3 class="text-lg md:text-xl font-bold text-gray-800 mt-3" id="profileName">-</h3>
                             <p class="text-sm text-purple-600" id="profilePosition">-</p>
                         </div>
 
                         <!-- Quick Info -->
                         <div class="bg-gray-50 rounded-lg p-4 mb-4">
-                            <h4 class="font-semibold text-gray-700 mb-3 flex items-center">
+                            <h4 class="font-semibold text-gray-700 mb-3 flex items-center text-sm md:text-base">
                                 <i class="fas fa-id-card mr-2 text-purple-500"></i>Informasi Akademik
                             </h4>
                             <div class="space-y-2 text-sm">
-                                <p class="flex items-center">
-                                    <i class="fas fa-id-card mr-2 text-gray-400 w-5"></i>
+                                <p class="flex flex-col md:flex-row md:items-center">
                                     <span class="font-medium text-gray-600 w-24">NIDN:</span>
                                     <span class="text-gray-800" id="profileNidn">-</span>
                                 </p>
-                                <p class="flex items-center">
-                                    <i class="fas fa-graduation-cap mr-2 text-gray-400 w-5"></i>
+                                <p class="flex flex-col md:flex-row md:items-center">
                                     <span class="font-medium text-gray-600 w-24">Program Studi:</span>
                                     <span class="text-gray-800" id="profileProdi">-</span>
                                 </p>
-                                <p class="flex items-center">
-                                    <i class="fas fa-trophy mr-2 text-gray-400 w-5"></i>
+                                <p class="flex flex-col md:flex-row md:items-center">
                                     <span class="font-medium text-gray-600 w-24">Jabatan:</span>
                                     <span class="text-gray-800" id="profileJabatan">-</span>
                                 </p>
-                                <p class="flex items-center">
-                                    <i class="fas fa-clock mr-2 text-gray-400 w-5"></i>
+                                <p class="flex flex-col md:flex-row md:items-center">
                                     <span class="font-medium text-gray-600 w-24">Masa Kerja:</span>
                                     <span class="text-gray-800" id="profileMasaKerja">-</span>
                                 </p>
@@ -349,50 +468,47 @@
 
                         <!-- Contact Info -->
                         <div class="bg-gray-50 rounded-lg p-4 mb-4">
-                            <h4 class="font-semibold text-gray-700 mb-3 flex items-center">
+                            <h4 class="font-semibold text-gray-700 mb-3 flex items-center text-sm md:text-base">
                                 <i class="fas fa-address-card mr-2 text-purple-500"></i>Kontak
                             </h4>
                             <div class="space-y-2 text-sm">
-                                <p class="flex items-center">
-                                    <i class="fas fa-envelope mr-2 text-gray-400 w-5"></i>
+                                <p class="flex flex-col md:flex-row md:items-center">
                                     <span class="font-medium text-gray-600 w-24">Email:</span>
-                                    <span class="text-gray-800" id="profileEmail">-</span>
+                                    <span class="text-gray-800 break-all" id="profileEmail">-</span>
                                 </p>
-                                <p class="flex items-center">
-                                    <i class="fas fa-phone mr-2 text-gray-400 w-5"></i>
+                                <p class="flex flex-col md:flex-row md:items-center">
                                     <span class="font-medium text-gray-600 w-24">Telepon:</span>
                                     <span class="text-gray-800" id="profilePhone">-</span>
                                 </p>
-                                <p class="flex items-center">
-                                    <i class="fas fa-map-marker-alt mr-2 text-gray-400 w-5"></i>
+                                <p class="flex flex-col md:flex-row md:items-start">
                                     <span class="font-medium text-gray-600 w-24">Alamat:</span>
-                                    <span class="text-gray-800" id="profileAddress">-</span>
+                                    <span class="text-gray-800 flex-1" id="profileAddress">-</span>
                                 </p>
                             </div>
                         </div>
 
                         <!-- Social Media -->
                         <div class="bg-gray-50 rounded-lg p-4 mb-4">
-                            <h4 class="font-semibold text-gray-700 mb-3 flex items-center">
+                            <h4 class="font-semibold text-gray-700 mb-3 flex items-center text-sm md:text-base">
                                 <i class="fas fa-share-alt mr-2 text-purple-500"></i>Sosial Media & ID
                             </h4>
                             <div class="space-y-2 text-sm">
-                                <p class="flex items-center">
+                                <p class="flex flex-col md:flex-row md:items-center">
                                     <i class="fab fa-google-scholar mr-2 text-gray-400 w-5"></i>
                                     <span class="font-medium text-gray-600 w-24">Scholar ID:</span>
                                     <span class="text-gray-800" id="profileScholarId">-</span>
                                 </p>
-                                <p class="flex items-center">
+                                <p class="flex flex-col md:flex-row md:items-center">
                                     <i class="fab fa-orcid mr-2 text-gray-400 w-5"></i>
                                     <span class="font-medium text-gray-600 w-24">ORCID:</span>
                                     <span class="text-gray-800" id="profileOrcid">-</span>
                                 </p>
-                                <p class="flex items-center">
+                                <p class="flex flex-col md:flex-row md:items-center">
                                     <i class="fas fa-link mr-2 text-gray-400 w-5"></i>
                                     <span class="font-medium text-gray-600 w-24">Scopus ID:</span>
                                     <span class="text-gray-800" id="profileScopusId">-</span>
                                 </p>
-                                <p class="flex items-center">
+                                <p class="flex flex-col md:flex-row md:items-center">
                                     <i class="fas fa-link mr-2 text-gray-400 w-5"></i>
                                     <span class="font-medium text-gray-600 w-24">Sinta ID:</span>
                                     <span class="text-gray-800" id="profileSintaId">-</span>
@@ -402,10 +518,10 @@
 
                         <!-- Account Actions -->
                         <div class="space-y-2">
-                            <button onclick="changePassword()" class="w-full bg-purple-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors flex items-center justify-center">
+                            <button onclick="changePassword()" class="w-full bg-purple-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors flex items-center justify-center text-sm">
                                 <i class="fas fa-key mr-2"></i>Ubah Password
                             </button>
-                            <button onclick="exportData()" class="w-full bg-gray-100 text-gray-700 font-medium py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors flex items-center justify-center">
+                            <button onclick="exportData()" class="w-full bg-gray-100 text-gray-700 font-medium py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors flex items-center justify-center text-sm">
                                 <i class="fas fa-download mr-2"></i>Export Data Kinerja
                             </button>
                         </div>
@@ -415,8 +531,8 @@
                 <!-- Right Column -->
                 <div class="lg:col-span-2 space-y-6">
                     <!-- Edit Profile Form -->
-                    <div class="bg-white rounded-xl shadow-lg p-6" data-aos="fade-left">
-                        <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                    <div class="bg-white rounded-xl shadow-lg p-5 md:p-6" data-aos="fade-left">
+                        <h3 class="text-lg md:text-xl font-bold text-gray-800 mb-4 flex items-center">
                             <i class="fas fa-user-edit mr-2 text-purple-500"></i>
                             Edit Informasi Pribadi
                         </h3>
@@ -430,7 +546,7 @@
                                 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">NIDN</label>
-                                    <input type="text" id="nidn" value="" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" readonly>
+                                    <input type="text" id="nidn" value="" class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100" readonly>
                                 </div>
                                 
                                 <div>
@@ -441,7 +557,7 @@
                                 </div>                                
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                                    <input type="email" id="email" value="" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" readonly>
+                                    <input type="email" id="email" value="" class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100" readonly>
                                 </div>
                                 
                                 <div>
@@ -451,17 +567,17 @@
                                 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Tempat Lahir</label>
-                                    <input type="text" id="birthPlace" value="" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                    <input type="text" id="birthPlace" value="" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
                                 </div>
                                 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Lahir</label>
-                                    <input type="date" id="birthDate" value="" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                    <input type="date" id="birthDate" value="" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
                                 </div>
                                 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Jenis Kelamin</label>
-                                    <select id="gender" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                    <select id="gender" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
                                         <option value="L">Laki-laki</option>
                                         <option value="P">Perempuan</option>
                                     </select>
@@ -469,7 +585,7 @@
                                 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Agama</label>
-                                    <select id="religion" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                    <select id="religion" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
                                         <option value="Islam">Islam</option>
                                         <option value="Kristen">Kristen</option>
                                         <option value="Katolik">Katolik</option>
@@ -480,35 +596,35 @@
                                 
                                 <div class="md:col-span-2">
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Alamat</label>
-                                    <textarea id="address" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg"></textarea>
+                                    <textarea id="address" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"></textarea>
                                 </div>
                                 
                                 <div class="md:col-span-2">
-                                    <h4 class="font-semibold text-gray-700 mb-3">ID Peneliti</h4>
+                                    <h4 class="font-semibold text-gray-700 mb-3 text-sm md:text-base">ID Peneliti</h4>
                                 </div>
                                 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Google Scholar ID</label>
-                                    <input type="text" id="scholarId" value="" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                    <input type="text" id="scholarId" value="" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
                                 </div>
                                 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">ORCID</label>
-                                    <input type="text" id="orcid" value="" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                    <input type="text" id="orcid" value="" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
                                 </div>
                                 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Scopus ID</label>
-                                    <input type="text" id="scopusId" value="" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                    <input type="text" id="scopusId" value="" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
                                 </div>
                                 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Sinta ID</label>
-                                    <input type="text" id="sintaId" value="" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                    <input type="text" id="sintaId" value="" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
                                 </div>
                                 
                                 <div class="md:col-span-2">
-                                    <button type="submit" class="btn-edit font-bold py-2 px-6 rounded-lg transition-all">
+                                    <button type="submit" class="btn-edit font-bold py-2 px-6 rounded-lg transition-all text-sm">
                                         <i class="fas fa-save mr-2"></i>Simpan Perubahan
                                     </button>
                                 </div>
@@ -517,9 +633,9 @@
                     </div>
 
                     <!-- Riwayat Pendidikan -->
-                    <div class="bg-white rounded-xl shadow-lg p-6" data-aos="fade-left">
+                    <div class="bg-white rounded-xl shadow-lg p-5 md:p-6" data-aos="fade-left">
                         <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-xl font-bold text-gray-800 flex items-center">
+                            <h3 class="text-lg md:text-xl font-bold text-gray-800 flex items-center">
                                 <i class="fas fa-graduation-cap mr-2 text-purple-500"></i>
                                 Riwayat Pendidikan
                             </h3>
@@ -536,9 +652,9 @@
                     </div>
 
                     <!-- Riwayat Jabatan -->
-                    <div class="bg-white rounded-xl shadow-lg p-6" data-aos="fade-left">
+                    <div class="bg-white rounded-xl shadow-lg p-5 md:p-6" data-aos="fade-left">
                         <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-xl font-bold text-gray-800 flex items-center">
+                            <h3 class="text-lg md:text-xl font-bold text-gray-800 flex items-center">
                                 <i class="fas fa-briefcase mr-2 text-purple-500"></i>
                                 Riwayat Jabatan
                             </h3>
@@ -555,8 +671,8 @@
                     </div>
 
                     <!-- Publikasi Terbaru -->
-                    <div class="bg-white rounded-xl shadow-lg p-6" data-aos="fade-left">
-                        <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                    <div class="bg-white rounded-xl shadow-lg p-5 md:p-6" data-aos="fade-left">
+                        <h3 class="text-lg md:text-xl font-bold text-gray-800 mb-4 flex items-center">
                             <i class="fas fa-book mr-2 text-purple-500"></i>
                             Publikasi Terbaru
                         </h3>
@@ -578,8 +694,8 @@
 
     <!-- Change Password Modal -->
     <div id="passwordModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl max-w-md w-full p-6">
-            <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+        <div class="bg-white rounded-xl max-w-md w-full p-5 md:p-6">
+            <h3 class="text-lg md:text-xl font-bold text-gray-800 mb-4 flex items-center">
                 <i class="fas fa-key mr-2 text-purple-500"></i>
                 Ubah Password
             </h3>
@@ -603,10 +719,10 @@
                     </div>
                     
                     <div class="flex justify-end space-x-3 mt-6">
-                        <button type="button" onclick="closePasswordModal()" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
+                        <button type="button" onclick="closePasswordModal()" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition text-sm">
                             Batal
                         </button>
-                        <button type="submit" class="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-lg hover:shadow-lg transition">
+                        <button type="submit" class="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-lg hover:shadow-lg transition text-sm">
                             Simpan
                         </button>
                     </div>
@@ -661,6 +777,14 @@
         });
     }
 
+    function adjustMainContentPadding() {
+        const header = document.getElementById('mainHeader');
+        const main = document.getElementById('mainContent');
+        if (header && main) {
+            main.style.paddingTop = header.offsetHeight + 'px';
+        }
+    }
+
     // ===========================================
     // CEK AUTHENTIKASI
     // ===========================================
@@ -687,40 +811,30 @@
         }
     }
 
-    
-    // UPDATE fungsi updateNavbarUserInfo
-function updateNavbarUserInfo(profile) {
-    if (!profile) return;
-    
-    // Buat URL avatar dengan fallback yang benar
-    let avatarUrl = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(profile.nama_lengkap || 'Dosen') + '&background=3B82F6&color=fff&bold=true';
-    
-    // Cek apakah ada foto_profil dan bukan path kosong
-    if (profile.foto_profil && profile.foto_profil !== '') {
-        // Jika foto_profil sudah berupa URL lengkap, gunakan langsung
-        if (profile.foto_profil.startsWith('http')) {
-            avatarUrl = profile.foto_profil;
-        } 
-        // Jika masih relative path, tambahkan base URL
-        else {
-            avatarUrl = `${window.location.origin}${profile.foto_profil}`;
-        }
+    // ===========================================
+    // UPDATE NAVBAR DENGAN DATA PROFIL
+    // ===========================================
+    function updateNavbarUserInfo(profile) {
+        if (!profile) return;
+        
+        const avatarUrl = profile.foto_profil ? `/${profile.foto_profil}` : `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.nama_lengkap || 'Dosen')}&background=3B82F6&color=fff&bold=true`;
+        
+        const navAvatar = document.getElementById('navAvatar');
+        const dropdownAvatar = document.getElementById('dropdownAvatar');
+        const mobileNavAvatar = document.getElementById('mobileNavAvatar');
+        const navUserName = document.getElementById('navUserName');
+        const dropdownUserName = document.getElementById('dropdownUserName');
+        const mobileNavUserName = document.getElementById('mobileNavUserName');
+        const dropdownUserNidn = document.getElementById('dropdownUserNidn');
+        
+        if (navAvatar) navAvatar.src = avatarUrl;
+        if (dropdownAvatar) dropdownAvatar.src = avatarUrl;
+        if (mobileNavAvatar) mobileNavAvatar.src = avatarUrl;
+        if (navUserName) navUserName.textContent = profile.nama_lengkap || 'Dosen';
+        if (dropdownUserName) dropdownUserName.textContent = profile.nama_lengkap || 'Dosen';
+        if (mobileNavUserName) mobileNavUserName.textContent = profile.nama_lengkap || 'Dosen';
+        if (dropdownUserNidn) dropdownUserNidn.textContent = profile.nidn ? `NIDN: ${profile.nidn}` : '-';
     }
-    
-    const navAvatar = document.getElementById('navAvatar');
-    const dropdownAvatar = document.getElementById('dropdownAvatar');
-    const profilePicture = document.getElementById('profilePicture');
-    const navUserName = document.getElementById('navUserName');
-    const dropdownUserName = document.getElementById('dropdownUserName');
-    const dropdownUserNidn = document.getElementById('dropdownUserNidn');
-    
-    if (navAvatar) navAvatar.src = avatarUrl;
-    if (dropdownAvatar) dropdownAvatar.src = avatarUrl;
-    if (profilePicture) profilePicture.src = avatarUrl;
-    if (navUserName) navUserName.textContent = profile.nama_lengkap || 'Dosen';
-    if (dropdownUserName) dropdownUserName.textContent = profile.nama_lengkap || 'Dosen';
-    if (dropdownUserNidn) dropdownUserNidn.textContent = profile.nidn ? `NIDN: ${profile.nidn}` : '-';
-}
 
     // ===========================================
     // LOAD PROGRAM STUDI
@@ -805,7 +919,7 @@ function updateNavbarUserInfo(profile) {
     function updateProfileUI() {
         if (!dosenProfile) return;
 
-        // Profile card - Gunakan safe check untuk setiap element
+        // Profile card
         const profileName = document.getElementById('profileName');
         if (profileName) profileName.textContent = dosenProfile.nama_lengkap || '-';
         
@@ -1182,47 +1296,46 @@ function updateNavbarUserInfo(profile) {
         if (input) input.click();
     };
 
-    // UPDATE fungsi uploadProfilePicture di dosen-profil.html
-window.uploadProfilePicture = async function(input) {
-    const file = input.files[0];
-    if (!file) return;
+    window.uploadProfilePicture = async function(input) {
+        const file = input.files[0];
+        if (!file) return;
 
-    if (file.size > 2 * 1024 * 1024) {
-        showNotification('Ukuran file maksimal 2MB', 'error');
-        return;
-    }
-
-    const formData = new FormData();
-    formData.append('foto', file);
-
-    try {
-        showLoading();
-
-        const response = await fetch(`${API_BASE_URL}/dosen/profil/foto`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${getAuthToken()}`
-                // Jangan set Content-Type, biar browser yang set dengan boundary
-            },
-            body: formData
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-            // Refresh data profil untuk mendapatkan foto terbaru
-            await loadProfileData();
-            showNotification('Foto profil berhasil diperbarui', 'success');
-        } else {
-            throw new Error(result.message);
+        if (file.size > 2 * 1024 * 1024) {
+            showNotification('Ukuran file maksimal 2MB', 'error');
+            return;
         }
-    } catch (error) {
-        console.error('Error uploading profile picture:', error);
-        showNotification(error.message || 'Gagal mengupload foto', 'error');
-    } finally {
-        hideLoading();
-    }
-};
+
+        const formData = new FormData();
+        formData.append('foto', file);
+
+        try {
+            showLoading();
+
+            const response = await fetch(`${API_BASE_URL}/dosen/profil/foto`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${getAuthToken()}`
+                },
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                const profilePicture = document.getElementById('profilePicture');
+                if (profilePicture) profilePicture.src = result.data.foto_profil;
+                updateNavbarUserInfo(dosenProfile);
+                showNotification('Foto profil berhasil diperbarui', 'success');
+            } else {
+                throw new Error(result.message);
+            }
+        } catch (error) {
+            console.error('Error uploading profile picture:', error);
+            showNotification(error.message || 'Gagal mengupload foto', 'error');
+        } finally {
+            hideLoading();
+        }
+    };
 
     // ===========================================
     // CHANGE PASSWORD
@@ -1486,7 +1599,7 @@ window.uploadProfilePicture = async function(input) {
     };
 
     // ===========================================
-    // DROPDOWN & NAVBAR INITIALIZATION
+    // NAVBAR FUNCTIONS
     // ===========================================
     function initDropdown() {
         const userMenuBtn = document.getElementById('userMenuBtn');
@@ -1506,11 +1619,41 @@ window.uploadProfilePicture = async function(input) {
         }
     }
 
+    function initMobileNav() {
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const mobileNav = document.getElementById('mobileNav');
+        const closeBtn = document.getElementById('closeMobileNav');
+        
+        if (hamburgerBtn && mobileNav) {
+            hamburgerBtn.addEventListener('click', () => {
+                mobileNav.classList.add('active');
+            });
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => {
+                    mobileNav.classList.remove('active');
+                });
+            }
+            mobileNav.addEventListener('click', (e) => {
+                if (e.target === mobileNav) mobileNav.classList.remove('active');
+            });
+        }
+    }
+
     function setActiveNavLink() {
         const currentPage = window.location.pathname.split('/').pop();
         const navLinks = document.querySelectorAll('.nav-link-modern');
+        const mobileLinks = document.querySelectorAll('.mobile-nav-link');
         
         navLinks.forEach(link => {
+            const href = link.getAttribute('href');
+            if (href === currentPage) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
+        
+        mobileLinks.forEach(link => {
             const href = link.getAttribute('href');
             if (href === currentPage) {
                 link.classList.add('active');
@@ -1530,10 +1673,14 @@ window.uploadProfilePicture = async function(input) {
         if (!user) return;
 
         initDropdown();
+        initMobileNav();
         setActiveNavLink();
         
         await loadProgramStudi();
         await loadProfileData();
+        
+        adjustMainContentPadding();
+        window.addEventListener('resize', adjustMainContentPadding);
     });
 
     // CLOSE MODAL WHEN CLICKING OUTSIDE
@@ -1543,6 +1690,6 @@ window.uploadProfilePicture = async function(input) {
             window.closePasswordModal();
         }
     };
-</script>
+    </script>
 </body>
 </html>
