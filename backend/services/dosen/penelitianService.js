@@ -4,18 +4,15 @@ const { deleteFile } = require('../../middleware/upload');
 
 class DosenPenelitianService {
     
-    // ==================== PENELITIAN ====================
-    
-    async getAllPenelitian({ page = 1, limit = 10, status, tahun, skema, search, userId }) {
+// Di fungsi getAllPenelitian - ganti select yang pakai relasi
+async getAllPenelitian({ page = 1, limit = 10, status, tahun, skema, search, userId }) {
     try {
         const offset = (page - 1) * limit;
         
+        // PERBAIKAN: Hapus select dengan relasi ke users
         let query = supabase
             .from('penelitian')
-            .select(`
-                *,
-                ketua:users!penelitian_ketua_peneliti_fkey(id_user, nama_lengkap, nidn, email, foto_profil)
-            `, { count: 'exact' })
+            .select('*', { count: 'exact' })  // <-- Hanya select *, tanpa join
             .eq('ketua_peneliti', userId);
         
         if (status && status !== 'all') {
@@ -42,20 +39,17 @@ class DosenPenelitianService {
         
         if (error) throw error;
         
-        // Untuk setiap penelitian, ambil anggota dan luaran
+        // Ambil anggota dan luaran terpisah (tanpa join yang bermasalah)
         const formattedData = await Promise.all((data || []).map(async (item) => {
             // Ambil anggota
             const { data: anggota } = await supabase
                 .from('anggota_penelitian')
-                .select(`
-                    id_anggota,
-                    user:users(id_user, nama_lengkap, nidn, email, foto_profil)
-                `)
+                .select('*')
                 .eq('id_penelitian', item.id_penelitian);
         
             const { data: luaran } = await supabase
                 .from('luaran_penelitian_pengabdian')
-                .select('id_luaran, judul_luaran, tipe_luaran, status')
+                .select('*')
                 .eq('id_referensi', item.id_penelitian)
                 .eq('jenis_referensi', 'penelitian');
             
@@ -84,15 +78,13 @@ class DosenPenelitianService {
     }
 }
     
-    async getPenelitianById(id, userId) {
+    
+async getPenelitianById(id, userId) {
     try {
-        // Ambil data penelitian
+        // PERBAIKAN: Hapus select dengan relasi ke users
         const { data: penelitian, error } = await supabase
             .from('penelitian')
-            .select(`
-                *,
-                ketua:users!penelitian_ketua_peneliti_fkey(id_user, nama_lengkap, nidn, email, foto_profil, no_hp)
-            `)
+            .select('*')  // <-- Hanya select *
             .eq('id_penelitian', id)
             .single();
         
@@ -106,11 +98,7 @@ class DosenPenelitianService {
         // Ambil anggota penelitian terpisah
         const { data: anggota, error: anggotaError } = await supabase
             .from('anggota_penelitian')
-            .select(`
-                id_anggota,
-                peran,
-                user:users(id_user, nama_lengkap, nidn, email, foto_profil, no_hp)
-            `)
+            .select('*')
             .eq('id_penelitian', id);
         
         if (anggotaError) throw anggotaError;
@@ -118,15 +106,7 @@ class DosenPenelitianService {
         // Ambil review penelitian terpisah
         const { data: reviews, error: reviewsError } = await supabase
             .from('review_penelitian')
-            .select(`
-                id_review,
-                catatan,
-                rekomendasi,
-                tipe_review,
-                file_review,
-                tanggal_review,
-                reviewer:users(id_user, nama_lengkap, role)
-            `)
+            .select('*')
             .eq('id_penelitian', id);
         
         if (reviewsError) throw reviewsError;
@@ -134,25 +114,12 @@ class DosenPenelitianService {
         // Ambil luaran terpisah
         const { data: luaran, error: luaranError } = await supabase
             .from('luaran_penelitian_pengabdian')
-            .select(`
-                id_luaran,
-                judul_luaran,
-                tipe_luaran,
-                kategori,
-                deskripsi,
-                file_publikasi,
-                file_haki,
-                file_luaran_lain,
-                link_terkait,
-                status,
-                created_at
-            `)
+            .select('*')
             .eq('id_referensi', id)
             .eq('jenis_referensi', 'penelitian');
         
         if (luaranError) throw luaranError;
         
-        // Gabungkan data
         penelitian.anggota = anggota || [];
         penelitian.reviews = reviews || [];
         penelitian.luaran = (luaran || []).map(l => ({
@@ -168,41 +135,55 @@ class DosenPenelitianService {
 }
 
 
-    async createPenelitian(data) {
-        try {
-            const { data: penelitian, error } = await supabase
-                .from('penelitian')
-                .insert([{
-                    judul: data.judul,
-                    skema_penelitian: data.skema,
-                    sumber_dana: data.jenis_pendanaan === 'internal' ? 'Dana Internal ITB Yadika' : 
-                                data.jenis_pendanaan === 'eksternal' ? 'Hibah Eksternal' : 'Mandiri',
-                    tahun: data.tahun,
-                    durasi: data.durasi || 6,
-                    ketua_peneliti: data.id_ketua,
-                    dana_diajukan: data.dana_diajukan || 0,
-                    file_proposal: data.file_proposal,
-                    status: 'draft',
-                    created_by: data.created_by,
-                    created_at: new Date()
-                }])
-                .select()
-                .single();
-            
-            if (error) throw error;
-            
-            if (data.luaran && typeof data.luaran === 'object') {
-                await this.saveLuaranTarget('penelitian', penelitian.id_penelitian, data.luaran, data.id_ketua);
-            }
-            
-            return await this.getPenelitianById(penelitian.id_penelitian, data.id_ketua);
-        } catch (error) {
-            if (data.file_proposal) await deleteFile(data.file_proposal);
-            console.error('Error in createPenelitian:', error);
-            throw error;
-        }
-    }
     
+async createPenelitian(data) {
+    try {
+        // Cek apakah user (ketua peneliti) ada di tabel users
+        const { data: userExists, error: userError } = await supabase
+            .from('users')
+            .select('id_user')
+            .eq('id_user', data.id_ketua)
+            .single();
+        
+        if (userError || !userExists) {
+            throw new Error('User ketua peneliti tidak ditemukan');
+        }
+        
+        const { data: penelitian, error } = await supabase
+            .from('penelitian')
+            .insert([{
+                judul: data.judul,
+                skema_penelitian: data.skema,
+                sumber_dana: data.jenis_pendanaan === 'internal' ? 'Dana Internal ITB Yadika' : 
+                            data.jenis_pendanaan === 'eksternal' ? 'Hibah Eksternal' : 'Mandiri',
+                tahun: data.tahun,
+                durasi: data.durasi || 6,
+                ketua_peneliti: data.id_ketua,
+                dana_diajukan: data.dana_diajukan || 0,
+                file_proposal: data.file_proposal,
+                status: 'draft',
+                created_by: data.created_by,
+                created_at: new Date()
+            }])
+            .select()
+            .single();
+        
+        if (error) throw error;
+        
+        if (data.luaran && typeof data.luaran === 'object') {
+            await this.saveLuaranTarget('penelitian', penelitian.id_penelitian, data.luaran, data.id_ketua);
+        }
+        
+        return await this.getPenelitianById(penelitian.id_penelitian, data.id_ketua);
+    } catch (error) {
+        if (data.file_proposal) await deleteFile(data.file_proposal);
+        console.error('Error in createPenelitian:', error);
+        throw error;
+    }
+}
+
+
+
     async updatePenelitian(id, data, userId) {
         try {
             const existing = await this.getPenelitianById(id, userId);
