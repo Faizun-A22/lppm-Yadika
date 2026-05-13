@@ -153,83 +153,49 @@ class RepositoryService {
         }
     }
 
-      async getAllDocuments(filters, pagination, sort) {
-        try {
-            // HAPUS SELECT DENGAN RELASI - gunakan SELECT sederhana dulu
-            let query = supabase
-                .from('repository_dokumen')
-                .select('*', { count: 'exact' });  // <-- HAPUS bagian users!
+      
+    // Ganti function getAllDocuments menjadi:
 
-            // Apply filters
-            if (filters.search) {
-                query = query.or(`judul.ilike.%${filters.search}%,penulis.ilike.%${filters.search}%,keywords.ilike.%${filters.search}%`);
-            }
+async getAllDocuments(filters, pagination, sort) {
+    try {
+        // HAPUS select dengan relasi - gunakan SELECT * SAJA
+        let query = supabase
+            .from('repository_dokumen')
+            .select('*', { count: 'exact' });  // <-- INI PERUBAHANNYA
 
-            if (filters.kategori) {
-                query = query.eq('kategori', filters.kategori);
-            }
-
-            if (filters.tahun) {
-                query = query.eq('tahun', filters.tahun);
-            }
-
-            if (filters.status) {
-                query = query.eq('status', filters.status);
-            }
-
-            // Apply sorting
-            const sortColumn = sort.sortBy || 'created_at';
-            const sortOrder = sort.sortOrder === 'ASC' ? { ascending: true } : { ascending: false };
-            query = query.order(sortColumn, sortOrder);
-
-            // Apply pagination
-            const from = (pagination.page - 1) * pagination.limit;
-            const to = from + pagination.limit - 1;
-            query = query.range(from, to);
-
-            const { data, error, count } = await query;
-
-            if (error) throw error;
-
-            // Untuk mengambil info user, lakukan query terpisah (jika diperlukan)
-            const transformedData = await Promise.all((data || []).map(async (doc) => {
-                let uploaded_by_name = null;
-                let uploaded_by_email = null;
-                
-                if (doc.uploaded_by) {
-                    const { data: userData } = await supabase
-                        .from('users')
-                        .select('nama_lengkap, email')
-                        .eq('id_user', doc.uploaded_by)
-                        .single();
-                    
-                    if (userData) {
-                        uploaded_by_name = userData.nama_lengkap;
-                        uploaded_by_email = userData.email;
-                    }
-                }
-                
-                return {
-                    ...doc,
-                    uploaded_by_name,
-                    uploaded_by_email
-                };
-            }));
-
-            return {
-                data: transformedData,
-                pagination: {
-                    current_page: pagination.page,
-                    per_page: pagination.limit,
-                    total_data: count || 0,
-                    total_pages: Math.ceil((count || 0) / pagination.limit)
-                }
-            };
-        } catch (error) {
-            logger.error('Error in getAllDocuments:', error);
-            throw error;
+        // Apply filters (sama seperti sebelumnya)
+        if (filters.search) {
+            query = query.or(`judul.ilike.%${filters.search}%,penulis.ilike.%${filters.search}%,keywords.ilike.%${filters.search}%`);
         }
+        if (filters.kategori) query = query.eq('kategori', filters.kategori);
+        if (filters.tahun) query = query.eq('tahun', filters.tahun);
+        if (filters.status) query = query.eq('status', filters.status);
+
+        const sortColumn = sort.sortBy || 'created_at';
+        const sortOrder = sort.sortOrder === 'ASC' ? { ascending: true } : { ascending: false };
+        query = query.order(sortColumn, sortOrder);
+
+        const from = (pagination.page - 1) * pagination.limit;
+        const to = from + pagination.limit - 1;
+        query = query.range(from, to);
+
+        const { data, error, count } = await query;
+        if (error) throw error;
+
+        return {
+            data: data || [],
+            pagination: {
+                current_page: pagination.page,
+                per_page: pagination.limit,
+                total_data: count || 0,
+                total_pages: Math.ceil((count || 0) / pagination.limit)
+            }
+        };
+    } catch (error) {
+        logger.error('Error in getAllDocuments:', error);
+        throw error;
     }
+}
 
 
     async getDocumentById(id) {
