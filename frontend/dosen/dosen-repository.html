@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <title>Scholar Repository - Portal Dosen LPPM ITB Yadika</title>
     
     <!-- CSS External Libraries -->
@@ -41,39 +41,128 @@
     </script>
     
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Navbar Styles */
+        .navbar-custom {
+            background: linear-gradient(135deg, #1E3A5F 0%, #2D4A6E 50%, #1E3A5F 100%);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-link-modern {
+            position: relative;
+            transition: all 0.2s ease;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .nav-link-modern:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .nav-link-modern.active {
+            background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
+            color: white !important;
+        }
+
+        .nav-link-modern.active i {
+            color: white !important;
+        }
+
+        .brand-title {
+            color: white;
+        }
+
+        .brand-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .icon-btn {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .icon-btn:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .user-name, .user-role {
+            color: white;
+        }
+
+        .user-role {
+            opacity: 0.7;
+        }
+
+        /* Mobile Navigation */
+        .mobile-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-nav.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .mobile-nav-container {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 280px;
+            height: 100%;
+            background: white;
+            transform: translateX(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mobile-nav.active .mobile-nav-container {
+            transform: translateX(0);
+        }
+
+        .mobile-nav-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #1E3A5F, #2D4A6E);
+            color: white;
+        }
+
+        .mobile-nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            color: #4B5563;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .mobile-nav-link.active {
+            background: #EFF6FF;
+            color: #3B82F6;
+            border-left-color: #3B82F6;
+        }
+
         /* Google Scholar-like Styles */
         .gradient-text { 
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
             -webkit-background-clip: text; 
             -webkit-text-fill-color: transparent; 
             background-clip: text; 
-        }
-        
-        .nav-link { 
-            position: relative; 
-            transition: color 0.3s ease; 
-        }
-        
-        .nav-link::after { 
-            content: ''; 
-            position: absolute; 
-            width: 0; 
-            height: 2px; 
-            bottom: -5px; 
-            left: 50%; 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-            transition: all 0.3s ease; 
-        }
-        
-        .nav-link:hover::after, 
-        .nav-link.active::after { 
-            width: 100%; 
-            left: 0; 
-        }
-        
-        .nav-link.active { 
-            color: #8b5cf6; 
-            font-weight: 600; 
         }
 
         /* Loading Spinner */
@@ -94,7 +183,7 @@
         /* Scholar Header */
         .scholar-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 3rem 0;
+            padding: 2rem 0;
             margin-top: -1rem;
             border-radius: 0 0 3rem 3rem;
             box-shadow: 0 10px 40px rgba(102, 126, 234, 0.2);
@@ -104,7 +193,7 @@
         .stat-card {
             background: white;
             border-radius: 16px;
-            padding: 1.5rem;
+            padding: 1.25rem;
             transition: all 0.3s ease;
             border: 1px solid rgba(102, 126, 234, 0.1);
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
@@ -117,20 +206,20 @@
         }
 
         .stat-icon {
-            width: 48px;
-            height: 48px;
+            width: 40px;
+            height: 40px;
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.25rem;
         }
 
         /* Document Card */
         .document-card {
             background: white;
             border-radius: 16px;
-            padding: 1.5rem;
+            padding: 1.25rem;
             transition: all 0.3s ease;
             border: 1px solid #e5e7eb;
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
@@ -144,7 +233,7 @@
 
         .document-title {
             color: #1a0dab;
-            font-size: 1.125rem;
+            font-size: 1rem;
             font-weight: 500;
             line-height: 1.4;
             margin-bottom: 0.5rem;
@@ -159,7 +248,7 @@
 
         .author-link {
             color: #1a73e8;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 500;
         }
         
@@ -169,14 +258,14 @@
 
         .publication-meta {
             color: #3c4043;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
 
         .metrics-badge {
             background: #f8f9fa;
             border-radius: 20px;
-            padding: 0.25rem 1rem;
-            font-size: 0.85rem;
+            padding: 0.2rem 0.8rem;
+            font-size: 0.8rem;
             color: #5f6368;
         }
 
@@ -191,14 +280,18 @@
         .tab-container {
             border-bottom: 1px solid #e5e7eb;
             margin-bottom: 1.5rem;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
         
         .tab-button {
             position: relative;
-            padding: 1rem 1.5rem;
+            padding: 0.75rem 1rem;
             font-weight: 500;
+            font-size: 0.85rem;
             color: #6b7280;
             transition: all 0.3s;
+            white-space: nowrap;
         }
         
         .tab-button:hover {
@@ -223,14 +316,14 @@
         .filter-pill {
             display: inline-flex;
             align-items: center;
-            padding: 0.5rem 1.25rem;
+            padding: 0.4rem 1rem;
             background: white;
             border: 1px solid #e5e7eb;
             border-radius: 30px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: #4b5563;
             transition: all 0.2s;
-            margin: 0.25rem;
+            margin: 0.2rem;
         }
         
         .filter-pill:hover {
@@ -246,8 +339,8 @@
 
         /* Action Buttons */
         .action-button {
-            width: 36px;
-            height: 36px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             display: inline-flex;
             align-items: center;
@@ -255,10 +348,6 @@
             transition: all 0.2s;
             background: #f8f9fa;
             color: #5f6368;
-        }
-        
-        .action-button:hover {
-            transform: scale(1.1);
         }
         
         .action-button.view:hover { background: #e8f0fe; color: #1a73e8; }
@@ -277,21 +366,16 @@
         .modal-modern .modal-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 1.5rem;
+            padding: 1.25rem;
         }
         
         .modal-modern .modal-body {
-            padding: 2rem;
-        }
-        
-        .modal-modern .modal-footer {
             padding: 1.5rem;
-            border-top: 1px solid #e5e7eb;
         }
 
         /* Form Styles */
         .form-modern {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.25rem;
         }
         
         .form-modern label {
@@ -299,7 +383,7 @@
             margin-bottom: 0.5rem;
             font-weight: 500;
             color: #374151;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
         
         .form-modern .required::after {
@@ -312,11 +396,11 @@
         .form-modern select,
         .form-modern textarea {
             width: 100%;
-            padding: 0.75rem 1rem;
+            padding: 0.6rem 0.8rem;
             border: 1px solid #d1d5db;
             border-radius: 12px;
             transition: all 0.3s;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
         }
         
         .form-modern input:focus,
@@ -331,7 +415,7 @@
         .file-upload-area {
             border: 2px dashed #d1d5db;
             border-radius: 12px;
-            padding: 2rem;
+            padding: 1.5rem;
             text-align: center;
             background: #f8f9fa;
             cursor: pointer;
@@ -342,45 +426,19 @@
             border-color: #667eea;
             background: #f0f4ff;
         }
-        
-        .file-upload-area i {
-            color: #667eea;
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
 
         /* Citation Styles */
         .citation-card {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border-radius: 16px;
-            padding: 1.5rem;
+            padding: 1.25rem;
             color: white;
         }
 
         .citation-number {
-            font-size: 2rem;
+            font-size: 1.75rem;
             font-weight: 700;
             line-height: 1.2;
-        }
-
-        .citation-label {
-            font-size: 0.875rem;
-            opacity: 0.9;
-        }
-
-        /* Line clamp */
-        .line-clamp-2 {
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .line-clamp-3 {
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
         }
 
         /* Loading Overlay */
@@ -398,54 +456,45 @@
             justify-content: center;
         }
 
+        /* Dropdown Animation */
+        #userDropdown {
+            transform-origin: top right;
+            animation: dropdownFade 0.2s ease;
+        }
 
-         .nav-link-modern {
-        position: relative;
-        transition: all 0.2s ease;
-    }
-    
-    .nav-link-modern.active {
-        background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
-        color: white !important;
-    }
-    
-    .nav-link-modern.active i {
-        color: white !important;
-    }
-    
-    .nav-link-modern:not(.active):hover {
-        transform: translateY(-1px);
-    }
-    
-    /* Dropdown Animation */
-    #userDropdown {
-        transform-origin: top right;
-        animation: dropdownFade 0.2s ease;
-    }
-    
-    @keyframes dropdownFade {
-        from {
-            opacity: 0;
-            transform: scale(0.95) translateY(-10px);
+        @keyframes dropdownFade {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
         }
-        to {
-            opacity: 1;
-            transform: scale(1) translateY(0);
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .scholar-header {
+                padding: 1.5rem 0;
+            }
+            .stat-card {
+                padding: 0.75rem;
+            }
+            .stat-card .text-2xl {
+                font-size: 1.25rem;
+            }
+            .document-card {
+                padding: 1rem;
+            }
+            .citation-number {
+                font-size: 1.25rem;
+            }
+            .filter-pill {
+                padding: 0.3rem 0.8rem;
+                font-size: 0.75rem;
+            }
         }
-    }
-    
-    /* Active link indicator */
-    .nav-link-modern.active::before {
-        content: '';
-        position: absolute;
-        bottom: -2px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 20px;
-        height: 2px;
-        background: white;
-        border-radius: 2px;
-    }
     </style>
 </head>
 <body class="bg-gray-50 font-sans antialiased">
@@ -454,128 +503,184 @@
         <div class="text-center">
             <div class="loading-spinner mx-auto"></div>
             <p class="mt-4 text-gray-600 font-medium">Memuat data...</p>
-            <p class="text-sm text-gray-400">Mohon tunggu sebentar</p>
         </div>
     </div>
 
-    <header class="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-md shadow-sm z-50 border-b border-gray-100">
-    <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
-        <!-- Logo and Brand -->
-        <a href="dosen-dashboard.html" class="flex items-center space-x-3 group">
-            <div class="relative">
-                <img src="yadika.png" alt="Logo LPPM ITB Yadika" class="h-10 w-10 rounded-xl shadow-sm transition-transform group-hover:scale-105">
-                <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl opacity-0 group-hover:opacity-20 transition"></div>
-            </div>
-            <div>
-                <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                    Portal Dosen
-                </h1>
-                <p class="text-xs text-gray-400">LPPM ITB Yadika</p>
-            </div>
-        </a>
-        
-        <!-- Desktop Navigation Menu -->
-        <div class="hidden md:flex items-center space-x-1">
-            <a href="dosen-dashboard.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
-                <i class="fas fa-home text-gray-400 group-hover:text-blue-500 transition"></i>
-                <span>Dashboard</span>
-            </a>
-            <a href="dosen-berita.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
-                <i class="fas fa-newspaper text-gray-400 group-hover:text-blue-500 transition"></i>
-                <span>Berita</span>
-            </a>
-            <a href="dosen-penelitian-pengabdian.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
-                <i class="fas fa-flask text-gray-400 group-hover:text-blue-500 transition"></i>
-                <span>Penelitian</span>
-            </a>
-            <a href="dosen-repository.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2 active">
-                <i class="fas fa-archive text-gray-400 group-hover:text-blue-500 transition"></i>
-                <span>Repository</span>
-            </a>
-            <a href="dosen-profil.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
-                <i class="fas fa-user-circle text-gray-400 group-hover:text-blue-500 transition"></i>
-                <span>Profil</span>
-            </a>
-        </div>
-        
-        <!-- User Info & Actions -->
-        <div class="flex items-center gap-4">
-            <!-- Notifications Dropdown -->
-            <div class="relative">
-                <button id="notificationBtn" class="relative p-2 rounded-lg text-gray-500 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200">
-                    <i class="fas fa-bell text-lg"></i>
-                    <span id="notificationBadge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full hidden"></span>
-                </button>
-            </div>
-            
-            <!-- User Profile Dropdown -->
-            <div class="relative">
-                <button id="userMenuBtn" class="flex items-center gap-3 p-1.5 rounded-xl hover:bg-gray-50 transition-all duration-200 border border-transparent hover:border-gray-200">
-                    <div class="relative">
-                        <img id="navAvatar" src="" alt="Avatar" class="w-9 h-9 rounded-full object-cover ring-2 ring-gray-200">
-                        <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full ring-2 ring-white"></div>
+    <!-- Mobile Navigation -->
+    <div id="mobileNav" class="mobile-nav">
+        <div class="mobile-nav-container">
+            <div class="mobile-nav-header">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                        <img src="yadika.png" alt="Logo" class="h-8 w-8 rounded-lg bg-white p-1">
+                        <span class="font-bold text-sm">Portal Dosen</span>
                     </div>
-                    <div class="hidden md:block text-left">
-                        <p class="text-sm font-semibold text-gray-800" id="navUserName">Loading...</p>
-                        <p class="text-xs text-gray-400" id="navUserRole">Dosen</p>
-                    </div>
-                    <i class="fas fa-chevron-down text-xs text-gray-400 hidden md:block"></i>
-                </button>
-                
-                <!-- Dropdown Menu -->
-                <div id="userDropdown" class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hidden transition-all duration-200 z-50">
-                    <!-- Header with user info -->
-                    <div class="p-3 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-purple-50">
-                        <div class="flex items-center gap-3">
-                            <img id="dropdownAvatar" src="" alt="Avatar" class="w-10 h-10 rounded-full object-cover">
-                            <div>
-                                <p class="font-semibold text-gray-800 text-sm" id="dropdownUserName">Loading...</p>
-                                <p class="text-xs text-gray-500" id="dropdownUserNidn">-</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Menu Items -->
-                    <div class="p-2">
-                        <a href="dosen-profil.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
-                            <i class="fas fa-user-cog w-5 text-gray-400"></i>
-                            <span>Pengaturan Akun</span>
-                        </a>
-                        <a href="dosen-ubah-password.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
-                            <i class="fas fa-key w-5 text-gray-400"></i>
-                            <span>Ubah Password</span>
-                        </a>
-                        <div class="border-t border-gray-100 my-2"></div>
-                        <button onclick="handleLogout()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-600 hover:bg-red-50 transition text-sm">
-                            <i class="fas fa-sign-out-alt w-5 text-red-400"></i>
-                            <span>Logout</span>
-                        </button>
+                    <button id="closeMobileNav" class="text-white">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <div class="flex items-center gap-3 mt-4 pt-2 border-t border-white/20">
+                    <img id="mobileNavAvatar" src="" alt="Avatar" class="w-10 h-10 rounded-full object-cover ring-2 ring-white/50">
+                    <div>
+                        <p class="font-semibold text-sm" id="mobileNavUserName">Loading...</p>
+                        <p class="text-xs opacity-80">Dosen</p>
                     </div>
                 </div>
             </div>
+            <div class="flex-1 overflow-y-auto py-4">
+                <a href="dosen-dashboard.html" class="mobile-nav-link">
+                    <i class="fas fa-home w-5"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="dosen-berita.html" class="mobile-nav-link">
+                    <i class="fas fa-newspaper w-5"></i>
+                    <span>Berita</span>
+                </a>
+                <a href="dosen-penelitian-pengabdian.html" class="mobile-nav-link">
+                    <i class="fas fa-flask w-5"></i>
+                    <span>Penelitian</span>
+                </a>
+                <a href="dosen-repository.html" class="mobile-nav-link active">
+                    <i class="fas fa-archive w-5"></i>
+                    <span>Repository</span>
+                </a>
+                <div class="border-t border-gray-100 my-4 mx-4"></div>
+                <a href="dosen-profil.html" class="mobile-nav-link">
+                    <i class="fas fa-user-cog w-5"></i>
+                    <span>Pengaturan Akun</span>
+                </a>
+                <a href="dosen-ubah-password.html" class="mobile-nav-link">
+                    <i class="fas fa-key w-5"></i>
+                    <span>Ubah Password</span>
+                </a>
+                <button onclick="handleLogout()" class="mobile-nav-link w-full text-left text-red-600">
+                    <i class="fas fa-sign-out-alt w-5"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
         </div>
-    </nav>
-</header>
+    </div>
+
+    <!-- Navbar -->
+    <header id="mainHeader" class="fixed top-0 left-0 right-0 navbar-custom z-50">
+        <nav class="container mx-auto px-4 md:px-6 py-3 flex justify-between items-center">
+            <!-- Logo and Brand -->
+            <a href="dosen-dashboard.html" class="flex items-center space-x-3 group">
+                <div class="relative">
+                    <img src="yadika.png" alt="Logo LPPM ITB Yadika" class="h-9 w-9 md:h-10 md:w-10 rounded-lg shadow-sm transition-transform group-hover:scale-105 bg-white p-1">
+                    <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-400 to-purple-400 rounded-lg opacity-0 group-hover:opacity-30 transition"></div>
+                </div>
+                <div>
+                    <h1 class="brand-title text-base md:text-lg font-bold tracking-wide">
+                        Portal Dosen
+                    </h1>
+                    <p class="brand-subtitle text-xs md:text-sm -mt-0.5">ITB Yadika</p>
+                </div>
+            </a>
+            
+            <!-- Desktop Navigation Menu -->
+            <div class="hidden md:flex items-center space-x-1">
+                <a href="dosen-dashboard.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-home text-sm"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="dosen-berita.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-newspaper text-sm"></i>
+                    <span>Berita</span>
+                </a>
+                <a href="dosen-penelitian-pengabdian.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-flask text-sm"></i>
+                    <span>Penelitian</span>
+                </a>
+                <a href="dosen-repository.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2 active">
+                    <i class="fas fa-archive text-sm"></i>
+                    <span>Repository</span>
+                </a>
+                <a href="dosen-profil.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-user-circle text-sm"></i>
+                    <span>Profil</span>
+                </a>
+            </div>
+            
+            <!-- User Info & Actions -->
+            <div class="flex items-center gap-2 md:gap-4">
+                <!-- Notifications Dropdown -->
+                <div class="relative">
+                    <button id="notificationBtn" class="icon-btn relative p-2 rounded-lg transition-all duration-200">
+                        <i class="fas fa-bell text-base md:text-lg"></i>
+                        <span id="notificationBadge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full hidden"></span>
+                    </button>
+                </div>
+                
+                <!-- User Profile Dropdown Desktop -->
+                <div class="relative hidden md:block">
+                    <button id="userMenuBtn" class="flex items-center gap-2 p-1.5 rounded-xl hover:bg-white/10 transition-all duration-200">
+                        <div class="relative">
+                            <img id="navAvatar" src="" alt="Avatar" class="w-8 h-8 rounded-full object-cover ring-2 ring-white/50">
+                            <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full ring-2 ring-white"></div>
+                        </div>
+                        <div class="hidden xl:block text-left">
+                            <p class="user-name text-xs font-semibold" id="navUserName">Loading...</p>
+                            <p class="user-role text-[10px]" id="navUserRole">Dosen</p>
+                        </div>
+                        <i class="fas fa-chevron-down text-[10px] text-white/60 hidden xl:block"></i>
+                    </button>
+                    
+                    <div id="userDropdown" class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hidden z-50">
+                        <div class="p-3 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-purple-50">
+                            <div class="flex items-center gap-3">
+                                <img id="dropdownAvatar" src="" alt="Avatar" class="w-10 h-10 rounded-full object-cover">
+                                <div>
+                                    <p class="font-semibold text-gray-800 text-sm" id="dropdownUserName">Loading...</p>
+                                    <p class="text-xs text-gray-500" id="dropdownUserNidn">-</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-2">
+                            <a href="dosen-profil.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
+                                <i class="fas fa-user-cog w-5 text-gray-400"></i>
+                                <span>Pengaturan Akun</span>
+                            </a>
+                            <a href="dosen-ubah-password.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
+                                <i class="fas fa-key w-5 text-gray-400"></i>
+                                <span>Ubah Password</span>
+                            </a>
+                            <div class="border-t border-gray-100 my-2"></div>
+                            <button onclick="handleLogout()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-600 hover:bg-red-50 transition text-sm">
+                                <i class="fas fa-sign-out-alt w-5 text-red-400"></i>
+                                <span>Logout</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hamburger Menu Button -->
+                <button id="hamburgerBtn" class="md:hidden icon-btn p-2 rounded-lg transition-all duration-200">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </nav>
+    </header>
 
     <!-- Main Content Area -->
-    <main class="pt-20">
-        <!-- Scholar Header -->
-        <div class="scholar-header">
-            <div class="container mx-auto px-6">
+    <main id="mainContent" class="pb-12">
+        <div class="container mx-auto px-4 sm:px-6 py-6">
+            <!-- Scholar Header -->
+            <div class="scholar-header -mt-6 mb-6">
                 <div class="max-w-5xl mx-auto">
-                    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8" data-aos="fade-down">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6" data-aos="fade-down">
                         <div>
-                            <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">
-                                <i class="fas fa-graduation-cap mr-3"></i>Scholar Repository
+                            <h1 class="text-2xl md:text-3xl font-bold text-white mb-1">
+                                <i class="fas fa-graduation-cap mr-2"></i>Scholar Repository
                             </h1>
-                            <p class="text-white text-opacity-90 text-lg">
+                            <p class="text-white text-opacity-90 text-sm md:text-base">
                                 Kelola publikasi ilmiah, paten, dan karya akademik Anda
                             </p>
                         </div>
                         
                         <!-- Upload Button -->
-                        <button onclick="openUploadModal()" class="mt-4 md:mt-0 bg-white text-purple-600 font-bold py-3 px-6 rounded-xl hover:shadow-xl transition-all transform hover:scale-105 flex items-center">
-                            <i class="fas fa-cloud-upload-alt mr-2"></i>Upload Karya Baru
+                        <button onclick="openUploadModal()" class="mt-3 md:mt-0 bg-white text-purple-600 font-bold py-2 px-5 rounded-xl hover:shadow-xl transition-all transform hover:scale-105 flex items-center text-sm">
+                            <i class="fas fa-cloud-upload-alt mr-2"></i>Upload Karya
                         </button>
                     </div>
 
@@ -583,215 +688,204 @@
                     <div class="relative" data-aos="fade-up">
                         <input type="text" id="searchInput" 
                                placeholder="Cari judul, penulis, atau kata kunci..." 
-                               class="w-full px-6 py-4 rounded-xl text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-300 text-lg shadow-lg">
-                        <i class="fas fa-search absolute right-6 top-5 text-gray-400 text-xl"></i>
+                               class="w-full px-5 py-3 rounded-xl text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-300 text-base shadow-lg">
+                        <i class="fas fa-search absolute right-5 top-3.5 text-gray-400 text-lg"></i>
                     </div>
 
                     <!-- Quick Filter Pills -->
-                    <div class="flex flex-wrap justify-center gap-2 mt-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="flex flex-wrap justify-center gap-1 mt-4" data-aos="fade-up" data-aos-delay="100">
                         <button onclick="filterByType('jurnal')" class="filter-pill">
-                            <i class="fas fa-book-open mr-2"></i>Jurnal
+                            <i class="fas fa-book-open mr-1"></i>Jurnal
                         </button>
                         <button onclick="filterByType('prosiding')" class="filter-pill">
-                            <i class="fas fa-file-alt mr-2"></i>Prosiding
+                            <i class="fas fa-file-alt mr-1"></i>Prosiding
                         </button>
                         <button onclick="filterByType('buku')" class="filter-pill">
-                            <i class="fas fa-book mr-2"></i>Buku
+                            <i class="fas fa-book mr-1"></i>Buku
                         </button>
                         <button onclick="filterByType('hki')" class="filter-pill">
-                            <i class="fas fa-copyright mr-2"></i>HKI
+                            <i class="fas fa-copyright mr-1"></i>HKI
                         </button>
                         <button onclick="filterByType('laporan')" class="filter-pill">
-                            <i class="fas fa-file-pdf mr-2"></i>Laporan
+                            <i class="fas fa-file-pdf mr-1"></i>Laporan
                         </button>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="container mx-auto px-6 py-8">
             <!-- Statistics Cards -->
-            <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8" data-aos="fade-up" data-aos-delay="50">
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6" data-aos="fade-up" data-aos-delay="50">
                 <div class="stat-card">
-                    <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center justify-between mb-1">
                         <div class="stat-icon bg-blue-100">
                             <i class="fas fa-book-open text-blue-600"></i>
                         </div>
-                        <span class="text-xs text-green-600">+12%</span>
                     </div>
-                    <p class="text-2xl font-bold text-gray-800" id="totalJurnal">0</p>
-                    <p class="text-sm text-gray-500">Jurnal Terbit</p>
+                    <p class="text-xl font-bold text-gray-800" id="totalJurnal">0</p>
+                    <p class="text-xs text-gray-500">Jurnal</p>
                 </div>
                 
                 <div class="stat-card">
-                    <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center justify-between mb-1">
                         <div class="stat-icon bg-yellow-100">
                             <i class="fas fa-file-alt text-yellow-600"></i>
                         </div>
-                        <span class="text-xs text-green-600">+8%</span>
                     </div>
-                    <p class="text-2xl font-bold text-gray-800" id="totalProsiding">0</p>
-                    <p class="text-sm text-gray-500">Prosiding</p>
+                    <p class="text-xl font-bold text-gray-800" id="totalProsiding">0</p>
+                    <p class="text-xs text-gray-500">Prosiding</p>
                 </div>
                 
                 <div class="stat-card">
-                    <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center justify-between mb-1">
                         <div class="stat-icon bg-green-100">
                             <i class="fas fa-book text-green-600"></i>
                         </div>
-                        <span class="text-xs text-green-600">+5%</span>
                     </div>
-                    <p class="text-2xl font-bold text-gray-800" id="totalBuku">0</p>
-                    <p class="text-sm text-gray-500">Buku</p>
+                    <p class="text-xl font-bold text-gray-800" id="totalBuku">0</p>
+                    <p class="text-xs text-gray-500">Buku</p>
                 </div>
                 
                 <div class="stat-card">
-                    <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center justify-between mb-1">
                         <div class="stat-icon bg-purple-100">
                             <i class="fas fa-copyright text-purple-600"></i>
                         </div>
-                        <span class="text-xs text-green-600">+3%</span>
                     </div>
-                    <p class="text-2xl font-bold text-gray-800" id="totalHKI">0</p>
-                    <p class="text-sm text-gray-500">HKI/Paten</p>
+                    <p class="text-xl font-bold text-gray-800" id="totalHKI">0</p>
+                    <p class="text-xs text-gray-500">HKI/Paten</p>
                 </div>
                 
                 <div class="stat-card">
-                    <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center justify-between mb-1">
                         <div class="stat-icon bg-red-100">
                             <i class="fas fa-file-pdf text-red-600"></i>
                         </div>
-                        <span class="text-xs text-green-600">+15%</span>
                     </div>
-                    <p class="text-2xl font-bold text-gray-800" id="totalLaporan">0</p>
-                    <p class="text-sm text-gray-500">Laporan</p>
+                    <p class="text-xl font-bold text-gray-800" id="totalLaporan">0</p>
+                    <p class="text-xs text-gray-500">Laporan</p>
                 </div>
             </div>
 
             <!-- Tabs Navigator -->
             <div class="tab-container" data-aos="fade-up">
-                <div class="flex overflow-x-auto">
+                <div class="flex">
                     <button class="tab-button active" data-tab="all" onclick="switchTab('all')">
-                        <i class="fas fa-layer-group mr-2"></i>Semua Karya
-                        <span class="ml-2 text-xs bg-gray-200 px-2 py-1 rounded-full" id="countAll">0</span>
+                        <i class="fas fa-layer-group mr-1"></i>Semua
+                        <span class="ml-1 text-xs bg-gray-200 px-1.5 py-0.5 rounded-full" id="countAll">0</span>
                     </button>
                     <button class="tab-button" data-tab="jurnal" onclick="switchTab('jurnal')">
-                        <i class="fas fa-book-open mr-2"></i>Jurnal
-                        <span class="ml-2 text-xs bg-gray-200 px-2 py-1 rounded-full" id="countJurnal">0</span>
+                        <i class="fas fa-book-open mr-1"></i>Jurnal
+                        <span class="ml-1 text-xs bg-gray-200 px-1.5 py-0.5 rounded-full" id="countJurnal">0</span>
                     </button>
                     <button class="tab-button" data-tab="prosiding" onclick="switchTab('prosiding')">
-                        <i class="fas fa-file-alt mr-2"></i>Prosiding
-                        <span class="ml-2 text-xs bg-gray-200 px-2 py-1 rounded-full" id="countProsiding">0</span>
+                        <i class="fas fa-file-alt mr-1"></i>Prosiding
+                        <span class="ml-1 text-xs bg-gray-200 px-1.5 py-0.5 rounded-full" id="countProsiding">0</span>
                     </button>
                     <button class="tab-button" data-tab="buku" onclick="switchTab('buku')">
-                        <i class="fas fa-book mr-2"></i>Buku
-                        <span class="ml-2 text-xs bg-gray-200 px-2 py-1 rounded-full" id="countBuku">0</span>
+                        <i class="fas fa-book mr-1"></i>Buku
+                        <span class="ml-1 text-xs bg-gray-200 px-1.5 py-0.5 rounded-full" id="countBuku">0</span>
                     </button>
                     <button class="tab-button" data-tab="hki" onclick="switchTab('hki')">
-                        <i class="fas fa-copyright mr-2"></i>HKI
-                        <span class="ml-2 text-xs bg-gray-200 px-2 py-1 rounded-full" id="countHKI">0</span>
+                        <i class="fas fa-copyright mr-1"></i>HKI
+                        <span class="ml-1 text-xs bg-gray-200 px-1.5 py-0.5 rounded-full" id="countHKI">0</span>
                     </button>
                     <button class="tab-button" data-tab="laporan" onclick="switchTab('laporan')">
-                        <i class="fas fa-file-pdf mr-2"></i>Laporan
-                        <span class="ml-2 text-xs bg-gray-200 px-2 py-1 rounded-full" id="countLaporan">0</span>
+                        <i class="fas fa-file-pdf mr-1"></i>Laporan
+                        <span class="ml-1 text-xs bg-gray-200 px-1.5 py-0.5 rounded-full" id="countLaporan">0</span>
                     </button>
                 </div>
             </div>
 
             <!-- Filter Bar -->
-            <div class="bg-white rounded-xl shadow-sm p-4 mb-6 flex flex-wrap items-center gap-4" data-aos="fade-up">
-                <div class="flex items-center space-x-2">
-                    <i class="fas fa-filter text-gray-400"></i>
-                    <span class="text-sm font-medium text-gray-700">Filter:</span>
+            <div class="bg-white rounded-xl shadow-sm p-3 mb-5 flex flex-wrap items-center gap-3" data-aos="fade-up">
+                <div class="flex items-center space-x-1">
+                    <i class="fas fa-filter text-gray-400 text-sm"></i>
+                    <span class="text-xs font-medium text-gray-700">Filter:</span>
                 </div>
                 
-                <select id="yearFilter" class="px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-purple-500">
+                <select id="yearFilter" class="px-2 py-1.5 border rounded-lg text-sm focus:ring-2 focus:ring-purple-500">
                     <option value="all">Semua Tahun</option>
                 </select>
 
-                <select id="sortSelect" onchange="sortRepository()" class="px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-purple-500">
+                <select id="sortSelect" onchange="sortRepository()" class="px-2 py-1.5 border rounded-lg text-sm focus:ring-2 focus:ring-purple-500">
                     <option value="terbaru">Terbaru</option>
                     <option value="terlama">Terlama</option>
                     <option value="judul-asc">Judul A-Z</option>
                     <option value="judul-desc">Judul Z-A</option>
-                    <option value="popular">Terpopuler</option>
                 </select>
 
                 <div class="flex-1"></div>
 
-                <button onclick="applyFilters()" class="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-purple-700 transition">
-                    <i class="fas fa-search mr-2"></i>Terapkan
+                <button onclick="applyFilters()" class="bg-purple-600 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-purple-700 transition">
+                    <i class="fas fa-search mr-1"></i>Terapkan
                 </button>
-                <button onclick="resetFilters()" class="border px-4 py-2 rounded-lg text-sm hover:bg-gray-50 transition">
-                    <i class="fas fa-redo-alt mr-2"></i>Reset
+                <button onclick="resetFilters()" class="border px-3 py-1.5 rounded-lg text-sm hover:bg-gray-50 transition">
+                    <i class="fas fa-redo-alt mr-1"></i>Reset
                 </button>
             </div>
 
             <!-- Results Info -->
-            <div class="flex justify-between items-center mb-4" data-aos="fade-up">
-                <p class="text-sm text-gray-500" id="resultCount">Menampilkan 0 dokumen</p>
-                <p class="text-sm text-gray-400">
-                    <i class="fas fa-clock mr-1"></i> Diperbarui <span id="lastUpdate">baru saja</span>
+            <div class="flex justify-between items-center mb-3" data-aos="fade-up">
+                <p class="text-xs text-gray-500" id="resultCount">Menampilkan 0 dokumen</p>
+                <p class="text-xs text-gray-400">
+                    <i class="fas fa-clock mr-1"></i> <span id="lastUpdate">baru saja</span>
                 </p>
             </div>
 
             <!-- Repository Grid -->
-            <div id="repositoryContainer" class="grid grid-cols-1 gap-4" data-aos="fade-up">
-                <!-- Repository items will be loaded here -->
-                <div class="text-center py-12">
+            <div id="repositoryContainer" class="grid grid-cols-1 gap-3" data-aos="fade-up">
+                <div class="text-center py-8">
                     <div class="loading-spinner mx-auto"></div>
-                    <p class="mt-4 text-gray-600">Memuat repository...</p>
+                    <p class="mt-3 text-gray-600 text-sm">Memuat repository...</p>
                 </div>
             </div>
 
             <!-- Load More Button -->
-            <div class="text-center mt-8 hidden" id="loadMoreContainer">
-                <button onclick="loadMoreItems()" class="px-8 py-3 bg-white text-purple-600 rounded-lg hover:bg-gray-50 transition-colors shadow-sm border">
+            <div class="text-center mt-6 hidden" id="loadMoreContainer">
+                <button onclick="loadMoreItems()" class="px-6 py-2 bg-white text-purple-600 rounded-lg hover:bg-gray-50 transition-colors shadow-sm border text-sm">
                     <i class="fas fa-sync-alt mr-2"></i>Muat Lebih Banyak
                 </button>
             </div>
 
             <!-- Citation Metrics -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12" data-aos="fade-up">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8" data-aos="fade-up">
                 <div class="citation-card">
-                    <i class="fas fa-quote-right text-3xl text-white text-opacity-30 mb-2"></i>
+                    <i class="fas fa-quote-right text-2xl text-white text-opacity-30 mb-1"></i>
                     <div class="citation-number" id="totalCitations">0</div>
-                    <div class="citation-label">Total Citations</div>
+                    <div class="citation-label text-xs">Total Citations</div>
                 </div>
                 <div class="citation-card" style="background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);">
-                    <i class="fas fa-chart-line text-3xl text-white text-opacity-30 mb-2"></i>
+                    <i class="fas fa-chart-line text-2xl text-white text-opacity-30 mb-1"></i>
                     <div class="citation-number" id="hIndex">0</div>
-                    <div class="citation-label">h-index</div>
+                    <div class="citation-label text-xs">h-index</div>
                 </div>
                 <div class="citation-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-                    <i class="fas fa-star text-3xl text-white text-opacity-30 mb-2"></i>
+                    <i class="fas fa-star text-2xl text-white text-opacity-30 mb-1"></i>
                     <div class="citation-number" id="i10Index">0</div>
-                    <div class="citation-label">i10-index</div>
+                    <div class="citation-label text-xs">i10-index</div>
                 </div>
             </div>
         </div>
     </main>
 
     <!-- Upload Modal (Modern) -->
-    <div id="uploadModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4 modal-modern">
+    <div id="uploadModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-3 modal-modern">
         <div class="bg-white rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
-            <div class="modal-header">
-                <h3 class="text-xl font-bold text-white" id="modalTitle">Upload Karya Baru</h3>
+            <div class="modal-header flex justify-between items-center">
+                <h3 class="text-lg font-bold text-white" id="modalTitle">Upload Karya Baru</h3>
                 <button onclick="closeUploadModal()" class="text-white hover:text-gray-200">
-                    <i class="fas fa-times text-2xl"></i>
+                    <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
             
-            <div class="p-6">
+            <div class="p-5">
                 <form id="uploadForm" onsubmit="event.preventDefault(); saveRepository();">
-                    <div class="space-y-5">
-                        <!-- Title -->
+                    <div class="space-y-4">
                         <div class="form-modern">
                             <label class="required"><i class="fas fa-heading mr-2 text-purple-500"></i>Judul Karya</label>
                             <input type="text" id="repoTitle" required placeholder="Masukkan judul lengkap...">
                         </div>
                         
-                        <!-- Type and Year -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="form-modern">
                                 <label class="required"><i class="fas fa-tag mr-2 text-purple-500"></i>Tipe Karya</label>
@@ -803,42 +897,29 @@
                                     <option value="laporan">📑 Laporan Penelitian</option>
                                 </select>
                             </div>
-<div class="form-modern">
-    <label class="required"><i class="fas fa-calendar mr-2 text-purple-500"></i>Tahun</label>
-    <input type="text" id="repoYear" required placeholder="Masukkan tahun (contoh: 2024)" maxlength="4" pattern="[0-9]{4}">
-    <p class="text-xs text-gray-400 mt-1">Masukkan tahun 4 digit (1900 - 2026)</p>
-</div>
+                            <div class="form-modern">
+                                <label class="required"><i class="fas fa-calendar mr-2 text-purple-500"></i>Tahun</label>
+                                <input type="text" id="repoYear" required placeholder="Contoh: 2024" maxlength="4" pattern="[0-9]{4}">
+                            </div>
                         </div>
                         
-                        <!-- Authors -->
                         <div class="form-modern">
                             <label class="required"><i class="fas fa-users mr-2 text-purple-500"></i>Penulis</label>
                             <input type="text" id="repoAuthors" required placeholder="Nama penulis (pisahkan dengan koma)">
-                            <p class="text-xs text-gray-400 mt-1">Contoh: Dr. John Doe, Prof. Jane Smith</p>
                         </div>
                         
-                        <!-- Abstract -->
                         <div class="form-modern">
                             <label><i class="fas fa-align-left mr-2 text-purple-500"></i>Abstrak</label>
-                            <textarea id="repoAbstract" rows="4" placeholder="Tulis abstrak karya..."></textarea>
+                            <textarea id="repoAbstract" rows="3" placeholder="Tulis abstrak karya..."></textarea>
                         </div>
                         
-                        <!-- Keywords -->
-                        <div class="form-modern">
-                            <label><i class="fas fa-tags mr-2 text-purple-500"></i>Kata Kunci</label>
-                            <input type="text" id="repoKeywords" placeholder="Kata kunci (pisahkan dengan koma)">
-                            <p class="text-xs text-gray-400 mt-1">Contoh: machine learning, artificial intelligence</p>
-                        </div>
-                        
-                        <!-- Additional Fields Container -->
                         <div id="additionalFields"></div>
                         
-                        <!-- File Upload -->
                         <div class="form-modern">
                             <label><i class="fas fa-file-pdf mr-2 text-purple-500"></i>File</label>
                             <div class="file-upload-area" onclick="document.getElementById('repoFile').click()">
-                                <i class="fas fa-cloud-upload-alt"></i>
-                                <p class="text-sm font-medium text-gray-700" id="repoFileName">
+                                <i class="fas fa-cloud-upload-alt text-2xl"></i>
+                                <p class="text-sm font-medium text-gray-700 mt-1" id="repoFileName">
                                     Klik untuk upload file
                                 </p>
                                 <p class="text-xs text-gray-400 mt-1">
@@ -848,14 +929,13 @@
                             <input type="file" id="repoFile" accept=".pdf,.doc,.docx" class="hidden" onchange="updateFileName(this)">
                         </div>
                         
-                        <!-- Action Buttons -->
-                        <div class="flex justify-end space-x-3 pt-4 border-t">
+                        <div class="flex justify-end space-x-3 pt-3 border-t">
                             <button type="button" onclick="closeUploadModal()" 
-                                    class="px-6 py-2 border rounded-lg hover:bg-gray-50 transition">
+                                    class="px-5 py-2 border rounded-lg hover:bg-gray-50 transition text-sm">
                                 Batal
                             </button>
                             <button type="submit" 
-                                    class="px-6 py-2 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-lg hover:shadow-lg transition">
+                                    class="px-5 py-2 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-lg hover:shadow-lg transition text-sm">
                                 <i class="fas fa-cloud-upload-alt mr-2"></i>Upload Karya
                             </button>
                         </div>
@@ -865,18 +945,17 @@
         </div>
     </div>
 
-    <!-- View Modal (Modern) -->
-    <div id="viewModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4 modal-modern">
+    <!-- View Modal -->
+    <div id="viewModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-3 modal-modern">
         <div class="bg-white rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
-            <div class="modal-header">
-                <h3 class="text-xl font-bold text-white" id="viewModalTitle"></h3>
+            <div class="modal-header flex justify-between items-center">
+                <h3 class="text-lg font-bold text-white" id="viewModalTitle"></h3>
                 <button onclick="closeViewModal()" class="text-white hover:text-gray-200">
-                    <i class="fas fa-times text-2xl"></i>
+                    <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
             
-            <div class="p-6" id="viewModalContent">
-                <!-- Content will be loaded dynamically -->
+            <div class="p-5" id="viewModalContent">
             </div>
         </div>
     </div>
@@ -885,12 +964,12 @@
 
     <script>
     // Initialize AOS
-    AOS.init({ duration: 800, once: true });
+    AOS.init({ duration: 600, once: true });
 
     // ==================== CONFIGURATION ====================
     const CONFIG = {
         ITEMS_PER_PAGE: 5,
-        MAX_FILE_SIZE: 10 * 1024 * 1024, // 10MB
+        MAX_FILE_SIZE: 10 * 1024 * 1024,
         ALLOWED_FILE_TYPES: ['.pdf', '.doc', '.docx']
     };
 
@@ -947,16 +1026,15 @@
     function showNotification(message, type = 'success') {
         Swal.fire({
             icon: type,
-            title: type === 'success' ? 'Berhasil!' : type === 'error' ? 'Gagal!' : 'Info',
+            title: type === 'success' ? 'Berhasil!' : 'Gagal!',
             text: message,
             timer: 2000,
             showConfirmButton: false,
-            background: '#fff',
-            backdrop: 'rgba(0,0,0,0.5)'
+            background: '#fff'
         });
     }
 
-    function handleLogout() {
+    window.handleLogout = function() {
         Swal.fire({
             title: 'Konfirmasi Logout',
             text: 'Apakah Anda yakin ingin logout?',
@@ -971,15 +1049,13 @@
                 auth.logout();
             }
         });
-    }
+    };
 
-    function updateUserInfo() {
-        const user = auth.getUser();
-        if (user) {
-            const userNameDisplay = document.getElementById('userNameDisplay');
-            const userNidnDisplay = document.getElementById('userNidnDisplay');
-            if (userNameDisplay) userNameDisplay.textContent = user.nama_lengkap || user.name || '-';
-            if (userNidnDisplay) userNidnDisplay.textContent = user.nidn || '-';
+    function adjustMainContentPadding() {
+        const header = document.getElementById('mainHeader');
+        const main = document.getElementById('mainContent');
+        if (header && main) {
+            main.style.paddingTop = header.offsetHeight + 'px';
         }
     }
 
@@ -1013,13 +1089,13 @@
         return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
     }
 
-    function formatDate(dateString) {
-        if (!dateString) return '-';
-        const date = new Date(dateString);
-        return date.toLocaleDateString('id-ID', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric'
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
         });
     }
 
@@ -1061,7 +1137,6 @@
             }
 
             await fetchStatistics();
-            
             renderRepositoryData(result.data || [], reset);
             
             state.hasMore = (result.data || []).length === CONFIG.ITEMS_PER_PAGE;
@@ -1078,10 +1153,10 @@
                 const container = document.getElementById('repositoryContainer');
                 if (container) {
                     container.innerHTML = `
-                        <div class="text-center py-12 bg-white rounded-lg shadow">
-                            <i class="fas fa-exclamation-circle text-6xl text-red-300 mb-4"></i>
-                            <p class="text-gray-500">Gagal memuat repository: ${error.message}</p>
-                            <button onclick="fetchRepository(true)" class="mt-4 px-4 py-2 bg-purple-600 text-white rounded-lg">
+                        <div class="text-center py-8 bg-white rounded-lg shadow">
+                            <i class="fas fa-exclamation-circle text-5xl text-red-300 mb-3"></i>
+                            <p class="text-gray-500 text-sm">Gagal memuat repository</p>
+                            <button onclick="fetchRepository(true)" class="mt-3 px-4 py-2 bg-purple-600 text-white rounded-lg text-sm">
                                 <i class="fas fa-sync-alt mr-2"></i>Coba Lagi
                             </button>
                         </div>
@@ -1158,11 +1233,10 @@
         if (!data || data.length === 0) {
             if (reset) {
                 container.innerHTML = `
-                    <div class="text-center py-16 bg-white rounded-xl">
-                        <i class="fas fa-archive text-6xl text-gray-300 mb-4"></i>
-                        <p class="text-gray-500 text-lg">Belum ada karya dalam repository</p>
-                        <p class="text-gray-400 text-sm mt-2">Upload karya pertama Anda sekarang</p>
-                        <button onclick="openUploadModal()" class="mt-4 px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
+                    <div class="text-center py-12 bg-white rounded-xl">
+                        <i class="fas fa-archive text-5xl text-gray-300 mb-3"></i>
+                        <p class="text-gray-500">Belum ada karya dalam repository</p>
+                        <button onclick="openUploadModal()" class="mt-3 px-5 py-2 bg-purple-600 text-white rounded-lg text-sm">
                             <i class="fas fa-cloud-upload-alt mr-2"></i>Upload Karya
                         </button>
                     </div>
@@ -1179,64 +1253,53 @@
             
             return `
                 <div class="document-card">
-                    <div class="flex flex-col md:flex-row md:items-start gap-4">
+                    <div class="flex flex-col md:flex-row md:items-start gap-3">
                         <div class="flex-1">
                             <h3 class="document-title" onclick="viewRepository('${item.id}')">
                                 ${escapeHtml(item.judul)}
                             </h3>
                             
-                            <div class="flex flex-wrap items-center gap-2 text-sm mb-2">
+                            <div class="flex flex-wrap items-center gap-1 text-xs mb-2">
                                 <span class="author-link">
                                     ${escapeHtml(authors.slice(0, 3).join(', '))}${authors.length > 3 ? ' et al.' : ''}
                                 </span>
                                 <span class="publication-meta"> - ${item.tahun}</span>
                             </div>
                             
-                            <p class="text-sm text-gray-600 line-clamp-2 mb-3">
-                                ${escapeHtml(item.abstrak?.substring(0, 200) || '')}...
+                            <p class="text-xs text-gray-600 line-clamp-2 mb-2">
+                                ${escapeHtml(item.abstrak?.substring(0, 150) || '')}...
                             </p>
                             
-                            <div class="flex flex-wrap items-center gap-3">
-                                <span class="px-2 py-1 rounded text-xs font-semibold ${badgeClass}">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="px-2 py-0.5 rounded text-xs font-semibold ${badgeClass}">
                                     <i class="fas ${iconClass} mr-1"></i>
                                     ${item.tipe.charAt(0).toUpperCase() + item.tipe.slice(1)}
                                 </span>
                                 
-                                <div class="metrics-badge">
+                                <div class="metrics-badge text-xs">
                                     <i class="fas fa-eye mr-1"></i>${item.stats?.views || 0}
                                 </div>
-                                <div class="metrics-badge">
+                                <div class="metrics-badge text-xs">
                                     <i class="fas fa-download mr-1"></i>${item.stats?.downloads || 0}
                                 </div>
-                                <div class="metrics-badge">
+                                <div class="metrics-badge text-xs">
                                     <i class="fas fa-quote-right mr-1"></i>${item.stats?.citations || 0}
                                 </div>
                             </div>
-                            
-                            ${kataKunci.length > 0 ? `
-                                <div class="flex flex-wrap gap-1 mt-3">
-                                    ${kataKunci.slice(0, 3).map(k => `
-                                        <span class="px-2 py-1 bg-gray-100 rounded text-xs text-gray-600">#${escapeHtml(k)}</span>
-                                    `).join('')}
-                                    ${kataKunci.length > 3 ? `
-                                        <span class="text-xs text-gray-400">+${kataKunci.length - 3}</span>
-                                    ` : ''}
-                                </div>
-                            ` : ''}
                         </div>
                         
-                        <div class="flex md:flex-col gap-2">
+                        <div class="flex md:flex-col gap-1">
                             <button onclick="viewRepository('${item.id}')" class="action-button view" title="Lihat Detail">
-                                <i class="fas fa-eye"></i>
+                                <i class="fas fa-eye text-sm"></i>
                             </button>
                             <button onclick="downloadRepository('${item.id}')" class="action-button download" title="Download">
-                                <i class="fas fa-download"></i>
+                                <i class="fas fa-download text-sm"></i>
                             </button>
                             <button onclick="editRepository('${item.id}')" class="action-button edit" title="Edit">
-                                <i class="fas fa-edit"></i>
+                                <i class="fas fa-edit text-sm"></i>
                             </button>
                             <button onclick="deleteRepository('${item.id}')" class="action-button delete" title="Hapus">
-                                <i class="fas fa-trash"></i>
+                                <i class="fas fa-trash text-sm"></i>
                             </button>
                         </div>
                     </div>
@@ -1249,16 +1312,6 @@
         } else {
             container.innerHTML += itemsHTML;
         }
-    }
-    
-    function escapeHtml(str) {
-        if (!str) return '';
-        return str.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
     }
 
     // ==================== FILTER FUNCTIONS ====================
@@ -1293,7 +1346,6 @@
         state.currentTab = 'all';
         state.currentPage = 1;
         
-        // Update tab
         document.querySelectorAll('.tab-button').forEach(link => {
             link.classList.remove('active');
         });
@@ -1315,13 +1367,11 @@
     function switchTab(tab) {
         state.currentTab = tab;
         
-        // Update active tab
         document.querySelectorAll('.tab-button').forEach(link => {
             link.classList.remove('active');
         });
         if (event && event.target) event.target.classList.add('active');
         
-        // Update filters
         state.filters.type = tab === 'all' ? 'all' : tab;
         state.currentPage = 1;
         
@@ -1333,7 +1383,6 @@
         state.currentTab = type;
         state.currentPage = 1;
         
-        // Update active tab
         document.querySelectorAll('.tab-button').forEach(link => {
             link.classList.remove('active');
         });
@@ -1370,7 +1419,6 @@
 
             const item = result.data;
             
-            // Increment views
             await fetch(`${API_CONFIG.BASE_URL}/dosen/repository/${id}/view`, {
                 method: 'POST',
                 headers: {
@@ -1389,82 +1437,59 @@
             const modalContent = document.getElementById('viewModalContent');
             if (modalContent) {
                 modalContent.innerHTML = `
-                    <div class="space-y-5">
-                        <!-- Basic Info -->
-                        <div class="flex flex-wrap items-center gap-2 pb-4 border-b">
-                            <span class="px-3 py-1 rounded text-xs font-semibold ${badgeClass}">
+                    <div class="space-y-4">
+                        <div class="flex flex-wrap items-center gap-2 pb-3 border-b">
+                            <span class="px-2 py-0.5 rounded text-xs font-semibold ${badgeClass}">
                                 <i class="fas ${getIconClass(item.tipe)} mr-1"></i>
                                 ${item.tipe.charAt(0).toUpperCase() + item.tipe.slice(1)}
                             </span>
-                            <span class="text-sm text-gray-500">
-                                <i class="fas fa-calendar mr-1"></i>${item.tahun}
-                            </span>
-                            <span class="text-sm text-gray-500">
-                                <i class="fas fa-eye mr-1"></i>${item.stats?.views || 0} dilihat
-                            </span>
-                            <span class="text-sm text-gray-500">
-                                <i class="fas fa-download mr-1"></i>${item.stats?.downloads || 0} download
-                            </span>
-                            <span class="text-sm text-gray-500">
-                                <i class="fas fa-quote-right mr-1"></i>${item.stats?.citations || 0} sitasi
-                            </span>
+                            <span class="text-xs text-gray-500"><i class="fas fa-calendar mr-1"></i>${item.tahun}</span>
+                            <span class="text-xs text-gray-500"><i class="fas fa-eye mr-1"></i>${item.stats?.views || 0} dilihat</span>
+                            <span class="text-xs text-gray-500"><i class="fas fa-download mr-1"></i>${item.stats?.downloads || 0} download</span>
                         </div>
                         
-                        <!-- Authors -->
                         <div>
-                            <h4 class="font-semibold text-gray-700 mb-2">
-                                <i class="fas fa-users mr-2 text-purple-500"></i>Penulis
-                            </h4>
-                            <p class="text-gray-600">${escapeHtml(authors)}</p>
+                            <h4 class="font-semibold text-sm text-gray-700 mb-1"><i class="fas fa-users mr-1 text-purple-500"></i>Penulis</h4>
+                            <p class="text-sm text-gray-600">${escapeHtml(authors)}</p>
                         </div>
                         
-                        <!-- Abstract -->
                         <div>
-                            <h4 class="font-semibold text-gray-700 mb-2">
-                                <i class="fas fa-align-left mr-2 text-purple-500"></i>Abstrak
-                            </h4>
-                            <p class="text-gray-600 leading-relaxed">${escapeHtml(item.abstrak || 'Tidak ada abstrak')}</p>
+                            <h4 class="font-semibold text-sm text-gray-700 mb-1"><i class="fas fa-align-left mr-1 text-purple-500"></i>Abstrak</h4>
+                            <p class="text-sm text-gray-600 leading-relaxed">${escapeHtml(item.abstrak || 'Tidak ada abstrak')}</p>
                         </div>
                         
-                        <!-- Keywords -->
                         ${kataKunci.length > 0 ? `
                             <div>
-                                <h4 class="font-semibold text-gray-700 mb-2">
-                                    <i class="fas fa-tags mr-2 text-purple-500"></i>Kata Kunci
-                                </h4>
-                                <div class="flex flex-wrap gap-2">
-                                    ${kataKunci.map(k => `
-                                        <span class="px-3 py-1 bg-gray-100 rounded-full text-sm text-gray-700">#${escapeHtml(k)}</span>
-                                    `).join('')}
+                                <h4 class="font-semibold text-sm text-gray-700 mb-1"><i class="fas fa-tags mr-1 text-purple-500"></i>Kata Kunci</h4>
+                                <div class="flex flex-wrap gap-1">
+                                    ${kataKunci.map(k => `<span class="px-2 py-0.5 bg-gray-100 rounded-full text-xs text-gray-700">#${escapeHtml(k)}</span>`).join('')}
                                 </div>
                             </div>
                         ` : ''}
                         
-                        <!-- File Info -->
-                        <div class="bg-gray-50 p-4 rounded-lg">
+                        <div class="bg-gray-50 p-3 rounded-lg">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center">
-                                    <i class="fas fa-file-pdf text-2xl text-red-500 mr-3"></i>
+                                    <i class="fas fa-file-pdf text-xl text-red-500 mr-2"></i>
                                     <div>
-                                        <p class="font-medium text-gray-700">${escapeHtml(item.filename || 'File PDF')}</p>
-                                        <p class="text-sm text-gray-500">${formatBytes(item.filesize)}</p>
+                                        <p class="font-medium text-sm text-gray-700">${escapeHtml(item.filename || 'File PDF')}</p>
+                                        <p class="text-xs text-gray-500">${formatBytes(item.filesize)}</p>
                                     </div>
                                 </div>
-                                <button onclick="downloadRepository('${item.id}')" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">
-                                    <i class="fas fa-download mr-2"></i>Download
+                                <button onclick="downloadRepository('${item.id}')" class="bg-green-500 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-green-600">
+                                    <i class="fas fa-download mr-1"></i>Download
                                 </button>
                             </div>
                         </div>
                         
-                        <!-- Action Buttons -->
-                        <div class="flex justify-end space-x-3 pt-4 border-t">
-                            <button onclick="editRepository('${item.id}')" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
-                                <i class="fas fa-edit mr-2"></i>Edit
+                        <div class="flex justify-end space-x-2 pt-3 border-t">
+                            <button onclick="editRepository('${item.id}')" class="bg-blue-500 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-blue-600">
+                                <i class="fas fa-edit mr-1"></i>Edit
                             </button>
-                            <button onclick="deleteRepository('${item.id}')" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">
-                                <i class="fas fa-trash mr-2"></i>Hapus
+                            <button onclick="deleteRepository('${item.id}')" class="bg-red-500 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-red-600">
+                                <i class="fas fa-trash mr-1"></i>Hapus
                             </button>
-                            <button onclick="closeViewModal()" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300">
+                            <button onclick="closeViewModal()" class="bg-gray-200 text-gray-700 px-3 py-1.5 rounded-lg text-sm hover:bg-gray-300">
                                 Tutup
                             </button>
                         </div>
@@ -1554,22 +1579,18 @@
             
             const formData = new FormData();
             
-            // Basic fields
             const judul = document.getElementById('repoTitle')?.value;
             const tipe = document.getElementById('repoType')?.value;
             const tahun = document.getElementById('repoYear')?.value;
             const penulis = document.getElementById('repoAuthors')?.value;
             const abstrak = document.getElementById('repoAbstract')?.value;
-            const kataKunci = document.getElementById('repoKeywords')?.value;
             
-            // Validasi required fields
             if (!judul || !tipe || !tahun || !penulis) {
                 showNotification('Mohon lengkapi field yang wajib diisi', 'error');
                 hideLoading();
                 return;
             }
             
-            // Validasi tahun
             const yearNum = parseInt(tahun);
             const currentYear = new Date().getFullYear();
             if (isNaN(yearNum) || yearNum < 1900 || yearNum > currentYear + 5) {
@@ -1583,76 +1604,16 @@
             formData.append('tahun', tahun);
             formData.append('penulis', penulis);
             formData.append('abstrak', abstrak || '');
-            formData.append('kata_kunci', kataKunci || '');
+            formData.append('kata_kunci', document.getElementById('repoKeywords')?.value || '');
             
-            // Additional fields based on type
-            switch(tipe) {
-                case 'jurnal':
-                    const jurnalNama = document.getElementById('jurnalNama')?.value;
-                    const jurnalVolume = document.getElementById('jurnalVolume')?.value;
-                    const jurnalIndeks = document.getElementById('jurnalIndeks')?.value;
-                    const jurnalDoi = document.getElementById('jurnalDoi')?.value;
-                    if (jurnalNama) formData.append('nama_jurnal', jurnalNama);
-                    if (jurnalVolume) formData.append('volume', jurnalVolume);
-                    if (jurnalIndeks) formData.append('indeks', jurnalIndeks);
-                    if (jurnalDoi) formData.append('doi', jurnalDoi);
-                    break;
-                case 'prosiding':
-                    const prosidingNama = document.getElementById('prosidingNama')?.value;
-                    const prosidingLokasi = document.getElementById('prosidingLokasi')?.value;
-                    const prosidingTanggal = document.getElementById('prosidingTanggal')?.value;
-                    if (prosidingNama) formData.append('nama_konferensi', prosidingNama);
-                    if (prosidingLokasi) formData.append('lokasi', prosidingLokasi);
-                    if (prosidingTanggal) formData.append('tanggal', prosidingTanggal);
-                    break;
-                case 'buku':
-                    const bukuIsbn = document.getElementById('bukuIsbn')?.value;
-                    const bukuPenerbit = document.getElementById('bukuPenerbit')?.value;
-                    const bukuHalaman = document.getElementById('bukuHalaman')?.value;
-                    const bukuEdisi = document.getElementById('bukuEdisi')?.value;
-                    if (bukuIsbn) formData.append('isbn', bukuIsbn);
-                    if (bukuPenerbit) formData.append('penerbit', bukuPenerbit);
-                    if (bukuHalaman) formData.append('halaman', bukuHalaman);
-                    if (bukuEdisi) formData.append('edisi', bukuEdisi);
-                    break;
-                case 'hki':
-                    const hkiNomor = document.getElementById('hkiNomor')?.value;
-                    const hkiTanggal = document.getElementById('hkiTanggal')?.value;
-                    const hkiJenis = document.getElementById('hkiJenis')?.value;
-                    if (hkiNomor) formData.append('nomor_hki', hkiNomor);
-                    if (hkiTanggal) formData.append('tanggal_terbit', hkiTanggal);
-                    if (hkiJenis) formData.append('jenis_hki', hkiJenis);
-                    break;
-                case 'laporan':
-                    const laporanSponsor = document.getElementById('laporanSponsor')?.value;
-                    const laporanKontrak = document.getElementById('laporanKontrak')?.value;
-                    const laporanPeriode = document.getElementById('laporanPeriode')?.value;
-                    if (laporanSponsor) formData.append('sponsor', laporanSponsor);
-                    if (laporanKontrak) formData.append('nomor_kontrak', laporanKontrak);
-                    if (laporanPeriode) formData.append('periode', laporanPeriode);
-                    break;
-            }
-            
-            // File upload (only for new upload, not for edit)
             const fileInput = document.getElementById('repoFile');
             if (fileInput && fileInput.files && fileInput.files.length > 0) {
                 const file = fileInput.files[0];
-                
-                // Validasi file size
                 if (file.size > CONFIG.MAX_FILE_SIZE) {
                     showNotification(`Ukuran file terlalu besar. Maksimal ${CONFIG.MAX_FILE_SIZE / (1024 * 1024)}MB`, 'error');
                     hideLoading();
                     return;
                 }
-                
-                // Validasi file type
-                const fileExt = '.' + file.name.split('.').pop().toLowerCase();
-                if (!CONFIG.ALLOWED_FILE_TYPES.includes(fileExt)) {
-                    showNotification('Tipe file tidak diizinkan. Gunakan PDF, DOC, atau DOCX', 'error');
-                    hideLoading();
-                    return;
-                }
-                
                 formData.append('file', file);
             } else if (!state.editingId) {
                 showNotification('Silakan pilih file untuk diupload', 'error');
@@ -1695,139 +1656,11 @@
         }
     }
 
-    // ==================== EDIT REPOSITORY ====================
-    async function editRepository(id) {
-        try {
-            showLoading();
-            
-            const token = auth.getToken();
-            const response = await fetch(`${API_CONFIG.BASE_URL}/dosen/repository/${id}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-
-            const result = await response.json();
-
-            if (!response.ok) {
-                throw new Error(result.message || 'Gagal mengambil data karya');
-            }
-
-            const item = result.data;
-            state.editingId = id;
-            
-            // Fill form fields
-            const modalTitle = document.getElementById('modalTitle');
-            if (modalTitle) modalTitle.textContent = 'Edit Karya';
-            
-            const titleInput = document.getElementById('repoTitle');
-            const typeSelect = document.getElementById('repoType');
-            const yearInput = document.getElementById('repoYear');
-            const authorsInput = document.getElementById('repoAuthors');
-            const abstractInput = document.getElementById('repoAbstract');
-            const keywordsInput = document.getElementById('repoKeywords');
-            
-            if (titleInput) titleInput.value = item.judul || '';
-            if (typeSelect) typeSelect.value = item.tipe || 'jurnal';
-            if (yearInput) yearInput.value = item.tahun || '';
-            if (authorsInput) authorsInput.value = Array.isArray(item.penulis) ? item.penulis.join(', ') : item.penulis || '';
-            if (abstractInput) abstractInput.value = item.abstrak || '';
-            if (keywordsInput) keywordsInput.value = Array.isArray(item.kata_kunci) ? item.kata_kunci.join(', ') : item.kata_kunci || '';
-            
-            // Update additional fields
-            updateAdditionalFields();
-            
-            // Fill additional fields based on type
-            setTimeout(() => {
-                switch(item.tipe) {
-                    case 'jurnal':
-                        const jurnalNama = document.getElementById('jurnalNama');
-                        const jurnalVolume = document.getElementById('jurnalVolume');
-                        const jurnalIndeks = document.getElementById('jurnalIndeks');
-                        const jurnalDoi = document.getElementById('jurnalDoi');
-                        if (jurnalNama) jurnalNama.value = item.nama_jurnal || '';
-                        if (jurnalVolume) jurnalVolume.value = item.volume || '';
-                        if (jurnalIndeks) jurnalIndeks.value = item.indeks || '';
-                        if (jurnalDoi) jurnalDoi.value = item.doi || '';
-                        break;
-                    case 'prosiding':
-                        const prosidingNama = document.getElementById('prosidingNama');
-                        const prosidingLokasi = document.getElementById('prosidingLokasi');
-                        const prosidingTanggal = document.getElementById('prosidingTanggal');
-                        if (prosidingNama) prosidingNama.value = item.nama_konferensi || '';
-                        if (prosidingLokasi) prosidingLokasi.value = item.lokasi || '';
-                        if (prosidingTanggal) prosidingTanggal.value = item.tanggal || '';
-                        break;
-                    case 'buku':
-                        const bukuIsbn = document.getElementById('bukuIsbn');
-                        const bukuPenerbit = document.getElementById('bukuPenerbit');
-                        const bukuHalaman = document.getElementById('bukuHalaman');
-                        const bukuEdisi = document.getElementById('bukuEdisi');
-                        if (bukuIsbn) bukuIsbn.value = item.isbn || '';
-                        if (bukuPenerbit) bukuPenerbit.value = item.penerbit || '';
-                        if (bukuHalaman) bukuHalaman.value = item.halaman || '';
-                        if (bukuEdisi) bukuEdisi.value = item.edisi || '';
-                        break;
-                    case 'hki':
-                        const hkiNomor = document.getElementById('hkiNomor');
-                        const hkiTanggal = document.getElementById('hkiTanggal');
-                        const hkiJenis = document.getElementById('hkiJenis');
-                        if (hkiNomor) hkiNomor.value = item.nomor_hki || '';
-                        if (hkiTanggal) hkiTanggal.value = item.tanggal_terbit || '';
-                        if (hkiJenis) hkiJenis.value = item.jenis_hki || '';
-                        break;
-                    case 'laporan':
-                        const laporanSponsor = document.getElementById('laporanSponsor');
-                        const laporanKontrak = document.getElementById('laporanKontrak');
-                        const laporanPeriode = document.getElementById('laporanPeriode');
-                        if (laporanSponsor) laporanSponsor.value = item.sponsor || '';
-                        if (laporanKontrak) laporanKontrak.value = item.nomor_kontrak || '';
-                        if (laporanPeriode) laporanPeriode.value = item.periode || '';
-                        break;
-                }
-            }, 100);
-            
-            // Update file name display
-            const repoFileName = document.getElementById('repoFileName');
-            if (repoFileName && item.filename) {
-                repoFileName.innerHTML = `${escapeHtml(item.filename)} (${formatBytes(item.filesize)}) - Upload file baru untuk mengganti`;
-            }
-            
-            const uploadModal = document.getElementById('uploadModal');
-            if (uploadModal) uploadModal.classList.remove('hidden');
-            
-        } catch (error) {
-            console.error('Error editing repository:', error);
-            showNotification(error.message, 'error');
-        } finally {
-            hideLoading();
-        }
-    }
-
-    // ==================== UPLOAD/EDIT MODAL ====================
-    function openUploadModal(editId = null) {
-        state.editingId = editId;
+    // ==================== MODAL FUNCTIONS ====================
+    function openUploadModal() {
+        state.editingId = null;
         const modalTitle = document.getElementById('modalTitle');
-        if (modalTitle) {
-            modalTitle.textContent = editId ? 'Edit Karya' : 'Upload Karya Baru';
-        }
-        
-        const uploadModal = document.getElementById('uploadModal');
-        if (uploadModal) uploadModal.classList.remove('hidden');
-        
-        updateAdditionalFields();
-        
-        if (!editId) {
-            const form = document.getElementById('uploadForm');
-            if (form) form.reset();
-            const repoFileName = document.getElementById('repoFileName');
-            if (repoFileName) repoFileName.innerHTML = 'Klik untuk upload file';
-        }
-    }
-
-    function closeUploadModal() {
-        const uploadModal = document.getElementById('uploadModal');
-        if (uploadModal) uploadModal.classList.add('hidden');
+        if (modalTitle) modalTitle.textContent = 'Upload Karya Baru';
         
         const form = document.getElementById('uploadForm');
         if (form) form.reset();
@@ -1835,6 +1668,15 @@
         const repoFileName = document.getElementById('repoFileName');
         if (repoFileName) repoFileName.innerHTML = 'Klik untuk upload file';
         
+        const uploadModal = document.getElementById('uploadModal');
+        if (uploadModal) uploadModal.classList.remove('hidden');
+        
+        updateAdditionalFields();
+    }
+
+    function closeUploadModal() {
+        const uploadModal = document.getElementById('uploadModal');
+        if (uploadModal) uploadModal.classList.add('hidden');
         state.editingId = null;
     }
 
@@ -1855,187 +1697,77 @@
         
         switch(type) {
             case 'jurnal':
-                fields = `
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="form-modern">
-                            <label><i class="fas fa-building mr-2 text-purple-500"></i>Nama Jurnal</label>
-                            <input type="text" id="jurnalNama" placeholder="Contoh: International Journal of Science">
-                        </div>
-                        <div class="form-modern">
-                            <label><i class="fas fa-hashtag mr-2 text-purple-500"></i>Volume/Edisi</label>
-                            <input type="text" id="jurnalVolume" placeholder="Contoh: Vol. 10 No. 2">
-                        </div>
-                        <div class="form-modern">
-                            <label><i class="fas fa-trophy mr-2 text-purple-500"></i>Indeks</label>
-                            <select id="jurnalIndeks">
-                                <option value="scopus-q1">Scopus Q1</option>
-                                <option value="scopus-q2">Scopus Q2</option>
-                                <option value="scopus-q3">Scopus Q3</option>
-                                <option value="scopus-q4">Scopus Q4</option>
-                                <option value="sinta-1">Sinta 1</option>
-                                <option value="sinta-2">Sinta 2</option>
-                                <option value="sinta-3">Sinta 3</option>
-                            </select>
-                        </div>
-                        <div class="form-modern">
-                            <label><i class="fas fa-link mr-2 text-purple-500"></i>DOI</label>
-                            <input type="text" id="jurnalDoi" placeholder="Contoh: 10.1234/abcde">
-                        </div>
-                    </div>
-                `;
+                fields = `<input type="hidden" id="repoKeywords" value="">`;
                 break;
-                
-            case 'prosiding':
-                fields = `
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="form-modern">
-                            <label><i class="fas fa-calendar-alt mr-2 text-purple-500"></i>Nama Konferensi</label>
-                            <input type="text" id="prosidingNama" placeholder="Contoh: International Conference on AI">
-                        </div>
-                        <div class="form-modern">
-                            <label><i class="fas fa-map-marker-alt mr-2 text-purple-500"></i>Lokasi</label>
-                            <input type="text" id="prosidingLokasi" placeholder="Contoh: Bali, Indonesia">
-                        </div>
-                        <div class="form-modern">
-                            <label><i class="fas fa-calendar mr-2 text-purple-500"></i>Tanggal</label>
-                            <input type="text" id="prosidingTanggal" placeholder="Contoh: 15-17 Juli 2024">
-                        </div>
-                    </div>
-                `;
-                break;
-                
-            case 'buku':
-                fields = `
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="form-modern">
-                            <label><i class="fas fa-barcode mr-2 text-purple-500"></i>ISBN</label>
-                            <input type="text" id="bukuIsbn" placeholder="Contoh: 978-3-16-148410-0">
-                        </div>
-                        <div class="form-modern">
-                            <label><i class="fas fa-building mr-2 text-purple-500"></i>Penerbit</label>
-                            <input type="text" id="bukuPenerbit" placeholder="Nama penerbit">
-                        </div>
-                        <div class="form-modern">
-                            <label><i class="fas fa-book-open mr-2 text-purple-500"></i>Jumlah Halaman</label>
-                            <input type="number" id="bukuHalaman" placeholder="Contoh: 250">
-                        </div>
-                        <div class="form-modern">
-                            <label><i class="fas fa-tag mr-2 text-purple-500"></i>Edisi</label>
-                            <input type="text" id="bukuEdisi" placeholder="Contoh: Edisi 1">
-                        </div>
-                    </div>
-                `;
-                break;
-                
-            case 'hki':
-                fields = `
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="form-modern">
-                            <label><i class="fas fa-hashtag mr-2 text-purple-500"></i>Nomor HKI</label>
-                            <input type="text" id="hkiNomor" placeholder="Contoh: IDP000042341">
-                        </div>
-                        <div class="form-modern">
-                            <label><i class="fas fa-calendar-check mr-2 text-purple-500"></i>Tanggal Terbit</label>
-                            <input type="date" id="hkiTanggal">
-                        </div>
-                        <div class="form-modern">
-                            <label><i class="fas fa-tag mr-2 text-purple-500"></i>Jenis HKI</label>
-                            <select id="hkiJenis">
-                                <option value="paten">Paten</option>
-                                <option value="hak-cipta">Hak Cipta</option>
-                                <option value="desain-industri">Desain Industri</option>
-                            </select>
-                        </div>
-                    </div>
-                `;
-                break;
-                
-            case 'laporan':
-                fields = `
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="form-modern">
-                            <label><i class="fas fa-building mr-2 text-purple-500"></i>Sponsor</label>
-                            <input type="text" id="laporanSponsor" placeholder="Contoh: Kemendikbud">
-                        </div>
-                        <div class="form-modern">
-                            <label><i class="fas fa-tag mr-2 text-purple-500"></i>Kontrak</label>
-                            <input type="text" id="laporanKontrak" placeholder="Contoh: 001/KONTRAK/2024">
-                        </div>
-                        <div class="form-modern">
-                            <label><i class="fas fa-clock mr-2 text-purple-500"></i>Periode</label>
-                            <input type="text" id="laporanPeriode" placeholder="Contoh: Tahun ke-1">
-                        </div>
-                    </div>
-                `;
+            default:
+                fields = `<div class="form-modern">
+                            <label><i class="fas fa-tags mr-2 text-purple-500"></i>Kata Kunci</label>
+                            <input type="text" id="repoKeywords" placeholder="Kata kunci (pisahkan dengan koma)">
+                          </div>`;
                 break;
         }
         
         container.innerHTML = fields;
     }
 
-    // ==================== INITIALIZATION ====================
-    function initializeYearFilter() {
-        const yearSelect = document.getElementById('yearFilter');
-        const repoYearInput = document.getElementById('repoYear');
-        
-        // Untuk filter tahun (tetap pakai dropdown)
-        if (yearSelect) {
-            yearSelect.innerHTML = '<option value="all">Semua Tahun</option>';
-            const currentYear = new Date().getFullYear();
+    async function editRepository(id) {
+        try {
+            showLoading();
             
-            for (let year = currentYear + 1; year >= 2015; year--) {
-                const filterOption = document.createElement('option');
-                filterOption.value = year;
-                filterOption.textContent = year;
-                yearSelect.appendChild(filterOption);
+            const token = auth.getToken();
+            const response = await fetch(`${API_CONFIG.BASE_URL}/dosen/repository/${id}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || 'Gagal mengambil data karya');
             }
-        }
-        
-        // Untuk input tahun di form upload (ubah jadi input teks)
-        if (repoYearInput) {
-            repoYearInput.type = 'text';
-            repoYearInput.placeholder = 'Contoh: 2024';
-            repoYearInput.value = new Date().getFullYear();
-            repoYearInput.pattern = '[0-9]{4}';
-            repoYearInput.maxLength = 4;
-        }
-    }
 
-    function validateYear(year) {
-        const yearNum = parseInt(year);
-        const currentYear = new Date().getFullYear();
-        return !isNaN(yearNum) && yearNum >= 1900 && yearNum <= currentYear + 5;
-    }
-
-    // Close modals when clicking outside
-    window.onclick = function(event) {
-        const uploadModal = document.getElementById('uploadModal');
-        const viewModal = document.getElementById('viewModal');
-        
-        if (event.target === uploadModal) {
-            closeUploadModal();
+            const item = result.data;
+            state.editingId = id;
+            
+            const modalTitle = document.getElementById('modalTitle');
+            if (modalTitle) modalTitle.textContent = 'Edit Karya';
+            
+            const titleInput = document.getElementById('repoTitle');
+            const typeSelect = document.getElementById('repoType');
+            const yearInput = document.getElementById('repoYear');
+            const authorsInput = document.getElementById('repoAuthors');
+            const abstractInput = document.getElementById('repoAbstract');
+            
+            if (titleInput) titleInput.value = item.judul || '';
+            if (typeSelect) typeSelect.value = item.tipe || 'jurnal';
+            if (yearInput) yearInput.value = item.tahun || '';
+            if (authorsInput) authorsInput.value = Array.isArray(item.penulis) ? item.penulis.join(', ') : item.penulis || '';
+            if (abstractInput) abstractInput.value = item.abstrak || '';
+            
+            updateAdditionalFields();
+            
+            setTimeout(() => {
+                const keywordsInput = document.getElementById('repoKeywords');
+                if (keywordsInput) {
+                    keywordsInput.value = Array.isArray(item.kata_kunci) ? item.kata_kunci.join(', ') : item.kata_kunci || '';
+                }
+            }, 100);
+            
+            const repoFileName = document.getElementById('repoFileName');
+            if (repoFileName && item.filename) {
+                repoFileName.innerHTML = `${escapeHtml(item.filename)} (${formatBytes(item.filesize)}) - Upload file baru untuk mengganti`;
+            }
+            
+            const uploadModal = document.getElementById('uploadModal');
+            if (uploadModal) uploadModal.classList.remove('hidden');
+            
+        } catch (error) {
+            console.error('Error editing repository:', error);
+            showNotification(error.message, 'error');
+        } finally {
+            hideLoading();
         }
-        if (event.target === viewModal) {
-            closeViewModal();
-        }
-    };
-
-    // Search with debounce
-    let searchTimeout;
-    const searchInput = document.getElementById('searchInput');
-    if (searchInput) {
-        searchInput.addEventListener('input', () => {
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => {
-                applyFilters();
-            }, 500);
-        });
-    }
-
-    // Event listener for type change
-    const repoType = document.getElementById('repoType');
-    if (repoType) {
-        repoType.addEventListener('change', updateAdditionalFields);
     }
 
     // ==================== NAVBAR FUNCTIONS ====================
@@ -2057,9 +1789,30 @@
         }
     }
 
+    function initMobileNav() {
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const mobileNav = document.getElementById('mobileNav');
+        const closeBtn = document.getElementById('closeMobileNav');
+        
+        if (hamburgerBtn && mobileNav) {
+            hamburgerBtn.addEventListener('click', () => {
+                mobileNav.classList.add('active');
+            });
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => {
+                    mobileNav.classList.remove('active');
+                });
+            }
+            mobileNav.addEventListener('click', (e) => {
+                if (e.target === mobileNav) mobileNav.classList.remove('active');
+            });
+        }
+    }
+
     function setActiveNavLink() {
         const currentPage = window.location.pathname.split('/').pop();
         const navLinks = document.querySelectorAll('.nav-link-modern');
+        const mobileLinks = document.querySelectorAll('.mobile-nav-link');
         
         navLinks.forEach(link => {
             const href = link.getAttribute('href');
@@ -2069,28 +1822,20 @@
                 link.classList.remove('active');
             }
         });
-    }
-
-    function updateNavbarUserInfo(profile) {
-        if (!profile) return;
         
-       const avatarUrl = profile.foto_profil ? `/${profile.foto_profil}` : `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.nama_lengkap || 'Dosen')}&background=3B82F6&color=fff&bold=true`; 
-        const navAvatar = document.getElementById('navAvatar');
-        const dropdownAvatar = document.getElementById('dropdownAvatar');
-        const navUserName = document.getElementById('navUserName');
-        const dropdownUserName = document.getElementById('dropdownUserName');
-        const dropdownUserNidn = document.getElementById('dropdownUserNidn');
-        
-        if (navAvatar) navAvatar.src = avatarUrl;
-        if (dropdownAvatar) dropdownAvatar.src = avatarUrl;
-        if (navUserName) navUserName.textContent = profile.nama_lengkap || 'Dosen';
-        if (dropdownUserName) dropdownUserName.textContent = profile.nama_lengkap || 'Dosen';
-        if (dropdownUserNidn) dropdownUserNidn.textContent = profile.nidn ? `NIDN: ${profile.nidn}` : '-';
+        mobileLinks.forEach(link => {
+            const href = link.getAttribute('href');
+            if (href === currentPage) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
     }
 
     async function loadProfileForNavbar() {
         try {
-            const token = localStorage.getItem('token');
+            const token = auth.getToken();
             if (!token) return;
             
             const response = await fetch(`${API_CONFIG.BASE_URL}/dosen/profil`, {
@@ -2100,50 +1845,86 @@
             if (response.ok) {
                 const result = await response.json();
                 if (result.success && result.data) {
-                    updateNavbarUserInfo(result.data);
+                    const profile = result.data;
+                    const avatarUrl = profile.foto_profil ? `/${profile.foto_profil}` : `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.nama_lengkap || 'Dosen')}&background=3B82F6&color=fff&bold=true`;
+                    
+                    const navAvatar = document.getElementById('navAvatar');
+                    const dropdownAvatar = document.getElementById('dropdownAvatar');
+                    const mobileNavAvatar = document.getElementById('mobileNavAvatar');
+                    const navUserName = document.getElementById('navUserName');
+                    const dropdownUserName = document.getElementById('dropdownUserName');
+                    const mobileNavUserName = document.getElementById('mobileNavUserName');
+                    const dropdownUserNidn = document.getElementById('dropdownUserNidn');
+                    
+                    if (navAvatar) navAvatar.src = avatarUrl;
+                    if (dropdownAvatar) dropdownAvatar.src = avatarUrl;
+                    if (mobileNavAvatar) mobileNavAvatar.src = avatarUrl;
+                    if (navUserName) navUserName.textContent = profile.nama_lengkap || 'Dosen';
+                    if (dropdownUserName) dropdownUserName.textContent = profile.nama_lengkap || 'Dosen';
+                    if (mobileNavUserName) mobileNavUserName.textContent = profile.nama_lengkap || 'Dosen';
+                    if (dropdownUserNidn) dropdownUserNidn.textContent = profile.nidn ? `NIDN: ${profile.nidn}` : '-';
                 }
             }
         } catch (error) {
-            console.error('Error loading profile for navbar:', error);
+            console.error('Error loading profile:', error);
         }
     }
 
-    window.handleLogout = function() {
-        Swal.fire({
-            title: 'Konfirmasi Logout',
-            text: 'Apakah Anda yakin ingin logout?',
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#EF4444',
-            cancelButtonColor: '#6B7280',
-            confirmButtonText: 'Ya, Logout',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                localStorage.removeItem('token');
-                localStorage.removeItem('user');
-                window.location.href = '../login.html';
+    function initializeYearFilter() {
+        const yearSelect = document.getElementById('yearFilter');
+        const repoYearInput = document.getElementById('repoYear');
+        
+        if (yearSelect) {
+            yearSelect.innerHTML = '<option value="all">Semua Tahun</option>';
+            const currentYear = new Date().getFullYear();
+            for (let year = currentYear + 1; year >= 2015; year--) {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year;
+                yearSelect.appendChild(option);
             }
-        });
-    };
+        }
+        
+        if (repoYearInput) {
+            repoYearInput.value = new Date().getFullYear();
+        }
+    }
 
-    const originalUpdateUserInfo = window.updateUserInfo || function() {};
-    window.updateUserInfo = function() {
-        originalUpdateUserInfo();
-        loadProfileForNavbar();
-    };
-
-    // ==================== PAGE INITIALIZATION ====================
+    // ==================== INITIALIZATION ====================
     document.addEventListener('DOMContentLoaded', function() {
         if (!auth.requireRole('dosen')) return;
         
-        updateUserInfo();
         initializeYearFilter();
         fetchRepository(true);
         initDropdown();
+        initMobileNav();
         setActiveNavLink();
         loadProfileForNavbar();
+        adjustMainContentPadding();
+        
+        window.addEventListener('resize', adjustMainContentPadding);
+        
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            let searchTimeout;
+            searchInput.addEventListener('input', () => {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => applyFilters(), 500);
+            });
+        }
+        
+        const repoType = document.getElementById('repoType');
+        if (repoType) {
+            repoType.addEventListener('change', updateAdditionalFields);
+        }
+        
+        window.onclick = function(event) {
+            const uploadModal = document.getElementById('uploadModal');
+            const viewModal = document.getElementById('viewModal');
+            if (event.target === uploadModal) closeUploadModal();
+            if (event.target === viewModal) closeViewModal();
+        };
     });
-</script>
+    </script>
 </body>
 </html>
