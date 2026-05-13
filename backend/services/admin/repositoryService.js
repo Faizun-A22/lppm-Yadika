@@ -154,16 +154,13 @@ class RepositoryService {
     }
 
       
-    // Ganti function getAllDocuments menjadi:
-
-async getAllDocuments(filters, pagination, sort) {
+  async getAllDocuments(filters, pagination, sort) {
     try {
-        // HAPUS select dengan relasi - gunakan SELECT * SAJA
         let query = supabase
             .from('repository_dokumen')
-            .select('*', { count: 'exact' });  // <-- INI PERUBAHANNYA
+            .select('*', { count: 'exact' });
 
-        // Apply filters (sama seperti sebelumnya)
+        // Apply filters
         if (filters.search) {
             query = query.or(`judul.ilike.%${filters.search}%,penulis.ilike.%${filters.search}%,keywords.ilike.%${filters.search}%`);
         }
@@ -180,7 +177,14 @@ async getAllDocuments(filters, pagination, sort) {
         query = query.range(from, to);
 
         const { data, error, count } = await query;
-        if (error) throw error;
+        
+        // TAMBAHKAN LOG INI UNTUK DEBUG
+        if (error) {
+            console.error('Supabase error detail:', JSON.stringify(error, null, 2));
+            throw error;
+        }
+        
+        console.log('Data fetched:', data?.length, 'Total count:', count);
 
         return {
             data: data || [],
@@ -192,6 +196,12 @@ async getAllDocuments(filters, pagination, sort) {
             }
         };
     } catch (error) {
+        console.error('Error in getAllDocuments - DETAIL:', {
+            message: error.message,
+            details: error.details,
+            hint: error.hint,
+            code: error.code
+        });
         logger.error('Error in getAllDocuments:', error);
         throw error;
     }
