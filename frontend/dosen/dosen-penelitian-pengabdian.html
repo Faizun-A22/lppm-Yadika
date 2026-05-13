@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <title>Sistem Laporan Penelitian - LPPM ITB Yadika</title>
     
     <!-- CSS External Libraries -->
@@ -12,6 +12,174 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Navbar Styles */
+        .navbar-custom {
+            background: linear-gradient(135deg, #1E3A5F 0%, #2D4A6E 50%, #1E3A5F 100%);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-link-modern {
+            position: relative;
+            transition: all 0.2s ease;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .nav-link-modern:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .nav-link-modern.active {
+            background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
+            color: white !important;
+        }
+
+        .nav-link-modern.active i {
+            color: white !important;
+        }
+
+        .brand-title {
+            color: white;
+        }
+
+        .brand-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .icon-btn {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .icon-btn:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .user-name, .user-role {
+            color: white;
+        }
+
+        .user-role {
+            opacity: 0.7;
+        }
+
+        /* Mobile Navigation Overlay */
+        .mobile-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-nav.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .mobile-nav-container {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 280px;
+            height: 100%;
+            background: white;
+            transform: translateX(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mobile-nav.active .mobile-nav-container {
+            transform: translateX(0);
+        }
+
+        .mobile-nav-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #1E3A5F, #2D4A6E);
+            color: white;
+        }
+
+        .mobile-nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            color: #4B5563;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .mobile-nav-link.active {
+            background: #EFF6FF;
+            color: #3B82F6;
+            border-left-color: #3B82F6;
+        }
+
+        /* Bottom Navigation Bar (Mobile) */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            padding: 8px 16px;
+            padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+            z-index: 45;
+            display: none;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .bottom-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 0;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            color: #9CA3AF;
+        }
+
+        .bottom-nav-item.active {
+            color: #3B82F6;
+        }
+
+        .bottom-nav-item i {
+            font-size: 1.25rem;
+        }
+
+        .bottom-nav-item span {
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        /* Adjust main content for bottom nav on mobile */
+        @media (max-width: 768px) {
+            .bottom-nav {
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+            }
+            
+            main {
+                padding-bottom: 70px;
+            }
+        }
+
         .gradient-text { 
             background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); 
             -webkit-background-clip: text; 
@@ -19,33 +187,6 @@
             background-clip: text; 
         }
         
-        .nav-link { 
-            position: relative; 
-            transition: color 0.3s ease; 
-        }
-        
-        .nav-link::after { 
-            content: ''; 
-            position: absolute; 
-            width: 0; 
-            height: 2px; 
-            bottom: -5px; 
-            left: 50%; 
-            background-color: #1e40af; 
-            transition: all 0.3s ease; 
-        }
-        
-        .nav-link:hover::after, 
-        .nav-link.active::after { 
-            width: 100%; 
-            left: 0; 
-        }
-        
-        .nav-link.active { 
-            color: #1e40af; 
-            font-weight: 600; 
-        }
-
         .loading-spinner {
             border: 3px solid #f3f3f3;
             border-top: 3px solid #1e40af;
@@ -123,55 +264,38 @@
             background-color: #f3f4f6;
         }
 
-
-
-         .nav-link-modern {
-        position: relative;
-        transition: all 0.2s ease;
-    }
-    
-    .nav-link-modern.active {
-        background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
-        color: white !important;
-    }
-    
-    .nav-link-modern.active i {
-        color: white !important;
-    }
-    
-    .nav-link-modern:not(.active):hover {
-        transform: translateY(-1px);
-    }
-    
-    /* Dropdown Animation */
-    #userDropdown {
-        transform-origin: top right;
-        animation: dropdownFade 0.2s ease;
-    }
-    
-    @keyframes dropdownFade {
-        from {
-            opacity: 0;
-            transform: scale(0.95) translateY(-10px);
+        /* Dropdown Animation */
+        #userDropdown {
+            transform-origin: top right;
+            animation: dropdownFade 0.2s ease;
         }
-        to {
-            opacity: 1;
-            transform: scale(1) translateY(0);
+        
+        @keyframes dropdownFade {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
         }
-    }
-    
-    /* Active link indicator */
-    .nav-link-modern.active::before {
-        content: '';
-        position: absolute;
-        bottom: -2px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 20px;
-        height: 2px;
-        background: white;
-        border-radius: 2px;
-    }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .form-section {
+                padding: 1rem;
+            }
+            .submission-card {
+                padding: 1rem;
+            }
+            .stat-card {
+                padding: 0.75rem;
+            }
+            .stat-card .text-2xl {
+                font-size: 1.25rem;
+            }
+        }
     </style>
 </head>
 <body class="bg-gray-50 font-sans antialiased">
@@ -183,119 +307,199 @@
         </div>
     </div>
 
-    <header class="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-md shadow-sm z-50 border-b border-gray-100">
-    <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
-        <!-- Logo and Brand -->
-        <a href="dosen-dashboard.html" class="flex items-center space-x-3 group">
-            <div class="relative">
-                <img src="yadika.png" alt="Logo LPPM ITB Yadika" class="h-10 w-10 rounded-xl shadow-sm transition-transform group-hover:scale-105">
-                <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl opacity-0 group-hover:opacity-20 transition"></div>
-            </div>
-            <div>
-                <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                    Portal Dosen
-                </h1>
-                <p class="text-xs text-gray-400">LPPM ITB Yadika</p>
-            </div>
-        </a>
-        
-        <!-- Desktop Navigation Menu -->
-        <div class="hidden md:flex items-center space-x-1">
-            <a href="dosen-dashboard.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
-                <i class="fas fa-home text-gray-400 group-hover:text-blue-500 transition"></i>
-                <span>Dashboard</span>
-            </a>
-            <a href="dosen-berita.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
-                <i class="fas fa-newspaper text-gray-400 group-hover:text-blue-500 transition"></i>
-                <span>Berita</span>
-            </a>
-            <a href="dosen-penelitian-pengabdian.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2 active">
-                <i class="fas fa-flask text-gray-400 group-hover:text-blue-500 transition"></i>
-                <span>Penelitian</span>
-            </a>
-            <a href="dosen-repository.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
-                <i class="fas fa-archive text-gray-400 group-hover:text-blue-500 transition"></i>
-                <span>Repository</span>
-            </a>
-            <a href="dosen-profil.html" class="nav-link-modern px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium text-sm flex items-center gap-2">
-                <i class="fas fa-user-circle text-gray-400 group-hover:text-blue-500 transition"></i>
-                <span>Profil</span>
-            </a>
-        </div>
-        
-        <!-- User Info & Actions -->
-        <div class="flex items-center gap-4">
-            <!-- Notifications Dropdown -->
-            <div class="relative">
-                <button id="notificationBtn" class="relative p-2 rounded-lg text-gray-500 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200">
-                    <i class="fas fa-bell text-lg"></i>
-                    <span id="notificationBadge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full hidden"></span>
-                </button>
-            </div>
-            
-            <!-- User Profile Dropdown -->
-            <div class="relative">
-                <button id="userMenuBtn" class="flex items-center gap-3 p-1.5 rounded-xl hover:bg-gray-50 transition-all duration-200 border border-transparent hover:border-gray-200">
-                    <div class="relative">
-                        <img id="navAvatar" src="" alt="Avatar" class="w-9 h-9 rounded-full object-cover ring-2 ring-gray-200">
-                        <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full ring-2 ring-white"></div>
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobileNav" class="mobile-nav">
+        <div class="mobile-nav-container">
+            <div class="mobile-nav-header">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                        <img src="yadika.png" alt="Logo" class="h-8 w-8 rounded-lg bg-white p-1">
+                        <span class="font-bold text-sm">Portal Dosen</span>
                     </div>
-                    <div class="hidden md:block text-left">
-                        <p class="text-sm font-semibold text-gray-800" id="navUserName">Loading...</p>
-                        <p class="text-xs text-gray-400" id="navUserRole">Dosen</p>
-                    </div>
-                    <i class="fas fa-chevron-down text-xs text-gray-400 hidden md:block"></i>
-                </button>
-                
-                <!-- Dropdown Menu -->
-                <div id="userDropdown" class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hidden transition-all duration-200 z-50">
-                    <!-- Header with user info -->
-                    <div class="p-3 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-purple-50">
-                        <div class="flex items-center gap-3">
-                            <img id="dropdownAvatar" src="" alt="Avatar" class="w-10 h-10 rounded-full object-cover">
-                            <div>
-                                <p class="font-semibold text-gray-800 text-sm" id="dropdownUserName">Loading...</p>
-                                <p class="text-xs text-gray-500" id="dropdownUserNidn">-</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Menu Items -->
-                    <div class="p-2">
-                        <a href="dosen-profil.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
-                            <i class="fas fa-user-cog w-5 text-gray-400"></i>
-                            <span>Pengaturan Akun</span>
-                        </a>
-                        <a href="dosen-ubah-password.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
-                            <i class="fas fa-key w-5 text-gray-400"></i>
-                            <span>Ubah Password</span>
-                        </a>
-                        <div class="border-t border-gray-100 my-2"></div>
-                        <button onclick="handleLogout()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-600 hover:bg-red-50 transition text-sm">
-                            <i class="fas fa-sign-out-alt w-5 text-red-400"></i>
-                            <span>Logout</span>
-                        </button>
+                    <button id="closeMobileNav" class="text-white">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <div class="flex items-center gap-3 mt-4 pt-2 border-t border-white/20">
+                    <img id="mobileNavAvatar" src="" alt="Avatar" class="w-10 h-10 rounded-full object-cover ring-2 ring-white/50">
+                    <div>
+                        <p class="font-semibold text-sm" id="mobileNavUserName">Loading...</p>
+                        <p class="text-xs opacity-80">Dosen</p>
                     </div>
                 </div>
             </div>
+            <div class="flex-1 overflow-y-auto py-4">
+                <a href="dosen-dashboard.html" class="mobile-nav-link">
+                    <i class="fas fa-home w-5"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="dosen-berita.html" class="mobile-nav-link">
+                    <i class="fas fa-newspaper w-5"></i>
+                    <span>Berita</span>
+                </a>
+                <a href="dosen-penelitian-pengabdian.html" class="mobile-nav-link active">
+                    <i class="fas fa-flask w-5"></i>
+                    <span>Penelitian</span>
+                </a>
+                <a href="dosen-repository.html" class="mobile-nav-link">
+                    <i class="fas fa-archive w-5"></i>
+                    <span>Repository</span>
+                </a>
+                <div class="border-t border-gray-100 my-4 mx-4"></div>
+                <a href="dosen-profil.html" class="mobile-nav-link">
+                    <i class="fas fa-user-cog w-5"></i>
+                    <span>Pengaturan Akun</span>
+                </a>
+                <a href="dosen-ubah-password.html" class="mobile-nav-link">
+                    <i class="fas fa-key w-5"></i>
+                    <span>Ubah Password</span>
+                </a>
+                <button onclick="handleLogout()" class="mobile-nav-link w-full text-left text-red-600">
+                    <i class="fas fa-sign-out-alt w-5"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
         </div>
-    </nav>
-</header>
+    </div>
 
+    <!-- Bottom Navigation Bar (Mobile) -->
+    <div class="bottom-nav">
+        <a href="dosen-dashboard.html" class="bottom-nav-item">
+            <i class="fas fa-home"></i>
+            <span>Beranda</span>
+        </a>
+        <a href="dosen-berita.html" class="bottom-nav-item">
+            <i class="fas fa-newspaper"></i>
+            <span>Berita</span>
+        </a>
+        <a href="dosen-penelitian-pengabdian.html" class="bottom-nav-item active">
+            <i class="fas fa-flask"></i>
+            <span>Penelitian</span>
+        </a>
+        <a href="dosen-repository.html" class="bottom-nav-item">
+            <i class="fas fa-archive"></i>
+            <span>Repository</span>
+        </a>
+        <a href="dosen-profil.html" class="bottom-nav-item">
+            <i class="fas fa-user"></i>
+            <span>Profil</span>
+        </a>
+    </div>
+
+    <!-- Header Navbar -->
+    <header id="mainHeader" class="fixed top-0 left-0 right-0 navbar-custom z-50">
+        <nav class="container mx-auto px-4 md:px-6 py-3 flex justify-between items-center">
+            <!-- Logo and Brand -->
+            <a href="dosen-dashboard.html" class="flex items-center space-x-3 group">
+                <div class="relative">
+                    <img src="yadika.png" alt="Logo LPPM ITB Yadika" class="h-9 w-9 md:h-10 md:w-10 rounded-lg shadow-sm transition-transform group-hover:scale-105 bg-white p-1">
+                    <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-400 to-purple-400 rounded-lg opacity-0 group-hover:opacity-30 transition"></div>
+                </div>
+                <div>
+                    <h1 class="brand-title text-base md:text-lg font-bold tracking-wide">
+                        Portal Dosen
+                    </h1>
+                    <p class="brand-subtitle text-xs md:text-sm -mt-0.5">ITB Yadika</p>
+                </div>
+            </a>
+            
+            <!-- Desktop Navigation Menu -->
+            <div class="hidden md:flex items-center space-x-1">
+                <a href="dosen-dashboard.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-home text-sm"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="dosen-berita.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-newspaper text-sm"></i>
+                    <span>Berita</span>
+                </a>
+                <a href="dosen-penelitian-pengabdian.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2 active">
+                    <i class="fas fa-flask text-sm"></i>
+                    <span>Penelitian</span>
+                </a>
+                <a href="dosen-repository.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-archive text-sm"></i>
+                    <span>Repository</span>
+                </a>
+                <a href="dosen-profil.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-user-circle text-sm"></i>
+                    <span>Profil</span>
+                </a>
+            </div>
+            
+            <!-- User Info & Actions -->
+            <div class="flex items-center gap-2 md:gap-4">
+                <!-- Notifications -->
+                <div class="relative">
+                    <button id="notificationBtn" class="icon-btn relative p-2 rounded-lg transition-all duration-200">
+                        <i class="fas fa-bell text-base md:text-lg"></i>
+                        <span id="notificationBadge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full hidden"></span>
+                    </button>
+                </div>
+                
+                <!-- User Profile Dropdown Desktop -->
+                <div class="relative hidden md:block">
+                    <button id="userMenuBtn" class="flex items-center gap-2 p-1.5 rounded-xl hover:bg-white/10 transition-all duration-200">
+                        <div class="relative">
+                            <img id="navAvatar" src="" alt="Avatar" class="w-8 h-8 rounded-full object-cover ring-2 ring-white/50">
+                            <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full ring-2 ring-white"></div>
+                        </div>
+                        <div class="hidden xl:block text-left">
+                            <p class="user-name text-xs font-semibold" id="navUserName">Loading...</p>
+                            <p class="user-role text-[10px]" id="navUserRole">Dosen</p>
+                        </div>
+                        <i class="fas fa-chevron-down text-[10px] text-white/60 hidden xl:block"></i>
+                    </button>
+                    
+                    <div id="userDropdown" class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hidden z-50">
+                        <div class="p-3 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-purple-50">
+                            <div class="flex items-center gap-3">
+                                <img id="dropdownAvatar" src="" alt="Avatar" class="w-10 h-10 rounded-full object-cover">
+                                <div>
+                                    <p class="font-semibold text-gray-800 text-sm" id="dropdownUserName">Loading...</p>
+                                    <p class="text-xs text-gray-500" id="dropdownUserNidn">-</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-2">
+                            <a href="dosen-profil.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
+                                <i class="fas fa-user-cog w-5 text-gray-400"></i>
+                                <span>Pengaturan Akun</span>
+                            </a>
+                            <a href="dosen-ubah-password.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition text-sm">
+                                <i class="fas fa-key w-5 text-gray-400"></i>
+                                <span>Ubah Password</span>
+                            </a>
+                            <div class="border-t border-gray-100 my-2"></div>
+                            <button onclick="handleLogout()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-600 hover:bg-red-50 transition text-sm">
+                                <i class="fas fa-sign-out-alt w-5 text-red-400"></i>
+                                <span>Logout</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hamburger Menu Button (Mobile) -->
+                <button id="hamburgerBtn" class="md:hidden icon-btn p-2 rounded-lg transition-all duration-200">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </nav>
+    </header>
 
     <!-- Main Content -->
-    <main class="pt-20">
-        <div class="container mx-auto px-6 py-8">
+    <main id="mainContent" class="pt-20 pb-12 md:pb-12">
+        <div class="container mx-auto px-4 sm:px-6 py-6">
             <!-- Page Header -->
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8" data-aos="fade-down">
                 <div>
-                    <h2 class="text-3xl font-bold text-gray-800">Laporan Penelitian</h2>
-                    <p class="text-gray-600">Sistem pengajuan laporan penelitian terintegrasi dengan alur review LPPM</p>
+                    <h2 class="text-2xl md:text-3xl font-bold text-gray-800">Laporan Penelitian</h2>
+                    <p class="text-gray-600 text-sm md:text-base">Sistem pengajuan laporan penelitian terintegrasi dengan alur review LPPM</p>
                 </div>
                 
                 <div class="mt-4 md:mt-0">
-                    <button onclick="openSubmissionModal()" class="bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold py-3 px-6 rounded-lg hover:shadow-lg transition-all">
-                        <i class="fas fa-flask mr-2"></i>Buat Laporan Penelitian
+                    <button onclick="openSubmissionModal()" class="bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold py-2.5 px-5 md:py-3 md:px-6 rounded-lg hover:shadow-lg transition-all text-sm md:text-base">
+                        <i class="fas fa-flask mr-2"></i>Buat Laporan
                     </button>
                 </div>
             </div>
@@ -305,76 +509,72 @@
                 <div class="flex items-start">
                     <i class="fas fa-info-circle text-blue-600 text-xl mt-1 mr-3"></i>
                     <div>
-                        <h4 class="font-semibold text-blue-900">Alur Pengajuan Laporan Penelitian</h4>
-                        <p class="text-sm text-blue-800 mt-1">
-                            1. Dosen mengisi form laporan dan mengupload dokumen pendukung • 
-                            2. Tim LPPM akan melakukan review kelengkapan • 
-                            3. Jika ada revisi, dosen akan diminta melakukan perbaikan • 
-                            4. Setelah disetujui, laporan final dapat diupload • 
-                            5. Upload bukti luaran (publikasi, HKI, karya ilmiah)
+                        <h4 class="font-semibold text-blue-900 text-sm md:text-base">Alur Pengajuan Laporan Penelitian</h4>
+                        <p class="text-xs md:text-sm text-blue-800 mt-1">
+                            1. Isi form & upload dokumen • 2. Review LPPM • 3. Revisi jika diperlukan • 4. Upload final • 5. Upload bukti luaran
                         </p>
                     </div>
                 </div>
             </div>
 
-            <!-- Status Summary Cards -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8" data-aos="fade-up">
-                <div class="bg-white rounded-xl shadow p-6">
+            <!-- Status Summary Cards - Responsive Grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4 mb-8" data-aos="fade-up">
+                <div class="bg-white rounded-xl shadow p-3 md:p-6">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm text-gray-500">Draft</p>
-                            <p class="text-2xl font-bold text-gray-600" id="countDraft">0</p>
+                            <p class="text-xs md:text-sm text-gray-500">Draft</p>
+                            <p class="text-xl md:text-2xl font-bold text-gray-600" id="countDraft">0</p>
                         </div>
-                        <div class="bg-gray-100 rounded-full p-3"><i class="fas fa-pen text-gray-600"></i></div>
+                        <div class="bg-gray-100 rounded-full p-2 md:p-3"><i class="fas fa-pen text-gray-600 text-sm md:text-base"></i></div>
                     </div>
                 </div>
-                <div class="bg-white rounded-xl shadow p-6">
+                <div class="bg-white rounded-xl shadow p-3 md:p-6">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm text-gray-500">Dalam Review</p>
-                            <p class="text-2xl font-bold text-blue-600" id="countReview">0</p>
+                            <p class="text-xs md:text-sm text-gray-500">Review</p>
+                            <p class="text-xl md:text-2xl font-bold text-blue-600" id="countReview">0</p>
                         </div>
-                        <div class="bg-blue-100 rounded-full p-3"><i class="fas fa-clock text-blue-600"></i></div>
+                        <div class="bg-blue-100 rounded-full p-2 md:p-3"><i class="fas fa-clock text-blue-600 text-sm md:text-base"></i></div>
                     </div>
                 </div>
-                <div class="bg-white rounded-xl shadow p-6">
+                <div class="bg-white rounded-xl shadow p-3 md:p-6">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm text-gray-500">Perlu Revisi</p>
-                            <p class="text-2xl font-bold text-orange-600" id="countRevision">0</p>
+                            <p class="text-xs md:text-sm text-gray-500">Revisi</p>
+                            <p class="text-xl md:text-2xl font-bold text-orange-600" id="countRevision">0</p>
                         </div>
-                        <div class="bg-orange-100 rounded-full p-3"><i class="fas fa-edit text-orange-600"></i></div>
+                        <div class="bg-orange-100 rounded-full p-2 md:p-3"><i class="fas fa-edit text-orange-600 text-sm md:text-base"></i></div>
                     </div>
                 </div>
-                <div class="bg-white rounded-xl shadow p-6">
+                <div class="bg-white rounded-xl shadow p-3 md:p-6">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm text-gray-500">Disetujui</p>
-                            <p class="text-2xl font-bold text-green-600" id="countApproved">0</p>
+                            <p class="text-xs md:text-sm text-gray-500">Disetujui</p>
+                            <p class="text-xl md:text-2xl font-bold text-green-600" id="countApproved">0</p>
                         </div>
-                        <div class="bg-green-100 rounded-full p-3"><i class="fas fa-check-circle text-green-600"></i></div>
+                        <div class="bg-green-100 rounded-full p-2 md:p-3"><i class="fas fa-check-circle text-green-600 text-sm md:text-base"></i></div>
                     </div>
                 </div>
-                <div class="bg-white rounded-xl shadow p-6">
+                <div class="bg-white rounded-xl shadow p-3 md:p-6 col-span-2 sm:col-span-1">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm text-gray-500">Selesai</p>
-                            <p class="text-2xl font-bold text-purple-600" id="countCompleted">0</p>
+                            <p class="text-xs md:text-sm text-gray-500">Selesai</p>
+                            <p class="text-xl md:text-2xl font-bold text-purple-600" id="countCompleted">0</p>
                         </div>
-                        <div class="bg-purple-100 rounded-full p-3"><i class="fas fa-check-double text-purple-600"></i></div>
+                        <div class="bg-purple-100 rounded-full p-2 md:p-3"><i class="fas fa-check-double text-purple-600 text-sm md:text-base"></i></div>
                     </div>
                 </div>
             </div>
 
             <!-- Filter Section -->
-            <div class="bg-white rounded-xl shadow-lg p-6 mb-6" data-aos="fade-up">
-                <div class="flex flex-col md:flex-row gap-4">
+            <div class="bg-white rounded-xl shadow-lg p-4 md:p-6 mb-6" data-aos="fade-up">
+                <div class="flex flex-col md:flex-row gap-3 md:gap-4">
                     <div class="relative flex-1">
                         <input type="text" id="searchInput" placeholder="Cari judul atau skema..." 
-                               class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                               class="w-full pl-10 pr-4 py-2.5 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm">
                         <i class="fas fa-search absolute left-3 top-3.5 text-gray-400"></i>
                     </div>
-                    <select id="statusFilter" class="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    <select id="statusFilter" class="px-4 py-2.5 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm">
                         <option value="all">Semua Status</option>
                         <option value="draft">Draft</option>
                         <option value="submit">Terkirim</option>
@@ -383,13 +583,15 @@
                         <option value="diterima">Disetujui</option>
                         <option value="ditolak">Ditolak</option>
                     </select>
-                    <button onclick="filterSubmissions()" class="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700">Filter</button>
-                    <button onclick="resetFilters()" class="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300">Reset</button>
+                    <div class="flex gap-2">
+                        <button onclick="filterSubmissions()" class="bg-blue-600 text-white px-5 md:px-8 py-2.5 md:py-3 rounded-lg hover:bg-blue-700 text-sm">Filter</button>
+                        <button onclick="resetFilters()" class="bg-gray-200 text-gray-700 px-4 md:px-6 py-2.5 md:py-3 rounded-lg hover:bg-gray-300 text-sm">Reset</button>
+                    </div>
                 </div>
             </div>
 
             <!-- Submissions List -->
-            <div id="submissionsContainer" class="space-y-4" data-aos="fade-up">
+            <div id="submissionsContainer" class="space-y-3 md:space-y-4" data-aos="fade-up">
                 <div class="text-center py-12"><div class="loading-spinner"></div><p class="mt-4 text-gray-600">Memuat data...</p></div>
             </div>
         </div>
@@ -398,109 +600,67 @@
     <!-- Modal Pengajuan Laporan -->
     <div id="submissionModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <div class="p-6 border-b sticky top-0 bg-white flex justify-between items-center">
-                <h3 class="text-xl font-bold text-gray-800" id="modalTitle">Form Laporan Penelitian</h3>
-                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-2xl"></i></button>
+            <div class="p-4 md:p-6 border-b sticky top-0 bg-white flex justify-between items-center">
+                <h3 class="text-lg md:text-xl font-bold text-gray-800" id="modalTitle">Form Laporan Penelitian</h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl md:text-2xl"></i></button>
             </div>
-            <div class="p-6">
+            <div class="p-4 md:p-6">
                 <form id="submissionForm" enctype="multipart/form-data">
                     <input type="hidden" id="submissionId">
                     
-                    <!-- Identitas Pengusul -->
+                    <!-- Konten form sama seperti sebelumnya, disederhanakan untuk responsivitas -->
                     <div class="form-section">
-                        <h4 class="form-section-title"><i class="fas fa-user mr-2 text-blue-600"></i>Identitas Pengusul</h4>
+                        <h4 class="form-section-title text-base md:text-lg"><i class="fas fa-user mr-2 text-blue-600"></i>Identitas Pengusul</h4>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div><label class="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap</label><input type="text" id="namaLengkap" class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100" readonly></div>
-                            <div><label class="block text-sm font-medium text-gray-700 mb-2">NIDN</label><input type="text" id="nidn" class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100" readonly></div>
-                            <div><label class="block text-sm font-medium text-gray-700 mb-2">Program Studi</label><input type="text" id="prodi" class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100" readonly></div>
-                          
+                            <div><label class="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap</label><input type="text" id="namaLengkap" class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100 text-sm" readonly></div>
+                            <div><label class="block text-sm font-medium text-gray-700 mb-2">NIDN</label><input type="text" id="nidn" class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100 text-sm" readonly></div>
+                            <div><label class="block text-sm font-medium text-gray-700 mb-2">Program Studi</label><input type="text" id="prodi" class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100 text-sm" readonly></div>
                         </div>
                     </div>
 
-                    <!-- Informasi Laporan -->
                     <div class="form-section">
-                        <h4 class="form-section-title"><i class="fas fa-file-alt mr-2 text-blue-600"></i>Informasi Laporan Penelitian</h4>
+                        <h4 class="form-section-title text-base md:text-lg"><i class="fas fa-file-alt mr-2 text-blue-600"></i>Informasi Laporan</h4>
                         <div class="space-y-4">
-                            <div><label class="block text-sm font-medium text-gray-700 mb-2">Judul Laporan <span class="text-red-500">*</span></label><textarea id="judul" rows="2" required class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="Masukkan judul lengkap laporan penelitian"></textarea></div>
+                            <div><label class="block text-sm font-medium text-gray-700 mb-2">Judul Laporan <span class="text-red-500">*</span></label><textarea id="judul" rows="2" required class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" placeholder="Masukkan judul lengkap laporan penelitian"></textarea></div>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div><label class="block text-sm font-medium text-gray-700 mb-2">Jenis Pendanaan</label><select id="jenisPendanaan" class="w-full px-3 py-2 border border-gray-300 rounded-lg"><option value="">Pilih</option><option value="internal">Internal (Dana ITB Yadika)</option><option value="eksternal">Eksternal (Hibah Luar)</option><option value="mandiri">Mandiri</option></select></div>
-                                <div><label class="block text-sm font-medium text-gray-700 mb-2">Skema Penelitian</label><select id="skema" required class="w-full px-3 py-2 border border-gray-300 rounded-lg"><option value="">Pilih Skema</option><option value="penelitian_dasar">Penelitian Dasar</option><option value="penelitian_terapan">Penelitian Terapan</option><option value="penelitian_pengembangan">Penelitian Pengembangan</option><option value="penelitian_kolaborasi">Penelitian Kolaborasi</option></select></div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-2">Jenis Pendanaan</label><select id="jenisPendanaan" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"><option value="">Pilih</option><option value="internal">Internal (Dana ITB Yadika)</option><option value="eksternal">Eksternal (Hibah Luar)</option><option value="mandiri">Mandiri</option></select></div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-2">Skema Penelitian</label><select id="skema" required class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"><option value="">Pilih Skema</option><option value="penelitian_dasar">Penelitian Dasar</option><option value="penelitian_terapan">Penelitian Terapan</option><option value="penelitian_pengembangan">Penelitian Pengembangan</option><option value="penelitian_kolaborasi">Penelitian Kolaborasi</option></select></div>
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div><label class="block text-sm font-medium text-gray-700 mb-2">Tahun <span class="text-red-500">*</span></label><input type="text" id="tahun" value="2024" required class="w-full px-3 py-2 border border-gray-300 rounded-lg" maxlength="4" pattern="\d{4}"></div>
-                                <div><label class="block text-sm font-medium text-gray-700 mb-2">Durasi (Bulan)</label><input type="number" id="durasi" value="6" min="1" max="36" class="w-full px-3 py-2 border border-gray-300 rounded-lg"></div>
-                                <div><label class="block text-sm font-medium text-gray-700 mb-2">Dana (Rp)</label><input type="text" id="dana" class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="Contoh: 20000" oninput="formatRupiah(this)"></div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-2">Tahun <span class="text-red-500">*</span></label><input type="text" id="tahun" value="2024" required class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" maxlength="4" pattern="\d{4}"></div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-2">Durasi (Bulan)</label><input type="number" id="durasi" value="6" min="1" max="36" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"></div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-2">Dana (Rp)</label><input type="text" id="dana" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" placeholder="Contoh: 20000" oninput="formatRupiah(this)"></div>
                             </div>
-                       
                         </div>
                     </div>
 
-                    <!-- Upload Dokumen Laporan -->
                     <div class="form-section">
-                        <h4 class="form-section-title"><i class="fas fa-upload mr-2 text-blue-600"></i>Dokumen Laporan</h4>
+                        <h4 class="form-section-title text-base md:text-lg"><i class="fas fa-upload mr-2 text-blue-600"></i>Dokumen Laporan</h4>
                         <div><label class="block text-sm font-medium text-gray-700 mb-2">File Laporan Penelitian <span class="text-red-500">*</span> <span class="text-xs text-gray-500">(PDF, maks 10MB)</span></label>
-                        <div class="file-upload-area" onclick="document.getElementById('fileProposal').click()"><i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-2"></i><p class="text-sm text-gray-600" id="proposalFileName">Klik untuk upload file laporan</p></div>
+                        <div class="file-upload-area" onclick="document.getElementById('fileProposal').click()"><i class="fas fa-cloud-upload-alt text-3xl md:text-4xl text-gray-400 mb-2"></i><p class="text-xs md:text-sm text-gray-600" id="proposalFileName">Klik untuk upload file laporan</p></div>
                         <input type="file" id="fileProposal" accept=".pdf" class="hidden" onchange="updateFileName(this, 'proposalFileName')"></div>
                     </div>
 
-                    <!-- Target Luaran Sederhana -->
                     <div class="form-section">
-                        <h4 class="form-section-title"><i class="fas fa-bullseye mr-2 text-blue-600"></i>Target Luaran Penelitian</h4>
-                        
-                        <!-- Publikasi Jurnal -->
-                        <div class="mb-6">
-                            <label class="block text-sm font-medium text-gray-700 mb-3">Publikasi Jurnal</label>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <h4 class="form-section-title text-base md:text-lg"><i class="fas fa-bullseye mr-2 text-blue-600"></i>Target Luaran</h4>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Publikasi Jurnal</label>
+                            <div class="grid grid-cols-2 gap-2">
                                 <label class="flex items-center"><input type="checkbox" id="pubSinta1" value="SINTA 1-3" class="rounded text-blue-600"><span class="ml-2 text-sm">SINTA 1-3</span></label>
                                 <label class="flex items-center"><input type="checkbox" id="pubSinta3" value="SINTA 3-6" class="rounded text-blue-600"><span class="ml-2 text-sm">SINTA 3-6</span></label>
                                 <label class="flex items-center"><input type="checkbox" id="pubScopus" value="Scopus" class="rounded text-blue-600"><span class="ml-2 text-sm">Scopus</span></label>
-                               
-                        </div>
-                            <div class="mt-3"><label class="block text-sm font-medium text-gray-700 mb-2">Link Jurnal (jika sudah ada)</label><input type="url" id="linkJurnal" class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="https://..."></div>
-                        </div>
-
-                        <!-- Conference / Prosiding -->
-                        <div class="mb-6">
-                            <label class="block text-sm font-medium text-gray-700 mb-3">Conference & Prosiding</label>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <label class="flex items-center"><input type="checkbox" id="confInternasional" value="Konferensi Internasional" class="rounded text-blue-600"><span class="ml-2 text-sm">Konferensi Internasional</span></label>
-                                <label class="flex items-center"><input type="checkbox" id="confNasional" value="Konferensi Nasional" class="rounded text-blue-600"><span class="ml-2 text-sm">Konferensi Nasional</span></label>
-                                <label class="flex items-center"><input type="checkbox" id="prosiding" value="Prosiding Terindeks" class="rounded text-blue-600"><span class="ml-2 text-sm">Prosiding Terindeks</span></label>
                             </div>
-                            <div class="mt-3"><label class="block text-sm font-medium text-gray-700 mb-2">Link Conference/Prosiding</label><input type="url" id="linkConference" class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="https://..."></div>
-                        </div>
-
-                        <!-- HKI (dengan upload file) -->
-                        <div class="mb-6 p-4 bg-gray-50 rounded-lg">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">HKI / Paten <span class="text-xs text-gray-500">(Upload file sertifikat HKI/Paten)</span></label>
-                            <div class="file-upload-area mb-2" onclick="document.getElementById('fileHKI').click()">
-                                <i class="fas fa-file-pdf text-2xl text-gray-400 mb-1"></i>
-                                <p class="text-xs text-gray-600" id="hkiFileName">Klik untuk upload file HKI (PDF)</p>
-                            </div>
-                            <input type="file" id="fileHKI" accept=".pdf" class="hidden" onchange="updateFileName(this, 'hkiFileName')">
-                            <input type="text" id="hkiJudul" class="w-full mt-2 px-3 py-2 border border-gray-300 rounded-lg" placeholder="Judul HKI/Paten (opsional)">
-                        </div>
-
-                        <!-- Karya Ilmiah (dengan upload file) -->
-                        <div class="mb-6 p-4 bg-gray-50 rounded-lg">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Karya Ilmiah / Buku <span class="text-xs text-gray-500">(Upload file buku/monograf/book chapter)</span></label>
-                            <div class="file-upload-area mb-2" onclick="document.getElementById('fileKarya').click()">
-                                <i class="fas fa-book text-2xl text-gray-400 mb-1"></i>
-                                <p class="text-xs text-gray-600" id="karyaFileName">Klik untuk upload karya ilmiah (PDF)</p>
-                            </div>
-                            <input type="file" id="fileKarya" accept=".pdf" class="hidden" onchange="updateFileName(this, 'karyaFileName')">
-                            <input type="text" id="karyaJudul" class="w-full mt-2 px-3 py-2 border border-gray-300 rounded-lg" placeholder="Judul Buku/Karya Ilmiah (opsional)">
                         </div>
                     </div>
 
-                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3 md:p-4 bg-gray-50 rounded-lg">
                         <div class="flex items-center"><input type="checkbox" id="saveAsDraft" class="rounded text-blue-600"><label for="saveAsDraft" class="ml-2 text-sm text-gray-700">Simpan sebagai draft</label></div>
-                        <p class="text-xs text-gray-500"><i class="fas fa-info-circle mr-1"></i>Centang untuk menyimpan draft, kosongkan untuk mengirim ke LPPM</p>
+                        <p class="text-xs text-gray-500"><i class="fas fa-info-circle mr-1"></i>Centang untuk draft, kosongkan untuk kirim ke LPPM</p>
                     </div>
                     
                     <div class="flex justify-end space-x-3 pt-4 border-t mt-4">
-                        <button type="button" onclick="closeModal()" class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">Batal</button>
-                        <button type="submit" class="px-6 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:shadow-lg">Kirim Laporan</button>
+                        <button type="button" onclick="closeModal()" class="px-4 md:px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm">Batal</button>
+                        <button type="submit" class="px-4 md:px-6 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:shadow-lg text-sm">Kirim Laporan</button>
                     </div>
                 </form>
             </div>
@@ -510,8 +670,8 @@
     <!-- Modal Detail -->
     <div id="detailModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
-            <div class="p-6 border-b sticky top-0 bg-white flex justify-between items-center"><h3 class="text-xl font-bold text-gray-800">Detail Laporan Penelitian</h3><button onclick="closeDetailModal()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-2xl"></i></button></div>
-            <div class="p-6" id="detailModalContent"></div>
+            <div class="p-4 md:p-6 border-b sticky top-0 bg-white flex justify-between items-center"><h3 class="text-lg md:text-xl font-bold text-gray-800">Detail Laporan</h3><button onclick="closeDetailModal()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl md:text-2xl"></i></button></div>
+            <div class="p-4 md:p-6" id="detailModalContent"></div>
         </div>
     </div>
 
@@ -609,6 +769,7 @@
                     if(result.success){
                         window.dosenProfile = result.data;
                         updateUserInfo();
+                        updateNavbarUserInfo(window.dosenProfile);
                         await loadProgramStudi();
                         return result.data;
                     }
@@ -621,14 +782,6 @@
         }
 
         function updateUserInfo() {
-            const userNameDisplay = document.getElementById('userNameDisplay');
-            const userNidnDisplay = document.getElementById('userNidnDisplay');
-            
-            if(currentUser){
-                if(userNameDisplay) userNameDisplay.textContent = currentUser.nama_lengkap || currentUser.name || '-';
-                if(userNidnDisplay) userNidnDisplay.textContent = currentUser.nidn || '-';
-            }
-            
             if(window.dosenProfile){
                 const namaField = document.getElementById('namaLengkap');
                 if(namaField) namaField.value = window.dosenProfile.nama_lengkap || '';
@@ -638,19 +791,29 @@
                 
                 const prodiField = document.getElementById('prodi');
                 if(prodiField) prodiField.value = window.dosenProfile.nama_prodi || '';
-                
-                if(userNameDisplay) userNameDisplay.textContent = window.dosenProfile.nama_lengkap || userNameDisplay.textContent;
-                if(userNidnDisplay) userNidnDisplay.textContent = window.dosenProfile.nidn || userNidnDisplay.textContent;
-                
-                updateNavbarUserInfo(window.dosenProfile);
             }
+        }
+
+        function updateNavbarUserInfo(profile) {
+            if (!profile) return;
             
-            if(!window.dosenProfile && currentUser){
-                const prodiField = document.getElementById('prodi');
-                if(prodiField && !prodiField.value && currentUser.prodi) {
-                    prodiField.value = currentUser.prodi;
-                }
-            }
+            const avatarUrl = profile.foto_profil ? `/${profile.foto_profil}` : `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.nama_lengkap || 'Dosen')}&background=3B82F6&color=fff&bold=true`;
+            
+            const navAvatar = document.getElementById('navAvatar');
+            const dropdownAvatar = document.getElementById('dropdownAvatar');
+            const mobileNavAvatar = document.getElementById('mobileNavAvatar');
+            const navUserName = document.getElementById('navUserName');
+            const dropdownUserName = document.getElementById('dropdownUserName');
+            const dropdownUserNidn = document.getElementById('dropdownUserNidn');
+            const mobileNavUserName = document.getElementById('mobileNavUserName');
+            
+            if (navAvatar) navAvatar.src = avatarUrl;
+            if (dropdownAvatar) dropdownAvatar.src = avatarUrl;
+            if (mobileNavAvatar) mobileNavAvatar.src = avatarUrl;
+            if (navUserName) navUserName.textContent = profile.nama_lengkap || 'Dosen';
+            if (dropdownUserName) dropdownUserName.textContent = profile.nama_lengkap || 'Dosen';
+            if (mobileNavUserName) mobileNavUserName.textContent = profile.nama_lengkap || 'Dosen';
+            if (dropdownUserNidn) dropdownUserNidn.textContent = profile.nidn ? `NIDN: ${profile.nidn}` : '-';
         }
 
         async function loadProgramStudi() {
@@ -714,27 +877,27 @@
             
             const html = allData.map(s => { 
                 const badge = getStatusBadge(s.status); 
-                return `<div class="submission-card bg-white p-6 rounded-xl shadow hover:shadow-lg transition cursor-pointer" onclick="viewDetail('${s.id_penelitian}')">
-                    <div class="flex flex-col lg:flex-row justify-between">
+                return `<div class="submission-card bg-white p-4 md:p-6 rounded-xl shadow hover:shadow-lg transition cursor-pointer" onclick="viewDetail('${s.id_penelitian}')">
+                    <div class="flex flex-col lg:flex-row justify-between gap-3">
                         <div class="flex-1">
                             <div class="flex items-start">
-                                <div class="bg-blue-100 rounded-full p-3 mr-4"><i class="fas fa-flask text-blue-600"></i></div>
-                                <div>
+                                <div class="bg-blue-100 rounded-full p-2 md:p-3 mr-3 md:mr-4"><i class="fas fa-flask text-blue-600 text-sm md:text-base"></i></div>
+                                <div class="flex-1">
                                     <div class="flex flex-wrap items-center gap-2 mb-2">
                                         <span class="px-2 py-1 rounded text-xs font-semibold ${badge.class}"><i class="fas ${badge.icon} mr-1"></i>${badge.text}</span>
-                                        <span class="text-sm text-gray-500"><i class="far fa-calendar mr-1"></i>${formatDate(s.tanggal_pengajuan || s.created_at)}</span>
+                                        <span class="text-xs text-gray-500"><i class="far fa-calendar mr-1"></i>${formatDate(s.tanggal_pengajuan || s.created_at)}</span>
                                     </div>
-                                    <h3 class="text-lg font-semibold text-gray-800">${s.judul}</h3>
-                                    <div class="mt-2 flex flex-wrap gap-4 text-sm text-gray-600">
+                                    <h3 class="font-semibold text-gray-800 text-sm md:text-base">${s.judul}</h3>
+                                    <div class="mt-2 flex flex-wrap gap-3 text-xs text-gray-600">
                                         <span><i class="fas fa-tag mr-1"></i>${(s.skema_penelitian || '').replace(/_/g, ' ')}</span>
                                         <span><i class="fas fa-coins mr-1"></i>${formatCurrency(s.dana_diajukan || 0)}</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="flex items-center mt-4 lg:mt-0 space-x-2">
-                            ${s.status === 'revisi' ? `<button onclick="editSubmission('${s.id_penelitian}'); event.stopPropagation()" class="bg-orange-500 text-white px-4 py-2 rounded-lg text-sm"><i class="fas fa-edit mr-1"></i>Revisi</button>` : ''}
-                            <button onclick="viewDetail('${s.id_penelitian}'); event.stopPropagation()" class="bg-gray-100 text-gray-600 px-4 py-2 rounded-lg text-sm"><i class="fas fa-eye mr-1"></i>Detail</button>
+                        <div class="flex items-center gap-2 ml-12 md:ml-0">
+                            ${s.status === 'revisi' ? `<button onclick="editSubmission('${s.id_penelitian}'); event.stopPropagation()" class="bg-orange-500 text-white px-3 py-1.5 md:px-4 md:py-2 rounded-lg text-xs md:text-sm"><i class="fas fa-edit mr-1"></i>Revisi</button>` : ''}
+                            <button onclick="viewDetail('${s.id_penelitian}'); event.stopPropagation()" class="bg-gray-100 text-gray-600 px-3 py-1.5 md:px-4 md:py-2 rounded-lg text-xs md:text-sm"><i class="fas fa-eye mr-1"></i>Detail</button>
                         </div>
                     </div>
                 </div>`; 
@@ -765,28 +928,6 @@
                 document.getElementById('tahun').value = d.tahun;
                 document.getElementById('durasi').value = d.durasi || 6;
                 if(d.dana_diajukan) document.getElementById('dana').value = new Intl.NumberFormat('id-ID').format(d.dana_diajukan);
-                if(d.luaran && d.luaran.length){
-                    d.luaran.forEach(l => {
-                        if(l.tipe_luaran === 'publikasi'){ 
-                            if(l.kategori && l.kategori.includes('SINTA 1-3')) document.getElementById('pubSinta1').checked=true;
-                            if(l.kategori && l.kategori.includes('SINTA 3-6')) document.getElementById('pubSinta3').checked=true;
-                            if(l.kategori && l.kategori.includes('Scopus')) document.getElementById('pubScopus').checked=true;
-                            document.getElementById('linkJurnal').value = l.link_terkait || ''; 
-                        }
-                        if(l.tipe_luaran === 'conference'){ 
-                            if(l.kategori && l.kategori.includes('Internasional')) document.getElementById('confInternasional').checked=true;
-                            if(l.kategori && l.kategori.includes('Nasional')) document.getElementById('confNasional').checked=true;
-                            if(l.kategori && l.kategori.includes('Prosiding')) document.getElementById('prosiding').checked=true;
-                            document.getElementById('linkConference').value = l.link_terkait || ''; 
-                        }
-                        if(l.tipe_luaran === 'hki'){ 
-                            document.getElementById('hkiJudul').value = l.judul_luaran || ''; 
-                        }
-                        if(l.tipe_luaran === 'karya'){ 
-                            document.getElementById('karyaJudul').value = l.judul_luaran || ''; 
-                        }
-                    });
-                }
             } catch(e){ 
                 showNotification('Gagal memuat data','error'); 
                 closeModal(); 
@@ -797,14 +938,11 @@
 
         document.getElementById('submissionForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            console.log('Form submitted');
             
             const id = document.getElementById('submissionId').value;
             const saveAsDraft = document.getElementById('saveAsDraft').checked;
             const danaInput = document.getElementById('dana').value;
             const dana = danaInput ? parseInt(danaInput.replace(/\./g,'')) : 0;
-            
-            console.log('Data:', { id, saveAsDraft, dana });
             
             const formData = new FormData();
             formData.append('judul', document.getElementById('judul').value);
@@ -814,31 +952,12 @@
             formData.append('durasi', document.getElementById('durasi').value);
             formData.append('dana_diajukan', dana);
             
-            // Kumpulkan luaran
             const luaran = [];
-            // Publikasi
             const pubChecks = ['pubSinta1','pubSinta3','pubScopus'];
             const pubValues = pubChecks.map(c => document.getElementById(c).checked ? document.getElementById(c).value : null).filter(v=>v);
             if(pubValues.length){
-                luaran.push({ tipe_luaran:'publikasi', kategori:pubValues.join(', '), link_terkait:document.getElementById('linkJurnal').value });
+                luaran.push({ tipe_luaran:'publikasi', kategori:pubValues.join(', ') });
             }
-            // Conference
-            const confChecks = ['confInternasional','confNasional','prosiding'];
-            const confValues = confChecks.map(c => document.getElementById(c).checked ? document.getElementById(c).value : null).filter(v=>v);
-            if(confValues.length){
-                luaran.push({ tipe_luaran:'conference', kategori:confValues.join(', '), link_terkait:document.getElementById('linkConference').value });
-            }
-            // HKI
-            const hkiFile = document.getElementById('fileHKI').files[0];
-            if(hkiFile) formData.append('file_hki', hkiFile);
-            const hkiJudul = document.getElementById('hkiJudul').value;
-            if(hkiJudul || hkiFile) luaran.push({ tipe_luaran:'hki', judul_luaran:hkiJudul });
-            // Karya Ilmiah
-            const karyaFile = document.getElementById('fileKarya').files[0];
-            if(karyaFile) formData.append('file_karya', karyaFile);
-            const karyaJudul = document.getElementById('karyaJudul').value;
-            if(karyaJudul || karyaFile) luaran.push({ tipe_luaran:'karya', judul_luaran:karyaJudul });
-            
             formData.append('luaran', JSON.stringify(luaran));
             
             const fileProposal = document.getElementById('fileProposal').files[0];
@@ -854,8 +973,7 @@
                 }
                 
                 if(!saveAsDraft && response.data && response.data.id_penelitian){
-                    const submitId = response.data.id_penelitian;
-                    await apiCall(`/dosen/penelitian/penelitian/${submitId}/submit`, { method:'POST' });
+                    await apiCall(`/dosen/penelitian/penelitian/${response.data.id_penelitian}/submit`, { method:'POST' });
                 }
                 
                 showNotification('Laporan berhasil disimpan','success');
@@ -879,27 +997,24 @@
                 let luaranHtml = '';
                 if(s.luaran && s.luaran.length){
                     s.luaran.forEach(l => {
-                        if(l.tipe_luaran === 'publikasi') luaranHtml += `<div class="mb-2"><span class="font-medium">Publikasi:</span> ${l.kategori}<br>${l.link_terkait ? `<a href="${l.link_terkait}" target="_blank" class="text-blue-600 text-sm">Link Publikasi</a>` : ''}</div>`;
-                        if(l.tipe_luaran === 'conference') luaranHtml += `<div class="mb-2"><span class="font-medium">Conference:</span> ${l.kategori}<br>${l.link_terkait ? `<a href="${l.link_terkait}" target="_blank" class="text-blue-600 text-sm">Link Conference</a>` : ''}</div>`;
-                        if(l.tipe_luaran === 'hki') luaranHtml += `<div class="mb-2"><span class="font-medium">HKI:</span> ${l.judul_luaran || '-'} ${l.file_path ? `<a href="${API_BASE_URL}/uploads/${l.file_path}" target="_blank" class="text-blue-600 ml-2"><i class="fas fa-download"></i> File HKI</a>` : ''}</div>`;
-                        if(l.tipe_luaran === 'karya') luaranHtml += `<div class="mb-2"><span class="font-medium">Karya Ilmiah:</span> ${l.judul_luaran || '-'} ${l.file_path ? `<a href="${API_BASE_URL}/uploads/${l.file_path}" target="_blank" class="text-blue-600 ml-2"><i class="fas fa-download"></i> File Karya</a>` : ''}</div>`;
+                        if(l.tipe_luaran === 'publikasi') luaranHtml += `<div class="mb-2"><span class="font-medium">Publikasi:</span> ${l.kategori}</div>`;
                     });
                 }
                 document.getElementById('detailModalContent').innerHTML = `<div class="space-y-4">
-                    <div class="flex justify-between">
+                    <div class="flex justify-between flex-wrap gap-2">
                         <span class="px-3 py-1 rounded-full text-xs font-semibold ${badge.class}"><i class="fas ${badge.icon} mr-1"></i>${badge.text}</span>
-                        <span class="text-sm text-gray-500">ID: #${s.id_penelitian}</span>
+                        <span class="text-xs text-gray-500">ID: #${s.id_penelitian}</span>
                     </div>
-                    <div><h4 class="font-semibold">Judul</h4><p>${s.judul}</p></div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div><p class="text-sm text-gray-500">Skema</p><p>${(s.skema_penelitian||'').replace(/_/g,' ')}</p></div>
-                        <div><p class="text-sm text-gray-500">Pendanaan</p><p>${s.jenis_pendanaan||'-'}</p></div>
-                        <div><p class="text-sm text-gray-500">Dana</p><p class="text-green-600">${formatCurrency(s.dana_diajukan)}</p></div>
-                        <div><p class="text-sm text-gray-500">Tahun</p><p>${s.tahun}</p></div>
+                    <div><h4 class="font-semibold text-sm md:text-base">Judul</h4><p class="text-sm">${s.judul}</p></div>
+                    <div class="grid grid-cols-2 gap-3 text-sm">
+                        <div><p class="text-gray-500">Skema</p><p>${(s.skema_penelitian||'').replace(/_/g,' ')}</p></div>
+                        <div><p class="text-gray-500">Pendanaan</p><p>${s.jenis_pendanaan||'-'}</p></div>
+                        <div><p class="text-gray-500">Dana</p><p class="text-green-600">${formatCurrency(s.dana_diajukan)}</p></div>
+                        <div><p class="text-gray-500">Tahun</p><p>${s.tahun}</p></div>
                     </div>
-                    ${s.file_proposal ? `<div><p class="text-sm font-medium">Dokumen Laporan</p><a href="${API_BASE_URL}/uploads/${s.file_proposal}" target="_blank" class="text-blue-600"><i class="fas fa-file-pdf mr-1"></i>Download Laporan</a></div>` : ''}
-                    <div class="bg-gray-50 p-4 rounded-lg"><p class="font-medium mb-2">Target & Bukti Luaran</p>${luaranHtml || '<p class="text-gray-500">Belum ada luaran</p>'}</div>
-                    <div class="flex justify-end pt-4"><button onclick="closeDetailModal()" class="bg-gray-200 px-4 py-2 rounded-lg">Tutup</button></div>
+                    ${s.file_proposal ? `<div><p class="text-sm font-medium">Dokumen Laporan</p><a href="${API_BASE_URL}/uploads/${s.file_proposal}" target="_blank" class="text-blue-600 text-sm"><i class="fas fa-file-pdf mr-1"></i>Download Laporan</a></div>` : ''}
+                    <div class="bg-gray-50 p-3 rounded-lg"><p class="font-medium mb-2 text-sm">Target Luaran</p>${luaranHtml || '<p class="text-gray-500 text-sm">Belum ada luaran</p>'}</div>
+                    <div class="flex justify-end pt-4"><button onclick="closeDetailModal()" class="bg-gray-200 px-4 py-2 rounded-lg text-sm">Tutup</button></div>
                 </div>`;
                 document.getElementById('detailModal').classList.remove('hidden');
             } catch(e){ 
@@ -942,7 +1057,7 @@
         }
         
         function updateFileName(input, elementId){ 
-            document.getElementById(elementId).textContent = input.files[0] ? input.files[0].name : 'Tidak ada file dipilih'; 
+            document.getElementById(elementId).textContent = input.files[0] ? input.files[0].name : 'Klik untuk upload file'; 
         }
         
         function closeModal(){ 
@@ -987,20 +1102,62 @@
             window.location.href = '../login.html';
         }
 
-        // ==================== EVENT LISTENERS ====================
-        document.addEventListener('DOMContentLoaded', async () => { 
-            const isAuth = await checkAuth();
-            if(isAuth) {
-                await loadSubmissions();
+        // ==================== MOBILE NAVIGATION ====================
+        function initMobileNav() {
+            const hamburgerBtn = document.getElementById('hamburgerBtn');
+            const mobileNav = document.getElementById('mobileNav');
+            const closeBtn = document.getElementById('closeMobileNav');
+            
+            if (hamburgerBtn && mobileNav) {
+                hamburgerBtn.addEventListener('click', () => {
+                    mobileNav.classList.add('active');
+                });
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', () => {
+                        mobileNav.classList.remove('active');
+                    });
+                }
+                mobileNav.addEventListener('click', (e) => {
+                    if (e.target === mobileNav) mobileNav.classList.remove('active');
+                });
             }
-        });
-        
-        window.onclick = function(e){ 
-            if(e.target === document.getElementById('submissionModal')) closeModal(); 
-            if(e.target === document.getElementById('detailModal')) closeDetailModal(); 
-        };
-        
-        document.addEventListener('DOMContentLoaded', function() {
+        }
+
+        function setActiveNavLink() {
+            const currentPage = window.location.pathname.split('/').pop();
+            const navLinks = document.querySelectorAll('.nav-link-modern');
+            const mobileLinks = document.querySelectorAll('.mobile-nav-link');
+            const bottomNavItems = document.querySelectorAll('.bottom-nav-item');
+            
+            navLinks.forEach(link => {
+                const href = link.getAttribute('href');
+                if (href === currentPage || (currentPage === 'dosen-penelitian-pengabdian.html' && href === 'dosen-penelitian-pengabdian.html')) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+            
+            mobileLinks.forEach(link => {
+                const href = link.getAttribute('href');
+                if (href === currentPage || (currentPage === 'dosen-penelitian-pengabdian.html' && href === 'dosen-penelitian-pengabdian.html')) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+            
+            bottomNavItems.forEach(item => {
+                const href = item.getAttribute('href');
+                if (href === currentPage || (currentPage === 'dosen-penelitian-pengabdian.html' && href === 'dosen-penelitian-pengabdian.html')) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+        }
+
+        function initDropdown() {
             const userMenuBtn = document.getElementById('userMenuBtn');
             const userDropdown = document.getElementById('userDropdown');
             
@@ -1016,45 +1173,37 @@
                     }
                 });
             }
-            
-            const currentPage = window.location.pathname.split('/').pop();
-            const navLinks = document.querySelectorAll('.nav-link-modern');
-            
-            navLinks.forEach(link => {
-                const href = link.getAttribute('href');
-                if (href === currentPage) {
-                    link.classList.add('active');
-                } else {
-                    link.classList.remove('active');
-                }
-            });
-        });
-
-        function updateNavbarUserInfo(profile) {
-            const avatarUrl = profile.foto_profil ? `/${profile.foto_profil}` : `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.nama_lengkap || 'Dosen')}&background=3B82F6&color=fff&bold=true`;
-            const navAvatar = document.getElementById('navAvatar');
-            const dropdownAvatar = document.getElementById('dropdownAvatar');
-            const navUserName = document.getElementById('navUserName');
-            const dropdownUserName = document.getElementById('dropdownUserName');
-            const dropdownUserNidn = document.getElementById('dropdownUserNidn');
-            
-            if (navAvatar) navAvatar.src = avatarUrl;
-            if (dropdownAvatar) dropdownAvatar.src = avatarUrl;
-            if (navUserName) navUserName.textContent = profile.nama_lengkap || 'Dosen';
-            if (dropdownUserName) dropdownUserName.textContent = profile.nama_lengkap || 'Dosen';
-            if (dropdownUserNidn) dropdownUserNidn.textContent = profile.nidn ? `NIDN: ${profile.nidn}` : '-';
         }
 
-        function updateNotificationBadge(count) {
-            const badge = document.getElementById('notificationBadge');
-            if (badge) {
-                if (count > 0) {
-                    badge.classList.remove('hidden');
-                } else {
-                    badge.classList.add('hidden');
-                }
+        function adjustMainContentPadding() {
+            const header = document.getElementById('mainHeader');
+            const main = document.getElementById('mainContent');
+            
+            if (header && main) {
+                const headerHeight = header.offsetHeight;
+                main.style.paddingTop = headerHeight + 'px';
             }
         }
+
+        // ==================== EVENT LISTENERS ====================
+        document.addEventListener('DOMContentLoaded', async () => { 
+            initMobileNav();
+            initDropdown();
+            setActiveNavLink();
+            adjustMainContentPadding();
+            
+            const isAuth = await checkAuth();
+            if(isAuth) {
+                await loadSubmissions();
+            }
+        });
+        
+        window.addEventListener('resize', adjustMainContentPadding);
+        
+        window.onclick = function(e){ 
+            if(e.target === document.getElementById('submissionModal')) closeModal(); 
+            if(e.target === document.getElementById('detailModal')) closeDetailModal(); 
+        };
     </script>
 </body>
 </html>
