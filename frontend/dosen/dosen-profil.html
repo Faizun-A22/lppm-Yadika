@@ -687,25 +687,40 @@
         }
     }
 
-    // ===========================================
-    // UPDATE NAVBAR DENGAN DATA PROFIL
-    // ===========================================
-    function updateNavbarUserInfo(profile) {
-        if (!profile) return;
-        
-       const avatarUrl = profile.foto_profil ? `/${profile.foto_profil}` : `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.nama_lengkap || 'Dosen')}&background=3B82F6&color=fff&bold=true`;
-        const navAvatar = document.getElementById('navAvatar');
-        const dropdownAvatar = document.getElementById('dropdownAvatar');
-        const navUserName = document.getElementById('navUserName');
-        const dropdownUserName = document.getElementById('dropdownUserName');
-        const dropdownUserNidn = document.getElementById('dropdownUserNidn');
-        
-        if (navAvatar) navAvatar.src = avatarUrl;
-        if (dropdownAvatar) dropdownAvatar.src = avatarUrl;
-        if (navUserName) navUserName.textContent = profile.nama_lengkap || 'Dosen';
-        if (dropdownUserName) dropdownUserName.textContent = profile.nama_lengkap || 'Dosen';
-        if (dropdownUserNidn) dropdownUserNidn.textContent = profile.nidn ? `NIDN: ${profile.nidn}` : '-';
+    
+    // UPDATE fungsi updateNavbarUserInfo
+function updateNavbarUserInfo(profile) {
+    if (!profile) return;
+    
+    // Buat URL avatar dengan fallback yang benar
+    let avatarUrl = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(profile.nama_lengkap || 'Dosen') + '&background=3B82F6&color=fff&bold=true';
+    
+    // Cek apakah ada foto_profil dan bukan path kosong
+    if (profile.foto_profil && profile.foto_profil !== '') {
+        // Jika foto_profil sudah berupa URL lengkap, gunakan langsung
+        if (profile.foto_profil.startsWith('http')) {
+            avatarUrl = profile.foto_profil;
+        } 
+        // Jika masih relative path, tambahkan base URL
+        else {
+            avatarUrl = `${window.location.origin}${profile.foto_profil}`;
+        }
     }
+    
+    const navAvatar = document.getElementById('navAvatar');
+    const dropdownAvatar = document.getElementById('dropdownAvatar');
+    const profilePicture = document.getElementById('profilePicture');
+    const navUserName = document.getElementById('navUserName');
+    const dropdownUserName = document.getElementById('dropdownUserName');
+    const dropdownUserNidn = document.getElementById('dropdownUserNidn');
+    
+    if (navAvatar) navAvatar.src = avatarUrl;
+    if (dropdownAvatar) dropdownAvatar.src = avatarUrl;
+    if (profilePicture) profilePicture.src = avatarUrl;
+    if (navUserName) navUserName.textContent = profile.nama_lengkap || 'Dosen';
+    if (dropdownUserName) dropdownUserName.textContent = profile.nama_lengkap || 'Dosen';
+    if (dropdownUserNidn) dropdownUserNidn.textContent = profile.nidn ? `NIDN: ${profile.nidn}` : '-';
+}
 
     // ===========================================
     // LOAD PROGRAM STUDI
@@ -1167,46 +1182,47 @@
         if (input) input.click();
     };
 
-    window.uploadProfilePicture = async function(input) {
-        const file = input.files[0];
-        if (!file) return;
+    // UPDATE fungsi uploadProfilePicture di dosen-profil.html
+window.uploadProfilePicture = async function(input) {
+    const file = input.files[0];
+    if (!file) return;
 
-        if (file.size > 2 * 1024 * 1024) {
-            showNotification('Ukuran file maksimal 2MB', 'error');
-            return;
+    if (file.size > 2 * 1024 * 1024) {
+        showNotification('Ukuran file maksimal 2MB', 'error');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('foto', file);
+
+    try {
+        showLoading();
+
+        const response = await fetch(`${API_BASE_URL}/dosen/profil/foto`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${getAuthToken()}`
+                // Jangan set Content-Type, biar browser yang set dengan boundary
+            },
+            body: formData
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            // Refresh data profil untuk mendapatkan foto terbaru
+            await loadProfileData();
+            showNotification('Foto profil berhasil diperbarui', 'success');
+        } else {
+            throw new Error(result.message);
         }
-
-        const formData = new FormData();
-        formData.append('foto', file);
-
-        try {
-            showLoading();
-
-            const response = await fetch(`${API_BASE_URL}/dosen/profil/foto`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${getAuthToken()}`
-                },
-                body: formData
-            });
-
-            const result = await response.json();
-
-            if (result.success) {
-                const profilePicture = document.getElementById('profilePicture');
-                if (profilePicture) profilePicture.src = result.data.foto_profil;
-                updateNavbarUserInfo(dosenProfile);
-                showNotification('Foto profil berhasil diperbarui', 'success');
-            } else {
-                throw new Error(result.message);
-            }
-        } catch (error) {
-            console.error('Error uploading profile picture:', error);
-            showNotification(error.message || 'Gagal mengupload foto', 'error');
-        } finally {
-            hideLoading();
-        }
-    };
+    } catch (error) {
+        console.error('Error uploading profile picture:', error);
+        showNotification(error.message || 'Gagal mengupload foto', 'error');
+    } finally {
+        hideLoading();
+    }
+};
 
     // ===========================================
     // CHANGE PASSWORD

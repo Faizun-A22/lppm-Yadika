@@ -286,11 +286,12 @@ exports.updateProfile = async (req, res) => {
     }
 };
 
-// ===========================================
-// UPLOAD FOTO PROFIL
-// ===========================================
 exports.uploadFotoProfil = async (req, res) => {
     try {
+        console.log('=== UPLOAD FOTO PROFIL ===');
+        console.log('File received:', req.file);
+        console.log('User ID:', req.user.id_user);
+        
         if (!req.file) {
             return res.status(400).json({
                 success: false,
@@ -300,6 +301,8 @@ exports.uploadFotoProfil = async (req, res) => {
 
         const userId = req.user.id_user;
         const fotoUrl = `/uploads/profil/${req.file.filename}`;
+        
+        console.log('Saving foto URL:', fotoUrl);
 
         const { error } = await supabase
             .from('users')
@@ -310,7 +313,12 @@ exports.uploadFotoProfil = async (req, res) => {
             .eq('id_user', userId)
             .eq('role', 'dosen');
 
-        if (error) throw error;
+        if (error) {
+            console.error('Database error:', error);
+            throw error;
+        }
+
+        console.log('Database updated successfully');
 
         res.json({
             success: true,
@@ -329,6 +337,7 @@ exports.uploadFotoProfil = async (req, res) => {
         });
     }
 };
+
 
 // ===========================================
 // GET STATISTIK KINERJA DOSEN
