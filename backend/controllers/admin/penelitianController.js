@@ -5,15 +5,7 @@ const { getFileUrl } = require('../../utils/helpers');
 
 /**
  * Controller untuk manajemen penelitian
- * 
- * SEMUA FUNGSI TELAH DIPERBARUI:
- * - Menghilangkan penggunaan .select() dengan relasi kompleks
- * - Menggunakan query sederhana terlebih dahulu
- * - Error handling yang lebih baik
  */
-
-// ==================== PENELITIAN CONTROLLERS ====================
-
 const getAllPenelitian = async (req, res, next) => {
     try {
         const { page = 1, limit = 10, status, tahun, skema, search } = req.query;
@@ -29,8 +21,8 @@ const getAllPenelitian = async (req, res, next) => {
             userId
         });
         
-        // Format file URLs jika ada
-        const formattedData = (result.data || []).map(item => ({
+        // Format file URLs
+        result.data = result.data.map(item => ({
             ...item,
             file_proposal_url: item.file_proposal ? getFileUrl(item.file_proposal) : null,
             file_laporan_kemajuan_url: item.file_laporan_kemajuan ? getFileUrl(item.file_laporan_kemajuan) : null,
@@ -38,15 +30,14 @@ const getAllPenelitian = async (req, res, next) => {
         }));
         
         res.json(formatPaginatedResponse(
-            formattedData,
-            result.pagination?.page || parseInt(page),
-            result.pagination?.limit || parseInt(limit),
-            result.pagination?.total || 0,
+            result.data,
+            result.pagination.page,
+            result.pagination.limit,
+            result.pagination.total,
             'Data penelitian berhasil diambil'
         ));
     } catch (error) {
-        console.error('Error in getAllPenelitian:', error);
-        res.status(500).json(formatError(error.message || 'Gagal mengambil data penelitian'));
+        next(error);
     }
 };
 
@@ -57,10 +48,6 @@ const getPenelitianById = async (req, res, next) => {
         
         const penelitian = await penelitianService.getPenelitianById(id, userId);
         
-        if (!penelitian) {
-            return res.status(404).json(formatError('Penelitian tidak ditemukan'));
-        }
-        
         // Format file URLs
         const result = {
             ...penelitian,
@@ -69,10 +56,17 @@ const getPenelitianById = async (req, res, next) => {
             file_laporan_akhir_url: penelitian.file_laporan_akhir ? getFileUrl(penelitian.file_laporan_akhir) : null
         };
         
+        // Format anggota URLs jika ada
+        if (result.anggota) {
+            result.anggota = result.anggota.map(anggota => ({
+                ...anggota,
+                foto_profil_url: anggota.foto_profil ? getFileUrl(anggota.foto_profil) : null
+            }));
+        }
+        
         res.json(formatResponse('success', 'Data penelitian berhasil diambil', result));
     } catch (error) {
-        console.error('Error in getPenelitianById:', error);
-        res.status(500).json(formatError(error.message || 'Gagal mengambil detail penelitian'));
+        next(error);
     }
 };
 
@@ -99,19 +93,14 @@ const createPenelitian = async (req, res, next) => {
         
         // Parse anggota if sent as JSON string
         if (req.body.anggota && typeof req.body.anggota === 'string') {
-            try {
-                penelitianData.anggota = JSON.parse(req.body.anggota);
-            } catch (e) {
-                penelitianData.anggota = [];
-            }
+            penelitianData.anggota = JSON.parse(req.body.anggota);
         }
         
         const newPenelitian = await penelitianService.createPenelitian(penelitianData);
         
         res.status(201).json(formatResponse('success', 'Penelitian berhasil dibuat', newPenelitian));
     } catch (error) {
-        console.error('Error in createPenelitian:', error);
-        res.status(500).json(formatError(error.message || 'Gagal membuat penelitian'));
+        next(error);
     }
 };
 
@@ -138,23 +127,14 @@ const updatePenelitian = async (req, res, next) => {
         
         // Parse anggota if sent as JSON string
         if (req.body.anggota && typeof req.body.anggota === 'string') {
-            try {
-                penelitianData.anggota = JSON.parse(req.body.anggota);
-            } catch (e) {
-                penelitianData.anggota = [];
-            }
+            penelitianData.anggota = JSON.parse(req.body.anggota);
         }
         
         const updatedPenelitian = await penelitianService.updatePenelitian(id, penelitianData, req.user.id_user);
         
-        if (!updatedPenelitian) {
-            return res.status(404).json(formatError('Penelitian tidak ditemukan'));
-        }
-        
         res.json(formatResponse('success', 'Penelitian berhasil diupdate', updatedPenelitian));
     } catch (error) {
-        console.error('Error in updatePenelitian:', error);
-        res.status(500).json(formatError(error.message || 'Gagal mengupdate penelitian'));
+        next(error);
     }
 };
 
@@ -162,16 +142,11 @@ const deletePenelitian = async (req, res, next) => {
     try {
         const { id } = req.params;
         
-        const deleted = await penelitianService.deletePenelitian(id, req.user.id_user);
-        
-        if (!deleted) {
-            return res.status(404).json(formatError('Penelitian tidak ditemukan'));
-        }
+        await penelitianService.deletePenelitian(id, req.user.id_user);
         
         res.json(formatResponse('success', 'Penelitian berhasil dihapus'));
     } catch (error) {
-        console.error('Error in deletePenelitian:', error);
-        res.status(500).json(formatError(error.message || 'Gagal menghapus penelitian'));
+        next(error);
     }
 };
 
@@ -183,8 +158,7 @@ const submitPenelitian = async (req, res, next) => {
         
         res.json(formatResponse('success', 'Penelitian berhasil disubmit untuk review', result));
     } catch (error) {
-        console.error('Error in submitPenelitian:', error);
-        res.status(500).json(formatError(error.message || 'Gagal submit penelitian'));
+        next(error);
     }
 };
 
@@ -197,8 +171,7 @@ const updateStatusPenelitian = async (req, res, next) => {
         
         res.json(formatResponse('success', `Status penelitian berhasil diupdate menjadi ${status}`, result));
     } catch (error) {
-        console.error('Error in updateStatusPenelitian:', error);
-        res.status(500).json(formatError(error.message || 'Gagal mengupdate status penelitian'));
+        next(error);
     }
 };
 
@@ -208,15 +181,15 @@ const getReviewHistory = async (req, res, next) => {
         
         const reviews = await penelitianService.getReviewHistory(id);
         
-        res.json(formatResponse('success', 'Riwayat review berhasil diambil', reviews || []));
+        res.json(formatResponse('success', 'Riwayat review berhasil diambil', reviews));
     } catch (error) {
-        console.error('Error in getReviewHistory:', error);
-        res.status(500).json(formatError(error.message || 'Gagal mengambil riwayat review'));
+        next(error);
     }
 };
 
-// ==================== PENGABDIAN CONTROLLERS ====================
-
+/**
+ * Controller untuk manajemen pengabdian
+ */
 const getAllPengabdian = async (req, res, next) => {
     try {
         const { page = 1, limit = 10, status, tahun, skema, search } = req.query;
@@ -233,7 +206,7 @@ const getAllPengabdian = async (req, res, next) => {
         });
         
         // Format file URLs
-        const formattedData = (result.data || []).map(item => ({
+        result.data = result.data.map(item => ({
             ...item,
             file_proposal_url: item.file_proposal ? getFileUrl(item.file_proposal) : null,
             file_laporan_kemajuan_url: item.file_laporan_kemajuan ? getFileUrl(item.file_laporan_kemajuan) : null,
@@ -241,15 +214,14 @@ const getAllPengabdian = async (req, res, next) => {
         }));
         
         res.json(formatPaginatedResponse(
-            formattedData,
-            result.pagination?.page || parseInt(page),
-            result.pagination?.limit || parseInt(limit),
-            result.pagination?.total || 0,
+            result.data,
+            result.pagination.page,
+            result.pagination.limit,
+            result.pagination.total,
             'Data pengabdian berhasil diambil'
         ));
     } catch (error) {
-        console.error('Error in getAllPengabdian:', error);
-        res.status(500).json(formatError(error.message || 'Gagal mengambil data pengabdian'));
+        next(error);
     }
 };
 
@@ -260,10 +232,6 @@ const getPengabdianById = async (req, res, next) => {
         
         const pengabdian = await penelitianService.getPengabdianById(id, userId);
         
-        if (!pengabdian) {
-            return res.status(404).json(formatError('Pengabdian tidak ditemukan'));
-        }
-        
         // Format file URLs
         const result = {
             ...pengabdian,
@@ -272,10 +240,17 @@ const getPengabdianById = async (req, res, next) => {
             file_laporan_akhir_url: pengabdian.file_laporan_akhir ? getFileUrl(pengabdian.file_laporan_akhir) : null
         };
         
+        // Format anggota URLs jika ada
+        if (result.anggota) {
+            result.anggota = result.anggota.map(anggota => ({
+                ...anggota,
+                foto_profil_url: anggota.foto_profil ? getFileUrl(anggota.foto_profil) : null
+            }));
+        }
+        
         res.json(formatResponse('success', 'Data pengabdian berhasil diambil', result));
     } catch (error) {
-        console.error('Error in getPengabdianById:', error);
-        res.status(500).json(formatError(error.message || 'Gagal mengambil detail pengabdian'));
+        next(error);
     }
 };
 
@@ -302,19 +277,14 @@ const createPengabdian = async (req, res, next) => {
         
         // Parse anggota if sent as JSON string
         if (req.body.anggota && typeof req.body.anggota === 'string') {
-            try {
-                pengabdianData.anggota = JSON.parse(req.body.anggota);
-            } catch (e) {
-                pengabdianData.anggota = [];
-            }
+            pengabdianData.anggota = JSON.parse(req.body.anggota);
         }
         
         const newPengabdian = await penelitianService.createPengabdian(pengabdianData);
         
         res.status(201).json(formatResponse('success', 'Pengabdian berhasil dibuat', newPengabdian));
     } catch (error) {
-        console.error('Error in createPengabdian:', error);
-        res.status(500).json(formatError(error.message || 'Gagal membuat pengabdian'));
+        next(error);
     }
 };
 
@@ -341,23 +311,14 @@ const updatePengabdian = async (req, res, next) => {
         
         // Parse anggota if sent as JSON string
         if (req.body.anggota && typeof req.body.anggota === 'string') {
-            try {
-                pengabdianData.anggota = JSON.parse(req.body.anggota);
-            } catch (e) {
-                pengabdianData.anggota = [];
-            }
+            pengabdianData.anggota = JSON.parse(req.body.anggota);
         }
         
         const updatedPengabdian = await penelitianService.updatePengabdian(id, pengabdianData, req.user.id_user);
         
-        if (!updatedPengabdian) {
-            return res.status(404).json(formatError('Pengabdian tidak ditemukan'));
-        }
-        
         res.json(formatResponse('success', 'Pengabdian berhasil diupdate', updatedPengabdian));
     } catch (error) {
-        console.error('Error in updatePengabdian:', error);
-        res.status(500).json(formatError(error.message || 'Gagal mengupdate pengabdian'));
+        next(error);
     }
 };
 
@@ -365,16 +326,11 @@ const deletePengabdian = async (req, res, next) => {
     try {
         const { id } = req.params;
         
-        const deleted = await penelitianService.deletePengabdian(id, req.user.id_user);
-        
-        if (!deleted) {
-            return res.status(404).json(formatError('Pengabdian tidak ditemukan'));
-        }
+        await penelitianService.deletePengabdian(id, req.user.id_user);
         
         res.json(formatResponse('success', 'Pengabdian berhasil dihapus'));
     } catch (error) {
-        console.error('Error in deletePengabdian:', error);
-        res.status(500).json(formatError(error.message || 'Gagal menghapus pengabdian'));
+        next(error);
     }
 };
 
@@ -386,8 +342,7 @@ const submitPengabdian = async (req, res, next) => {
         
         res.json(formatResponse('success', 'Pengabdian berhasil disubmit untuk review', result));
     } catch (error) {
-        console.error('Error in submitPengabdian:', error);
-        res.status(500).json(formatError(error.message || 'Gagal submit pengabdian'));
+        next(error);
     }
 };
 
@@ -400,16 +355,16 @@ const updateStatusPengabdian = async (req, res, next) => {
         
         res.json(formatResponse('success', `Status pengabdian berhasil diupdate menjadi ${status}`, result));
     } catch (error) {
-        console.error('Error in updateStatusPengabdian:', error);
-        res.status(500).json(formatError(error.message || 'Gagal mengupdate status pengabdian'));
+        next(error);
     }
 };
 
-// ==================== REVIEW CONTROLLERS ====================
-
+/**
+ * Controller untuk review
+ */
 const addReview = async (req, res, next) => {
     try {
-        const { jenis, id } = req.params;
+        const { jenis, id } = req.params; // jenis: 'penelitian' atau 'pengabdian'
         const { status_review, catatan, tipe_review } = req.body;
         
         const reviewData = {
@@ -427,8 +382,7 @@ const addReview = async (req, res, next) => {
         
         res.json(formatResponse('success', 'Review berhasil disimpan', result));
     } catch (error) {
-        console.error('Error in addReview:', error);
-        res.status(500).json(formatError(error.message || 'Gagal menyimpan review'));
+        next(error);
     }
 };
 
@@ -436,25 +390,24 @@ const getPendingReviews = async (req, res, next) => {
     try {
         const reviews = await penelitianService.getPendingReviews();
         
-        res.json(formatResponse('success', 'Data review pending berhasil diambil', reviews || []));
+        res.json(formatResponse('success', 'Data review pending berhasil diambil', reviews));
     } catch (error) {
-        console.error('Error in getPendingReviews:', error);
-        res.status(500).json(formatError(error.message || 'Gagal mengambil data review pending'));
+        next(error);
     }
 };
 
-// ==================== SKEMA CONTROLLERS ====================
-
+/**
+ * Controller untuk skema
+ */
 const getAllSkema = async (req, res, next) => {
     try {
         const { jenis, status } = req.query;
         
         const skema = await penelitianService.getAllSkema({ jenis, status });
         
-        res.json(formatResponse('success', 'Data skema berhasil diambil', skema || []));
+        res.json(formatResponse('success', 'Data skema berhasil diambil', skema));
     } catch (error) {
-        console.error('Error in getAllSkema:', error);
-        res.status(500).json(formatError(error.message || 'Gagal mengambil data skema'));
+        next(error);
     }
 };
 
@@ -464,14 +417,9 @@ const getSkemaById = async (req, res, next) => {
         
         const skema = await penelitianService.getSkemaById(id);
         
-        if (!skema) {
-            return res.status(404).json(formatError('Skema tidak ditemukan'));
-        }
-        
         res.json(formatResponse('success', 'Data skema berhasil diambil', skema));
     } catch (error) {
-        console.error('Error in getSkemaById:', error);
-        res.status(500).json(formatError(error.message || 'Gagal mengambil detail skema'));
+        next(error);
     }
 };
 
@@ -486,8 +434,7 @@ const createSkema = async (req, res, next) => {
         
         res.status(201).json(formatResponse('success', 'Skema berhasil dibuat', newSkema));
     } catch (error) {
-        console.error('Error in createSkema:', error);
-        res.status(500).json(formatError(error.message || 'Gagal membuat skema'));
+        next(error);
     }
 };
 
@@ -501,14 +448,9 @@ const updateSkema = async (req, res, next) => {
         
         const updatedSkema = await penelitianService.updateSkema(id, skemaData);
         
-        if (!updatedSkema) {
-            return res.status(404).json(formatError('Skema tidak ditemukan'));
-        }
-        
         res.json(formatResponse('success', 'Skema berhasil diupdate', updatedSkema));
     } catch (error) {
-        console.error('Error in updateSkema:', error);
-        res.status(500).json(formatError(error.message || 'Gagal mengupdate skema'));
+        next(error);
     }
 };
 
@@ -516,31 +458,26 @@ const deleteSkema = async (req, res, next) => {
     try {
         const { id } = req.params;
         
-        const deleted = await penelitianService.deleteSkema(id);
-        
-        if (!deleted) {
-            return res.status(404).json(formatError('Skema tidak ditemukan'));
-        }
+        await penelitianService.deleteSkema(id);
         
         res.json(formatResponse('success', 'Skema berhasil dihapus'));
     } catch (error) {
-        console.error('Error in deleteSkema:', error);
-        res.status(500).json(formatError(error.message || 'Gagal menghapus skema'));
+        next(error);
     }
 };
 
-// ==================== STATISTIK CONTROLLERS ====================
-
+/**
+ * Controller untuk statistik
+ */
 const getStatistik = async (req, res, next) => {
     try {
         const { tahun } = req.query;
         
         const statistik = await penelitianService.getStatistik(tahun);
         
-        res.json(formatResponse('success', 'Statistik berhasil diambil', statistik || {}));
+        res.json(formatResponse('success', 'Statistik berhasil diambil', statistik));
     } catch (error) {
-        console.error('Error in getStatistik:', error);
-        res.status(500).json(formatError(error.message || 'Gagal mengambil statistik'));
+        next(error);
     }
 };
 
@@ -550,10 +487,9 @@ const getRingkasanDosen = async (req, res, next) => {
         
         const ringkasan = await penelitianService.getRingkasanDosen({ tahun, fakultas });
         
-        res.json(formatResponse('success', 'Ringkasan per dosen berhasil diambil', ringkasan || []));
+        res.json(formatResponse('success', 'Ringkasan per dosen berhasil diambil', ringkasan));
     } catch (error) {
-        console.error('Error in getRingkasanDosen:', error);
-        res.status(500).json(formatError(error.message || 'Gagal mengambil ringkasan dosen'));
+        next(error);
     }
 };
 
@@ -563,18 +499,18 @@ const getRingkasanFakultas = async (req, res, next) => {
         
         const ringkasan = await penelitianService.getRingkasanFakultas(tahun);
         
-        res.json(formatResponse('success', 'Ringkasan per fakultas berhasil diambil', ringkasan || []));
+        res.json(formatResponse('success', 'Ringkasan per fakultas berhasil diambil', ringkasan));
     } catch (error) {
-        console.error('Error in getRingkasanFakultas:', error);
-        res.status(500).json(formatError(error.message || 'Gagal mengambil ringkasan fakultas'));
+        next(error);
     }
 };
 
-// ==================== LUARAN CONTROLLERS ====================
-
+/**
+ * Controller untuk luaran
+ */
 const uploadLuaran = async (req, res, next) => {
     try {
-        const { jenis, id } = req.params;
+        const { jenis, id } = req.params; // jenis: 'penelitian' atau 'pengabdian'
         const luaranData = {
             ...req.body,
             id_referensi: id,
@@ -599,8 +535,7 @@ const uploadLuaran = async (req, res, next) => {
         
         res.status(201).json(formatResponse('success', 'Luaran berhasil diupload', luaran));
     } catch (error) {
-        console.error('Error in uploadLuaran:', error);
-        res.status(500).json(formatError(error.message || 'Gagal upload luaran'));
+        next(error);
     }
 };
 
@@ -609,10 +544,6 @@ const getLuaranById = async (req, res, next) => {
         const { id } = req.params;
         
         const luaran = await penelitianService.getLuaranById(id);
-        
-        if (!luaran) {
-            return res.status(404).json(formatError('Luaran tidak ditemukan'));
-        }
         
         // Format file URLs
         const result = {
@@ -624,8 +555,7 @@ const getLuaranById = async (req, res, next) => {
         
         res.json(formatResponse('success', 'Data luaran berhasil diambil', result));
     } catch (error) {
-        console.error('Error in getLuaranById:', error);
-        res.status(500).json(formatError(error.message || 'Gagal mengambil detail luaran'));
+        next(error);
     }
 };
 

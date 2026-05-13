@@ -153,20 +153,12 @@ class RepositoryService {
         }
     }
 
-    /**
-     * Get all documents with filters
-     */
-    async getAllDocuments(filters, pagination, sort) {
+      async getAllDocuments(filters, pagination, sort) {
         try {
+            // HAPUS SELECT DENGAN RELASI - gunakan SELECT sederhana dulu
             let query = supabase
                 .from('repository_dokumen')
-                .select(`
-                    *,
-                    users!repository_dokumen_uploaded_by_fkey (
-                        nama_lengkap,
-                        email
-                    )
-                `, { count: 'exact' });
+                .select('*', { count: 'exact' });  // <-- HAPUS bagian users!
 
             // Apply filters
             if (filters.search) {
@@ -199,13 +191,30 @@ class RepositoryService {
 
             if (error) throw error;
 
-            // Transform data to flatten user info
-            const transformedData = data?.map(doc => ({
-                ...doc,
-                uploaded_by_name: doc.users?.nama_lengkap,
-                uploaded_by_email: doc.users?.email,
-                users: undefined
-            })) || [];
+            // Untuk mengambil info user, lakukan query terpisah (jika diperlukan)
+            const transformedData = await Promise.all((data || []).map(async (doc) => {
+                let uploaded_by_name = null;
+                let uploaded_by_email = null;
+                
+                if (doc.uploaded_by) {
+                    const { data: userData } = await supabase
+                        .from('users')
+                        .select('nama_lengkap, email')
+                        .eq('id_user', doc.uploaded_by)
+                        .single();
+                    
+                    if (userData) {
+                        uploaded_by_name = userData.nama_lengkap;
+                        uploaded_by_email = userData.email;
+                    }
+                }
+                
+                return {
+                    ...doc,
+                    uploaded_by_name,
+                    uploaded_by_email
+                };
+            }));
 
             return {
                 data: transformedData,
@@ -222,29 +231,30 @@ class RepositoryService {
         }
     }
 
-    /**
-     * Get document by ID
-     */
+
     async getDocumentById(id) {
         try {
+            // HAPUS SELECT DENGAN RELASI
             const { data, error } = await supabase
                 .from('repository_dokumen')
-                .select(`
-                    *,
-                    users!repository_dokumen_uploaded_by_fkey (
-                        nama_lengkap,
-                        email
-                    )
-                `)
+                .select('*')  // <-- HAPUS bagian users!
                 .eq('id_dokumen', id)
                 .single();
 
             if (error) throw error;
 
-            if (data) {
-                data.uploaded_by_name = data.users?.nama_lengkap;
-                data.uploaded_by_email = data.users?.email;
-                delete data.users;
+            // Ambil info user terpisah jika diperlukan
+            if (data && data.uploaded_by) {
+                const { data: userData } = await supabase
+                    .from('users')
+                    .select('nama_lengkap, email')
+                    .eq('id_user', data.uploaded_by)
+                    .single();
+                
+                if (userData) {
+                    data.uploaded_by_name = userData.nama_lengkap;
+                    data.uploaded_by_email = userData.email;
+                }
             }
 
             return data || null;
