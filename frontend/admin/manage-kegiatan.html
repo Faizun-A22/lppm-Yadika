@@ -26,69 +26,69 @@
         }
 
         /* Navbar Styles */
-.navbar-custom {
-    background: linear-gradient(135deg, #1E3A5F 0%, #2D4A6E 50%, #1E3A5F 100%);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
+        .navbar-custom {
+            background: linear-gradient(135deg, #1E3A5F 0%, #2D4A6E 50%, #1E3A5F 100%);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
 
-.nav-link-modern {
-    position: relative;
-    transition: all 0.2s ease;
-    color: rgba(255, 255, 255, 0.8);
-}
+        .nav-link-modern {
+            position: relative;
+            transition: all 0.2s ease;
+            color: rgba(255, 255, 255, 0.8);
+        }
 
-.nav-link-modern:hover {
-    color: white;
-    background: rgba(255, 255, 255, 0.15);
-}
+        .nav-link-modern:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.15);
+        }
 
-.nav-link-modern.active {
-    background: rgba(255, 255, 255, 0.25);
-    color: white !important;
-}
+        .nav-link-modern.active {
+            background: rgba(255, 255, 255, 0.25);
+            color: white !important;
+        }
 
-.nav-link-modern.active i {
-    color: white !important;
-}
+        .nav-link-modern.active i {
+            color: white !important;
+        }
 
-.nav-link-modern.active::before {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 20px;
-    height: 2px;
-    background: white;
-    border-radius: 2px;
-}
+        .nav-link-modern.active::before {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 2px;
+            background: white;
+            border-radius: 2px;
+        }
 
-.brand-title {
-    color: white;
-}
+        .brand-title {
+            color: white;
+        }
 
-.brand-subtitle {
-    color: rgba(255, 255, 255, 0.7);
-}
+        .brand-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+        }
 
-.icon-btn {
-    color: rgba(255, 255, 255, 0.8);
-    cursor: pointer;
-}
+        .icon-btn {
+            color: rgba(255, 255, 255, 0.8);
+            cursor: pointer;
+        }
 
-.icon-btn:hover {
-    color: white;
-    background: rgba(255, 255, 255, 0.15);
-}
+        .icon-btn:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.15);
+        }
 
-.user-name, .user-role {
-    color: white;
-}
+        .user-name, .user-role {
+            color: white;
+        }
 
-.user-role {
-    opacity: 0.7;
-}
+        .user-role {
+            opacity: 0.7;
+        }
 
         /* Tab Styles */
         .tab-button {
@@ -275,8 +275,15 @@
             justify-content: center;
         }
 
-        .hidden {
-            display: none !important;
+        /* Desktop navigation visible, mobile navigation hidden by default */
+        .desktop-nav {
+            display: flex;
+        }
+        
+        @media (max-width: 767px) {
+            .desktop-nav {
+                display: none !important;
+            }
         }
     </style>
 </head>
@@ -366,29 +373,28 @@
             </a>
             
             <!-- Desktop Navigation Menu -->
-            <!-- Desktop Navigation Menu -->
-<div class="hidden md:flex items-center space-x-1">
-    <a href="admin-dashboard.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
-        <i class="fas fa-tachometer-alt text-sm"></i>
-        <span>Dashboard</span>
-    </a>
-    <a href="manage-kegiatan.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2 active">
-        <i class="fas fa-calendar-alt text-sm"></i>
-        <span>Kegiatan & Berita</span>
-    </a>
-    <a href="manage-repository.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
-        <i class="fas fa-book text-sm"></i>
-        <span>Repository</span>
-    </a>
-    <a href="admin_penelitian.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
-        <i class="fas fa-flask text-sm"></i>
-        <span>Penelitian</span>
-    </a>
-    <a href="manage-magang-kkn.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
-        <i class="fas fa-briefcase text-sm"></i>
-        <span>Magang & KKN</span>
-    </a>
-</div>
+            <div class="desktop-nav items-center space-x-1">
+                <a href="admin-dashboard.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-tachometer-alt text-sm"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="manage-kegiatan.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2 active">
+                    <i class="fas fa-calendar-alt text-sm"></i>
+                    <span>Kegiatan & Berita</span>
+                </a>
+                <a href="manage-repository.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-book text-sm"></i>
+                    <span>Repository</span>
+                </a>
+                <a href="admin_penelitian.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-flask text-sm"></i>
+                    <span>Penelitian</span>
+                </a>
+                <a href="manage-magang-kkn.html" class="nav-link-modern px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-briefcase text-sm"></i>
+                    <span>Magang & KKN</span>
+                </a>
+            </div>
             
             <!-- User Info & Actions -->
             <div class="flex items-center gap-2 md:gap-3">
@@ -442,7 +448,7 @@
                     </div>
                 </div>
 
-                <!-- Hamburger Menu Button -->
+                <!-- Hamburger Menu Button (hanya tampil di mobile) -->
                 <button id="hamburgerBtn" class="md:hidden icon-btn p-2 rounded-lg transition-all duration-200">
                     <i class="fas fa-bars text-xl"></i>
                 </button>
@@ -660,7 +666,6 @@
                         </div>
                     </div>
 
-                    <!-- List View -->
                     <div id="kegiatanListView" class="table-container overflow-x-auto">
                         <table class="w-full min-w-[800px]">
                             <thead class="bg-gray-50 text-gray-700">
@@ -970,36 +975,22 @@
             const closeBtn = document.getElementById('closeMobileNav');
             
             if (hamburger && mobileNav) {
-                // Remove existing event listeners to avoid duplicates
-                const newHamburger = hamburger.cloneNode(true);
-                hamburger.parentNode.replaceChild(newHamburger, hamburger);
-                const newCloseBtn = closeBtn ? closeBtn.cloneNode(true) : null;
-                if (closeBtn && newCloseBtn) {
-                    closeBtn.parentNode.replaceChild(newCloseBtn, closeBtn);
-                }
-                
-                const finalHamburger = document.getElementById('hamburgerBtn');
-                const finalCloseBtn = document.getElementById('closeMobileNav');
-                const finalMobileNav = document.getElementById('mobileNav');
-                
-                finalHamburger.addEventListener('click', function(e) {
+                hamburger.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    finalMobileNav.classList.add('active');
+                    mobileNav.classList.add('active');
                     document.body.style.overflow = 'hidden';
                 });
                 
-                if (finalCloseBtn) {
-                    finalCloseBtn.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        finalMobileNav.classList.remove('active');
-                        document.body.style.overflow = '';
-                    });
-                }
+                closeBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    mobileNav.classList.remove('active');
+                    document.body.style.overflow = '';
+                });
                 
-                finalMobileNav.addEventListener('click', function(e) {
-                    if (e.target === finalMobileNav) {
-                        finalMobileNav.classList.remove('active');
+                mobileNav.addEventListener('click', function(e) {
+                    if (e.target === mobileNav) {
+                        mobileNav.classList.remove('active');
                         document.body.style.overflow = '';
                     }
                 });
