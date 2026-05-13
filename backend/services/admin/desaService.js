@@ -1,90 +1,61 @@
 const supabase = require('../../config/database');
 
 const desaService = {
-    /**
-     * Get all desa with filters
-     */
     async getAllDesa({ page = 1, limit = 10, search = '', kabupaten = '', status = '' }) {
-        try {
-            let query = supabase
-                .from('desa_kkn')
-                .select(`
-                    *,
-                    dosen_pembimbing:users!desa_kkn_id_dosen_pembimbing_fkey (
-                        id_user,
-                        nama_lengkap,
-                        nidn,
-                        email
-                    )
-                `, { count: 'exact' });
+    try {
+        let query = supabase
+            .from('desa_kkn')
+            .select('*', { count: 'exact' });  // <-- PERUBAHAN: hapus relasi users
 
-            // Apply filters
-            if (search) {
-                query = query.or(`nama_desa.ilike.%${search}%,kecamatan.ilike.%${search}%,kabupaten.ilike.%${search}%`);
-            }
-
-            if (kabupaten) {
-                query = query.eq('kabupaten', kabupaten);
-            }
-
-            if (status) {
-                query = query.eq('status', status);
-            }
-
-            // Pagination
-            const from = (page - 1) * limit;
-            const to = from + limit - 1;
-
-            const { data, error, count } = await query
-                .order('nama_desa')
-                .range(from, to);
-
-            if (error) throw error;
-
-            return {
-                data: data || [],
-                total: count || 0
-            };
-        } catch (error) {
-            console.error('Error in getAllDesa:', error);
-            throw error;
+        // Apply filters
+        if (search) {
+            query = query.or(`nama_desa.ilike.%${search}%,kecamatan.ilike.%${search}%,kabupaten.ilike.%${search}%`);
         }
-    },
 
-    /**
-     * Get desa by ID
-     */
-    async getDesaById(id) {
-        try {
-            const { data, error } = await supabase
-                .from('desa_kkn')
-                .select(`
-                    *,
-                    dosen_pembimbing:users!desa_kkn_id_dosen_pembimbing_fkey (
-                        id_user,
-                        nama_lengkap,
-                        nidn,
-                        email,
-                        no_hp
-                    ),
-                    peserta:registrasi_kkn(
-                        id_registrasi,
-                        nim,
-                        nama_lengkap,
-                        status,
-                        tanggal_daftar
-                    )
-                `)
-                .eq('id_desa', id)
-                .single();
-
-            if (error) throw error;
-            return data;
-        } catch (error) {
-            console.error('Error in getDesaById:', error);
-            throw error;
+        if (kabupaten) {
+            query = query.eq('kabupaten', kabupaten);
         }
-    },
+
+        if (status) {
+            query = query.eq('status', status);
+        }
+
+        // Pagination
+        const from = (page - 1) * limit;
+        const to = from + limit - 1;
+
+        const { data, error, count } = await query
+            .order('nama_desa')
+            .range(from, to);
+
+        if (error) throw error;
+
+        return {
+            data: data || [],
+            total: count || 0
+        };
+    } catch (error) {
+        console.error('Error in getAllDesa:', error);
+        throw error;
+    }
+},
+
+   async getDesaById(id) {
+    try {
+        // HAPUS select dengan relasi
+        const { data, error } = await supabase
+            .from('desa_kkn')
+            .select('*')  // <-- HAPUS relasi users!
+            .eq('id_desa', id)
+            .single();
+
+        if (error) throw error;
+        return data;
+    } catch (error) {
+        console.error('Error in getDesaById:', error);
+        throw error;
+    }
+},
 
     /**
      * Create new desa
