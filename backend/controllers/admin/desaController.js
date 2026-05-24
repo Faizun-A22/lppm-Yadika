@@ -121,36 +121,56 @@ const desaController = {
         }
     },
 
-    /**
-     * Delete desa
-     */
-    async deleteDesa(req, res) {
-        try {
-            const { id } = req.params;
-            
-            // Cek apakah desa exists
-            const existingDesa = await desaService.getDesaById(id);
-            if (!existingDesa) {
-                return res.status(404).json(formatError('Desa tidak ditemukan'));
-            }
-
-            // Cek apakah masih ada peserta aktif
-            if (existingDesa.kuota_terisi > 0) {
-                return res.status(400).json(
-                    formatError('Tidak dapat menghapus desa yang masih memiliki peserta')
-                );
-            }
-
-            await desaService.deleteDesa(id);
-
-            return res.status(200).json(
-                formatResponse('success', 'Desa berhasil dihapus')
-            );
-        } catch (error) {
-            console.error('Error in deleteDesa:', error);
-            return res.status(500).json(formatError('Gagal menghapus desa'));
+    
+    // Di desaController.js - tambahkan pengecekan yang lebih detail
+async deleteDesa(req, res) {
+    try {
+        const { id } = req.params;
+        
+        // Cek data terkait
+        const [desa, registrasi, luaran, proposal] = await Promise.all([
+            desaService.getDesaById(id),
+            supabase.from('registrasi_kkn').select('id_registrasi', { count: 'exact' }).eq('id_desa', id),
+            supabase.from('luaran_kkn').select('id_luaran', { count: 'exact' })
+                .in('id_registrasi', 
+                    supabase.from('registrasi_kkn').select('id_registrasi').eq('id_desa', id)
+                ),
+            supabase.from('proposal_kkn').select('id_proposal', { count: 'exact' })
+                .in('id_registrasi',
+                    supabase.from('registrasi_kkn').select('id_registrasi').eq('id_desa', id)
+                )
+        ]);
+        
+        const jumlahRegistrasi = registrasi.count || 0;
+        
+        if (jumlahRegistrasi > 0) {
+            return res.status(400).json(formatError(
+                `Tidak dapat menghapus desa karena masih memiliki ${jumlahRegistrasi} data registrasi KKN. ` +
+                `Hapus atau pindahkan registrasi terlebih dahulu.`
+            ));
         }
-    },
+        
+        // Jika tidak ada registrasi, baru hapus
+        await desaService.deleteDesa(id);
+        
+        return res.status(200).json(
+            formatResponse('success', 'Desa berhasil dihapus')
+        );
+    } catch (error) {
+        console.error('Error in deleteDesa:', error);
+        
+        // Tangkap error foreign key violation
+        if (error.code === '23503') { // PostgreSQL foreign key violation
+            return res.status(400).json(formatError(
+                'Tidak dapat menghapus desa karena masih terkait dengan data registrasi KKN. ' +
+                'Silahkan hapus atau pindahkan data registrasi terlebih dahulu.'
+            ));
+        }
+        
+        return res.status(500).json(formatError('Gagal menghapus desa: ' + error.message));
+    }
+},
+
 
     /**
      * Toggle desa status
