@@ -5,7 +5,6 @@ const morgan = require('morgan');
 const helmet = require('helmet');
 const path = require('path');
 const fakultasRoutes = require('./routes/fakultasRoutes');
-const prodiRoutes = require('./routes/prodiRoutes'); 
 
 // Load env
 dotenv.config();
