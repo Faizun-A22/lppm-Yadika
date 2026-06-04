@@ -256,13 +256,13 @@ _prepareUserData({ name, email, hashedPassword, isDosen, isAdmin, identifier, id
       .from('users')
       .select(`
         *,
-        program_studi:program_studi(
+        program_studi:program_studi!users_id_prodi_fkey(
           id_prodi,
           nama_prodi,
           jenjang,
           akreditasi,
           id_fakultas,
-          fakultas:fakultas(
+          fakultas:fakultas!program_studi_id_fakultas_fkey(
             id_fakultas,
             nama_fakultas
           )
@@ -354,7 +354,7 @@ _prepareUserData({ name, email, hashedPassword, isDosen, isAdmin, identifier, id
         jenjang,
         akreditasi,
         id_fakultas,
-        fakultas:fakultas(
+        fakultas:fakultas!program_studi_id_fakultas_fkey(
           id_fakultas,
           nama_fakultas
         )
@@ -407,12 +407,12 @@ _prepareUserData({ name, email, hashedPassword, isDosen, isAdmin, identifier, id
         no_hp, 
         status, 
         created_at,
-        program_studi:program_studi(
+        program_studi:program_studi!users_id_prodi_fkey(
           id_prodi,
           nama_prodi,
           jenjang,
           akreditasi,
-          fakultas:fakultas(
+          fakultas:fakultas!program_studi_id_fakultas_fkey(
             id_fakultas,
             nama_fakultas
           )
@@ -516,12 +516,12 @@ _prepareUserData({ name, email, hashedPassword, isDosen, isAdmin, identifier, id
       .from('users')
       .select(`
         *,
-        program_studi:program_studi(
+        program_studi:program_studi!users_id_prodi_fkey(
           id_prodi,
           nama_prodi,
           jenjang,
           akreditasi,
-          fakultas:fakultas(
+          fakultas:fakultas!program_studi_id_fakultas_fkey(
             id_fakultas,
             nama_fakultas
           )
@@ -531,6 +531,7 @@ _prepareUserData({ name, email, hashedPassword, isDosen, isAdmin, identifier, id
       .maybeSingle();
     
     if (error || !user) {
+      if (error) console.error('Database error in _findUserByEmail:', error);
       console.log('User not found:', email);
       throw new Error('Email atau password salah');
     }
