@@ -281,34 +281,7 @@ _prepareUserData({ name, email, hashedPassword, isDosen, isAdmin, identifier, id
   // ==================== PRIVATE METHODS ====================
 
   /**
-   * Validasi input dasar untuk registrasi
-   * @private
-   */
-  _validateBasicInput(name, email, password, no_hp, id_prodi) {
-    if (!validateName(name)) {
-      throw new Error('Nama harus memiliki minimal 3 karakter');
-    }
-    
-    if (!validateEmail(email)) {
-      throw new Error('Format email tidak valid');
-    }
-    
-    if (!validatePassword(password)) {
-      throw new Error('Password harus memiliki minimal 6 karakter');
-    }
-    
-    if (no_hp && !validateNoHP(no_hp)) {
-      throw new Error('Nomor HP harus berisi 10-15 digit angka');
-    }
 
-    if (!id_prodi) {
-      throw new Error('Program studi harus dipilih');
-    }
-
-    if (!validateProdiId(id_prodi)) {
-      throw new Error('Format ID program studi tidak valid');
-    }
-  }
 
   /**
    * Validasi dan dapatkan identifier (NIM untuk mahasiswa, NIDN untuk dosen)
@@ -413,45 +386,7 @@ _prepareUserData({ name, email, hashedPassword, isDosen, isAdmin, identifier, id
   }
 
   /**
-   * Siapkan data user untuk insert
-   * @private
-   */
-  _prepareUserData({ name, email, hashedPassword, isDosen, identifier, id_prodi, no_hp, prodi }) {
-    const role = isDosen ? 'dosen' : 'mahasiswa';
-    
-    const newUser = {
-      nama_lengkap: name,
-      email: email.toLowerCase(),
-      password: hashedPassword,
-      role: role,
-      status: 'aktif',
-      id_prodi: id_prodi,
-      no_hp: no_hp || null
-    };
-    
-    // Tambahkan field spesifik berdasarkan role
-    if (isDosen) {
-      newUser.nidn = identifier.value;
-      newUser.nim = null;
-      console.log('Data untuk DOSEN:', { 
-        nidn: newUser.nidn,
-        prodi: prodi.nama_prodi,
-        fakultas: prodi.fakultas?.nama_fakultas
-      });
-    } else {
-      newUser.nim = identifier.value;
-      newUser.nidn = null;
-      console.log('Data untuk MAHASISWA:', { 
-        nim: newUser.nim,
-        prodi: prodi.nama_prodi,
-        fakultas: prodi.fakultas?.nama_fakultas
-      });
-    }
-    
-    console.log('Final user object:', JSON.stringify(newUser, null, 2));
-    
-    return newUser;
-  }
+
 
   /**
    * Insert user ke database
