@@ -22,15 +22,14 @@ class AuthService {
 
   // services/authService.js
 
-// services/authService.js
-
 async register(userData) {
+  // Destructure dengan menambahkan isAdmin
   const { 
     name, 
     email, 
     password, 
     isDosen, 
-    isAdmin,
+    isAdmin,   
     nim,        
     nidn,       
     id_prodi,
@@ -42,166 +41,49 @@ async register(userData) {
     name, 
     email, 
     isDosen,
-    isAdmin,
+    isAdmin,    // <<< TAMBAHKAN INI
     nim, 
     nidn,
     id_prodi, 
     no_hp 
   });
 
-  // Validasi input dasar
+  // ==================== VALIDASI INPUT DASAR ====================
   this._validateBasicInput(name, email, password, no_hp, id_prodi, isAdmin);
 
+  // ==================== VALIDASI NIM/NIDN (HANYA UNTUK NON-ADMIN) ====================
   let identifier = null;
   if (!isAdmin) {
     identifier = this._validateAndGetIdentifier(isDosen, nim, nidn);
+    // Cek duplikat untuk mahasiswa/dosen (email dan NIM/NIDN)
     await this._checkDuplicates(email, isDosen, identifier);
-    // Validasi prodi - PERBAIKAN DI SINI
-    const prodi = await this._validateProdi(id_prodi);
+    // Validasi prodi untuk mahasiswa/dosen
+    await this._validateProdi(id_prodi);
+  } else {
+    // Untuk admin, hanya cek duplikat email saja
+    await this._checkAdminEmailDuplicate(email);
   }
 
+  // ==================== HASH PASSWORD ====================
   const hashedPassword = await this._hashPassword(password);
 
+  // ==================== SIAPKAN DATA USER ====================
   const newUser = this._prepareUserData({
     name,
     email,
     hashedPassword,
     isDosen,
-    isAdmin,
+    isAdmin,    // <<< TAMBAHKAN INI
     identifier,
     id_prodi,
     no_hp
   });
 
+  // ==================== INSERT KE DATABASE ====================
   const registeredUser = await this._insertUser(newUser);
+
+  // ==================== KEMBALIKAN RESPON ====================
   return this._formatRegisterResponse(registeredUser);
-}
-
-/**
- * Validasi program studi - PERBAIKAN UTAMA
- * @private
- */
-async _validateProdi(id_prodi) {
-  console.log('Validating prodi with ID:', id_prodi);
-  
-  const { data: prodi, error } = await supabase
-    .from('program_studi')  // Pastikan ini nama tabel yang benar
-    .select('*')  // Select semua dulu untuk debug
-    .eq('id_prodi', id_prodi)
-    .single();
-
-  if (error) {
-    console.error('Prodi query error:', error);
-    throw new Error('Program studi tidak ditemukan');
-  }
-  
-  if (!prodi) {
-    console.error('No prodi found with ID:', id_prodi);
-    throw new Error('Program studi tidak valid');
-  }
-
-  // Debug: lihat struktur data yang回来
-  console.log('Raw prodi data from database:', JSON.stringify(prodi, null, 2));
-  console.log('Prodi keys:', Object.keys(prodi));
-  
-  // Cek field yang tersedia - mungkin namanya berbeda
-  // Bisa jadi 'nama' bukan 'nama_prodi', atau 'nama_program_studi'
-  const prodiName = prodi.nama_prodi || prodi.nama || prodi.nama_program_studi;
-  
-  if (!prodiName) {
-    console.error('Prodi data structure unexpected:', prodi);
-    throw new Error('Data program studi tidak lengkap (missing name field)');
-  }
-
-  console.log('Valid prodi found:', {
-    id: prodi.id_prodi,
-    nama: prodiName,
-    // Log semua field untuk debugging
-    all_fields: prodi
-  });
-
-  return prodi;
-}
-
-/**
- * Siapkan data user untuk insert (dengan perbaikan)
- * @private
- */
-_prepareUserData({ name, email, hashedPassword, isDosen, isAdmin, identifier, id_prodi, no_hp }) {
-  let role = 'mahasiswa';
-  if (isAdmin) {
-    role = 'admin';
-  } else if (isDosen) {
-    role = 'dosen';
-  }
-  
-  const newUser = {
-    nama_lengkap: name,
-    email: email.toLowerCase(),
-    password: hashedPassword,
-    role: role,
-    status: 'aktif',
-    id_prodi: isAdmin ? null : id_prodi,
-    no_hp: no_hp || null
-  };
-  
-  // Tambahkan field spesifik berdasarkan role
-  if (isAdmin) {
-    newUser.nim = null;
-    newUser.nidn = null;
-    console.log('Data untuk ADMIN');
-  } else if (isDosen) {
-    newUser.nidn = identifier.value;
-    newUser.nim = null;
-    console.log('Data untuk DOSEN');
-  } else {
-    newUser.nim = identifier.value;
-    newUser.nidn = null;
-    console.log('Data untuk MAHASISWA');
-  }
-  
-  console.log('Final user object:', JSON.stringify(newUser, null, 2));
-  return newUser;
-}
-
-/**
- * Insert user ke database dengan debug
- * @private
- */
-async _insertUser(newUser) {
-  console.log('Attempting to insert user with data:', JSON.stringify(newUser, null, 2));
-  
-  const { data, error } = await supabase
-    .from('users')
-    .insert([newUser])
-    .select('*');  // Select semua dulu untuk debug
-  
-  if (error) {
-    console.error('Supabase insert error DETAIL:', {
-      code: error.code,
-      message: error.message,
-      details: error.details,
-      hint: error.hint
-    });
-    
-    if (error.code === '23505') {
-      throw new Error('Data sudah terdaftar di sistem');
-    } else if (error.code === '23502') {
-      throw new Error('Field wajib tidak boleh kosong: ' + error.column);
-    } else if (error.code === '23503') {
-      throw new Error('Program studi tidak valid - pastikan ID prodi ada di tabel program_studi');
-    } else {
-      throw new Error('Gagal mendaftarkan pengguna: ' + error.message);
-    }
-  }
-  
-  if (!data || data.length === 0) {
-    throw new Error('Gagal mendaftarkan pengguna');
-  }
-  
-  console.log('=== REGISTER SUCCESS ===');
-  console.log('User registered:', data[0]);
-  return data[0];
 }
 
 // ==================== TAMBAHKAN METHOD BARU INI ====================
