@@ -1,7 +1,9 @@
 // js/auth.js - Modified version
 
 const API_CONFIG = {
-    BASE_URL: 'http://localhost:3000'
+    BASE_URL: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        ? 'http://localhost:3000'
+        : ''
 };
 
 // Get token from localStorage
