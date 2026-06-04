@@ -29,7 +29,7 @@ async register(userData) {
     email, 
     password, 
     isDosen, 
-    isAdmin,   
+    isAdmin,    // <<< TAMBAHKAN INI
     nim,        
     nidn,       
     id_prodi,
