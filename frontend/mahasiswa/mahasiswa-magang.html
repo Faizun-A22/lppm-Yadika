@@ -1313,23 +1313,45 @@
     document.getElementById('magangForm')?.addEventListener('submit', async function(e) {
         e.preventDefault();
         if (!document.getElementById('magangAgreeTerms').checked) { showNotification('Anda harus menyetujui pernyataan di atas', 'warning'); return; }
-        const krsFile = document.getElementById('magangKrs').files[0], khsFile = document.getElementById('magangKhs').files[0], paymentFile = document.getElementById('magangPayment').files[0];
-        if (!krsFile || !khsFile || !paymentFile) { showNotification('Semua file harus diupload', 'warning'); return; }
+        
+        const isUpdate = !!(magangData && magangData.registrasi);
+        const krsFile = document.getElementById('magangKrs').files[0], 
+              khsFile = document.getElementById('magangKhs').files[0], 
+              paymentFile = document.getElementById('magangPayment').files[0];
+              
+        if (!isUpdate && (!krsFile || !khsFile || !paymentFile)) { 
+            showNotification('Semua file harus diupload', 'warning'); 
+            return; 
+        }
+        
         try {
             showLoading();
             const token = localStorage.getItem('token');
             if (!token) throw new Error('Not authenticated');
+            
             const formData = new FormData();
             formData.append('program_studi', document.getElementById('magangStudyProgram').value);
             formData.append('domisili', document.getElementById('magangDomicile').value);
             formData.append('semester', document.getElementById('magangSemester').value);
-            formData.append('krs_file', krsFile);
-            formData.append('khs_file', khsFile);
-            formData.append('payment_file', paymentFile);
-            const response = await fetch(`${API_BASE_URL}/magang/registrasi`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: formData });
+            
+            if (krsFile) formData.append('krs_file', krsFile);
+            if (khsFile) formData.append('khs_file', khsFile);
+            if (paymentFile) formData.append('payment_file', paymentFile);
+            
+            const url = isUpdate 
+                ? `${API_BASE_URL}/magang/registrasi/${magangData.registrasi.id_registrasi}` 
+                : `${API_BASE_URL}/magang/registrasi`;
+            const method = isUpdate ? 'PUT' : 'POST';
+            
+            const response = await fetch(url, { 
+                method: method, 
+                headers: { 'Authorization': `Bearer ${token}` }, 
+                body: formData 
+            });
+            
             const result = await response.json();
             if (!response.ok) throw new Error(result.message || 'Gagal mendaftar magang');
-            showNotification('Pendaftaran magang berhasil dikirim', 'success');
+            showNotification(isUpdate ? 'Pendaftaran magang berhasil diperbarui' : 'Pendaftaran magang berhasil dikirim', 'success');
             this.reset();
             document.getElementById('fakultasSelect').value = '';
             document.getElementById('magangStudyProgram').innerHTML = '<option value="">-- Pilih Fakultas Terlebih Dahulu --</option>';
