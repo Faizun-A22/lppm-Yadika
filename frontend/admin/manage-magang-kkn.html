@@ -888,6 +888,17 @@
         function formatDateTime(dateString) { if (!dateString) return '-'; return new Date(dateString).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }); }
         function getStatusBadgeClass(status) { return `badge-${status}`; }
         function getStatusText(status) { const texts = { 'pending': 'Pending', 'approved': 'Disetujui', 'rejected': 'Ditolak', 'verified': 'Terverifikasi' }; return texts[status] || status; }
+        function getFrontendFileUrl(filePath) {
+            if (!filePath) return null;
+            if (filePath.startsWith('http://') || filePath.startsWith('https://')) {
+                return filePath;
+            }
+            let cleanPath = filePath.replace(/\\/g, '/');
+            if (cleanPath.startsWith('uploads/')) {
+                cleanPath = cleanPath.substring('uploads/'.length);
+            }
+            return `/api/uploads/${cleanPath}`;
+        }
 
         const getHeaders = () => ({ 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` });
 
@@ -964,9 +975,202 @@
 
         // REGISTRATION FUNCTIONS
         async function loadRegistrationData() { showLoading(); const search = document.getElementById('searchRegistration').value; const jenis = document.getElementById('filterJenisRegistration').value; const status = document.getElementById('filterStatusRegistration').value; try { if (jenis === '' || jenis === 'kkn') { const kknRes = await fetch(`${API_BASE_URL}/admin/registrasi-kkn?search=${search}&status=${status}&limit=100`, { headers: getHeaders() }); const kknResult = await kknRes.json(); if (kknResult.success) renderKKNTable(kknResult.data); } if (jenis === '' || jenis === 'magang') { const magangRes = await fetch(`${API_BASE_URL}/admin/registrasi-magang?search=${search}&status=${status}&limit=100`, { headers: getHeaders() }); const magangResult = await magangRes.json(); if (magangResult.success) renderMagangTable(magangResult.data); } } catch (error) { showAlert('Gagal memuat', 'error'); } finally { hideLoading(); } }
-        function renderKKNTable(data) { const tbody = document.getElementById('kknRegistrationTableBody'); if (!data || data.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4">Tidak ada数据</td></tr>'; return; } tbody.innerHTML = data.map(r => `<td><td class="px-4 py-3">${r.nim}</td><td class="px-4 py-3">${r.nama_lengkap}</td><td class="px-4 py-3">${r.desa_kkn?.nama_desa || '-'}</td><td class="px-4 py-3"><span class="${getStatusBadgeClass(r.status)}">${getStatusText(r.status)}</span></td><td class="px-4 py-3 text-center"><button onclick="viewRegistrationDetail('kkn', '${r.id_registrasi}')" class="text-blue-600 mr-2"><i class="fas fa-eye"></i></button><button onclick="openStatusModal('kkn', '${r.id_registrasi}', '${r.status}')" class="text-green-600"><i class="fas fa-edit"></i></button></td></tr>`).join(''); }
-        function renderMagangTable(data) { const tbody = document.getElementById('magangRegistrationTableBody'); if (!data || data.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4">Tidak ada数据</td></tr>'; return; } tbody.innerHTML = data.map(r => `<td><td class="px-4 py-3">${r.nim}</td><td class="px-4 py-3">${r.nama_lengkap}</td><td class="px-4 py-3">${r.nama_perusahaan || '-'}</td><td class="px-4 py-3"><span class="${getStatusBadgeClass(r.status)}">${getStatusText(r.status)}</span></td><td class="px-4 py-3 text-center"><button onclick="viewRegistrationDetail('magang', '${r.id_registrasi}')" class="text-blue-600 mr-2"><i class="fas fa-eye"></i></button><button onclick="openStatusModal('magang', '${r.id_registrasi}', '${r.status}')" class="text-green-600"><i class="fas fa-edit"></i></button></td></tr>`).join(''); }
-        async function viewRegistrationDetail(type, id) { showLoading(); try { const response = await fetch(`${API_BASE_URL}/admin/registrasi-${type}/${id}`, { headers: getHeaders() }); const result = await response.json(); if (result.success) { const d = result.data; let content = `<div><strong>NIM:</strong> ${d.nim}</div><div><strong>Nama:</strong> ${d.nama_lengkap}</div><div><strong>Status:</strong> <span class="${getStatusBadgeClass(d.status)}">${getStatusText(d.status)}</span></div>`; if (type === 'kkn') content += `<div><strong>Desa:</strong> ${d.desa_kkn?.nama_desa || '-'}</div><div><strong>Tanggal Daftar:</strong> ${formatDate(d.tanggal_daftar)}</div>`; else content += `<div><strong>Perusahaan:</strong> ${d.nama_perusahaan || '-'}</div><div><strong>Tanggal Daftar:</strong> ${formatDate(d.created_at)}</div>`; document.getElementById('detailModalContent').innerHTML = content; document.getElementById('detailModal').classList.remove('hidden'); } } catch (error) { showAlert('Gagal memuat detail', 'error'); } finally { hideLoading(); } }
+        function renderKKNTable(data) {
+            const tbody = document.getElementById('kknRegistrationTableBody');
+            if (!data || data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-gray-500">Tidak ada data</td></tr>';
+                return;
+            }
+            tbody.innerHTML = data.map(r => `
+                <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-4 py-3 font-semibold text-gray-700 text-sm">${r.nim}</td>
+                    <td class="px-4 py-3 text-gray-800 text-sm">${r.nama_lengkap}</td>
+                    <td class="px-4 py-3 text-gray-600 text-sm">${r.desa_kkn?.nama_desa || '-'}</td>
+                    <td class="px-4 py-3"><span class="${getStatusBadgeClass(r.status)}">${getStatusText(r.status)}</span></td>
+                    <td class="px-4 py-3 text-center">
+                        <button onclick="viewRegistrationDetail('kkn', '${r.id_registrasi}')" class="action-btn text-blue-600 hover:bg-blue-50 mr-2" title="Lihat Detail"><i class="fas fa-eye"></i></button>
+                        <button onclick="openStatusModal('kkn', '${r.id_registrasi}', '${r.status}')" class="action-btn text-green-600 hover:bg-green-50 mr-2" title="Ubah Status"><i class="fas fa-edit"></i></button>
+                        <button onclick="deleteRegistration('kkn', '${r.id_registrasi}')" class="action-btn text-red-600 hover:bg-red-50" title="Hapus"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderMagangTable(data) {
+            const tbody = document.getElementById('magangRegistrationTableBody');
+            if (!data || data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-gray-500">Tidak ada data</td></tr>';
+                return;
+            }
+            tbody.innerHTML = data.map(r => `
+                <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-4 py-3 font-semibold text-gray-700 text-sm">${r.nim}</td>
+                    <td class="px-4 py-3 text-gray-800 text-sm">${r.nama_lengkap}</td>
+                    <td class="px-4 py-3 text-gray-600 text-sm">${r.nama_perusahaan || '-'}</td>
+                    <td class="px-4 py-3"><span class="${getStatusBadgeClass(r.status)}">${getStatusText(r.status)}</span></td>
+                    <td class="px-4 py-3 text-center">
+                        <button onclick="viewRegistrationDetail('magang', '${r.id_registrasi}')" class="action-btn text-blue-600 hover:bg-blue-50 mr-2" title="Lihat Detail"><i class="fas fa-eye"></i></button>
+                        <button onclick="openStatusModal('magang', '${r.id_registrasi}', '${r.status}')" class="action-btn text-green-600 hover:bg-green-50 mr-2" title="Ubah Status"><i class="fas fa-edit"></i></button>
+                        <button onclick="deleteRegistration('magang', '${r.id_registrasi}')" class="action-btn text-red-600 hover:bg-red-50" title="Hapus"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function viewRegistrationDetail(type, id) {
+            showLoading();
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin/registrasi-${type}/${id}`, { headers: getHeaders() });
+                const result = await response.json();
+                if (result.success) {
+                    const d = result.data;
+                    const avatarUrl = d.users?.foto_profil ? getFrontendFileUrl(d.users.foto_profil) : `https://ui-avatars.com/api/?name=${encodeURIComponent(d.nama_lengkap)}&background=3B82F6&color=fff&size=128&bold=true`;
+                    
+                    const krsUrl = getFrontendFileUrl(d.krs_file);
+                    const khsUrl = getFrontendFileUrl(d.khs_file);
+                    const paymentUrl = getFrontendFileUrl(d.payment_file);
+
+                    let content = `
+                        <div class="flex flex-col md:flex-row gap-6 items-start text-left">
+                            <!-- Left Column: Avatar & Quick Info -->
+                            <div class="w-full md:w-1/3 flex flex-col items-center text-center p-5 bg-gradient-to-b from-gray-50 to-white rounded-2xl border border-gray-100 shadow-sm">
+                                <div class="relative mb-4">
+                                    <img src="${avatarUrl}" alt="Foto Profil" class="w-32 h-32 rounded-full object-cover shadow-md ring-4 ring-blue-500/20">
+                                    <div class="absolute bottom-1 right-1 w-6 h-6 rounded-full border-2 border-white ${d.status === 'verified' ? 'bg-blue-500' : d.status === 'approved' ? 'bg-green-500' : d.status === 'rejected' ? 'bg-red-500' : 'bg-yellow-500'} flex items-center justify-center text-white text-[10px]">
+                                        <i class="fas ${d.status === 'verified' ? 'fa-check-double' : d.status === 'approved' ? 'fa-check' : d.status === 'rejected' ? 'fa-times' : 'fa-clock'}"></i>
+                                    </div>
+                                </div>
+                                <h4 class="font-bold text-gray-800 text-lg leading-snug">${d.nama_lengkap}</h4>
+                                <p class="text-sm font-semibold text-blue-600 mb-2">${d.nim}</p>
+                                <span class="px-3 py-1 text-xs font-semibold rounded-full ${getStatusBadgeClass(d.status)}">${getStatusText(d.status)}</span>
+                            </div>
+
+                            <!-- Right Column: Detail Information & Files -->
+                            <div class="w-full md:w-2/3 space-y-6">
+                                <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                                    <h5 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-3">Informasi Mahasiswa</h5>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                                        <div>
+                                            <span class="block text-gray-500 text-xs">Email</span>
+                                            <span class="font-medium text-gray-800">${d.email || d.users?.email || '-'}</span>
+                                        </div>
+                                        <div>
+                                            <span class="block text-gray-500 text-xs">No. WhatsApp</span>
+                                            <span class="font-medium text-gray-800">${d.no_hp || d.users?.no_hp || '-'}</span>
+                                        </div>
+                                        <div>
+                                            <span class="block text-gray-500 text-xs">Program Studi</span>
+                                            <span class="font-medium text-gray-800">${d.program_studi?.nama_prodi || d.program_studi_input || '-'}</span>
+                                        </div>
+                                        <div>
+                                            <span class="block text-gray-500 text-xs">Semester / Angkatan</span>
+                                            <span class="font-medium text-gray-800">Semester ${d.angkatan || d.semester || '-'}</span>
+                                        </div>
+                                        ${type === 'kkn' ? `
+                                        <div class="sm:col-span-2">
+                                            <span class="block text-gray-500 text-xs">Desa KKN Pilihan</span>
+                                            <span class="font-semibold text-green-700 flex items-center gap-1"><i class="fas fa-map-marker-alt"></i> ${d.desa_kkn?.nama_desa || '-'} (${d.desa_kkn?.kecamatan || '-'}, ${d.desa_kkn?.kabupaten || '-'})</span>
+                                        </div>
+                                        <div>
+                                            <span class="block text-gray-500 text-xs">Ukuran Jaket</span>
+                                            <span class="font-medium text-gray-800 uppercase px-2 py-0.5 bg-gray-200 rounded text-xs">${d.ukuran_jaket || '-'}</span>
+                                        </div>
+                                        ` : `
+                                        <div class="sm:col-span-2">
+                                            <span class="block text-gray-500 text-xs">Perusahaan Magang</span>
+                                            <span class="font-semibold text-blue-700 flex items-center gap-1"><i class="fas fa-building"></i> ${d.nama_perusahaan || '-'}</span>
+                                        </div>
+                                        `}
+                                        <div class="sm:col-span-2">
+                                            <span class="block text-gray-500 text-xs">Tanggal Registrasi</span>
+                                            <span class="font-medium text-gray-800">${formatDateTime(d.tanggal_daftar || d.created_at)}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                                    <h5 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-3">Berkas Persyaratan</h5>
+                                    <div class="space-y-3">
+                                        <!-- KRS -->
+                                        <div class="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200 hover:shadow-sm transition-all">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-10 h-10 rounded-lg bg-red-50 flex items-center justify-center text-red-600 font-bold text-lg"><i class="far fa-file-pdf"></i></div>
+                                                <div>
+                                                    <p class="text-xs font-bold text-gray-800">Kartu Rencana Studi (KRS)</p>
+                                                    <p class="text-[10px] text-gray-400">${d.krs_file ? 'Berkas Terlampir' : 'Belum Upload'}</p>
+                                                </div>
+                                            </div>
+                                            ${krsUrl ? `<a href="${krsUrl}" target="_blank" class="px-3 py-1.5 text-xs bg-red-600 text-white rounded-md hover:bg-red-700 transition flex items-center gap-1"><i class="fas fa-external-link-alt"></i> Lihat</a>` : `<span class="text-xs text-gray-400">Tidak ada</span>`}
+                                        </div>
+
+                                        <!-- KHS -->
+                                        <div class="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200 hover:shadow-sm transition-all">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 font-bold text-lg"><i class="far fa-file-pdf"></i></div>
+                                                <div>
+                                                    <p class="text-xs font-bold text-gray-800">Kartu Hasil Studi (KHS)</p>
+                                                    <p class="text-[10px] text-gray-400">${d.khs_file ? 'Berkas Terlampir' : 'Belum Upload'}</p>
+                                                </div>
+                                            </div>
+                                            ${khsUrl ? `<a href="${khsUrl}" target="_blank" class="px-3 py-1.5 text-xs bg-blue-600 text-white rounded-md hover:bg-blue-700 transition flex items-center gap-1"><i class="fas fa-external-link-alt"></i> Lihat</a>` : `<span class="text-xs text-gray-400">Tidak ada</span>`}
+                                        </div>
+
+                                        <!-- Payment Proof -->
+                                        <div class="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200 hover:shadow-sm transition-all">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center text-green-600 font-bold text-lg"><i class="far fa-file-image"></i></div>
+                                                <div>
+                                                    <p class="text-xs font-bold text-gray-800">Bukti Pembayaran Pendaftaran</p>
+                                                    <p class="text-[10px] text-gray-400">${d.payment_file ? 'Berkas Terlampir' : 'Belum Upload'}</p>
+                                                </div>
+                                            </div>
+                                            ${paymentUrl ? `<a href="${paymentUrl}" target="_blank" class="px-3 py-1.5 text-xs bg-green-600 text-white rounded-md hover:bg-green-700 transition flex items-center gap-1"><i class="fas fa-external-link-alt"></i> Lihat</a>` : `<span class="text-xs text-gray-400">Tidak ada</span>`}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    document.getElementById('detailModalContent').innerHTML = content;
+                    document.getElementById('detailModal').classList.remove('hidden');
+                }
+            } catch (error) { showAlert('Gagal memuat detail', 'error'); } finally { hideLoading(); }
+        }
+
+        async function deleteRegistration(type, id) {
+            const result = await Swal.fire({
+                title: 'Apakah Anda Yakin?',
+                text: "Registrasi ini beserta berkas pendaftarannya akan dihapus secara permanen dari server!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal'
+            });
+
+            if (!result.isConfirmed) return;
+
+            showLoading();
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin/registrasi-${type}/${id}`, {
+                    method: 'DELETE',
+                    headers: getHeaders()
+                });
+                const data = await response.json();
+                if (data.success) {
+                    showAlert('Registrasi berhasil dihapus');
+                    loadRegistrationData();
+                    loadStatsData();
+                } else {
+                    showAlert(data.message || 'Gagal menghapus registrasi', 'error');
+                }
+            } catch (error) {
+                showAlert('Gagal menghapus registrasi', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
         let selectedType = '', selectedId = '';
         function openStatusModal(type, id, status) { selectedType = type; selectedId = id; document.getElementById('statusId').value = id; document.getElementById('statusType').value = type; document.getElementById('newStatus').value = status; document.getElementById('statusModal').classList.remove('hidden'); }
         function closeStatusModal() { document.getElementById('statusModal').classList.add('hidden'); }

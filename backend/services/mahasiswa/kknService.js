@@ -58,20 +58,24 @@ async getProgramStudi() {
                 throw regError;
             }
 
-            // Ambil data luaran
-            const { data: luaran, error: luarError } = await supabase
-                .from(this.tableLuaran)
-                .select('*')
-                .eq('id_registrasi', registrasi?.id_registrasi)
-                .order('created_at', { ascending: false });
+            // Ambil data luaran (hanya jika registrasi ada)
+            let luaran = [];
+            if (registrasi) {
+                const { data: luarData, error: luarError } = await supabase
+                    .from(this.tableLuaran)
+                    .select('*')
+                    .eq('id_registrasi', registrasi.id_registrasi)
+                    .order('created_at', { ascending: false });
 
-            if (luarError && luarError.code !== 'PGRST116') {
-                throw luarError;
+                if (luarError && luarError.code !== 'PGRST116') {
+                    throw luarError;
+                }
+                luaran = luarData || [];
             }
 
             return {
                 registrasi: registrasi || null,
-                luaran: luaran || [],
+                luaran: luaran,
                 status_keseluruhan: this.hitungStatusKeseluruhan(registrasi)
             };
         } catch (error) {

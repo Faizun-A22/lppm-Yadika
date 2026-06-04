@@ -1,5 +1,6 @@
 const supabase = require('../../config/database');
 const { formatResponse, formatError, formatPaginatedResponse } = require('../../utils/responseFormatter');
+const { deleteFile } = require('../../middleware/upload');
 
 const registrasiMagangController = {
     async getAllRegistrasi(req, res) {
@@ -59,6 +60,12 @@ const registrasiMagangController = {
                     program_studi:program_studi (
                         id_prodi,
                         nama_prodi
+                    ),
+                    users:users (
+                        id_user,
+                        email,
+                        no_hp,
+                        foto_profil
                     )
                 `)
                 .eq('id_registrasi', id)
@@ -117,6 +124,29 @@ const registrasiMagangController = {
         try {
             const { id } = req.params;
             
+            if (!id) {
+                return res.status(400).json(formatError('ID registrasi tidak ditemukan'));
+            }
+
+            // Get existing registration data to delete files
+            const { data: existing, error: checkError } = await supabase
+                .from('registrasi_magang')
+                .select('id_registrasi, krs_file, khs_file, payment_file')
+                .eq('id_registrasi', id)
+                .single();
+
+            if (checkError) {
+                if (checkError.code === 'PGRST116') {
+                    return res.status(404).json(formatError('Registrasi tidak ditemukan'));
+                }
+                throw checkError;
+            }
+
+            // Hapus berkas fisik dari server jika ada
+            if (existing.krs_file) await deleteFile(existing.krs_file).catch(err => console.error('Failed to delete krs_file:', err));
+            if (existing.khs_file) await deleteFile(existing.khs_file).catch(err => console.error('Failed to delete khs_file:', err));
+            if (existing.payment_file) await deleteFile(existing.payment_file).catch(err => console.error('Failed to delete payment_file:', err));
+
             const { error } = await supabase
                 .from('registrasi_magang')
                 .delete()

@@ -1,5 +1,6 @@
 const supabase = require('../../config/database');
 const { formatResponse, formatError, formatPaginatedResponse } = require('../../utils/responseFormatter');
+const { deleteFile } = require('../../middleware/upload');
 
 const registrasiKknController = {
     /**
@@ -218,7 +219,7 @@ const registrasiKknController = {
             // Check if registration exists
             const { data: existing, error: checkError } = await supabase
                 .from('registrasi_kkn')
-                .select('id_registrasi, nim, nama_lengkap')
+                .select('id_registrasi, nim, nama_lengkap, id_desa, krs_file, khs_file, payment_file')
                 .eq('id_registrasi', id)
                 .single();
 
@@ -228,6 +229,11 @@ const registrasiKknController = {
                 }
                 throw checkError;
             }
+
+            // Hapus berkas fisik dari server jika ada
+            if (existing.krs_file) await deleteFile(existing.krs_file).catch(err => console.error('Failed to delete krs_file:', err));
+            if (existing.khs_file) await deleteFile(existing.khs_file).catch(err => console.error('Failed to delete khs_file:', err));
+            if (existing.payment_file) await deleteFile(existing.payment_file).catch(err => console.error('Failed to delete payment_file:', err));
 
             // Delete related luaran_kkn first (if any)
             const { error: luaranError } = await supabase
@@ -249,6 +255,25 @@ const registrasiKknController = {
             if (error) {
                 console.error('Database error in deleteRegistrasi:', error);
                 return res.status(500).json(formatError('Gagal menghapus registrasi: ' + error.message));
+            }
+
+            // Kurangi kuota_terisi desa jika ada
+            if (existing.id_desa) {
+                const { data: desa } = await supabase
+                    .from('desa_kkn')
+                    .select('kuota_terisi')
+                    .eq('id_desa', existing.id_desa)
+                    .single();
+                
+                if (desa) {
+                    await supabase
+                        .from('desa_kkn')
+                        .update({
+                            kuota_terisi: Math.max(0, (desa.kuota_terisi || 0) - 1),
+                            updated_at: new Date().toISOString()
+                        })
+                        .eq('id_desa', existing.id_desa);
+                }
             }
 
             return res.status(200).json(
