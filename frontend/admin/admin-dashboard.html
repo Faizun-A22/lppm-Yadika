@@ -613,7 +613,7 @@
             </div>
 
             <!-- Charts Row -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
                 <!-- Aktivitas Bulanan Chart -->
                 <div class="bg-white rounded-xl shadow-lg p-4 md:p-6" data-aos="fade-up" data-aos-delay="500">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4">
@@ -627,6 +627,14 @@
                     </div>
                     <div style="height: 220px; position: relative;">
                         <canvas id="monthlyChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Status KKN & Magang Chart -->
+                <div class="bg-white rounded-xl shadow-lg p-4 md:p-6" data-aos="fade-up" data-aos-delay="550">
+                    <h3 class="text-base md:text-lg font-semibold text-gray-800 mb-4">Status KKN & Magang</h3>
+                    <div style="height: 220px; position: relative;">
+                        <canvas id="programChart"></canvas>
                     </div>
                 </div>
 
@@ -947,7 +955,7 @@
         }
 
         // ==================== CHART FUNCTIONS ====================
-        let monthlyChart, categoryChart;
+        let monthlyChart, categoryChart, programChart;
         let chartData = null; // store API chart data
 
         function initCharts(data) {
@@ -973,6 +981,49 @@
                     maintainAspectRatio: false,
                     plugins: { legend: { position: 'top', labels: { boxWidth: 10, font: { size: 10 } } } },
                     scales: { y: { beginAtZero: true, grid: { display: true, color: 'rgba(0,0,0,0.05)' } } }
+                }
+            });
+
+            // Program (KKN & Magang) Chart
+            const kkn = data.kkn || { pending: 0, approved: 0, rejected: 0, verified: 0 };
+            const magang = data.magang || { pending: 0, approved: 0, rejected: 0, verified: 0 };
+            const programCtx = document.getElementById('programChart').getContext('2d');
+            
+            programChart = new Chart(programCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Pending', 'Disetujui', 'Ditolak', 'Terverifikasi'],
+                    datasets: [
+                        {
+                            label: 'KKN',
+                            data: [kkn.pending || 0, kkn.approved || 0, kkn.rejected || 0, kkn.verified || 0],
+                            backgroundColor: '#EC4899', // pink-500
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'Magang',
+                            data: [magang.pending || 0, magang.approved || 0, magang.rejected || 0, magang.verified || 0],
+                            backgroundColor: '#6366F1', // indigo-500
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top', labels: { boxWidth: 10, font: { size: 10 } } }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { display: true, color: 'rgba(0,0,0,0.05)' },
+                            ticks: { precision: 0 }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    }
                 }
             });
 
@@ -1102,7 +1153,7 @@
                     renderPendingTasks(data.pendingTasks);
 
                     // Update or init charts
-                    if (monthlyChart) {
+                    if (monthlyChart && categoryChart && programChart) {
                         // Update existing chart with new monthly data
                         const beritaMonthly = data.monthlyChart?.berita || Array(12).fill(0);
                         const kegiatanMonthly = data.monthlyChart?.kegiatan || Array(12).fill(0);
@@ -1111,7 +1162,25 @@
                         monthlyChart.data.datasets[1].data = kegiatanMonthly;
                         monthlyChart.data.datasets[2].data = repoMonthly;
                         monthlyChart.update();
+
+                        // Update category chart
+                        const kategoriData = data.kategoriChart || {};
+                        const kategoriLabels = Object.keys(kategoriData).length > 0 ? Object.keys(kategoriData) : ['Jurnal', 'Penelitian', 'Pengabdian', 'Buku', 'HKI', 'Prosiding'];
+                        const kategoriValues = Object.keys(kategoriData).length > 0 ? Object.values(kategoriData) : [0, 0, 0, 0, 0, 0];
+                        categoryChart.data.labels = kategoriLabels;
+                        categoryChart.data.datasets[0].data = kategoriValues;
+                        categoryChart.update();
+
+                        // Update program chart
+                        const kkn = data.kkn || { pending: 0, approved: 0, rejected: 0, verified: 0 };
+                        const magang = data.magang || { pending: 0, approved: 0, rejected: 0, verified: 0 };
+                        programChart.data.datasets[0].data = [kkn.pending || 0, kkn.approved || 0, kkn.rejected || 0, kkn.verified || 0];
+                        programChart.data.datasets[1].data = [magang.pending || 0, magang.approved || 0, magang.rejected || 0, magang.verified || 0];
+                        programChart.update();
                     } else {
+                        if (monthlyChart) monthlyChart.destroy();
+                        if (categoryChart) categoryChart.destroy();
+                        if (programChart) programChart.destroy();
                         initCharts(data);
                     }
 
@@ -1131,7 +1200,9 @@
                 if (!monthlyChart) {
                     initCharts({
                         monthlyChart: { berita: Array(12).fill(0), kegiatan: Array(12).fill(0), repository: Array(12).fill(0) },
-                        kategoriChart: {}
+                        kategoriChart: {},
+                        kkn: { pending: 0, approved: 0, rejected: 0, verified: 0 },
+                        magang: { pending: 0, approved: 0, rejected: 0, verified: 0 }
                     });
                 }
 
