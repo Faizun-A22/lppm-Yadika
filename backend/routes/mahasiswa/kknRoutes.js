@@ -9,6 +9,7 @@ const { uploadKKNDocument, upload } = require('../../middleware/upload'); // IMP
 router.get('/dashboard', authenticateToken, kknController.getDashboard);
 router.get('/status', authenticateToken, kknController.getStatus);
 router.get('/timeline', authenticateToken, kknController.getTimeline);
+router.get('/registrasi', authenticateToken, kknController.getRegistrasi);
 
 // ================== DESA ==================
 router.get('/desa', authenticateToken, kknController.getAvailableVillages);

@@ -672,22 +672,62 @@
             }
         }
 
+        function getStepClasses(state, color = 'blue') {
+            if (state === 'completed') {
+                return {
+                    circle: 'border-green-500 bg-green-500 text-white shadow-md shadow-green-100',
+                    text: 'text-green-600 font-semibold'
+                };
+            } else if (state === 'rejected') {
+                return {
+                    circle: 'border-red-500 bg-red-500 text-white shadow-md shadow-red-100',
+                    text: 'text-red-600 font-semibold'
+                };
+            } else if (state === 'active') {
+                if (color === 'amber') {
+                    return {
+                        circle: 'border-amber-500 bg-amber-500 text-white animate-pulse ring-4 ring-amber-100 shadow-md shadow-amber-100',
+                        text: 'text-amber-600 font-semibold'
+                    };
+                } else if (color === 'purple') {
+                    return {
+                        circle: 'border-purple-500 bg-purple-500 text-white animate-pulse ring-4 ring-purple-100 shadow-md shadow-purple-100',
+                        text: 'text-purple-600 font-semibold'
+                    };
+                } else {
+                    return {
+                        circle: 'border-blue-500 bg-blue-500 text-white animate-pulse ring-4 ring-blue-100 shadow-md shadow-blue-100',
+                        text: 'text-blue-600 font-semibold'
+                    };
+                }
+            } else {
+                return {
+                    circle: 'border-gray-200 bg-gray-50 text-gray-400',
+                    text: 'text-gray-400 font-normal'
+                };
+            }
+        }
+
         async function loadUserRegisteredPrograms() {
             const user = getUser();
             if (!user) return;
 
             showLoading();
             try {
-                const magangResponse = await fetch(`${API_BASE_URL}/mahasiswa/magang/registrasi`, { headers: getHeaders() });
-                const kknResponse = await fetch(`${API_BASE_URL}/mahasiswa/kkn/registrasi`, { headers: getHeaders() });
+                const magangResponse = await fetch(`${API_BASE_URL}/mahasiswa/magang/status`, { headers: getHeaders() });
+                const kknResponse = await fetch(`${API_BASE_URL}/mahasiswa/kkn/dashboard`, { headers: getHeaders() });
 
                 if (magangResponse.ok) {
                     const result = await magangResponse.json();
-                    if (result.success && result.data) userPrograms.magang = result.data;
+                    if (result.success && result.data && result.data.registrasi) {
+                        userPrograms.magang = result.data;
+                    }
                 }
                 if (kknResponse.ok) {
                     const result = await kknResponse.json();
-                    if (result.success && result.data) userPrograms.kkn = result.data;
+                    if (result.success && result.data && result.data.registrasi) {
+                        userPrograms.kkn = result.data;
+                    }
                 }
 
                 updateRegisteredProgramsUI();
@@ -703,8 +743,12 @@
             const registeredList = document.getElementById('registeredProgramsList');
             
             const programs = [];
-            if (userPrograms.magang) programs.push({ type: 'magang', data: userPrograms.magang });
-            if (userPrograms.kkn) programs.push({ type: 'kkn', data: userPrograms.kkn });
+            if (userPrograms.magang && userPrograms.magang.registrasi) {
+                programs.push({ type: 'magang', statusData: userPrograms.magang });
+            }
+            if (userPrograms.kkn && userPrograms.kkn.registrasi) {
+                programs.push({ type: 'kkn', statusData: userPrograms.kkn });
+            }
             
             if (programs.length === 0) {
                 registeredSection.classList.add('hidden');
@@ -714,47 +758,276 @@
             registeredSection.classList.remove('hidden');
             
             registeredList.innerHTML = programs.map(program => {
-                const data = program.data;
                 const isMagang = program.type === 'magang';
+                const statusData = program.statusData;
+                const reg = statusData.registrasi;
                 const bgGradient = isMagang ? 'from-blue-50 to-blue-100/50' : 'from-purple-50 to-purple-100/50';
                 
+                let steps = [];
+                let progressPercent = 0;
+                
+                if (isMagang) {
+                    const pers = statusData.perusahaan;
+                    const luar = statusData.luaran;
+                    
+                    // Step 1: Pendaftaran
+                    let s1State = 'completed';
+                    let s1Color = 'blue';
+                    let s1Text = 'Pendaftaran Disetujui';
+                    if (reg.status === 'pending') {
+                        s1State = 'active';
+                        s1Color = 'amber';
+                        s1Text = 'Menunggu Verifikasi Pendaftaran';
+                    } else if (reg.status === 'rejected') {
+                        s1State = 'rejected';
+                        s1Text = 'Pendaftaran Ditolak';
+                    }
+                    
+                    // Step 2: Input Perusahaan
+                    let s2State = 'disabled';
+                    let s2Color = 'blue';
+                    let s2Text = 'Belum Input Perusahaan';
+                    if (s1State === 'completed') {
+                        if (!pers) {
+                            s2State = 'active';
+                            s2Color = 'blue';
+                            s2Text = 'Menunggu Input Data Perusahaan';
+                        } else if (pers.status === 'pending') {
+                            s2State = 'active';
+                            s2Color = 'amber';
+                            s2Text = 'Menunggu Verifikasi Perusahaan';
+                        } else if (pers.status === 'rejected') {
+                            s2State = 'rejected';
+                            s2Text = 'Data Perusahaan Ditolak';
+                        } else if (pers.status === 'approved' || pers.status === 'verified') {
+                            s2State = 'completed';
+                            s2Text = `Mitra: ${pers.nama_perusahaan || '-'}`;
+                        }
+                    }
+                    
+                    // Step 3: Pelaksanaan
+                    let s3State = 'disabled';
+                    let s3Color = 'blue';
+                    let s3Text = 'Menunggu Pelaksanaan Magang';
+                    if (s2State === 'completed') {
+                        if (!luar || luar.status !== 'verified') {
+                            s3State = 'active';
+                            s3Color = 'blue';
+                            s3Text = 'Sedang Berjalan';
+                        } else {
+                            s3State = 'completed';
+                            s3Text = 'Magang Selesai';
+                        }
+                    }
+                    
+                    // Step 4: Luaran
+                    let s4State = 'disabled';
+                    let s4Color = 'blue';
+                    let s4Text = 'Menunggu Pengunggahan Luaran';
+                    if (s2State === 'completed') {
+                        if (!luar) {
+                            s4State = 'active';
+                            s4Color = 'blue';
+                            s4Text = 'Belum Unggah Luaran';
+                        } else if (luar.status === 'pending') {
+                            s4State = 'active';
+                            s4Color = 'amber';
+                            s4Text = 'Luaran Menunggu Verifikasi';
+                        } else if (luar.status === 'rejected') {
+                            s4State = 'rejected';
+                            s4Text = 'Luaran Ditolak';
+                        } else if (luar.status === 'verified' || luar.status === 'approved') {
+                            s4State = 'completed';
+                            s4Text = 'Luaran Terverifikasi';
+                        }
+                    }
+                    
+                    steps = [
+                        { name: 'Pendaftaran', desc: 'Validasi KRS & KHS', state: s1State, color: reg.status === 'pending' ? 'amber' : 'blue', statusText: s1Text },
+                        { name: 'Mitra Perusahaan', desc: 'Detail Tempat Magang', state: s2State, color: s2Color, statusText: s2Text },
+                        { name: 'Pelaksanaan', desc: 'Logbook & Kegiatan', state: s3State, color: s3Color, statusText: s3Text },
+                        { name: 'Luaran Magang', desc: 'Laporan & Sertifikat', state: s4State, color: s4Color, statusText: s4Text }
+                    ];
+                    
+                    const completed = steps.filter(s => s.state === 'completed').length;
+                    progressPercent = Math.max(0, ((completed - 1) / (steps.length - 1)) * 100);
+                } else {
+                    // KKN
+                    const luarList = statusData.luaran || [];
+                    
+                    // Step 1: Pendaftaran KKN
+                    let s1State = 'completed';
+                    let s1Color = 'purple';
+                    let s1Text = 'Pendaftaran Disetujui';
+                    if (reg.status === 'pending') {
+                        s1State = 'active';
+                        s1Color = 'amber';
+                        s1Text = 'Menunggu Verifikasi Pendaftaran';
+                    } else if (reg.status === 'rejected') {
+                        s1State = 'rejected';
+                        s1Text = 'Pendaftaran Ditolak';
+                    }
+                    
+                    // Step 2: Pelaksanaan KKN
+                    let s2State = 'disabled';
+                    let s2Color = 'purple';
+                    let s2Text = 'Menunggu Pelaksanaan KKN';
+                    if (s1State === 'completed') {
+                        if (reg.status === 'approved') {
+                            s2State = 'active';
+                            s2Color = 'purple';
+                            s2Text = `Sedang Berjalan di Desa ${reg.desa_kkn?.nama_desa || '-'}`;
+                        } else if (reg.status === 'verified') {
+                            s2State = 'completed';
+                            s2Text = `Selesai di Desa ${reg.desa_kkn?.nama_desa || '-'}`;
+                        }
+                    }
+                    
+                    // Step 3: Luaran KKN
+                    let s3State = 'disabled';
+                    let s3Color = 'purple';
+                    let s3Text = 'Belum Unggah Luaran';
+                    
+                    if (s1State === 'completed') {
+                        if (luarList.length === 0) {
+                            s3State = 'active';
+                            s3Color = 'purple';
+                            s3Text = 'Belum Unggah Luaran';
+                        } else if (luarList.some(l => l.status === 'pending')) {
+                            s3State = 'active';
+                            s3Color = 'amber';
+                            s3Text = 'Luaran Menunggu Verifikasi';
+                        } else if (luarList.some(l => l.status === 'rejected')) {
+                            s3State = 'rejected';
+                            s3Text = 'Luaran KKN Ditolak';
+                        } else if (luarList.some(l => l.status === 'verified' || l.status === 'approved') || reg.status === 'verified') {
+                            s3State = 'completed';
+                            s3Text = 'Luaran Terverifikasi';
+                        }
+                    }
+                    
+                    steps = [
+                        { name: 'Pendaftaran', desc: 'Validasi KRS & Berkas', state: s1State, color: reg.status === 'pending' ? 'amber' : 'purple', statusText: s1Text },
+                        { name: 'Pelaksanaan KKN', desc: 'Live-in & Pengabdian', state: s2State, color: s2Color, statusText: s2Text },
+                        { name: 'Luaran KKN', desc: 'Laporan, Poster & Video', state: s3State, color: s3Color, statusText: s3Text }
+                    ];
+                    
+                    const completed = steps.filter(s => s.state === 'completed').length;
+                    progressPercent = Math.max(0, ((completed - 1) / (steps.length - 1)) * 100);
+                }
+
+                const desktopStepsHtml = steps.map((step, idx) => {
+                    const classes = getStepClasses(step.state, step.color);
+                    let icon = '';
+                    if (step.state === 'completed') icon = '<i class="fas fa-check text-xs"></i>';
+                    else if (step.state === 'rejected') icon = '<i class="fas fa-times text-xs"></i>';
+                    else icon = `<span class="text-xs">${idx + 1}</span>`;
+
+                    return `
+                        <div class="flex-1 flex flex-col items-center text-center relative">
+                            <div class="w-8 h-8 rounded-full flex items-center justify-center border-2 ${classes.circle} font-bold z-10 transition-all duration-300">
+                                ${icon}
+                            </div>
+                            <div class="mt-2 px-1">
+                                <p class="text-xs font-semibold ${classes.text}">${step.name}</p>
+                                <p class="text-[9px] leading-tight text-gray-500 mt-0.5">${step.statusText || step.desc}</p>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                const mobileStepsHtml = steps.map((step, idx) => {
+                    const classes = getStepClasses(step.state, step.color);
+                    let icon = '';
+                    if (step.state === 'completed') icon = '<i class="fas fa-check text-xs"></i>';
+                    else if (step.state === 'rejected') icon = '<i class="fas fa-times text-xs"></i>';
+                    else icon = `<span class="text-xs">${idx + 1}</span>`;
+
+                    const isLast = idx === steps.length - 1;
+                    
+                    return `
+                        <div class="flex items-start gap-3 relative">
+                            ${!isLast ? `
+                                <div class="absolute left-[15px] top-8 bottom-0 w-0.5 bg-gray-200"></div>
+                            ` : ''}
+                            <div class="w-8 h-8 rounded-full flex items-center justify-center border-2 ${classes.circle} font-bold z-10 shrink-0">
+                                ${icon}
+                            </div>
+                            <div class="flex-1 pt-0.5 pb-2">
+                                <p class="text-xs font-semibold ${classes.text}">${step.name}</p>
+                                <p class="text-[11px] text-gray-500 mt-0.5">${step.statusText || step.desc}</p>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                const progressBarColor = isMagang ? 'bg-blue-500' : 'bg-purple-500';
+
                 return `
-                    <div class="program-card bg-gradient-to-r ${bgGradient} rounded-lg p-4 border border-gray-200 shadow-sm">
-                        <div class="flex flex-wrap justify-between items-start gap-3">
+                    <div class="program-card bg-gradient-to-r ${bgGradient} rounded-xl p-5 border border-gray-200/80 shadow-md transition duration-300 hover:shadow-lg">
+                        <div class="flex flex-wrap justify-between items-start gap-3 border-b border-gray-200/50 pb-4 mb-4">
                             <div class="flex-1">
                                 <div class="flex flex-wrap items-center gap-2 mb-2">
                                     ${getProgramTypeBadge(program.type)}
                                     <span class="text-xs text-gray-500">
                                         <i class="far fa-calendar-alt mr-1"></i>
-                                        ${new Date(data.created_at || data.tanggal_daftar).toLocaleDateString('id-ID')}
+                                        ${new Date(reg.created_at || reg.tanggal_daftar).toLocaleDateString('id-ID')}
                                     </span>
                                 </div>
-                                <h4 class="font-semibold text-gray-800 mb-1">
-                                    ${isMagang ? (data.program_studi_input || 'Program Magang') : (data.desa_kkn?.nama_desa || 'Program KKN')}
+                                <h4 class="font-semibold text-gray-800 text-lg mb-1">
+                                    ${isMagang ? (reg.program_studi_input || 'Program Magang') : (reg.desa_kkn?.nama_desa ? `Desa ${reg.desa_kkn.nama_desa}` : 'Program KKN')}
                                 </h4>
                                 ${isMagang ? `
-                                    <p class="text-gray-500 text-sm">${data.nama_perusahaan || '-'} | Semester ${data.semester || '-'}</p>
+                                    <p class="text-gray-500 text-sm"><i class="fas fa-university mr-1 text-gray-400"></i>Semester ${reg.semester || '-'}</p>
                                 ` : `
-                                    <p class="text-gray-500 text-sm">${data.desa_kkn?.kecamatan || '-'}, ${data.desa_kkn?.kabupaten || '-'}</p>
+                                    <p class="text-gray-500 text-sm"><i class="fas fa-map-marker-alt mr-1 text-gray-400"></i>${reg.desa_kkn?.kecamatan || '-'}, ${reg.desa_kkn?.kabupaten || '-'}</p>
                                 `}
                             </div>
                             <div class="flex flex-col items-end gap-2">
-                                ${getStatusBadge(data.status)}
-                                ${data.catatan && data.status === 'rejected' ? `
-                                    <div class="mt-1 p-2 bg-red-50 rounded-lg max-w-xs">
-                                        <p class="text-xs text-red-600"><i class="fas fa-info-circle mr-1"></i>${data.catatan}</p>
+                                ${getStatusBadge(reg.status)}
+                                ${reg.catatan && reg.status === 'rejected' ? `
+                                    <div class="mt-1 p-2 bg-red-50 rounded-lg max-w-xs border border-red-100">
+                                        <p class="text-xs text-red-600"><i class="fas fa-info-circle mr-1"></i>${reg.catatan}</p>
                                     </div>
                                 ` : ''}
-                                <div class="flex gap-3 mt-1">
-                                    <button onclick="viewDetail('${program.type}', '${data.id_registrasi}')" class="text-sm text-blue-600 hover:text-blue-800">
-                                        <i class="fas fa-eye mr-1"></i> Detail
-                                    </button>
-                                    ${data.status === 'rejected' ? `
-                                        <button onclick="daftarUlang('${program.type}')" class="text-sm text-green-600 hover:text-green-800">
-                                            <i class="fas fa-redo mr-1"></i> Daftar Ulang
-                                        </button>
-                                    ` : ''}
+                            </div>
+                        </div>
+
+                        <!-- Progress Section -->
+                        <div class="mb-4">
+                            <p class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-4 flex items-center gap-1.5">
+                                <i class="fas fa-tasks text-gray-400 text-[10px]"></i>
+                                Progress Program
+                            </p>
+                            
+                            <!-- Desktop Stepper (Horizontal) -->
+                            <div class="hidden md:block relative my-6 px-10">
+                                <div class="absolute left-16 right-16 top-4 h-0.5 bg-gray-200 z-0">
+                                    <div class="h-full ${progressBarColor} transition-all duration-500" style="width: ${progressPercent}%"></div>
                                 </div>
+                                <div class="flex justify-between items-start relative z-10">
+                                    ${desktopStepsHtml}
+                                </div>
+                            </div>
+
+                            <!-- Mobile Stepper (Vertical) -->
+                            <div class="block md:hidden space-y-4 my-4 pl-2">
+                                ${mobileStepsHtml}
+                            </div>
+                        </div>
+
+                        <!-- Footer Actions -->
+                        <div class="flex justify-between items-center pt-3 border-t border-gray-200/50 mt-4">
+                            <div>
+                                ${reg.status === 'rejected' ? `
+                                    <button onclick="daftarUlang('${program.type}')" class="px-4 py-1.5 bg-green-500 text-white rounded-lg text-xs font-semibold hover:bg-green-600 transition shadow-sm">
+                                        <i class="fas fa-redo mr-1"></i> Daftar Ulang
+                                    </button>
+                                ` : `
+                                    <button onclick="viewDetail('${program.type}', '${isMagang ? (statusData.perusahaan?.id_registrasi || reg.id_registrasi) : reg.id_registrasi}')" class="px-4 py-1.5 ${isMagang ? 'bg-blue-500 hover:bg-blue-600' : 'bg-purple-500 hover:bg-purple-600'} text-white rounded-lg text-xs font-semibold transition shadow-sm">
+                                        <i class="fas fa-arrow-alt-circle-right mr-1"></i> Masuk Program
+                                    </button>
+                                `}
                             </div>
                         </div>
                     </div>
@@ -763,8 +1036,8 @@
         }
 
         window.viewDetail = function(type, id) {
-            if (type === 'magang') window.location.href = `mahasiswa-magang-detail.html?id=${id}`;
-            else window.location.href = `mahasiswa-kkn-detail.html?id=${id}`;
+            if (type === 'magang') window.location.href = 'mahasiswa-magang.html';
+            else window.location.href = 'mahasiswa-kkn.html';
         };
 
         window.daftarUlang = function(type) {

@@ -423,6 +423,21 @@ async getProgramStudi(req, res, next) {
             next(error);
         }
     }
+
+    /**
+     * Mendapatkan data registrasi KKN mahasiswa
+     */
+    async getRegistrasi(req, res, next) {
+        try {
+            const userId = req.user.id_user;
+            const registrasi = await kknService.getRegistrasi(userId);
+            return res.status(200).json(
+                formatResponse('success', 'Data registrasi berhasil didapatkan', registrasi)
+            );
+        } catch (error) {
+            next(error);
+        }
+    }
 }
 
 module.exports = new KKNController();

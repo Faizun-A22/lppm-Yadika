@@ -666,6 +666,38 @@ async getProgramStudi() {
         return { status: 'pending', text: 'Dalam Proses' };
     }
 
+    /**
+     * Mendapatkan data registrasi KKN terbaru mahasiswa
+     */
+    async getRegistrasi(id_user) {
+        try {
+            const { data, error } = await supabase
+                .from(this.tableRegistrasi)
+                .select(`
+                    *,
+                    desa_kkn (
+                        id_desa,
+                        nama_desa,
+                        kabupaten,
+                        kecamatan
+                    ),
+                    program_studi (
+                        nama_prodi
+                    )
+                `)
+                .eq('id_user', id_user)
+                .order('created_at', { ascending: false })
+                .limit(1)
+                .maybeSingle();
+
+            if (error) throw error;
+            return data;
+        } catch (error) {
+            console.error('Error in getRegistrasi:', error);
+            throw error;
+        }
+    }
+
     getRegistrasiDescription(registrasi) {
         if (!registrasi) return 'Belum melakukan pendaftaran KKN';
         
