@@ -562,7 +562,8 @@ async getProgramStudi() {
             const updateData = {
                 judul_kegiatan: data.judul_kegiatan,
                 link_video: data.link_video,
-                file_poster: data.link_poster,
+                link_poster: data.link_poster,
+                link_foto: data.link_foto,
                 keterangan: data.keterangan,
                 updated_at: new Date()
             };

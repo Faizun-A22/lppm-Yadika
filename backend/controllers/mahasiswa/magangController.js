@@ -295,9 +295,9 @@ async createPerusahaan(req, res, next) {
                 mou_file: files?.mou_file ? files.mou_file[0] : null,
                 sertifikat: files?.sertifikat ? files.sertifikat[0] : null,
                 logbook: files?.logbook ? files.logbook[0] : null,
-                poster: files?.poster ? files.poster[0] : null,
-                laporan: files?.laporan ? files.laporan[0] : null,
-                foto_kegiatan: files?.foto_kegiatan || []
+                poster: files?.poster ? files.poster[0] : req.body.poster || null,
+                laporan: files?.laporan ? files.laporan[0] : req.body.laporan || null,
+                foto_kegiatan: files?.foto_kegiatan || req.body.foto_kegiatan || []
             };
             
             const luaran = await magangService.createLuaran(userId, data, perusahaan[0]);

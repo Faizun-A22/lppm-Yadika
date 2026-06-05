@@ -724,8 +724,10 @@ exports.downloadDataPribadi = async (req, res) => {
         const { data: riwayat } = await supabase
             .from('pendaftar_kegiatan')
             .select(`
-                kegiatan:nama_kegiatan,
-                jenis_kegiatan,
+                kegiatan:kegiatan!pendaftar_kegiatan_id_kegiatan_fkey (
+                    nama_kegiatan,
+                    jenis_kegiatan
+                ),
                 status_pendaftaran,
                 tanggal_daftar,
                 catatan
@@ -756,7 +758,13 @@ exports.downloadDataPribadi = async (req, res) => {
                 jenjang: profile.program_studi?.jenjang,
                 fakultas: profile.program_studi?.fakultas?.nama_fakultas
             },
-            riwayat_pendaftaran: riwayat || [],
+            riwayat_pendaftaran: riwayat?.map(p => ({
+                program: p.kegiatan?.nama_kegiatan,
+                type: p.kegiatan?.jenis_kegiatan,
+                date: p.tanggal_daftar,
+                status: p.status_pendaftaran,
+                catatan: p.catatan
+            })) || [],
             dokumen: dokumen || [],
             aktivitas_terbaru: log || [],
             downloaded_at: new Date().toISOString()

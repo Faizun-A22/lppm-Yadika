@@ -347,12 +347,18 @@ class RepositoryService {
 
             if (error) {
                 // Fallback: update manually if RPC doesn't exist
-                const { error: updateError } = await supabase
+                const { data: doc } = await supabase
                     .from(this.tableName)
-                    .update({ views: supabase.raw('views + 1') })
-                    .eq('id_dokumen', id);
-                
-                if (updateError) throw updateError;
+                    .select('views')
+                    .eq('id_dokumen', id)
+                    .single();
+                if (doc) {
+                    const { error: updateError } = await supabase
+                        .from(this.tableName)
+                        .update({ views: (doc.views || 0) + 1 })
+                        .eq('id_dokumen', id);
+                    if (updateError) throw updateError;
+                }
             }
         } catch (error) {
             console.error('Error in incrementViews:', error);
@@ -370,12 +376,18 @@ class RepositoryService {
 
             if (error) {
                 // Fallback: update manually if RPC doesn't exist
-                const { error: updateError } = await supabase
+                const { data: doc } = await supabase
                     .from(this.tableName)
-                    .update({ downloads: supabase.raw('downloads + 1') })
-                    .eq('id_dokumen', id);
-                
-                if (updateError) throw updateError;
+                    .select('downloads')
+                    .eq('id_dokumen', id)
+                    .single();
+                if (doc) {
+                    const { error: updateError } = await supabase
+                        .from(this.tableName)
+                        .update({ downloads: (doc.downloads || 0) + 1 })
+                        .eq('id_dokumen', id);
+                    if (updateError) throw updateError;
+                }
             }
         } catch (error) {
             console.error('Error in incrementDownloads:', error);
