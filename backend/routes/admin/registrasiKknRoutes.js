@@ -12,5 +12,4 @@ router.get('/', registrasiKknController.getAllRegistrasi);
 router.get('/:id', registrasiKknController.getRegistrasiById);
 router.put('/:id/status', registrasiKknController.updateStatus);
 router.delete('/:id', registrasiKknController.deleteRegistrasi);
-router.delete('/:id', registrasiKknController.deleteRegistrasi);
 module.exports = router;

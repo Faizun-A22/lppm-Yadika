@@ -619,7 +619,7 @@
                         <div class="table-container overflow-x-auto">
                             <table class="w-full min-w-[700px]">
                                 <thead class="bg-gray-50"><tr><th class="px-4 py-3 text-left text-xs font-medium uppercase">NIM</th><th class="px-4 py-3 text-left text-xs font-medium uppercase">Nama</th><th class="px-4 py-3 text-left text-xs font-medium uppercase">Desa</th><th class="px-4 py-3 text-left text-xs font-medium uppercase">Status</th><th class="px-4 py-3 text-center text-xs font-medium uppercase">Aksi</th></tr></thead>
-                                <tbody id="kknRegistrationTableBody" class="divide-y divide-gray-200"><table><td colspan="5" class="text-center py-4 text-gray-500">Memuat data...</td></tr></tbody>
+                                <tbody id="kknRegistrationTableBody" class="divide-y divide-gray-200"><tr><td colspan="5" class="text-center py-4 text-gray-500">Memuat data...</td></tr></tbody>
                             </table>
                         </div>
                     </div>
@@ -811,6 +811,34 @@
         </div>
     </div>
 
+    <!-- Modal Verifikasi Luaran KKN (BUG-01 fix) -->
+    <div id="verificationModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50 flex items-center justify-center">
+        <div class="relative bg-white rounded-lg shadow-xl w-11/12 md:w-3/4 lg:w-1/2">
+            <div class="flex justify-between items-center p-4 md:p-6 border-b">
+                <h3 class="text-lg md:text-xl font-bold text-gray-900">Verifikasi Luaran KKN</h3>
+                <button onclick="closeVerificationModal()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <form id="verificationForm" class="p-4 md:p-6" onsubmit="submitVerification(event)">
+                <input type="hidden" id="verificationId">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Status Verifikasi</label>
+                    <select id="verificationStatus" class="w-full px-3 py-2 border rounded-lg" required>
+                        <option value="approved">Disetujui</option>
+                        <option value="rejected">Ditolak</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Catatan</label>
+                    <textarea id="verificationCatatan" rows="3" class="w-full px-3 py-2 border rounded-lg" placeholder="Berikan catatan jika diperlukan..."></textarea>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeVerificationModal()" class="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-gradient-to-r from-green-500 to-blue-600 text-white rounded-lg hover:shadow-lg">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
         // Initialize AOS
@@ -907,8 +935,11 @@
             document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
             document.getElementById(sectionId).classList.add('active');
             document.querySelectorAll('.section-tab').forEach(t => t.classList.remove('active'));
-            const tabs = document.querySelectorAll('.section-tab');
-            for (let tab of tabs) { if (tab.textContent.trim().toLowerCase().includes(sectionId.replace('-section', ''))) { tab.classList.add('active'); break; } }
+            // BUG-14 fix: gunakan onclick attribute untuk matching, bukan text content (lebih reliable)
+            document.querySelectorAll('.section-tab').forEach(tab => {
+                const onclickAttr = tab.getAttribute('onclick') || '';
+                if (onclickAttr.includes("'" + sectionId + "'")) { tab.classList.add('active'); }
+            });
             if (sectionId === 'program-section') loadProgramData();
             else if (sectionId === 'desa-section') loadDesaData();
             else if (sectionId === 'perusahaan-section') loadPerusahaanData();
@@ -932,7 +963,7 @@
 
         function renderProgramTable(programs) {
             const tbody = document.getElementById('programTableBody');
-            if (!programs || programs.length === 0) { tbody.innerHTML = '<tr><td colspan="7" class="text-center py-8">Tidak ada数据</td></tr>'; return; }
+            if (!programs || programs.length === 0) { tbody.innerHTML = '<tr><td colspan="7" class="text-center py-8 text-gray-500">Tidak ada data</td></tr>'; return; }
             tbody.innerHTML = programs.map(p => `<tr><td class="px-4 md:px-6 py-4 text-sm">${p.nama_program}</td><td class="px-4 md:px-6 py-4"><span class="px-2 py-1 text-xs rounded-full ${p.jenis === 'magang' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}">${p.jenis === 'magang' ? 'Magang' : 'KKN'}</span></td><td class="px-4 md:px-6 py-4 text-sm">${p.periode || '-'}</td><td class="px-4 md:px-6 py-4 text-sm">${p.kuota}</td><td class="px-4 md:px-6 py-4 text-sm">${p.pendaftar || 0}</td><td class="px-4 md:px-6 py-4"><span class="px-2 py-1 text-xs rounded-full ${p.status === 'aktif' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">${p.status === 'aktif' ? 'Aktif' : 'Tidak Aktif'}</span></td><td class="px-4 md:px-6 py-4 text-center"><button onclick="editProgram('${p.id_program}')" class="text-green-600 mr-2"><i class="fas fa-edit"></i></button><button onclick="deleteProgram('${p.id_program}')" class="text-red-600"><i class="fas fa-trash"></i></button></td></tr>`).join('');
         }
 
@@ -945,10 +976,30 @@
 
         // DESA FUNCTIONS
         let currentDesaPage = 1;
-        async function loadDesaData() { showLoading(); const search = document.getElementById('searchDesa').value; const status = document.getElementById('filterStatusDesa').value; try { const response = await fetch(`${API_BASE_URL}/admin/desa-kkn?page=${currentDesaPage}&limit=10&search=${search}&status=${status}`, { headers: getHeaders() }); const result = await response.json(); if (result.success) renderDesaTable(result.data); } catch (error) { showAlert('Gagal memuat数据', 'error'); } finally { hideLoading(); } }
+        async function loadDesaData() {
+            showLoading();
+            const search = document.getElementById('searchDesa').value;
+            const status = document.getElementById('filterStatusDesa').value;
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin/desa-kkn?page=${currentDesaPage}&limit=10&search=${search}&status=${status}`, { headers: getHeaders() });
+                const result = await response.json();
+                if (result.success) {
+                    renderDesaTable(result.data);
+                    // BUG-11 fix: update pagination info
+                    if (result.pagination) {
+                        const pg = result.pagination;
+                        document.getElementById('desaPaginationInfo').textContent =
+                            `Menampilkan ${result.data.length} dari ${pg.totalItems} data`;
+                        document.getElementById('desaCurrentPage').textContent = currentDesaPage;
+                        document.querySelector('[onclick="changeDesaPage(\'prev\')"]').disabled = currentDesaPage <= 1;
+                        document.querySelector('[onclick="changeDesaPage(\'next\')"]').disabled = currentDesaPage >= pg.totalPages;
+                    }
+                }
+            } catch (error) { showAlert('Gagal memuat data desa', 'error'); } finally { hideLoading(); }
+        }
         function renderDesaTable(desaList) {
             const tbody = document.getElementById('desaTableBody');
-            if (!desaList || desaList.length === 0) { tbody.innerHTML = '<tr><td colspan="8" class="text-center py-8">Tidak ada数据</td></tr>'; return; }
+            if (!desaList || desaList.length === 0) { tbody.innerHTML = '<tr><td colspan="8" class="text-center py-8 text-gray-500">Tidak ada data</td></tr>'; return; }
             tbody.innerHTML = desaList.map(d => `<tr><td class="px-4 py-3">${d.nama_desa}</td><td class="px-4 py-3">${d.kecamatan || '-'}</td><td class="px-4 py-3">${d.kabupaten}</td><td class="px-4 py-3">${d.kuota}</td><td class="px-4 py-3"><span class="${d.kuota_terisi >= d.kuota ? 'text-red-600' : 'text-green-600'}">${d.kuota_terisi || 0}/${d.kuota}</span></td><td class="px-4 py-3">${d.nama_pembimbing_lapangan || '-'}</td><td class="px-4 py-3"><span class="px-2 py-1 text-xs rounded-full ${d.status === 'aktif' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">${d.status === 'aktif' ? 'Aktif' : 'Nonaktif'}</span></td><td class="px-4 py-3 text-center"><button onclick="viewDesaDetail('${d.id_desa}')" class="text-blue-600 mr-2"><i class="fas fa-eye"></i></button><button onclick="editDesa('${d.id_desa}')" class="text-green-600 mr-2"><i class="fas fa-edit"></i></button><button onclick="deleteDesa('${d.id_desa}')" class="text-red-600"><i class="fas fa-trash"></i></button></td></tr>`).join('');
         }
         function openAddDesaModal() { document.getElementById('desaForm').reset(); document.getElementById('desaId').value = ''; document.getElementById('desaModal').classList.remove('hidden'); }
@@ -961,11 +1012,12 @@
 
         // PERUSAHAAN FUNCTIONS
         let currentPerusahaanPage = 1;
-        async function loadPerusahaanData() { showLoading(); const search = document.getElementById('searchPerusahaan').value; const status = document.getElementById('filterStatusPerusahaan').value; try { const response = await fetch(`${API_BASE_URL}/admin/magang/perusahaan?page=${currentPerusahaanPage}&limit=10&search=${search}&status=${status}`, { headers: getHeaders() }); const result = await response.json(); if (result.success) renderPerusahaanTable(result.data); } catch (error) { showAlert('Gagal memuat', 'error'); } finally { hideLoading(); } }
+        async function loadPerusahaanData() { showLoading(); const search = document.getElementById('searchPerusahaan').value; const status = document.getElementById('filterStatusPerusahaan').value; try { const response = await fetch(`${API_BASE_URL}/admin/magang/perusahaan?page=${currentPerusahaanPage}&limit=10&search=${search}&status=${status}`, { headers: getHeaders() }); const result = await response.json(); if (result.success) renderPerusahaanTable(result.data); } catch (error) { showAlert('Gagal memuat data perusahaan', 'error'); } finally { hideLoading(); } }
         function renderPerusahaanTable(data) {
             const tbody = document.getElementById('perusahaanTableBody');
-            if (!data || data.length === 0) { tbody.innerHTML = '<tr><td colspan="7" class="text-center py-8">Tidak ada数据</td></tr>'; return; }
-            tbody.innerHTML = data.map((p, i) => `<tr><td class="px-4 py-3">${i+1}</td><td class="px-4 py-3">${p.nim || '-'}</td><td class="px-4 py-3">${p.nama_lengkap || '-'}</td><td class="px-4 py-3 font-medium">${p.nama_perusahaan}</td><td class="px-4 py-3">${p.bidang_magang}</table><td class="px-4 py-3"><span class="${getStatusBadgeClass(p.status)}">${getStatusText(p.status)}</span></td><td class="px-4 py-3 text-center"><button onclick="viewPerusahaanDetail('${p.id_perusahaan}')" class="text-blue-600 mr-2"><i class="fas fa-eye"></i></button><button onclick="openVerifikasiPerusahaanModal('${p.id_perusahaan}', '${p.status}')" class="text-green-600"><i class="fas fa-check-circle"></i></button></td></tr>`).join('');
+            if (!data || data.length === 0) { tbody.innerHTML = '<tr><td colspan="7" class="text-center py-8 text-gray-500">Tidak ada data</td></tr>'; return; }
+            // BUG-02 fix: ganti </table> yang salah menjadi </td>
+            tbody.innerHTML = data.map((p, i) => `<tr><td class="px-4 py-3">${i+1}</td><td class="px-4 py-3">${p.nim || '-'}</td><td class="px-4 py-3">${p.nama_lengkap || '-'}</td><td class="px-4 py-3 font-medium">${p.nama_perusahaan}</td><td class="px-4 py-3">${p.bidang_magang}</td><td class="px-4 py-3"><span class="${getStatusBadgeClass(p.status)}">${getStatusText(p.status)}</span></td><td class="px-4 py-3 text-center"><button onclick="viewPerusahaanDetail('${p.id_perusahaan}')" class="text-blue-600 mr-2"><i class="fas fa-eye"></i></button><button onclick="openVerifikasiPerusahaanModal('${p.id_perusahaan}', '${p.status}')" class="text-green-600"><i class="fas fa-check-circle"></i></button></td></tr>`).join('');
         }
         function changePerusahaanPage(direction) { if (direction === 'prev' && currentPerusahaanPage > 1) currentPerusahaanPage--; else if (direction === 'next') currentPerusahaanPage++; loadPerusahaanData(); }
         async function viewPerusahaanDetail(id) { showLoading(); try { const response = await fetch(`${API_BASE_URL}/admin/magang/perusahaan/${id}`, { headers: getHeaders() }); const result = await response.json(); if (result.success) { const d = result.data; document.getElementById('detailModalContent').innerHTML = `<div class="space-y-4"><div><strong>NIM:</strong> ${d.nim}</div><div><strong>Nama:</strong> ${d.nama_lengkap}</div><div><strong>Perusahaan:</strong> ${d.nama_perusahaan}</div><div><strong>Bidang:</strong> ${d.bidang_magang}</div><div><strong>Posisi:</strong> ${d.posisi}</div><div><strong>Durasi:</strong> ${d.durasi} bulan</div><div><strong>Tanggal Mulai:</strong> ${formatDate(d.tanggal_mulai)}</div><div><strong>Tanggal Selesai:</strong> ${formatDate(d.tanggal_selesai)}</div><div><strong>Status:</strong> <span class="${getStatusBadgeClass(d.status)}">${getStatusText(d.status)}</span></div></div>`; document.getElementById('detailModal').classList.remove('hidden'); } } catch (error) { showAlert('Gagal memuat detail', 'error'); } finally { hideLoading(); } }
@@ -1179,13 +1231,47 @@
         // LUARAN FUNCTIONS
         async function loadLuaranData() { showLoading(); const status = document.getElementById('filterStatusLuaran').value; const search = document.getElementById('searchLuaran').value; try { const response = await fetch(`${API_BASE_URL}/admin/luaran-kkn?status=${status}&search=${search}&limit=100`, { headers: getHeaders() }); const result = await response.json(); if (result.success) renderLuaranTable(result.data); } catch (error) { showAlert('Gagal memuat', 'error'); } finally { hideLoading(); } }
         function renderLuaranTable(data) { const tbody = document.getElementById('luaranTableBody'); if (!data || data.length === 0) { tbody.innerHTML = '<tr><td colspan="7" class="text-center py-8">Tidak ada data</td></tr>'; return; } tbody.innerHTML = data.map((d, i) => `<tr class="hover:bg-gray-50"><td class="px-4 py-3">${i+1}</td><td class="px-4 py-3">${d.nim}</td><td class="px-4 py-3">${d.nama_lengkap}</td><td class="px-4 py-3">${d.desa_name}</td><td class="px-4 py-3">${d.judul_kegiatan}</td><td class="px-4 py-3"><span class="${getStatusBadgeClass(d.status)}">${getStatusText(d.status)}</span></td><td class="px-4 py-3 text-center"><button onclick="openVerificationModal('${d.id_luaran}')" class="text-green-600"><i class="fas fa-check-circle"></i></button></td></tr>`).join(''); }
-        function openVerificationModal(id) { document.getElementById('verificationId').value = id; document.getElementById('verificationStatus').value = 'approved'; document.getElementById('verificationForm')?.reset(); document.getElementById('verificationModal')?.classList.remove('hidden'); }
+        function openVerificationModal(id) {
+            // BUG-01 fix: reset dulu, lalu set id setelah reset (reset bisa clear hidden input)
+            document.getElementById('verificationForm')?.reset();
+            document.getElementById('verificationId').value = id;
+            document.getElementById('verificationStatus').value = 'approved';
+            document.getElementById('verificationModal')?.classList.remove('hidden');
+        }
         function closeVerificationModal() { document.getElementById('verificationModal')?.classList.add('hidden'); }
+        async function submitVerification(event) {
+            event.preventDefault();
+            showLoading();
+            const id = document.getElementById('verificationId').value;
+            const data = {
+                status: document.getElementById('verificationStatus').value,
+                catatan: document.getElementById('verificationCatatan').value
+            };
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin/luaran-kkn/${id}/verifikasi`, {
+                    method: 'PUT',
+                    headers: getHeaders(),
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                if (result.success) {
+                    showAlert('Verifikasi luaran KKN berhasil');
+                    closeVerificationModal();
+                    loadLuaranData();
+                } else {
+                    showAlert(result.message || 'Gagal verifikasi luaran', 'error');
+                }
+            } catch (error) {
+                showAlert('Gagal verifikasi luaran', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
 
         // LUARAN MAGANG FUNCTIONS
         let currentLuaranMagangPage = 1;
         async function loadLuaranMagangData() { showLoading(); const status = document.getElementById('filterStatusLuaranMagang').value; const search = document.getElementById('searchLuaranMagang').value; try { const response = await fetch(`${API_BASE_URL}/admin/magang/luaran?page=${currentLuaranMagangPage}&limit=10&status=${status}&search=${search}`, { headers: getHeaders() }); const result = await response.json(); if (result.success) renderLuaranMagangTable(result.data); } catch (error) { showAlert('Gagal memuat', 'error'); } finally { hideLoading(); } }
-        function renderLuaranMagangTable(data) { const tbody = document.getElementById('luaranMagangTableBody'); if (!data || data.length === 0) { tbody.innerHTML = '<tr><td colspan="6" class="text-center py-8">Tidak ada数据</td></tr>'; return; } tbody.innerHTML = data.map((d, i) => `<tr><td class="px-4 py-3">${((currentLuaranMagangPage-1)*10)+i+1}</td><td class="px-4 py-3">${d.nim || '-'}</td><td class="px-4 py-3">${d.nama_lengkap || '-'}</td><td class="px-4 py-3">${d.nama_perusahaan || '-'}</td><td class="px-4 py-3"><span class="${getStatusBadgeClass(d.status)}">${getStatusText(d.status)}</span></td><td class="px-4 py-3 text-center"><button onclick="viewLuaranMagangDetail('${d.id_luaran}')" class="text-blue-600 mr-2"><i class="fas fa-eye"></i></button><button onclick="openVerifikasiLuaranMagangModal('${d.id_luaran}', '${d.status}')" class="text-green-600"><i class="fas fa-check-circle"></i></button></td></tr>`).join(''); }
+        function renderLuaranMagangTable(data) { const tbody = document.getElementById('luaranMagangTableBody'); if (!data || data.length === 0) { tbody.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-gray-500">Tidak ada data</td></tr>'; return; } tbody.innerHTML = data.map((d, i) => `<tr><td class="px-4 py-3">${((currentLuaranMagangPage-1)*10)+i+1}</td><td class="px-4 py-3">${d.nim || '-'}</td><td class="px-4 py-3">${d.nama_lengkap || '-'}</td><td class="px-4 py-3">${d.nama_perusahaan || '-'}</td><td class="px-4 py-3"><span class="${getStatusBadgeClass(d.status)}">${getStatusText(d.status)}</span></td><td class="px-4 py-3 text-center"><button onclick="viewLuaranMagangDetail('${d.id_luaran}')" class="text-blue-600 mr-2"><i class="fas fa-eye"></i></button><button onclick="openVerifikasiLuaranMagangModal('${d.id_luaran}', '${d.status}')" class="text-green-600"><i class="fas fa-check-circle"></i></button></td></tr>`).join(''); }
         function changeLuaranMagangPage(direction) { if (direction === 'prev' && currentLuaranMagangPage > 1) currentLuaranMagangPage--; else if (direction === 'next') currentLuaranMagangPage++; loadLuaranMagangData(); }
         async function viewLuaranMagangDetail(id) { showLoading(); try { const response = await fetch(`${API_BASE_URL}/admin/magang/luaran/${id}`, { headers: getHeaders() }); const result = await response.json(); if (result.success) { const d = result.data; document.getElementById('detailModalContent').innerHTML = `<div><strong>NIM:</strong> ${d.nim}</div><div><strong>Nama:</strong> ${d.nama_lengkap}</div><div><strong>Perusahaan:</strong> ${d.nama_perusahaan}</div><div><strong>Judul Proyek:</strong> ${d.judul_proyek}</div><div><strong>Status:</strong> <span class="${getStatusBadgeClass(d.status)}">${getStatusText(d.status)}</span></div>`; document.getElementById('detailModal').classList.remove('hidden'); } } catch (error) { showAlert('Gagal memuat detail', 'error'); } finally { hideLoading(); } }
         function openVerifikasiLuaranMagangModal(id, status) { document.getElementById('verifikasiLuaranMagangId').value = id; document.getElementById('verifikasiLuaranMagangStatus').value = status; document.getElementById('verifikasiLuaranMagangModal').classList.remove('hidden'); }

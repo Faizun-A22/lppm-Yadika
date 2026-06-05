@@ -21,7 +21,20 @@ const luaranKknController = {
                 `, { count: 'exact' });
 
             if (desa) {
-                query = query.eq('registrasi_kkn.id_desa', desa);
+                // Subquery: ambil id_registrasi yang sesuai dengan desa
+                const { data: registrasiDesa } = await supabase
+                    .from('registrasi_kkn')
+                    .select('id_registrasi')
+                    .eq('id_desa', desa);
+                const registrasiIds = registrasiDesa?.map(r => r.id_registrasi) || [];
+                if (registrasiIds.length > 0) {
+                    query = query.in('id_registrasi', registrasiIds);
+                } else {
+                    // Tidak ada registrasi untuk desa ini
+                    return res.status(200).json(
+                        formatPaginatedResponse([], page, limit, 0, 'Data luaran berhasil diambil')
+                    );
+                }
             }
 
             if (status) {
@@ -74,7 +87,7 @@ const luaranKknController = {
     async verifikasiLuaran(req, res) {
         try {
             const { id } = req.params;
-            const { status, notes } = req.body;
+            const { status, catatan } = req.body;
 
             if (!['approved', 'rejected'].includes(status)) {
                 return res.status(400).json(formatError('Status verifikasi tidak valid'));
@@ -82,7 +95,7 @@ const luaranKknController = {
 
             const updateData = {
                 status,
-                catatan_review: notes || null,
+                catatan_review: catatan !== undefined ? (catatan || null) : null,
                 updated_at: new Date()
             };
 

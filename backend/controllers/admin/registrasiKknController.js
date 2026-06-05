@@ -171,7 +171,7 @@ const registrasiKknController = {
             // Prepare update data
             const updateData = {
                 status: status,
-                catatan: catatan || existing.catatan || null,
+                catatan: catatan !== undefined ? (catatan.trim() !== '' ? catatan : null) : (existing.catatan || null),
                 updated_at: new Date().toISOString()
             };
 

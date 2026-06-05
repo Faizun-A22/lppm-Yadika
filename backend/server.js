@@ -88,7 +88,6 @@ app.use('/api/admin/luaran-kkn', luaranKknRoutes);
 app.use('/api/mahasiswa/kkn', mahasiswaKKNRoutes);
 app.use('/api/admin/penelitian', penelitianRoutes);
 app.use('/api/dosen/penelitian', dosenPenelitianRoutes);
-app.use('/api/dosen/penelitian', dosenPenelitianRoutes);
 app.use('/api/mahasiswa', mahasiswaFakultasRoutes);
 app.use('/api/admin/magang/perusahaan', perusahaanMagangRoutes);
 app.use('/api/admin/magang/luaran', magangLuaranRoutes);

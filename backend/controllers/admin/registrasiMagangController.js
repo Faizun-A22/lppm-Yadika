@@ -7,6 +7,9 @@ const registrasiMagangController = {
         try {
             const { page = 1, limit = 10, search = '', status = '' } = req.query;
             
+            const pageNum = parseInt(page);
+            const limitNum = parseInt(limit);
+
             let query = supabase
                 .from('registrasi_magang')
                 .select(`
@@ -25,8 +28,8 @@ const registrasiMagangController = {
                 query = query.eq('status', status);
             }
 
-            const from = (page - 1) * limit;
-            const to = from + limit - 1;
+            const from = (pageNum - 1) * limitNum;
+            const to = from + limitNum - 1;
 
             const { data, error, count } = await query
                 .order('created_at', { ascending: false })
@@ -37,8 +40,8 @@ const registrasiMagangController = {
             return res.status(200).json(
                 formatPaginatedResponse(
                     data || [],
-                    page,
-                    limit,
+                    pageNum,
+                    limitNum,
                     count || 0,
                     'Data registrasi Magang berhasil diambil'
                 )

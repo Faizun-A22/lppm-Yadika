@@ -14,9 +14,21 @@ router.use(authorizeRoles('admin'));
 router.get('/', async (req, res) => {
     try {
         const { page = 1, limit = 10, status, search } = req.query;
-        const offset = (parseInt(page) - 1) * parseInt(limit);
+        const pageNum = parseInt(page);
+        const limitNum = parseInt(limit);
+        const offset = (pageNum - 1) * limitNum;
         
-        // Ambil data luaran dulu
+        // BUG-07 fix: Jika ada search, ambil id_user yang cocok dulu dari tabel users
+        let matchingUserIds = [];
+        if (search && search !== '') {
+            const { data: matchingUsers } = await supabase
+                .from('users')
+                .select('id_user')
+                .or(`nim.ilike.%${search}%,nama_lengkap.ilike.%${search}%`);
+            matchingUserIds = matchingUsers?.map(u => u.id_user) || [];
+        }
+        
+        // Build query dengan filter search di level database (sebelum pagination)
         let luaranQuery = supabase
             .from('magang_luaran')
             .select('*', { count: 'exact' });
@@ -25,8 +37,20 @@ router.get('/', async (req, res) => {
             luaranQuery = luaranQuery.eq('status', status);
         }
         
+        // Apply search filter di database, bukan manual setelah fetch
+        if (search && search !== '') {
+            if (matchingUserIds.length > 0) {
+                luaranQuery = luaranQuery.or(
+                    `judul_proyek.ilike.%${search}%,id_user.in.(${matchingUserIds.join(',')})`
+                );
+            } else {
+                // Tidak ada user cocok, hanya filter berdasarkan judul_proyek
+                luaranQuery = luaranQuery.ilike('judul_proyek', `%${search}%`);
+            }
+        }
+        
         const { data: luaranList, error: luaranError, count } = await luaranQuery
-            .range(offset, offset + parseInt(limit) - 1)
+            .range(offset, offset + limitNum - 1)
             .order('created_at', { ascending: false });
         
         if (luaranError) throw luaranError;
@@ -90,25 +114,14 @@ router.get('/', async (req, res) => {
             });
         }
         
-        // Filter search manual
-        let finalData = formattedData;
-        if (search && search !== '') {
-            const searchLower = search.toLowerCase();
-            finalData = formattedData.filter(item => 
-                item.nim?.toLowerCase().includes(searchLower) ||
-                item.judul_proyek?.toLowerCase().includes(searchLower) ||
-                item.nama_lengkap?.toLowerCase().includes(searchLower)
-            );
-        }
-        
         res.json({
             success: true,
-            data: finalData,
+            data: formattedData,
             pagination: {
-                currentPage: parseInt(page),
-                itemsPerPage: parseInt(limit),
-                totalItems: count || finalData.length,
-                totalPages: Math.ceil((count || finalData.length) / parseInt(limit))
+                currentPage: pageNum,
+                itemsPerPage: limitNum,
+                totalItems: count || 0,
+                totalPages: Math.ceil((count || 0) / limitNum)
             }
         });
     } catch (error) {
@@ -240,7 +253,7 @@ router.put('/:id/verifikasi', async (req, res) => {
     try {
         const { id } = req.params;
         const { status, catatan } = req.body;
-        const adminId = req.user.id_user;
+        const adminId = req.user?.id_user || req.user?.userId || req.user?.id;
         
         // Validasi status
         const validStatus = ['pending', 'approved', 'rejected', 'verified'];
