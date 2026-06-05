@@ -18,6 +18,7 @@ const adminBeritaRoutes = require('./routes/admin/beritaRoutes');
 const adminKegiatanRoutes = require('./routes/admin/kegiatanRoutes');
 const dosenBeritaRoutes = require('./routes/dosen/beritaRoutes');
 const adminRepositoryRoutes = require('./routes/admin/repositoryRoutes');
+const adminUserRoutes = require('./routes/admin/userRoutes');
 const app = express();
 const PORT = process.env.PORT || 3000;
 const mahasiswaBeritaRoutes = require('./routes/mahasiswa/beritaRoutes');
@@ -82,6 +83,7 @@ app.use('/api/dosen/profil', dosenProfilRoutes);
 app.use('/api/admin/desa-kkn', desaRoutes);
 app.use('/api/admin/programs', programRoutes); // <<< TAMBAHKAN INI
 app.use('/api/admin/dashboard', dashboardRoutes); // <<< TAMBAHKAN INI
+app.use('/api/admin/users', adminUserRoutes);
 app.use('/api/admin/registrasi-kkn', registrasiKknRoutes); // <<< TAMBAHKAN INI
 app.use('/api/admin/registrasi-magang', registrasiMagangRoutes); // <<< TAMBAHKAN INI
 app.use('/api/admin/luaran-kkn', luaranKknRoutes);
