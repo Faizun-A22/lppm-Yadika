@@ -522,8 +522,11 @@
                             <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-md text-xs">3-6 Bulan</span>
                         </div>
                         
-                        <div class="flex items-center justify-between bg-blue-50 rounded-lg p-3 group-hover:bg-blue-100 transition">
-                            <span class="text-blue-700 font-medium text-sm">Lihat program magang</span>
+                        <!-- Container untuk progress aktif Magang -->
+                        <div id="magangCardProgressContainer" class="hidden mb-4"></div>
+                        
+                        <div id="magangCardBottomBtn" class="flex items-center justify-between bg-blue-50 rounded-lg p-3 group-hover:bg-blue-100 transition">
+                            <span id="magangCardBtnText" class="text-blue-700 font-medium text-sm">Lihat program magang</span>
                             <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white group-hover:translate-x-1 transition">
                                 <i class="fas fa-arrow-right text-sm"></i>
                             </div>
@@ -596,8 +599,11 @@
                             <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded-md text-xs">2 Bulan</span>
                         </div>
                         
-                        <div class="flex items-center justify-between bg-purple-50 rounded-lg p-3 group-hover:bg-purple-100 transition">
-                            <span class="text-purple-700 font-medium text-sm">Lihat program KKN</span>
+                        <!-- Container untuk progress aktif KKN -->
+                        <div id="kknCardProgressContainer" class="hidden mb-4"></div>
+                        
+                        <div id="kknCardBottomBtn" class="flex items-center justify-between bg-purple-50 rounded-lg p-3 group-hover:bg-purple-100 transition">
+                            <span id="kknCardBtnText" class="text-purple-700 font-medium text-sm">Lihat program KKN</span>
                             <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-white group-hover:translate-x-1 transition">
                                 <i class="fas fa-arrow-right text-sm"></i>
                             </div>
@@ -1033,6 +1039,250 @@
                     </div>
                 `;
             }).join('');
+
+            // ==========================================
+            // UPDATE CARD UI WITH DETAILED PROGRESS
+            // ==========================================
+            
+            // update Magang Card UI
+            const magangProgressContainer = document.getElementById('magangCardProgressContainer');
+            const magangCardBtnText = document.getElementById('magangCardBtnText');
+            
+            if (userPrograms.magang && userPrograms.magang.registrasi) {
+                const statusData = userPrograms.magang;
+                const reg = statusData.registrasi;
+                const pers = statusData.perusahaan;
+                const luar = statusData.luaran;
+                
+                let stepNum = 1;
+                let stepTitle = 'Pendaftaran';
+                let stepStatus = 'Dalam Proses';
+                let percent = 25;
+                let barColor = 'bg-blue-500';
+                let cardBg = 'bg-blue-50/50';
+                let borderCol = 'border-blue-100';
+                let badgeClass = 'status-pending';
+                let badgeText = 'Menunggu';
+                let bottomText = 'Masuk Dashboard Magang';
+                
+                if (reg.status === 'pending') {
+                    stepNum = 1;
+                    stepTitle = 'Verifikasi Pendaftaran';
+                    stepStatus = 'Dokumen KRS/KHS sedang diverifikasi';
+                    percent = 25;
+                    barColor = 'bg-amber-500';
+                    badgeClass = 'status-pending';
+                    badgeText = 'Menunggu';
+                    bottomText = 'Masuk Dashboard Magang';
+                } else if (reg.status === 'rejected') {
+                    stepNum = 1;
+                    stepTitle = 'Pendaftaran Ditolak';
+                    stepStatus = reg.catatan || 'Dokumen tidak sesuai persyaratan';
+                    percent = 25;
+                    barColor = 'bg-red-500';
+                    badgeClass = 'status-rejected';
+                    badgeText = 'Ditolak';
+                    bottomText = 'Daftar Ulang Magang';
+                } else if (reg.status === 'approved' || reg.status === 'verified') {
+                    if (!pers) {
+                        stepNum = 2;
+                        stepTitle = 'Lengkapi Data Perusahaan';
+                        stepStatus = 'Silakan masukkan detail tempat magang Anda';
+                        percent = 50;
+                        barColor = 'bg-blue-500';
+                        badgeClass = 'status-pending';
+                        badgeText = 'Belum Input';
+                        bottomText = 'Lengkapi Data Perusahaan';
+                    } else if (pers.status === 'pending') {
+                        stepNum = 2;
+                        stepTitle = 'Verifikasi Data Perusahaan';
+                        stepStatus = `Menunggu verifikasi untuk ${pers.nama_perusahaan}`;
+                        percent = 50;
+                        barColor = 'bg-amber-500';
+                        badgeClass = 'status-pending';
+                        badgeText = 'Menunggu';
+                        bottomText = 'Masuk Dashboard Magang';
+                    } else if (pers.status === 'rejected') {
+                        stepNum = 2;
+                        stepTitle = 'Data Perusahaan Ditolak';
+                        stepStatus = pers.catatan || 'Harap periksa dan input ulang data perusahaan';
+                        percent = 50;
+                        barColor = 'bg-red-500';
+                        badgeClass = 'status-rejected';
+                        badgeText = 'Ditolak';
+                        bottomText = 'Perbarui Data Perusahaan';
+                    } else if (pers.status === 'approved' || pers.status === 'verified') {
+                        if (!luar) {
+                            stepNum = 3;
+                            stepTitle = 'Pelaksanaan Magang';
+                            stepStatus = `Sedang berjalan di ${pers.nama_perusahaan}`;
+                            percent = 75;
+                            barColor = 'bg-green-500';
+                            badgeClass = 'status-approved';
+                            badgeText = 'Aktif';
+                            bottomText = 'Masuk Dashboard Magang';
+                        } else if (luar.status === 'pending') {
+                            stepNum = 4;
+                            stepTitle = 'Verifikasi Luaran Magang';
+                            stepStatus = 'Laporan akhir sedang dalam peninjauan';
+                            percent = 90;
+                            barColor = 'bg-amber-500';
+                            badgeClass = 'status-pending';
+                            badgeText = 'Menunggu';
+                            bottomText = 'Masuk Dashboard Magang';
+                        } else if (luar.status === 'rejected') {
+                            stepNum = 4;
+                            stepTitle = 'Luaran Magang Ditolak';
+                            stepStatus = luar.catatan || 'Perbaiki berkas laporan/sertifikat yang diunggah';
+                            percent = 90;
+                            barColor = 'bg-red-500';
+                            badgeClass = 'status-rejected';
+                            badgeText = 'Ditolak';
+                            bottomText = 'Perbaiki Berkas Luaran';
+                        } else if (luar.status === 'verified' || luar.status === 'approved') {
+                            stepNum = 4;
+                            stepTitle = 'Program Selesai';
+                            stepStatus = 'Sertifikat & Luaran terverifikasi';
+                            percent = 100;
+                            barColor = 'bg-purple-500';
+                            badgeClass = 'status-verified';
+                            badgeText = 'Selesai';
+                            bottomText = 'Lihat Riwayat Magang';
+                        }
+                    }
+                }
+                
+                magangProgressContainer.innerHTML = `
+                    <div class="mt-2 p-3 rounded-lg ${cardBg} border ${borderCol} flex flex-col gap-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-[10px] font-bold text-blue-700 uppercase tracking-wider">Aktivitas Berjalan</span>
+                            <span class="status-badge ${badgeClass} text-[9px] px-2 py-0.5">${badgeText}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-7 h-7 rounded-full ${barColor} text-white flex items-center justify-center font-bold text-xs">
+                                ${stepNum}
+                            </div>
+                            <div class="flex-1">
+                                <h5 class="text-xs font-bold text-gray-800">${stepTitle}</h5>
+                                <p class="text-[10px] text-gray-500 truncate">${stepStatus}</p>
+                            </div>
+                        </div>
+                        <div class="w-full bg-gray-200 h-1 rounded-full overflow-hidden mt-1">
+                            <div class="${barColor} h-full transition-all duration-500" style="width: ${percent}%"></div>
+                        </div>
+                    </div>
+                `;
+                magangProgressContainer.classList.remove('hidden');
+                magangCardBtnText.textContent = bottomText;
+            } else {
+                magangProgressContainer.classList.add('hidden');
+                magangCardBtnText.textContent = 'Lihat program magang';
+            }
+
+            // update KKN Card UI
+            const kknProgressContainer = document.getElementById('kknCardProgressContainer');
+            const kknCardBtnText = document.getElementById('kknCardBtnText');
+            
+            if (userPrograms.kkn && userPrograms.kkn.registrasi) {
+                const statusData = userPrograms.kkn;
+                const reg = statusData.registrasi;
+                const luarList = statusData.luaran || [];
+                
+                let stepNum = 1;
+                let stepTitle = 'Pendaftaran';
+                let stepStatus = 'Dalam Proses';
+                let percent = 33.3;
+                let barColor = 'bg-purple-500';
+                let cardBg = 'bg-purple-50/50';
+                let borderCol = 'border-purple-100';
+                let badgeClass = 'status-pending';
+                let badgeText = 'Menunggu';
+                let bottomText = 'Masuk Dashboard KKN';
+                
+                if (reg.status === 'pending') {
+                    stepNum = 1;
+                    stepTitle = 'Verifikasi Pendaftaran';
+                    stepStatus = 'Pendaftaran KKN sedang ditinjau';
+                    percent = 33.3;
+                    barColor = 'bg-amber-500';
+                    badgeClass = 'status-pending';
+                    badgeText = 'Menunggu';
+                    bottomText = 'Masuk Dashboard KKN';
+                } else if (reg.status === 'rejected') {
+                    stepNum = 1;
+                    stepTitle = 'Pendaftaran KKN Ditolak';
+                    stepStatus = reg.catatan || 'Persyaratan pendaftaran belum terpenuhi';
+                    percent = 33.3;
+                    barColor = 'bg-red-500';
+                    badgeClass = 'status-rejected';
+                    badgeText = 'Ditolak';
+                    bottomText = 'Daftar Ulang KKN';
+                } else if (reg.status === 'approved') {
+                    if (luarList.length === 0) {
+                        stepNum = 2;
+                        stepTitle = 'Pelaksanaan KKN';
+                        stepStatus = `Sedang berjalan di Desa ${reg.desa_kkn?.nama_desa || '-'}`;
+                        percent = 66.6;
+                        barColor = 'bg-purple-500';
+                        badgeClass = 'status-approved';
+                        badgeText = 'Aktif';
+                        bottomText = 'Masuk Dashboard KKN';
+                    } else if (luarList.some(l => l.status === 'pending')) {
+                        stepNum = 3;
+                        stepTitle = 'Verifikasi Luaran KKN';
+                        stepStatus = 'Laporan/Poster KKN sedang dalam peninjauan';
+                        percent = 85;
+                        barColor = 'bg-amber-500';
+                        badgeClass = 'status-pending';
+                        badgeText = 'Menunggu';
+                        bottomText = 'Masuk Dashboard KKN';
+                    } else if (luarList.some(l => l.status === 'rejected')) {
+                        stepNum = 3;
+                        stepTitle = 'Luaran KKN Ditolak';
+                        stepStatus = luarList.find(l => l.status === 'rejected')?.catatan || 'Harap perbaiki berkas luaran KKN';
+                        percent = 85;
+                        barColor = 'bg-red-500';
+                        badgeClass = 'status-rejected';
+                        badgeText = 'Ditolak';
+                        bottomText = 'Perbaiki Berkas Luaran';
+                    }
+                } else if (reg.status === 'verified') {
+                    stepNum = 3;
+                    stepTitle = 'Program KKN Selesai';
+                    stepStatus = 'Luaran & Nilai terverifikasi';
+                    percent = 100;
+                    barColor = 'bg-purple-500';
+                    badgeClass = 'status-verified';
+                    badgeText = 'Selesai';
+                    bottomText = 'Lihat Riwayat KKN';
+                }
+                
+                kknProgressContainer.innerHTML = `
+                    <div class="mt-2 p-3 rounded-lg ${cardBg} border ${borderCol} flex flex-col gap-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-[10px] font-bold text-purple-700 uppercase tracking-wider">Aktivitas Berjalan</span>
+                            <span class="status-badge ${badgeClass} text-[9px] px-2 py-0.5">${badgeText}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-7 h-7 rounded-full ${barColor} text-white flex items-center justify-center font-bold text-xs">
+                                ${stepNum}
+                            </div>
+                            <div class="flex-1">
+                                <h5 class="text-xs font-bold text-gray-800">${stepTitle}</h5>
+                                <p class="text-[10px] text-gray-500 truncate">${stepStatus}</p>
+                            </div>
+                        </div>
+                        <div class="w-full bg-gray-200 h-1 rounded-full overflow-hidden mt-1">
+                            <div class="${barColor} h-full transition-all duration-500" style="width: ${percent}%"></div>
+                        </div>
+                    </div>
+                `;
+                kknProgressContainer.classList.remove('hidden');
+                kknCardBtnText.textContent = bottomText;
+            } else {
+                kknProgressContainer.classList.add('hidden');
+                kknCardBtnText.textContent = 'Lihat program KKN';
+            }
         }
 
         window.viewDetail = function(type, id) {
