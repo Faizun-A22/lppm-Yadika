@@ -625,13 +625,14 @@
                                         <th class="px-4 py-3 text-left text-xs font-medium uppercase w-12">No</th>
                                         <th class="px-4 py-3 text-left text-xs font-medium uppercase">NIM</th>
                                         <th class="px-4 py-3 text-left text-xs font-medium uppercase">Nama</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium uppercase">Prodi</th>
                                         <th class="px-4 py-3 text-left text-xs font-medium uppercase">Desa</th>
                                         <th class="px-4 py-3 text-left text-xs font-medium uppercase">Status</th>
                                         <th class="px-4 py-3 text-center text-xs font-medium uppercase">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody id="kknRegistrationTableBody" class="divide-y divide-gray-200">
-                                    <tr><td colspan="6" class="text-center py-4 text-gray-500">Memuat data...</td></tr>
+                                    <tr><td colspan="7" class="text-center py-4 text-gray-500">Memuat data...</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -656,13 +657,14 @@
                                         <th class="px-4 py-3 text-left text-xs font-medium uppercase w-12">No</th>
                                         <th class="px-4 py-3 text-left text-xs font-medium uppercase">NIM</th>
                                         <th class="px-4 py-3 text-left text-xs font-medium uppercase">Nama</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium uppercase">Prodi</th>
                                         <th class="px-4 py-3 text-left text-xs font-medium uppercase">Perusahaan</th>
                                         <th class="px-4 py-3 text-left text-xs font-medium uppercase">Status</th>
                                         <th class="px-4 py-3 text-center text-xs font-medium uppercase">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody id="magangRegistrationTableBody" class="divide-y divide-gray-200">
-                                    <tr><td colspan="6" class="text-center py-4 text-gray-500">Memuat data...</td></tr>
+                                    <tr><td colspan="7" class="text-center py-4 text-gray-500">Memuat data...</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -1131,7 +1133,7 @@
         function renderKKNTable(data) {
             const tbody = document.getElementById('kknRegistrationTableBody');
             if (!data || data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-gray-500">Tidak ada data</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-gray-500">Tidak ada data</td></tr>';
                 return;
             }
             const startNo = (currentKknPage - 1) * 10 + 1;
@@ -1140,6 +1142,7 @@
                     <td class="px-4 py-3 text-gray-600 text-sm">${startNo + i}</td>
                     <td class="px-4 py-3 font-semibold text-gray-700 text-sm">${r.nim}</td>
                     <td class="px-4 py-3 text-gray-800 text-sm">${r.nama_lengkap}</td>
+                    <td class="px-4 py-3 text-gray-600 text-sm">${r.program_studi?.nama_prodi || '-'}</td>
                     <td class="px-4 py-3 text-gray-600 text-sm">${r.desa_kkn?.nama_desa || '-'}</td>
                     <td class="px-4 py-3"><span class="${getStatusBadgeClass(r.status)}">${getStatusText(r.status)}</span></td>
                     <td class="px-4 py-3 text-center">
@@ -1154,7 +1157,7 @@
         function renderMagangTable(data) {
             const tbody = document.getElementById('magangRegistrationTableBody');
             if (!data || data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-gray-500">Tidak ada data</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-gray-500">Tidak ada data</td></tr>';
                 return;
             }
             const startNo = (currentMagangPage - 1) * 10 + 1;
@@ -1163,6 +1166,7 @@
                     <td class="px-4 py-3 text-gray-600 text-sm">${startNo + i}</td>
                     <td class="px-4 py-3 font-semibold text-gray-700 text-sm">${r.nim}</td>
                     <td class="px-4 py-3 text-gray-800 text-sm">${r.nama_lengkap}</td>
+                    <td class="px-4 py-3 text-gray-600 text-sm">${r.program_studi?.nama_prodi || '-'}</td>
                     <td class="px-4 py-3 text-gray-600 text-sm">${r.nama_perusahaan || '-'}</td>
                     <td class="px-4 py-3"><span class="${getStatusBadgeClass(r.status)}">${getStatusText(r.status)}</span></td>
                     <td class="px-4 py-3 text-center">
