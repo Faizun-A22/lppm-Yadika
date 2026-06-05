@@ -750,7 +750,7 @@
                     <td class="px-4 py-3 text-sm">${statusBadge}</td>
                     <td class="px-4 py-3 text-sm text-gray-600">${formatDate(user.created_at)}</td>
                     <td class="px-4 py-3 text-center text-sm">
-                        <button onclick="deleteUser(${user.id_user}, '${nameDisplay}')" 
+                        <button onclick="deleteUser('${user.id_user}', '${nameDisplay}')" 
                                 class="bg-red-50 text-red-600 p-2 rounded-lg hover:bg-red-100 transition duration-200 border-none">
                             <i class="fas fa-trash-alt text-base"></i>
                         </button>
