@@ -619,9 +619,10 @@
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4">
                         <h3 class="text-base md:text-lg font-semibold text-gray-800">Aktivitas Bulanan</h3>
                         <select id="yearSelect" class="text-sm border rounded-lg px-2 py-1 w-full sm:w-auto" onchange="updateMonthlyChart()">
+                            <option value="2026">2026</option>
+                            <option value="2025">2025</option>
                             <option value="2024">2024</option>
                             <option value="2023">2023</option>
-                            <option value="2022">2022</option>
                         </select>
                     </div>
                     <div style="height: 220px; position: relative;">
@@ -702,20 +703,20 @@
             <!-- Footer Stats -->
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4 mt-6 md:mt-8" data-aos="fade-up" data-aos-delay="1000">
                 <div class="text-center bg-white rounded-lg p-3 md:p-4 shadow-sm">
-                    <p class="text-xl md:text-2xl font-bold text-gray-800" id="todayVisitors">0</p>
-                    <p class="text-[10px] md:text-xs text-gray-500">Pengunjung Hari Ini</p>
+                    <p class="text-xl md:text-2xl font-bold text-blue-600" id="todayVisitors">0</p>
+                    <p class="text-[10px] md:text-xs text-gray-500 footer-stat-label">Total KKN</p>
                 </div>
                 <div class="text-center bg-white rounded-lg p-3 md:p-4 shadow-sm">
-                    <p class="text-xl md:text-2xl font-bold text-gray-800" id="weeklyVisitors">0</p>
-                    <p class="text-[10px] md:text-xs text-gray-500">Pengunjung Minggu Ini</p>
+                    <p class="text-xl md:text-2xl font-bold text-green-600" id="weeklyVisitors">0</p>
+                    <p class="text-[10px] md:text-xs text-gray-500 footer-stat-label">Total Magang</p>
                 </div>
                 <div class="text-center bg-white rounded-lg p-3 md:p-4 shadow-sm">
-                    <p class="text-xl md:text-2xl font-bold text-gray-800" id="monthlyVisitors">0</p>
-                    <p class="text-[10px] md:text-xs text-gray-500">Pengunjung Bulan Ini</p>
+                    <p class="text-xl md:text-2xl font-bold text-purple-600" id="monthlyVisitors">0</p>
+                    <p class="text-[10px] md:text-xs text-gray-500 footer-stat-label">Penelitian & Pengabdian</p>
                 </div>
                 <div class="text-center bg-white rounded-lg p-3 md:p-4 shadow-sm">
-                    <p class="text-xl md:text-2xl font-bold text-gray-800" id="totalVisitors">0</p>
-                    <p class="text-[10px] md:text-xs text-gray-500">Total Pengunjung</p>
+                    <p class="text-xl md:text-2xl font-bold text-pink-600" id="totalVisitors">0</p>
+                    <p class="text-[10px] md:text-xs text-gray-500 footer-stat-label">Total Kegiatan</p>
                 </div>
             </div>
         </div>
@@ -809,73 +810,91 @@
             });
         }
 
-        // ==================== MOCK DATA ====================
-        const dashboardData = {
-            berita: { total: 24, published: 18, draft: 6 },
-            kegiatan: { total: 12, upcoming: 5, ongoing: 3, completed: 4 },
-            repository: { total: 112, downloads: 1234, views: 2567 },
-            program: { total: 3, pendaftar: 45, kuota: 60 },
-            visitors: { today: 147, weekly: 892, monthly: 3200, total: 15800 },
-            activities: [
-                { icon: 'fa-plus', bgColor: 'bg-blue-100', iconColor: 'text-blue-600', text: 'Berita baru <span class="font-semibold">"Workshop Penulisan Jurnal Internasional"</span> telah ditambahkan.', time: '2 jam yang lalu' },
-                { icon: 'fa-check', bgColor: 'bg-green-100', iconColor: 'text-green-600', text: 'Kegiatan <span class="font-semibold">"Seminar Nasional"</span> telah selesai.', time: '1 hari yang lalu' },
-                { icon: 'fa-upload', bgColor: 'bg-purple-100', iconColor: 'text-purple-600', text: 'Dokumen baru <span class="font-semibold">"Analisis Sistem IoT.pdf"</span> diunggah ke repository.', time: '3 hari yang lalu' },
-                { icon: 'fa-user-plus', bgColor: 'bg-pink-100', iconColor: 'text-pink-600', text: 'Pendaftaran baru program <span class="font-semibold">"Magang Batch 4"</span>.', time: '5 hari yang lalu' }
-            ],
-            pendingTasks: [
-                { title: 'Review Proposal Penelitian', count: 3, priority: 'high' },
-                { title: 'Verifikasi Luaran KKN', count: 5, priority: 'medium' },
-                { title: 'Persetujuan Draft Berita', count: 2, priority: 'low' },
-                { title: 'Konfirmasi Kehadiran Kegiatan', count: 8, priority: 'medium' }
-            ]
-        };
+        // ==================== API CONFIG ====================
+        const API_BASE = 'http://localhost:3000/api';
 
         // ==================== STATS FUNCTIONS ====================
-        function updateStats() {
-            document.getElementById('totalBerita').textContent = dashboardData.berita.total;
-            document.getElementById('beritaPublished').textContent = dashboardData.berita.published;
-            document.getElementById('beritaDraft').textContent = dashboardData.berita.draft;
-            
-            const beritaProgress = (dashboardData.berita.published / dashboardData.berita.total) * 100;
+        function updateStats(data) {
+            // Berita
+            document.getElementById('totalBerita').textContent = data.berita?.total || 0;
+            document.getElementById('beritaPublished').textContent = data.berita?.published || 0;
+            document.getElementById('beritaDraft').textContent = data.berita?.draft || 0;
+            const totalBerita = data.berita?.total || 1;
+            const published = data.berita?.published || 0;
+            const beritaProgress = Math.min(100, (published / totalBerita) * 100);
             document.getElementById('beritaProgress').style.width = beritaProgress + '%';
-            
-            document.getElementById('totalKegiatan').textContent = dashboardData.kegiatan.total;
-            document.getElementById('kegiatanUpcoming').textContent = dashboardData.kegiatan.upcoming;
-            document.getElementById('kegiatanOngoing').textContent = dashboardData.kegiatan.ongoing;
-            document.getElementById('kegiatanCompleted').textContent = dashboardData.kegiatan.completed;
-            
-            document.getElementById('totalDokumen').textContent = dashboardData.repository.total;
-            document.getElementById('totalDownloads').textContent = dashboardData.repository.downloads.toLocaleString();
-            document.getElementById('totalViews').textContent = dashboardData.repository.views.toLocaleString();
-            
-            document.getElementById('totalProgram').textContent = dashboardData.program.total;
-            document.getElementById('totalPendaftar').textContent = dashboardData.program.pendaftar;
-            document.getElementById('totalKuota').textContent = dashboardData.program.kuota;
-            
-            document.getElementById('todayVisitors').textContent = dashboardData.visitors.today.toLocaleString();
-            document.getElementById('weeklyVisitors').textContent = dashboardData.visitors.weekly.toLocaleString();
-            document.getElementById('monthlyVisitors').textContent = (dashboardData.visitors.monthly / 1000).toFixed(1) + 'k';
-            document.getElementById('totalVisitors').textContent = (dashboardData.visitors.total / 1000).toFixed(1) + 'k';
+
+            // Kegiatan
+            document.getElementById('totalKegiatan').textContent = data.kegiatan?.total || 0;
+            document.getElementById('kegiatanUpcoming').textContent = data.kegiatan?.upcoming || 0;
+            document.getElementById('kegiatanOngoing').textContent = data.kegiatan?.ongoing || 0;
+            document.getElementById('kegiatanCompleted').textContent = data.kegiatan?.completed || 0;
+
+            // Repository
+            const repoTotal = data.repository?.total || 0;
+            const repoDownloads = data.repository?.downloads || 0;
+            const repoViews = data.repository?.views || 0;
+            document.getElementById('totalDokumen').textContent = repoTotal.toLocaleString('id-ID');
+            document.getElementById('totalDownloads').textContent = repoDownloads.toLocaleString('id-ID');
+            document.getElementById('totalViews').textContent = repoViews.toLocaleString('id-ID');
+
+            // Programs / Magang & KKN
+            const totalPendaftar = (data.kkn?.total || 0) + (data.magang?.total || 0);
+            const totalKuota = data.villages?.total_quota || 0;
+            const programBerjalan = data.programs?.active || data.programs?.total || 0;
+            document.getElementById('totalProgram').textContent = programBerjalan;
+            document.getElementById('totalPendaftar').textContent = totalPendaftar.toLocaleString('id-ID');
+            document.getElementById('totalKuota').textContent = totalKuota.toLocaleString('id-ID');
+
+            // Visitors (tidak ada di DB — tampilkan info ringkas KKN + Magang + Penelitian + Kegiatan)
+            const totalKKN = data.kkn?.total || 0;
+            const totalMagang = data.magang?.total || 0;
+            const totalPenelitian = (data.penelitian?.total || 0) + (data.pengabdian?.total || 0);
+            const totalKegiatan = data.kegiatan?.total || 0;
+            document.getElementById('todayVisitors').textContent = totalKKN;
+            document.getElementById('weeklyVisitors').textContent = totalMagang;
+            document.getElementById('monthlyVisitors').textContent = totalPenelitian;
+            document.getElementById('totalVisitors').textContent = totalKegiatan;
+
+            // Update label footer stats
+            const footerLabels = document.querySelectorAll('.footer-stat-label');
+            if (footerLabels.length >= 4) {
+                footerLabels[0].textContent = 'Total KKN';
+                footerLabels[1].textContent = 'Total Magang';
+                footerLabels[2].textContent = 'Penelitian & Pengabdian';
+                footerLabels[3].textContent = 'Total Kegiatan';
+            }
         }
 
-        function updateWelcomeStats() {
+        function updateWelcomeStats(data) {
             const welcomeStats = document.getElementById('welcomeStats');
             welcomeStats.innerHTML = `
                 <span class="bg-white bg-opacity-20 rounded-lg px-3 py-1 md:px-4 md:py-2 text-xs md:text-sm">
-                    <i class="fas fa-newspaper mr-1 md:mr-2"></i> ${dashboardData.berita.total} Berita
+                    <i class="fas fa-newspaper mr-1 md:mr-2"></i> ${data.berita?.total || 0} Berita
                 </span>
                 <span class="bg-white bg-opacity-20 rounded-lg px-3 py-1 md:px-4 md:py-2 text-xs md:text-sm">
-                    <i class="fas fa-calendar mr-1 md:mr-2"></i> ${dashboardData.kegiatan.ongoing} Kegiatan Aktif
+                    <i class="fas fa-calendar mr-1 md:mr-2"></i> ${data.kegiatan?.ongoing || 0} Kegiatan Aktif
                 </span>
                 <span class="bg-white bg-opacity-20 rounded-lg px-3 py-1 md:px-4 md:py-2 text-xs md:text-sm">
-                    <i class="fas fa-file-alt mr-1 md:mr-2"></i> ${dashboardData.repository.total} Dokumen
+                    <i class="fas fa-file-alt mr-1 md:mr-2"></i> ${data.repository?.total || 0} Dokumen
+                </span>
+                <span class="bg-white bg-opacity-20 rounded-lg px-3 py-1 md:px-4 md:py-2 text-xs md:text-sm">
+                    <i class="fas fa-users mr-1 md:mr-2"></i> ${(data.kkn?.total || 0) + (data.magang?.total || 0)} Registrasi
                 </span>
             `;
         }
 
-        function renderActivities() {
+        function renderActivities(activities) {
             const timeline = document.getElementById('activityTimeline');
-            timeline.innerHTML = dashboardData.activities.map(activity => `
+            if (!activities || activities.length === 0) {
+                timeline.innerHTML = `
+                    <div class="text-center py-8 text-gray-400">
+                        <i class="fas fa-inbox text-3xl mb-2"></i>
+                        <p class="text-sm">Belum ada aktivitas terkini</p>
+                    </div>`;
+                return;
+            }
+            timeline.innerHTML = activities.map(activity => `
                 <div class="timeline-item">
                     <div class="timeline-dot"></div>
                     <div class="flex items-start space-x-2 md:space-x-3">
@@ -891,43 +910,60 @@
             `).join('');
         }
 
-        function renderPendingTasks() {
+        function renderPendingTasks(pendingTasks) {
             const tasks = document.getElementById('pendingTasks');
             const priorityColors = {
                 high: 'bg-red-100 text-red-600',
                 medium: 'bg-yellow-100 text-yellow-600',
                 low: 'bg-green-100 text-green-600'
             };
-            
-            tasks.innerHTML = dashboardData.pendingTasks.map(task => `
-                <div class="flex items-center justify-between p-2 md:p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+
+            if (!pendingTasks || pendingTasks.length === 0) {
+                tasks.innerHTML = `
+                    <div class="text-center py-8 text-gray-400">
+                        <i class="fas fa-check-circle text-3xl mb-2 text-green-400"></i>
+                        <p class="text-sm">Tidak ada tugas pending</p>
+                    </div>`;
+                document.getElementById('pendingCount').textContent = '0';
+                return;
+            }
+
+            tasks.innerHTML = pendingTasks.map(task => `
+                <div class="flex items-center justify-between p-2 md:p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition cursor-pointer" onclick="window.location.href='${task.link || '#'}'">
                     <div class="flex items-center space-x-2 md:space-x-3">
-                        <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full ${priorityColors[task.priority]}"></span>
+                        <span class="w-2 h-2 rounded-full ${priorityColors[task.priority] || 'bg-gray-100 text-gray-600'}"></span>
                         <span class="text-xs md:text-sm text-gray-700">${task.title}</span>
                     </div>
-                    <span class="bg-white px-1.5 py-0.5 md:px-2 md:py-1 rounded-full text-[10px] md:text-xs font-semibold ${priorityColors[task.priority]}">
+                    <span class="bg-white px-1.5 py-0.5 md:px-2 md:py-1 rounded-full text-[10px] md:text-xs font-semibold ${priorityColors[task.priority] || 'bg-gray-100 text-gray-600'}">
                         ${task.count}
                     </span>
                 </div>
             `).join('');
-            
-            const totalPending = dashboardData.pendingTasks.reduce((sum, task) => sum + task.count, 0);
+
+            const totalPending = pendingTasks.reduce((sum, task) => sum + task.count, 0);
             document.getElementById('pendingCount').textContent = totalPending;
         }
 
         // ==================== CHART FUNCTIONS ====================
         let monthlyChart, categoryChart;
+        let chartData = null; // store API chart data
 
-        function initCharts() {
+        function initCharts(data) {
+            chartData = data;
             const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+
+            const beritaMonthly = data.monthlyChart?.berita || Array(12).fill(0);
+            const kegiatanMonthly = data.monthlyChart?.kegiatan || Array(12).fill(0);
+            const repoMonthly = data.monthlyChart?.repository || Array(12).fill(0);
+
             monthlyChart = new Chart(monthlyCtx, {
                 type: 'line',
                 data: {
                     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
                     datasets: [
-                        { label: 'Berita', data: [12, 19, 15, 17, 14, 13, 15, 20, 18, 22, 25, 24], borderColor: '#3B82F6', backgroundColor: 'rgba(59, 130, 246, 0.1)', tension: 0.4, fill: true },
-                        { label: 'Kegiatan', data: [8, 12, 10, 9, 11, 8, 10, 12, 14, 13, 15, 12], borderColor: '#10B981', backgroundColor: 'rgba(16, 185, 129, 0.1)', tension: 0.4, fill: true },
-                        { label: 'Dokumen', data: [5, 8, 7, 9, 10, 8, 11, 13, 12, 15, 14, 17], borderColor: '#8B5CF6', backgroundColor: 'rgba(139, 92, 246, 0.1)', tension: 0.4, fill: true }
+                        { label: 'Berita', data: beritaMonthly, borderColor: '#3B82F6', backgroundColor: 'rgba(59, 130, 246, 0.1)', tension: 0.4, fill: true },
+                        { label: 'Kegiatan', data: kegiatanMonthly, borderColor: '#10B981', backgroundColor: 'rgba(16, 185, 129, 0.1)', tension: 0.4, fill: true },
+                        { label: 'Dokumen', data: repoMonthly, borderColor: '#8B5CF6', backgroundColor: 'rgba(139, 92, 246, 0.1)', tension: 0.4, fill: true }
                     ]
                 },
                 options: {
@@ -938,21 +974,32 @@
                 }
             });
 
+            // Category / Distribusi chart
+            const kategoriData = data.kategoriChart || {};
+            const kategoriLabels = Object.keys(kategoriData).length > 0
+                ? Object.keys(kategoriData)
+                : ['Jurnal', 'Penelitian', 'Pengabdian', 'Buku', 'HKI', 'Prosiding'];
+            const kategoriValues = Object.keys(kategoriData).length > 0
+                ? Object.values(kategoriData)
+                : [0, 0, 0, 0, 0, 0];
+
             const categoryCtx = document.getElementById('categoryChart').getContext('2d');
             categoryChart = new Chart(categoryCtx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Jurnal', 'Penelitian', 'Pengabdian', 'Buku', 'HKI', 'Prosiding'],
+                    labels: kategoriLabels,
                     datasets: [{
-                        data: [45, 38, 25, 20, 15, 12],
-                        backgroundColor: ['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899', '#6366F1'],
+                        data: kategoriValues,
+                        backgroundColor: ['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899', '#6366F1', '#F97316', '#14B8A6'],
                         borderWidth: 0
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { position: 'right', labels: { boxWidth: 10, font: { size: 10 } } } },
+                    plugins: {
+                        legend: { position: 'right', labels: { boxWidth: 10, font: { size: 10 } } }
+                    },
                     cutout: '65%'
                 }
             });
@@ -960,7 +1007,8 @@
 
         function updateMonthlyChart() {
             const year = document.getElementById('yearSelect').value;
-            showNotification(`Menampilkan data tahun ${year}`, 'info');
+            // Fetch data for the selected year
+            fetchDashboardData(year);
         }
 
         // ==================== QUICK ACTIONS ====================
@@ -970,14 +1018,14 @@
                 'dokumen': 'Membuka halaman upload dokumen', 'magang': 'Membuka halaman buka program',
                 'penelitian': 'Membuka halaman ajuan penelitian', 'laporan': 'Membuka halaman buat laporan'
             };
-            
+
             showNotification(actionMessages[action], 'info');
-            
+
             setTimeout(() => {
                 const pages = {
                     'berita': 'manage-kegiatan.html?tab=berita', 'kegiatan': 'manage-kegiatan.html?tab=kegiatan',
                     'dokumen': 'manage-repository.html', 'magang': 'manage-magang-kkn.html',
-                    'penelitian': 'admin-penelitian-pengabdian.html', 'laporan': 'admin-penelitian-pengabdian.html?tab=reports'
+                    'penelitian': 'admin_penelitian.html', 'laporan': 'admin_penelitian.html?tab=reports'
                 };
                 window.location.href = pages[action];
             }, 500);
@@ -1016,24 +1064,114 @@
             });
         }
 
+        // ==================== FETCH DASHBOARD DATA ====================
+        async function fetchDashboardData(year) {
+            try {
+                const response = await fetch(`${API_BASE}/admin/dashboard/stats`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.status === 401) {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    window.location.href = '../login.html';
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+
+                if (result.status === 'success' || result.success) {
+                    const data = result.data;
+
+                    // Update stats cards
+                    updateStats(data);
+                    updateWelcomeStats(data);
+
+                    // Render activities & pending tasks
+                    renderActivities(data.activities);
+                    renderPendingTasks(data.pendingTasks);
+
+                    // Update or init charts
+                    if (monthlyChart) {
+                        // Update existing chart with new monthly data
+                        const beritaMonthly = data.monthlyChart?.berita || Array(12).fill(0);
+                        const kegiatanMonthly = data.monthlyChart?.kegiatan || Array(12).fill(0);
+                        const repoMonthly = data.monthlyChart?.repository || Array(12).fill(0);
+                        monthlyChart.data.datasets[0].data = beritaMonthly;
+                        monthlyChart.data.datasets[1].data = kegiatanMonthly;
+                        monthlyChart.data.datasets[2].data = repoMonthly;
+                        monthlyChart.update();
+                    } else {
+                        initCharts(data);
+                    }
+
+                    // Show notification badge if there are pending tasks
+                    if (data.pendingTasks && data.pendingTasks.length > 0) {
+                        document.getElementById('notificationBadge').classList.remove('hidden');
+                    }
+
+                } else {
+                    throw new Error(result.message || 'Gagal mengambil data');
+                }
+
+            } catch (error) {
+                console.error('Error fetching dashboard data:', error);
+
+                // Show error but still init empty charts
+                if (!monthlyChart) {
+                    initCharts({
+                        monthlyChart: { berita: Array(12).fill(0), kegiatan: Array(12).fill(0), repository: Array(12).fill(0) },
+                        kategoriChart: {}
+                    });
+                }
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal Memuat Data',
+                    text: 'Tidak dapat terhubung ke server. Pastikan backend berjalan.',
+                    timer: 4000,
+                    showConfirmButton: true,
+                    confirmButtonText: 'Coba Lagi',
+                    toast: false
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        location.reload();
+                    }
+                });
+            } finally {
+                hideLoading();
+            }
+        }
+
         // ==================== DOM CONTENT LOADED ====================
         document.addEventListener('DOMContentLoaded', function() {
             initDropdown();
             initMobileNav();
             setActiveNavLink();
             updateNavbarUserInfo();
-            
+            updateWelcomeDate();
+
+            // Set yearSelect to current year
+            const currentYear = new Date().getFullYear().toString();
+            const yearSelect = document.getElementById('yearSelect');
+            if (yearSelect) {
+                for (let opt of yearSelect.options) {
+                    if (opt.value === currentYear) opt.selected = true;
+                }
+            }
+
             showLoading();
-            
-            setTimeout(() => {
-                updateStats();
-                renderActivities();
-                renderPendingTasks();
-                updateWelcomeStats();
-                initCharts();
-                updateWelcomeDate();
-                hideLoading();
-            }, 1000);
+
+            // Fetch real data from API
+            fetchDashboardData();
         });
     </script>
 </body>
