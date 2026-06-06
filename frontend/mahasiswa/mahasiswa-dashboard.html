@@ -341,7 +341,7 @@
                     <div class="relative">
                         <button id="notificationBtn" class="icon-btn relative p-2 rounded-lg transition">
                             <i class="fas fa-bell text-lg"></i>
-                            <span id="notificationBadge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full hidden"></span>
+                            <span id="notificationBadge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center hidden border border-blue-800"></span>
                         </button>
                         <!-- Notification Dropdown -->
                         <div id="notificationDropdown" class="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hidden z-50">
@@ -485,7 +485,7 @@
         async function loadAnnouncements(toast=false){ try{ const res=await fetch(`${API_BASE}/mahasiswa/berita?limit=3`,{headers:{'Authorization':`Bearer ${getToken()}`}}); const container=document.getElementById('pengumumanList'); if(res.ok){ const items=(await res.json()).data||[]; if(!items.length) container.innerHTML='<div class="text-center text-gray-400 py-6">Tidak ada pengumuman</div>'; else container.innerHTML=items.map(i=>`<div class="border-l-4 border-purple-500 pl-4 py-2"><h4 class="font-semibold">${escapeHtml(i.judul)}</h4><p class="text-xs text-gray-500 mt-1">${escapeHtml((i.konten||'').substring(0,100))}</p><span class="text-xs text-gray-400">${formatDate(i.created_at)}</span></div>`).join(''); if(toast) showToast('Pengumuman diperbarui'); } }catch(e){ console.error(e); } }
         async function loadUpcomingEvents(toast=false){ try{ const res=await fetch(`${API_BASE}/mahasiswa/kegiatan/upcoming?limit=3`,{headers:{'Authorization':`Bearer ${getToken()}`}}); const container=document.getElementById('kegiatanList'); if(res.ok){ const items=(await res.json()).data||[]; if(!items.length) container.innerHTML='<div class="text-center text-gray-400 py-6">Tidak ada kegiatan</div>'; else container.innerHTML=items.map(e=>`<div class="flex gap-3"><div class="bg-green-100 rounded-lg px-3 py-1 text-center"><span class="font-bold text-green-600">${getEventDay(e.tanggal_mulai)}</span><span class="text-xs block text-green-600">${getEventMonth(e.tanggal_mulai)}</span></div><div><h4 class="font-semibold">${escapeHtml(e.nama_kegiatan)}</h4><p class="text-xs text-gray-500"><i class="fas fa-map-marker-alt"></i> ${e.lokasi||'Online'}</p>${e.sisa_kuota!==undefined?`<p class="text-xs ${e.sisa_kuota<=0?'text-red-500':'text-green-500'}">Sisa kuota: ${e.sisa_kuota}</p>`:''}</div></div>`).join(''); if(toast) showToast('Kegiatan diperbarui'); } }catch(e){ console.error(e); } }
         async function loadUserProfile(){ const user=getUser(); if(user){ document.getElementById('userName').innerText=user.name||user.nama_lengkap||'Mahasiswa'; try{ const res=await fetch(`${API_BASE}/mahasiswa/profil/basic`,{headers:{'Authorization':`Bearer ${getToken()}`}}); if(res.ok){ const p=(await res.json()).data; document.getElementById('userNim').innerText=p.nim||'-'; document.getElementById('userProdi').innerText=p.nama_prodi||'Teknik Informatika'; updateNavbarUserInfo(p); } }catch(e){ console.error(e); } } }
-        async function refreshAllData(){ if(isRefreshing) return; isRefreshing=true; try{ await Promise.all([loadUserProfile(),loadMagangData(),loadKKNData(),loadKegiatanCount(),loadSertifikatDanLuaran(),loadMagangTimeline(),loadKKNTimeline(),loadRecentActivities(),loadAnnouncements(),loadUpcomingEvents(),fetchNotifications()]); updateLastUpdateTime(); showToast('Semua data diperbarui'); }catch(e){ showToast('Gagal refresh','error'); }finally{ isRefreshing=false; } }
+        async function refreshAllData(){ if(isRefreshing) return; isRefreshing=true; try{ await Promise.all([loadUserProfile(),loadMagangData(),loadKKNData(),loadKegiatanCount(),loadSertifikatDanLuaran(),loadMagangTimeline(),loadKKNTimeline(),loadRecentActivities(),loadAnnouncements(),loadUpcomingEvents(),loadNotificationsBadgeOnly()]); updateLastUpdateTime(); showToast('Semua data diperbarui'); }catch(e){ showToast('Gagal refresh','error'); }finally{ isRefreshing=false; } }
         function updateNavbarUserInfo(p){ if(!p) return; const url=p.foto_profil?`/${p.foto_profil}`:`https://ui-avatars.com/api/?name=${encodeURIComponent(p.nama_lengkap||'User')}&background=3B82F6&color=fff`; ['navAvatar','dropdownAvatar','mobileNavAvatar'].forEach(id=>{ const el=document.getElementById(id); if(el) el.src=url; }); ['navUserName','dropdownUserName','mobileNavUserName'].forEach(id=>{ const el=document.getElementById(id); if(el) el.innerText=p.nama_lengkap||'Mahasiswa'; }); const nim=document.getElementById('dropdownUserNim'); if(nim) nim.innerText=p.nim?`NIM: ${p.nim}`:'-'; }
         function initMobileNav(){ const hamburger=document.getElementById('hamburgerBtn'), mobileNav=document.getElementById('mobileNav'), closeBtn=document.getElementById('closeMobileNav'); if(hamburger&&mobileNav){ hamburger.onclick=()=>mobileNav.classList.add('active'); closeBtn.onclick=()=>mobileNav.classList.remove('active'); mobileNav.onclick=(e)=>{ if(e.target===mobileNav) mobileNav.classList.remove('active'); }; document.querySelectorAll('.mobile-nav-link').forEach(l=>l.addEventListener('click',()=>mobileNav.classList.remove('active'))); } const page=window.location.pathname.split('/').pop(); document.querySelectorAll('.mobile-nav-link').forEach(link=>{ const href=link.getAttribute('href'); if(href===page||(page==='mahasiswa-dashboard.html'&&href==='mahasiswa-dashboard.html')) link.classList.add('active'); else link.classList.remove('active'); }); }
         function setActiveNavLink(){ const page=window.location.pathname.split('/').pop(); document.querySelectorAll('.nav-link').forEach(link=>{ const href=link.getAttribute('href'); if(href===page||(page==='mahasiswa-dashboard.html'&&href==='mahasiswa-dashboard.html')) link.classList.add('active'); else link.classList.remove('active'); }); }
@@ -529,6 +529,7 @@
                     const badge = document.getElementById('notificationBadge');
                     if (badge) {
                         if (unread > 0) {
+                            badge.textContent = unread;
                             badge.classList.remove('hidden');
                         } else {
                             badge.classList.add('hidden');
@@ -565,8 +566,12 @@
             const badge = document.getElementById('notificationBadge');
             const unread = notifs.filter(n => !n.dibaca).length;
             if (badge) {
-                if (unread > 0) badge.classList.remove('hidden');
-                else badge.classList.add('hidden');
+                if (unread > 0) {
+                    badge.textContent = unread;
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
             }
 
             const list = document.getElementById('notificationList');
@@ -580,8 +585,18 @@
             list.innerHTML = notifs.map(n => {
                 const dateStr = formatDateAgo(n.created_at);
                 const isUnread = !n.dibaca;
-                const bgClass = isUnread ? 'bg-blue-50/50' : 'bg-white';
-                const dotHtml = isUnread ? '<span class="w-2 h-2 bg-blue-600 rounded-full shrink-0 mt-1"></span>' : '';
+                const bgClass = isUnread ? 'bg-blue-50/30' : 'bg-white';
+                const dotHtml = isUnread ? '<span class="w-2 h-2 bg-blue-600 rounded-full shrink-0 mt-1.5"></span>' : '';
+                
+                // Icon based on notification type
+                let iconHtml = '';
+                if (n.tipe === 'success') {
+                    iconHtml = '<div class="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center text-green-500 shrink-0"><i class="fas fa-check-circle text-sm"></i></div>';
+                } else if (n.tipe === 'error') {
+                    iconHtml = '<div class="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center text-red-500 shrink-0"><i class="fas fa-exclamation-triangle text-sm"></i></div>';
+                } else {
+                    iconHtml = '<div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-500 shrink-0"><i class="fas fa-bell text-sm"></i></div>';
+                }
                 
                 let actionHtml = '';
                 if (n.link) {
@@ -596,7 +611,8 @@
                 }
 
                 return `
-                    <div class="p-3 hover:bg-gray-50/80 transition ${bgClass} flex gap-2.5 items-start">
+                    <div class="p-3 hover:bg-gray-50/80 transition ${bgClass} flex gap-3 items-start">
+                        ${iconHtml}
                         <div class="flex-1 text-left">
                             <div class="flex justify-between items-start gap-2">
                                 <h5 class="font-bold text-xs text-gray-800">${escapeHtml(n.judul)}</h5>
