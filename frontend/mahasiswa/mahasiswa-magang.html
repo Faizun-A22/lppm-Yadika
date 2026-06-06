@@ -461,7 +461,7 @@
                 <div class="relative">
                     <button id="notificationBtn" class="icon-btn relative p-2 rounded-lg transition-all duration-200">
                         <i class="fas fa-bell text-base md:text-lg"></i>
-                        <span id="notificationBadge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full hidden"></span>
+                        <span id="notificationBadge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center hidden border border-blue-800"></span>
                     </button>
                 </div>
                 
@@ -1045,6 +1045,42 @@
         </div>
     </main>
 
+    <!-- Notification Sidebar Drawer (Card Box Style) -->
+    <div id="notificationDrawer" class="fixed inset-y-0 right-0 w-full sm:w-[400px] bg-gray-50 shadow-2xl z-55 transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col border-l border-gray-100 hidden">
+        <!-- Header -->
+        <div class="p-4 bg-gradient-to-r from-blue-700 to-blue-800 text-white flex justify-between items-center shadow-md shrink-0">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
+                    <i class="fas fa-bell text-lg"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-sm leading-tight">Pusat Notifikasi</h3>
+                    <p class="text-[10px] text-white/70">Informasi & Pengumuman Sistem</p>
+                </div>
+            </div>
+            <button onclick="toggleNotificationDrawer()" class="text-white/80 hover:text-white text-lg p-1.5 hover:bg-white/10 rounded-lg transition">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <!-- Cards Area -->
+        <div id="notificationChatArea" class="flex-1 overflow-y-auto p-4 space-y-3.5">
+            <!-- Notification cards will be rendered here -->
+        </div>
+        
+        <!-- Footer -->
+        <div class="p-3.5 bg-white border-t border-gray-150 flex items-center justify-between gap-3 shrink-0">
+            <button onclick="markAllNotificationsRead(event)" class="text-xs text-blue-600 hover:text-blue-800 hover:underline font-bold transition flex items-center gap-1">
+                <i class="fas fa-check-double"></i> Tandai semua dibaca
+            </button>
+            <button onclick="toggleNotificationDrawer()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-xs font-bold transition">
+                Tutup
+            </button>
+        </div>
+    </div>
+    <!-- Backdrop -->
+    <div id="notificationBackdrop" class="fixed inset-0 bg-black/40 z-40 hidden transition-opacity duration-300 opacity-0" onclick="toggleNotificationDrawer()"></div>
+
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="../js/auth.js"></script>
     
@@ -1571,6 +1607,7 @@
         initDropdown();
         initMobileNav();
         setActiveNavLink();
+        initNotifications();
         updateUserInfo();
         await updateNavbarUserInfo();
         showLoading();
@@ -1588,6 +1625,240 @@
             await loadMagangData();
         } catch (error) { console.error('Error initializing page:', error); showNotification('Gagal memuat halaman', 'error'); } finally { hideLoading(); }
     });
+
+    // ==================== NOTIFICATION SYSTEM ====================
+    function initNotifications() {
+        const btn = document.getElementById('notificationBtn');
+        if (btn) {
+            btn.onclick = (e) => {
+                e.stopPropagation();
+                toggleNotificationDrawer();
+            };
+        }
+        loadNotificationsBadgeOnly();
+    }
+
+    function toggleNotificationDrawer() {
+        const drawer = document.getElementById('notificationDrawer');
+        const backdrop = document.getElementById('notificationBackdrop');
+        if (drawer && backdrop) {
+            const isHidden = drawer.classList.contains('translate-x-full');
+            if (isHidden) {
+                drawer.classList.remove('hidden');
+                backdrop.classList.remove('hidden');
+                setTimeout(() => {
+                    drawer.classList.remove('translate-x-full');
+                    backdrop.classList.remove('opacity-0');
+                    backdrop.classList.add('opacity-100');
+                }, 20);
+                loadNotifications();
+            } else {
+                drawer.classList.add('translate-x-full');
+                backdrop.classList.remove('opacity-100');
+                backdrop.classList.add('opacity-0');
+                setTimeout(() => {
+                    drawer.classList.add('hidden');
+                    backdrop.classList.add('hidden');
+                }, 300);
+            }
+        }
+    }
+
+    async function loadNotificationsBadgeOnly() {
+        try {
+            const res = await fetch('/api/notifikasi', {
+                headers: { 'Authorization': `Bearer ${getToken()}` }
+            });
+            if (res.ok) {
+                const result = await res.json();
+                const notifs = result.data || [];
+                const unread = notifs.filter(n => !n.dibaca).length;
+                const badge = document.getElementById('notificationBadge');
+                if (badge) {
+                    if (unread > 0) {
+                        badge.textContent = unread;
+                        badge.classList.remove('hidden');
+                    } else {
+                        badge.classList.add('hidden');
+                    }
+                }
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    async function loadNotifications() {
+        const chatArea = document.getElementById('notificationChatArea');
+        if (chatArea) chatArea.innerHTML = '<div class="p-4 text-center text-xs text-gray-500"><i class="fas fa-spinner fa-spin mr-1"></i>Memuat pesan...</div>';
+        
+        try {
+            const res = await fetch('/api/notifikasi', {
+                headers: { 'Authorization': `Bearer ${getToken()}` }
+            });
+            if (res.ok) {
+                const result = await res.json();
+                const notifs = result.data || [];
+                renderNotifications(notifs);
+            } else {
+                if (chatArea) chatArea.innerHTML = '<div class="p-4 text-center text-xs text-red-500">Gagal memuat pesan</div>';
+            }
+        } catch (e) {
+            console.error(e);
+            if (chatArea) chatArea.innerHTML = '<div class="p-4 text-center text-xs text-red-500">Gagal memuat pesan</div>';
+        }
+    }
+
+    function renderNotifications(notifs) {
+        const badge = document.getElementById('notificationBadge');
+        const unread = notifs.filter(n => !n.dibaca).length;
+        if (badge) {
+            if (unread > 0) {
+                badge.textContent = unread;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        const chatArea = document.getElementById('notificationChatArea');
+        if (!chatArea) return;
+
+        if (notifs.length === 0) {
+            chatArea.innerHTML = `
+                <div class="flex flex-col items-center justify-center h-full text-center text-gray-400 p-6">
+                    <div class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-3 text-gray-300">
+                        <i class="fas fa-bell-slash text-2xl"></i>
+                    </div>
+                    <p class="text-sm font-semibold text-gray-500">Tidak ada notifikasi</p>
+                    <p class="text-xs text-gray-455 mt-1">Semua pemberitahuan akademik atau sistem akan muncul di sini.</p>
+                </div>
+            `;
+            return;
+        }
+
+        chatArea.innerHTML = notifs.map(n => {
+            const dateStr = formatDateAgo(n.created_at);
+            const isUnread = !n.dibaca;
+            const bgClass = isUnread ? 'bg-blue-50/20 border-blue-100 shadow-sm' : 'bg-white border-gray-150 shadow-sm';
+            
+            // Accent color, icon, and button classes based on type
+            let accentColor = 'bg-blue-500';
+            let iconHtml = '<div class="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500 shrink-0"><i class="fas fa-bell text-sm"></i></div>';
+            
+            if (n.tipe === 'success') {
+                accentColor = 'bg-green-500';
+                iconHtml = '<div class="w-9 h-9 rounded-lg bg-green-50 flex items-center justify-center text-green-500 shrink-0"><i class="fas fa-check-circle text-sm"></i></div>';
+            } else if (n.tipe === 'error') {
+                accentColor = 'bg-red-500';
+                iconHtml = '<div class="w-9 h-9 rounded-lg bg-red-50 flex items-center justify-center text-red-500 shrink-0"><i class="fas fa-exclamation-triangle text-sm"></i></div>';
+            }
+
+            let linkHtml = '';
+            if (n.link) {
+                linkHtml = `
+                    <div class="mt-2.5">
+                        <a href="${n.link}" target="_blank" onclick="markNotificationRead('${n.id_notifikasi}', event)" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-500 hover:bg-green-600 text-white text-[10px] font-bold rounded-lg shadow-sm hover:shadow transition duration-150 font-sans">
+                            <i class="fab fa-whatsapp text-xs"></i>
+                            Gabung Grup WA
+                        </a>
+                    </div>
+                `;
+            }
+
+            let readBtn = '';
+            if (isUnread) {
+                readBtn = `
+                    <button onclick="markNotificationRead('${n.id_notifikasi}', event)" class="text-[10px] text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-1 mt-2.5 font-semibold transition">
+                        <i class="fas fa-check"></i> Tandai dibaca
+                    </button>
+                `;
+            } else {
+                readBtn = `
+                    <span class="text-[9px] text-gray-400 flex items-center gap-1 mt-2.5 font-medium select-none">
+                        <i class="fas fa-check-double text-blue-500"></i> Sudah dibaca
+                    </span>
+                `;
+            }
+
+            return `
+                <div class="relative overflow-hidden bg-white rounded-xl border p-4 pl-5 ${bgClass} flex gap-3.5 items-start transition hover:border-gray-300 font-sans">
+                    <!-- Accent vertical line on the left -->
+                    <div class="absolute left-0 top-0 bottom-0 w-1 ${accentColor}"></div>
+                    
+                    ${iconHtml}
+                    
+                    <div class="flex-1 min-w-0 text-left">
+                        <div class="flex justify-between items-start gap-2">
+                            <h4 class="font-bold text-xs text-gray-800 truncate">${escapeHtml(n.judul)}</h4>
+                            <span class="text-[9px] text-gray-400 shrink-0">${dateStr}</span>
+                        </div>
+                        <p class="text-[11px] text-gray-500 mt-1 leading-normal">${escapeHtml(n.pesan)}</p>
+                        
+                        <div class="flex items-center justify-between flex-wrap gap-2 font-sans">
+                            ${linkHtml}
+                            ${readBtn}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    async function markNotificationRead(id, event) {
+        if (event) event.stopPropagation();
+        try {
+            const res = await fetch(`/api/notifikasi/${id}/read`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${getToken()}`, 'Content-Type': 'application/json' }
+            });
+            if (res.ok) {
+                loadNotifications();
+                loadNotificationsBadgeOnly();
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    async function markAllNotificationsRead(event) {
+        if (event) event.stopPropagation();
+        try {
+            const res = await fetch('/api/notifikasi/read-all', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${getToken()}`, 'Content-Type': 'application/json' }
+            });
+            if (res.ok) {
+                loadNotifications();
+                loadNotificationsBadgeOnly();
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    function formatDateAgo(d) {
+        if (!d) return '-';
+        const date = new Date(d);
+        const now = new Date();
+        const diffMs = now - date;
+        const diffMin = Math.floor(diffMs / 60000);
+        if (diffMin < 1) return 'Baru saja';
+        if (diffMin < 60) return `${diffMin} mnt lalu`;
+        const diffHr = Math.floor(diffMin / 60);
+        if (diffHr < 24) return `${diffHr} jam lalu`;
+        const diffDay = Math.floor(diffHr / 24);
+        if (diffDay === 1) return 'Kemarin';
+        if (diffDay < 7) return `${diffDay} hari lalu`;
+        return date.toLocaleDateString('id-ID');
+    }
+
+    function escapeHtml(t) {
+        if (!t) return '';
+        const div = document.createElement('div');
+        div.textContent = t;
+        return div.innerHTML;
+    }
     </script>
 </body>
 </html>

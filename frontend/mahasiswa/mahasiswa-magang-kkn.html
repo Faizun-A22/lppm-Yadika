@@ -614,39 +614,37 @@
         </div>
     </main>
 
-    <!-- Notification Sidebar Drawer (Chat Style) -->
+    <!-- Notification Sidebar Drawer (Card Box Style) -->
     <div id="notificationDrawer" class="fixed inset-y-0 right-0 w-full sm:w-[400px] bg-gray-50 shadow-2xl z-55 transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col border-l border-gray-100 hidden">
         <!-- Header -->
-        <div class="p-4 bg-gradient-to-r from-blue-600 to-indigo-700 text-white flex justify-between items-center shadow-md shrink-0">
+        <div class="p-4 bg-gradient-to-r from-blue-700 to-blue-800 text-white flex justify-between items-center shadow-md shrink-0">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-white/15 flex items-center justify-center">
-                    <i class="fas fa-comments text-lg"></i>
+                <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
+                    <i class="fas fa-bell text-lg"></i>
                 </div>
                 <div>
-                    <h3 class="font-bold text-sm leading-tight">Pesan & Notifikasi</h3>
-                    <p class="text-[10px] text-white/70">Sistem LPPM Yadika</p>
+                    <h3 class="font-bold text-sm leading-tight">Pusat Notifikasi</h3>
+                    <p class="text-[10px] text-white/70">Informasi & Pengumuman Sistem</p>
                 </div>
             </div>
-            <div class="flex items-center gap-2">
-                <button onclick="markAllNotificationsRead(event)" class="text-xs bg-white/10 hover:bg-white/20 p-2 rounded-lg transition" title="Tandai semua dibaca">
-                    <i class="fas fa-check-double"></i>
-                </button>
-                <button onclick="toggleNotificationDrawer()" class="text-white/80 hover:text-white text-xl p-1">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
+            <button onclick="toggleNotificationDrawer()" class="text-white/80 hover:text-white text-lg p-1.5 hover:bg-white/10 rounded-lg transition">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
         
-        <!-- Chat Area -->
-        <div id="notificationChatArea" class="flex-1 overflow-y-auto p-4 space-y-4">
-            <!-- Chat bubbles will be rendered here -->
+        <!-- Cards Area -->
+        <div id="notificationChatArea" class="flex-1 overflow-y-auto p-4 space-y-3.5">
+            <!-- Notification cards will be rendered here -->
         </div>
         
-        <!-- Footer (Simulated Chat Input) -->
-        <div class="p-3 bg-white border-t border-gray-150 flex items-center gap-2 shrink-0">
-            <div class="flex-1 bg-gray-100 text-gray-450 text-xs px-4 py-2.5 rounded-full italic select-none">
-                <i class="fas fa-lock mr-1 text-[10px]"></i> Balasan tidak didukung untuk pesan sistem
-            </div>
+        <!-- Footer -->
+        <div class="p-3.5 bg-white border-t border-gray-150 flex items-center justify-between gap-3 shrink-0">
+            <button onclick="markAllNotificationsRead(event)" class="text-xs text-blue-600 hover:text-blue-800 hover:underline font-bold transition flex items-center gap-1">
+                <i class="fas fa-check-double"></i> Tandai semua dibaca
+            </button>
+            <button onclick="toggleNotificationDrawer()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-xs font-bold transition">
+                Tutup
+            </button>
         </div>
     </div>
     <!-- Backdrop -->
@@ -1518,10 +1516,10 @@
                 chatArea.innerHTML = `
                     <div class="flex flex-col items-center justify-center h-full text-center text-gray-400 p-6">
                         <div class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-3 text-gray-300">
-                            <i class="fas fa-comments text-2xl"></i>
+                            <i class="fas fa-bell-slash text-2xl"></i>
                         </div>
-                        <p class="text-sm font-semibold text-gray-500">Belum ada obrolan</p>
-                        <p class="text-xs text-gray-450 mt-1">Notifikasi sistem atau persetujuan KKN & Magang Anda akan masuk di sini.</p>
+                        <p class="text-sm font-semibold text-gray-500">Tidak ada notifikasi</p>
+                        <p class="text-xs text-gray-450 mt-1">Semua pemberitahuan akademik atau sistem akan muncul di sini.</p>
                     </div>
                 `;
                 return;
@@ -1530,20 +1528,25 @@
             chatArea.innerHTML = notifs.map(n => {
                 const dateStr = formatDateAgo(n.created_at);
                 const isUnread = !n.dibaca;
-                const bubbleBg = isUnread ? 'bg-indigo-600 text-white' : 'bg-white text-gray-800 shadow-sm border border-gray-100';
-                const timeColor = isUnread ? 'text-indigo-200' : 'text-gray-455';
-                const readIcon = isUnread 
-                    ? `<button onclick="markNotificationRead('${n.id_notifikasi}', event)" class="hover:text-white transition ml-1" title="Tandai dibaca"><i class="fas fa-check text-[9px]"></i></button>`
-                    : `<span class="text-blue-500 ml-1" title="Sudah dibaca"><i class="fas fa-check-double text-[9px]"></i></span>`;
+                const bgClass = isUnread ? 'bg-blue-50/20 border-blue-100 shadow-sm' : 'bg-white border-gray-150 shadow-sm';
                 
+                // Accent color, icon, and button classes based on type
+                let accentColor = 'bg-blue-500';
+                let iconHtml = '<div class="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500 shrink-0"><i class="fas fa-bell text-sm"></i></div>';
+                
+                if (n.tipe === 'success') {
+                    accentColor = 'bg-green-500';
+                    iconHtml = '<div class="w-9 h-9 rounded-lg bg-green-50 flex items-center justify-center text-green-500 shrink-0"><i class="fas fa-check-circle text-sm"></i></div>';
+                } else if (n.tipe === 'error') {
+                    accentColor = 'bg-red-500';
+                    iconHtml = '<div class="w-9 h-9 rounded-lg bg-red-50 flex items-center justify-center text-red-500 shrink-0"><i class="fas fa-exclamation-triangle text-sm"></i></div>';
+                }
+
                 let linkHtml = '';
                 if (n.link) {
-                    const btnClass = isUnread 
-                        ? 'bg-white text-indigo-600 hover:bg-indigo-50' 
-                        : 'bg-green-500 text-white hover:bg-green-600';
                     linkHtml = `
                         <div class="mt-2.5">
-                            <a href="${n.link}" target="_blank" onclick="markNotificationRead('${n.id_notifikasi}', event)" class="inline-flex items-center gap-1.5 px-3 py-1.5 ${btnClass} text-[10px] font-bold rounded-lg shadow-sm transition duration-150">
+                            <a href="${n.link}" target="_blank" onclick="markNotificationRead('${n.id_notifikasi}', event)" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-500 hover:bg-green-600 text-white text-[10px] font-bold rounded-lg shadow-sm hover:shadow transition duration-150">
                                 <i class="fab fa-whatsapp text-xs"></i>
                                 Gabung Grup WA
                             </a>
@@ -1551,37 +1554,43 @@
                     `;
                 }
 
-                let iconHtml = '';
-                if (n.tipe === 'success') {
-                    iconHtml = '<div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600 shrink-0 shadow-sm"><i class="fas fa-check-circle text-xs"></i></div>';
-                } else if (n.tipe === 'error') {
-                    iconHtml = '<div class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center text-red-600 shrink-0 shadow-sm"><i class="fas fa-exclamation-triangle text-xs"></i></div>';
+                let readBtn = '';
+                if (isUnread) {
+                    readBtn = `
+                        <button onclick="markNotificationRead('${n.id_notifikasi}', event)" class="text-[10px] text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-1 mt-2.5 font-semibold transition">
+                            <i class="fas fa-check"></i> Tandai dibaca
+                        </button>
+                    `;
                 } else {
-                    iconHtml = '<div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 shrink-0 shadow-sm"><i class="fas fa-bell text-xs"></i></div>';
+                    readBtn = `
+                        <span class="text-[9px] text-gray-400 flex items-center gap-1 mt-2.5 font-medium select-none">
+                            <i class="fas fa-check-double text-blue-500"></i> Sudah dibaca
+                        </span>
+                    `;
                 }
 
                 return `
-                    <div class="flex gap-2.5 items-start max-w-[90%]">
+                    <div class="relative overflow-hidden bg-white rounded-xl border p-4 pl-5 ${bgClass} flex gap-3.5 items-start transition hover:border-gray-300">
+                        <!-- Accent vertical line on the left -->
+                        <div class="absolute left-0 top-0 bottom-0 w-1 ${accentColor}"></div>
+                        
                         ${iconHtml}
-                        <div class="flex flex-col">
-                            <span class="text-[9px] font-bold text-gray-500 ml-1.5 mb-0.5">${escapeHtml(n.judul)}</span>
-                            <div class="p-3 rounded-2xl rounded-tl-none ${bubbleBg} leading-relaxed text-[11px] shadow-sm">
-                                <p>${escapeHtml(n.pesan)}</p>
+                        
+                        <div class="flex-1 min-w-0 text-left">
+                            <div class="flex justify-between items-start gap-2">
+                                <h4 class="font-bold text-xs text-gray-800 truncate">${escapeHtml(n.judul)}</h4>
+                                <span class="text-[9px] text-gray-400 shrink-0">${dateStr}</span>
+                            </div>
+                            <p class="text-[11px] text-gray-500 mt-1 leading-normal">${escapeHtml(n.pesan)}</p>
+                            
+                            <div class="flex items-center justify-between flex-wrap gap-2">
                                 ${linkHtml}
-                                <div class="flex justify-end items-center mt-1.5 text-[9px] ${timeColor}">
-                                    <span>${dateStr}</span>
-                                    ${readIcon}
-                                </div>
+                                ${readBtn}
                             </div>
                         </div>
                     </div>
                 `;
             }).join('');
-            
-            // Scroll to bottom of chat area when loading
-            setTimeout(() => {
-                chatArea.scrollTop = chatArea.scrollHeight;
-            }, 50);
         }
 
         async function markNotificationRead(id, event) {
