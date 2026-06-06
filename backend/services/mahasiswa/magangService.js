@@ -26,7 +26,7 @@ class MagangService {
     async cekPerusahaanExist(id_user) {
         const { data, error } = await supabase
             .from('magang_perusahaan')
-            .select('id_perusahaan, status')
+            .select('id_perusahaan, status, nama_perusahaan, id_registrasi')
             .eq('id_user', id_user)
             .order('created_at', { ascending: false })
             .limit(1)
@@ -547,12 +547,18 @@ async getPerusahaanById(id_perusahaan, id_user) {
 
 async createPerusahaan(id_user, data) {
     try {
-        // Data sudah siap dengan path relatif
-        // Contoh: "magang/surat_keterangan/12345-file.png"
-        
+        // Cek pendaftaran magang yang aktif/disetujui
+        const registrasi = await this.cekRegistrasiExist(id_user);
+        if (!registrasi) {
+            throw new Error('Anda harus melakukan pendaftaran magang terlebih dahulu');
+        }
+        if (registrasi.status !== 'approved' && registrasi.status !== 'verified') {
+            throw new Error('Pendaftaran magang Anda harus disetujui terlebih dahulu oleh admin');
+        }
+
         const perusahaanData = {
             id_user: id_user,
-            id_registrasi: data.id_registrasi,
+            id_registrasi: registrasi.id_registrasi, // Auto-link
             nama_perusahaan: data.nama_perusahaan,
             bidang_magang: data.bidang_magang,
             posisi: data.posisi,
@@ -562,8 +568,8 @@ async createPerusahaan(id_user, data) {
             alamat_perusahaan: data.alamat_perusahaan,
             nama_pembimbing: data.nama_pembimbing,
             kontak_pembimbing: data.kontak_pembimbing,
-            email_pembimbing: data.email_pembimbing,
-            jabatan_pembimbing: data.jabatan_pembimbing,
+            email_pembimbing: data.email_pembimbing || null,
+            jabatan_pembimbing: data.jabatan_pembimbing || null,
             surat_keterangan: data.surat_keterangan || null,  // Path relatif
             struktur_organisasi: data.struktur_organisasi || null,  // Path relatif
             status: data.status || 'pending',
@@ -591,6 +597,8 @@ async createPerusahaan(id_user, data) {
  */
 async updatePerusahaan(id_perusahaan, id_user, data) {
     try {
+        const registrasi = await this.cekRegistrasiExist(id_user);
+
         const updateData = {
             nama_perusahaan: data.nama_perusahaan,
             bidang_magang: data.bidang_magang,
@@ -601,10 +609,15 @@ async updatePerusahaan(id_perusahaan, id_user, data) {
             alamat_perusahaan: data.alamat_perusahaan,
             nama_pembimbing: data.nama_pembimbing,
             kontak_pembimbing: data.kontak_pembimbing,
-            email_pembimbing: data.email_pembimbing,
-            jabatan_pembimbing: data.jabatan_pembimbing,
+            email_pembimbing: data.email_pembimbing || null,
+            jabatan_pembimbing: data.jabatan_pembimbing || null,
             updated_at: new Date()
         };
+
+        // Auto-link id_registrasi if missing in old record
+        if (registrasi) {
+            updateData.id_registrasi = registrasi.id_registrasi;
+        }
 
         if (data.surat_keterangan) {
             updateData.surat_keterangan = data.surat_keterangan.path || data.surat_keterangan.filename;

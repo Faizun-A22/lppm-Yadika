@@ -1102,7 +1102,9 @@
     
     <script>
     AOS.init({ duration: 800, once: true });
-    const API_BASE_URL = '/api';
+    const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        ? 'http://localhost:3000/api'
+        : '/api';
     
     let currentUser = null;
     let magangData = {
@@ -1159,6 +1161,22 @@
     }
     
     function showSection(section) {
+        if (section === 'perusahaan') {
+            if (!magangData.registrasi) {
+                showNotification('Anda harus melakukan pendaftaran magang terlebih dahulu', 'warning');
+                return;
+            }
+            if (magangData.registrasi.status !== 'approved' && magangData.registrasi.status !== 'verified') {
+                showNotification('Pendaftaran magang Anda harus disetujui terlebih dahulu oleh admin', 'warning');
+                return;
+            }
+        } else if (section === 'luaran') {
+            if (!magangData.perusahaan || magangData.perusahaan.length === 0 || !magangData.perusahaan.some(p => p.status === 'approved' || p.status === 'verified')) {
+                showNotification('Anda harus mengisi data perusahaan dan disetujui oleh admin terlebih dahulu', 'warning');
+                return;
+            }
+        }
+
         document.querySelectorAll('.section-content').forEach(el => el.classList.add('hidden'));
         document.querySelectorAll('.tab-button').forEach(el => el.classList.remove('active'));
         document.getElementById(`section${section.charAt(0).toUpperCase() + section.slice(1)}`).classList.remove('hidden');
@@ -1437,6 +1455,9 @@
             if (suratKeterangan) formData.append('surat_keterangan', suratKeterangan);
             const strukturOrganisasi = document.getElementById('companyStructure').files[0];
             if (strukturOrganisasi) formData.append('struktur_organisasi', strukturOrganisasi);
+            if (magangData.registrasi && magangData.registrasi.id_registrasi) {
+                formData.append('id_registrasi', magangData.registrasi.id_registrasi);
+            }
             const perusahaanId = document.getElementById('perusahaanId').value;
             const url = perusahaanId ? `${API_BASE_URL}/magang/perusahaan/${perusahaanId}` : `${API_BASE_URL}/magang/perusahaan`;
             const method = perusahaanId ? 'PUT' : 'POST';

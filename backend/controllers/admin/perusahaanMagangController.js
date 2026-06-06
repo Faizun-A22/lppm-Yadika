@@ -99,7 +99,7 @@ class PerusahaanMagangController {
                 // Get user info
                 const { data: userData } = await supabase
                     .from('users')
-                    .select('nama_lengkap, email, no_hp')
+                    .select('nama_lengkap, email, no_hp, nim')
                     .eq('id_user', item.id_user)
                     .single();
                 
@@ -138,11 +138,11 @@ class PerusahaanMagangController {
                     tanggal_verifikasi: item.tanggal_verifikasi,
                     created_at: item.created_at,
                     updated_at: item.updated_at,
-                    // Data mahasiswa
-                    nim: item.registrasi_magang?.nim,
-                    nama_lengkap: item.registrasi_magang?.nama_lengkap,
-                    email: item.registrasi_magang?.email,
-                    no_hp: item.registrasi_magang?.no_hp,
+                    // Data mahasiswa (dengan fallback ke users)
+                    nim: item.registrasi_magang?.nim || userData?.nim,
+                    nama_lengkap: item.registrasi_magang?.nama_lengkap || userData?.nama_lengkap,
+                    email: item.registrasi_magang?.email || userData?.email,
+                    no_hp: item.registrasi_magang?.no_hp || userData?.no_hp,
                     program_studi: item.registrasi_magang?.program_studi_input,
                     semester: item.registrasi_magang?.semester,
                     domisili: item.registrasi_magang?.domisili,
@@ -236,7 +236,7 @@ class PerusahaanMagangController {
             // Get user info
             const { data: userData } = await supabase
                 .from('users')
-                .select('nama_lengkap, email, no_hp')
+                .select('nama_lengkap, email, no_hp, nim')
                 .eq('id_user', perusahaanData.id_user)
                 .single();
             
@@ -276,11 +276,11 @@ class PerusahaanMagangController {
                 tanggal_verifikasi: perusahaanData.tanggal_verifikasi,
                 created_at: perusahaanData.created_at,
                 updated_at: perusahaanData.updated_at,
-                // Data mahasiswa dari registrasi_magang
-                nim: registrasiData?.nim,
-                nama_lengkap: registrasiData?.nama_lengkap,
-                email: registrasiData?.email,
-                no_hp: registrasiData?.no_hp,
+                // Data mahasiswa dari registrasi_magang (dengan fallback ke users)
+                nim: registrasiData?.nim || userData?.nim,
+                nama_lengkap: registrasiData?.nama_lengkap || userData?.nama_lengkap,
+                email: registrasiData?.email || userData?.email,
+                no_hp: registrasiData?.no_hp || userData?.no_hp,
                 program_studi: registrasiData?.program_studi_input,
                 semester: registrasiData?.semester,
                 domisili: registrasiData?.domisili,

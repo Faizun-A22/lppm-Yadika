@@ -901,7 +901,9 @@
         AOS.init({ duration: 800, once: true, easing: 'ease-out-cubic' });
 
         // ==================== AUTHENTICATION ====================
-        const API_BASE_URL = '/api';
+        const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:3000/api'
+            : '/api';
         let token = localStorage.getItem('token');
         if (!token) window.location.href = '../login.html';
 
