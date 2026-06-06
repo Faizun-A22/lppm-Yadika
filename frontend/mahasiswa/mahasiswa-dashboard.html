@@ -494,7 +494,6 @@
         function formatDate(d){ if(!d) return '-'; const date=new Date(d), now=new Date(), diff=Math.floor((now-date)/(86400000)); if(diff===0) return 'Hari ini'; if(diff===1) return 'Kemarin'; if(diff<7) return `${diff} hari lalu`; return date.toLocaleDateString('id-ID'); }
         function getEventMonth(d){ if(!d) return '-'; const m=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des']; return m[new Date(d).getMonth()]; }
 
-<<<<<<< HEAD
         document.addEventListener('DOMContentLoaded',async()=>{ if(!checkAuth()) return; initDropdown(); setActiveNavLink(); initMobileNav(); initNotifications(); document.getElementById('loadingOverlay').classList.remove('hidden'); await refreshAllData(); setTimeout(()=>document.getElementById('loadingOverlay').classList.add('hidden'),500); refreshInterval=setInterval(()=>{ if(!document.hidden) refreshAllData(); },30000); });
 
         // ==================== NOTIFICATION SYSTEM ====================
@@ -607,60 +606,11 @@
                             ${actionHtml}
                         </div>
                         ${dotHtml}
-=======
-        // Notification functions
-        async function fetchNotifications() {
-            try {
-                const res = await fetch(`${API_BASE}/notifikasi`, {
-                    headers: { 'Authorization': `Bearer ${getToken()}` }
-                });
-                if (res.ok) {
-                    const notifications = (await res.json()).data || [];
-                    renderNotifications(notifications);
-                }
-            } catch (e) {
-                console.error('Gagal mengambil notifikasi:', e);
-            }
-        }
-
-        function renderNotifications(notifications) {
-            const badge = document.getElementById('notificationBadge');
-            const container = document.getElementById('notifListContent');
-            
-            const unread = notifications.filter(n => !n.dibaca).length;
-            if (unread > 0) {
-                badge.classList.remove('hidden');
-            } else {
-                badge.classList.add('hidden');
-            }
-
-            if (notifications.length === 0) {
-                container.innerHTML = '<div class="text-center text-gray-500 py-6"><i class="fas fa-bell-slash text-3xl text-gray-300 mb-2 block"></i>Belum ada notifikasi</div>';
-                return;
-            }
-
-            container.innerHTML = notifications.map(n => {
-                let formattedMsg = escapeHtml(n.pesan);
-                const urlRegex = /(https?:\/\/[^\s]+)/g;
-                formattedMsg = formattedMsg.replace(urlRegex, function(url) {
-                    return `<br><a href="${url}" target="_blank" class="inline-block mt-2 bg-green-500 hover:bg-green-600 text-white text-xs px-3 py-1.5 rounded-lg shadow-sm hover:shadow transition font-semibold"><i class="fab fa-whatsapp mr-1"></i> Gabung Grup Koordinasi</a>`;
-                });
-
-                return `
-                    <div class="p-3.5 rounded-xl border ${n.dibaca ? 'bg-gray-50 border-gray-100' : 'bg-blue-50/70 border-blue-100'} transition duration-200">
-                        <div class="flex justify-between items-start">
-                            <h4 class="font-bold text-sm ${n.dibaca ? 'text-gray-700' : 'text-blue-900'}">${escapeHtml(n.judul)}</h4>
-                            <span class="text-[10px] text-gray-400">${formatDate(n.created_at)}</span>
-                        </div>
-                        <p class="text-xs text-gray-600 mt-1 leading-relaxed">${formattedMsg}</p>
-                        ${!n.dibaca ? `<button onclick="markNotifAsRead('${n.id_notifikasi}')" class="text-[10px] text-blue-600 mt-2 hover:underline font-medium"><i class="fas fa-check mr-0.5"></i> Tandai telah dibaca</button>` : ''}
->>>>>>> a9e4b1877b2882e437714e2e0fa888e2c21367e0
                     </div>
                 `;
             }).join('');
         }
 
-<<<<<<< HEAD
         async function markNotificationRead(id) {
             try {
                 await fetch(`/api/notifikasi/${id}/read`, {
@@ -682,30 +632,10 @@
                 });
                 if (res.ok) {
                     loadNotifications();
-=======
-        window.openNotifModal = function() {
-            document.getElementById('notifListModal').classList.remove('hidden');
-            fetchNotifications();
-        };
-
-        window.closeNotifModal = function() {
-            document.getElementById('notifListModal').classList.add('hidden');
-        };
-
-        window.markNotifAsRead = async function(id) {
-            try {
-                const res = await fetch(`${API_BASE}/notifikasi/${id}/read`, {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${getToken()}` }
-                });
-                if (res.ok) {
-                    fetchNotifications();
->>>>>>> a9e4b1877b2882e437714e2e0fa888e2c21367e0
                 }
             } catch (e) {
                 console.error(e);
             }
-<<<<<<< HEAD
         }
 
         function formatDateAgo(d) {
@@ -723,25 +653,6 @@
             if (diffDay < 7) return `${diffDay} hari lalu`;
             return date.toLocaleDateString('id-ID');
         }
-=======
-        };
-
-        window.markAllNotifAsRead = async function() {
-            try {
-                const res = await fetch(`${API_BASE}/notifikasi/read-all`, {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${getToken()}` }
-                });
-                if (res.ok) {
-                    fetchNotifications();
-                }
-            } catch (e) {
-                console.error(e);
-            }
-        };
-
-        document.addEventListener('DOMContentLoaded',async()=>{ if(!checkAuth()) return; initDropdown(); setActiveNavLink(); initMobileNav(); document.getElementById('notificationBtn').addEventListener('click', window.openNotifModal); document.getElementById('loadingOverlay').classList.remove('hidden'); await refreshAllData(); setTimeout(()=>document.getElementById('loadingOverlay').classList.add('hidden'),500); refreshInterval=setInterval(()=>{ if(!document.hidden) refreshAllData(); },30000); });
->>>>>>> a9e4b1877b2882e437714e2e0fa888e2c21367e0
     </script>
 </body>
 </html>
