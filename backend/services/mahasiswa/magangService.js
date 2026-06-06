@@ -460,6 +460,8 @@ async updateRegistrasi(id_registrasi, id_user, data) {
             program_studi_input: data.program_studi || existing.program_studi_input,
             domisili: data.domisili || existing.domisili,
             semester: data.semester || existing.semester,
+            status: 'pending', // Reset status ke pending agar direview kembali
+            catatan: null,      // Bersihkan catatan penolakan lama
             updated_at: new Date()
         };
 
