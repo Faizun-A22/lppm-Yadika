@@ -639,10 +639,15 @@
 
                     <!-- Documents -->
                     <div class="bg-white rounded-xl shadow-lg p-5 md:p-6" data-aos="fade-left" data-aos-delay="200">
-                        <h3 class="text-lg md:text-xl font-bold text-gray-800 mb-4 flex items-center">
-                            <i class="fas fa-folder-open mr-2 text-purple-500"></i>
-                            Dokumen Saya
-                        </h3>
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg md:text-xl font-bold text-gray-800 flex items-center">
+                                <i class="fas fa-folder-open mr-2 text-purple-500"></i>
+                                Dokumen Saya
+                            </h3>
+                            <button onclick="openUploadDocModal()" class="bg-gradient-to-r from-purple-500 to-pink-600 text-white font-bold py-1.5 px-4 rounded-lg hover:shadow-md transition-all duration-300 text-xs flex items-center gap-1.5">
+                                <i class="fas fa-plus"></i> Upload Dokumen
+                            </button>
+                        </div>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="documentsContainer">
                             <div class="col-span-2 text-center py-8 text-gray-500">
@@ -740,6 +745,48 @@
                         </button>
                         <button type="submit" onclick="updatePassword()" class="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-lg hover:shadow-lg transition">
                             Simpan
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Upload Document Modal -->
+    <div id="uploadDocModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl max-w-md w-full p-6">
+            <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                <i class="fas fa-file-upload mr-2 text-purple-500"></i>
+                Upload Dokumen Baru
+            </h3>
+            
+            <form id="uploadDocForm" onsubmit="return false;">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Jenis Dokumen</label>
+                        <select id="docTypeSelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-500" required>
+                            <option value="" disabled selected>Pilih jenis dokumen</option>
+                            <option value="ktm">Kartu Tanda Mahasiswa (KTM)</option>
+                            <option value="transkrip">Transkrip Nilai</option>
+                            <option value="ktp">Kartu Tanda Penduduk (KTP)</option>
+                            <option value="kk">Kartu Keluarga (KK)</option>
+                            <option value="ijazah">Ijazah</option>
+                            <option value="sertifikat">Sertifikat Kegiatan / Prestasi</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Pilih File</label>
+                        <input type="file" id="docFileInput" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-500" accept=".pdf,image/*" required>
+                        <p class="text-xs text-gray-500 mt-1">Format: PDF, JPG, PNG (Maksimal 5MB)</p>
+                    </div>
+                    
+                    <div class="flex justify-end space-x-3 mt-6">
+                        <button type="button" onclick="closeUploadDocModal()" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
+                            Batal
+                        </button>
+                        <button type="submit" onclick="submitUploadDoc()" class="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-lg hover:shadow-lg transition">
+                            Unggah
                         </button>
                     </div>
                 </div>
@@ -1069,7 +1116,15 @@ window.uploadProfilePicture = async function(input) {
         showLoading();
         const response = await fetch(`${API_BASE_URL}/mahasiswa/profil/foto`, { method: 'POST', headers: { 'Authorization': `Bearer ${getAuthToken()}` }, body: formData });
         const result = await response.json();
-        if (result.success) { document.getElementById('profilePicture').src = result.data.foto_profil; showNotification('Foto profil berhasil diperbarui'); }
+        if (result.success) {
+            const newFoto = result.data.foto_profil;
+            document.getElementById('profilePicture').src = newFoto;
+            const cleanFotoUrl = newFoto.startsWith('/') ? newFoto : `/${newFoto}`;
+            if (document.getElementById('navAvatar')) document.getElementById('navAvatar').src = cleanFotoUrl;
+            if (document.getElementById('dropdownAvatar')) document.getElementById('dropdownAvatar').src = cleanFotoUrl;
+            if (document.getElementById('mobileNavAvatar')) document.getElementById('mobileNavAvatar').src = cleanFotoUrl;
+            showNotification('Foto profil berhasil diperbarui');
+        }
         else { throw new Error(result.message); }
     } catch (error) { console.error('Error uploading profile picture:', error); showNotification(error.message || 'Gagal mengupload foto', false); } finally { hideLoading(); }
 };
@@ -1143,7 +1198,14 @@ document.getElementById('profileForm')?.addEventListener('submit', async functio
         showLoading();
         const response = await fetch(`${API_BASE_URL}/mahasiswa/profil`, { method: 'PUT', headers: getAuthHeaders(), body: JSON.stringify(updatedData) });
         const result = await response.json();
-        if (result.success) { userProfile = result.data; updateProfileUI(); showNotification('Profil berhasil diperbarui'); }
+        if (result.success) {
+            userProfile = result.data;
+            updateProfileUI();
+            if (document.getElementById('navUserName')) document.getElementById('navUserName').textContent = userProfile.nama_lengkap;
+            if (document.getElementById('dropdownUserName')) document.getElementById('dropdownUserName').textContent = userProfile.nama_lengkap;
+            if (document.getElementById('mobileNavUserName')) document.getElementById('mobileNavUserName').textContent = userProfile.nama_lengkap;
+            showNotification('Profil berhasil diperbarui');
+        }
         else { throw new Error(result.message); }
     } catch (error) { console.error('Error updating profile:', error); showNotification(error.message || 'Gagal memperbarui profil', false); } finally { hideLoading(); }
 });
@@ -1152,7 +1214,62 @@ window.handleLogout = function() {
     Swal.fire({ title: 'Konfirmasi Logout', text: 'Apakah Anda yakin ingin logout?', icon: 'question', showCancelButton: true, confirmButtonColor: '#EF4444', cancelButtonColor: '#6B7280', confirmButtonText: 'Ya, Logout', cancelButtonText: 'Batal' }).then((result) => { if (result.isConfirmed) { localStorage.removeItem('token'); localStorage.removeItem('user'); window.location.href = '../login.html'; } });
 };
 
-window.onclick = function(event) { const modal = document.getElementById('passwordModal'); if (event.target === modal) { closePasswordModal(); } };
+window.onclick = function(event) {
+    const passModal = document.getElementById('passwordModal');
+    const docModal = document.getElementById('uploadDocModal');
+    if (event.target === passModal) {
+        closePasswordModal();
+    } else if (event.target === docModal) {
+        closeUploadDocModal();
+    }
+};
+
+window.openUploadDocModal = function() {
+    document.getElementById('uploadDocModal').classList.remove('hidden');
+};
+
+window.closeUploadDocModal = function() {
+    document.getElementById('uploadDocModal').classList.add('hidden');
+    document.getElementById('uploadDocForm').reset();
+};
+
+window.submitUploadDoc = async function() {
+    const jenis = document.getElementById('docTypeSelect').value;
+    const fileInput = document.getElementById('docFileInput');
+    const file = fileInput.files[0];
+    
+    if (!jenis) { showNotification('Pilih jenis dokumen terlebih dahulu', false); return; }
+    if (!file) { showNotification('Pilih file yang ingin diunggah', false); return; }
+    
+    if (file.size > 5 * 1024 * 1024) { showNotification('Ukuran file maksimal 5MB', false); return; }
+    
+    const formData = new FormData();
+    formData.append('jenis_dokumen', jenis);
+    formData.append('file', file);
+    
+    try {
+        showLoading();
+        const response = await fetch(`${API_BASE_URL}/mahasiswa/profil/dokumen`, {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${getAuthToken()}` },
+            body: formData
+        });
+        
+        const result = await response.json();
+        if (result.success) {
+            closeUploadDocModal();
+            showNotification('Dokumen berhasil diunggah');
+            await loadDocuments();
+        } else {
+            throw new Error(result.message);
+        }
+    } catch (error) {
+        console.error('Error uploading document:', error);
+        showNotification(error.message || 'Gagal mengunggah dokumen', false);
+    } finally {
+        hideLoading();
+    }
+};
 
 // ===========================================
 // NAVBAR FUNCTIONS
@@ -1166,10 +1283,10 @@ async function updateNavbarUserInfo() {
             const result = await response.json();
             const profile = result.data;
             if (profile) {
-                const avatarUrl = profile.foto_profil ? `/${profile.foto_profil}` : `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.nama_lengkap || 'Mahasiswa')}&background=3B82F6&color=fff&bold=true`;
-                document.getElementById('navAvatar').src = avatarUrl;
-                document.getElementById('dropdownAvatar').src = avatarUrl;
-                document.getElementById('mobileNavAvatar').src = avatarUrl;
+                const cleanFotoUrl = profile.foto_profil ? (profile.foto_profil.startsWith('/') ? profile.foto_profil : `/${profile.foto_profil}`) : `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.nama_lengkap || 'Mahasiswa')}&background=3B82F6&color=fff&bold=true`;
+                document.getElementById('navAvatar').src = cleanFotoUrl;
+                document.getElementById('dropdownAvatar').src = cleanFotoUrl;
+                document.getElementById('mobileNavAvatar').src = cleanFotoUrl;
                 document.getElementById('navUserName').textContent = profile.nama_lengkap || 'Mahasiswa';
                 document.getElementById('dropdownUserName').textContent = profile.nama_lengkap || 'Mahasiswa';
                 document.getElementById('mobileNavUserName').textContent = profile.nama_lengkap || 'Mahasiswa';

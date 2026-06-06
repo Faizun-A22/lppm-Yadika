@@ -1321,7 +1321,7 @@
                     const result = await response.json();
                     const profile = result.data;
                     if (profile) {
-                        const avatarUrl = profile.foto_profil ? `/${profile.foto_profil}` : `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.nama_lengkap || 'Mahasiswa')}&background=3B82F6&color=fff&bold=true`;
+                        const cleanFotoUrl = profile.foto_profil ? (profile.foto_profil.startsWith('/') ? profile.foto_profil : `/${profile.foto_profil}`) : `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.nama_lengkap || 'Mahasiswa')}&background=3B82F6&color=fff&bold=true`;
                         const navAvatar = document.getElementById('navAvatar');
                         const dropdownAvatar = document.getElementById('dropdownAvatar');
                         const mobileNavAvatar = document.getElementById('mobileNavAvatar');
@@ -1329,9 +1329,9 @@
                         const dropdownUserName = document.getElementById('dropdownUserName');
                         const mobileNavUserName = document.getElementById('mobileNavUserName');
                         const dropdownUserNim = document.getElementById('dropdownUserNim');
-                        if (navAvatar) navAvatar.src = avatarUrl;
-                        if (dropdownAvatar) dropdownAvatar.src = avatarUrl;
-                        if (mobileNavAvatar) mobileNavAvatar.src = avatarUrl;
+                        if (navAvatar) navAvatar.src = cleanFotoUrl;
+                        if (dropdownAvatar) dropdownAvatar.src = cleanFotoUrl;
+                        if (mobileNavAvatar) mobileNavAvatar.src = cleanFotoUrl;
                         if (navUserName) navUserName.textContent = profile.nama_lengkap || 'Mahasiswa';
                         if (dropdownUserName) dropdownUserName.textContent = profile.nama_lengkap || 'Mahasiswa';
                         if (mobileNavUserName) mobileNavUserName.textContent = profile.nama_lengkap || 'Mahasiswa';

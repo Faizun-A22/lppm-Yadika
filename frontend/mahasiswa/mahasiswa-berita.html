@@ -832,10 +832,10 @@
                 const result = await response.json();
                 const profile = result.data;
                 if (profile) {
-                    const avatarUrl = profile.foto_profil ? `/${profile.foto_profil}` : `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.nama_lengkap || 'Mahasiswa')}&background=3B82F6&color=fff&bold=true`;
-                    document.getElementById('navAvatar').src = avatarUrl;
-                    document.getElementById('dropdownAvatar').src = avatarUrl;
-                    document.getElementById('mobileNavAvatar').src = avatarUrl;
+                    const cleanFotoUrl = profile.foto_profil ? (profile.foto_profil.startsWith('/') ? profile.foto_profil : `/${profile.foto_profil}`) : `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.nama_lengkap || 'Mahasiswa')}&background=3B82F6&color=fff&bold=true`;
+                    document.getElementById('navAvatar').src = cleanFotoUrl;
+                    document.getElementById('dropdownAvatar').src = cleanFotoUrl;
+                    document.getElementById('mobileNavAvatar').src = cleanFotoUrl;
                     document.getElementById('navUserName').textContent = profile.nama_lengkap || 'Mahasiswa';
                     document.getElementById('dropdownUserName').textContent = profile.nama_lengkap || 'Mahasiswa';
                     document.getElementById('mobileNavUserName').textContent = profile.nama_lengkap || 'Mahasiswa';

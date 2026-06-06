@@ -1,5 +1,22 @@
 const supabase = require('../../config/database');
 const bcrypt = require('bcryptjs');
+const fs = require('fs');
+const path = require('path');
+
+const deleteLocalFile = (relativePath) => {
+    if (!relativePath) return;
+    const cleanPath = relativePath.startsWith('/') ? relativePath.substring(1) : relativePath;
+    const absolutePath = path.join(__dirname, '../..', cleanPath);
+    
+    fs.unlink(absolutePath, (err) => {
+        if (err) {
+            console.error(`Gagal menghapus file lama di ${absolutePath}:`, err.message);
+        } else {
+            console.log(`Berhasil menghapus file lama di ${absolutePath}`);
+        }
+    });
+};
+
 
 // ===========================================
 // GET PROFILE MAHASISWA
@@ -257,6 +274,15 @@ exports.uploadFotoProfil = async (req, res) => {
         const userId = req.user.id_user;
         const fotoUrl = `/uploads/profil/${req.file.filename}`;
 
+        // Ambil data foto lama terlebih dahulu
+        const { data: userData } = await supabase
+            .from('users')
+            .select('foto_profil')
+            .eq('id_user', userId)
+            .single();
+
+        const oldFoto = userData?.foto_profil;
+
         const { error } = await supabase
             .from('users')
             .update({
@@ -268,6 +294,11 @@ exports.uploadFotoProfil = async (req, res) => {
 
         if (error) {
             throw error;
+        }
+
+        // Hapus file foto lama jika ada
+        if (oldFoto && oldFoto.startsWith('/uploads/')) {
+            deleteLocalFile(oldFoto);
         }
 
         res.json({
@@ -346,22 +377,24 @@ exports.getRiwayatPendaftaran = async (req, res) => {
         const offset = (page - 1) * limit;
 
         // Query dasar
+        const selectQuery = `
+            id_pendaftaran,
+            tanggal_daftar,
+            status_pendaftaran,
+            catatan,
+            kegiatan:kegiatan!pendaftar_kegiatan_id_kegiatan_fkey${filter !== 'all' ? '!inner' : ''} (
+                id_kegiatan,
+                nama_kegiatan,
+                jenis_kegiatan,
+                tanggal_mulai,
+                tanggal_selesai,
+                lokasi
+            )
+        `;
+
         let query = supabase
             .from('pendaftar_kegiatan')
-            .select(`
-                id_pendaftaran,
-                tanggal_daftar,
-                status_pendaftaran,
-                catatan,
-                kegiatan:kegiatan!pendaftar_kegiatan_id_kegiatan_fkey (
-                    id_kegiatan,
-                    nama_kegiatan,
-                    jenis_kegiatan,
-                    tanggal_mulai,
-                    tanggal_selesai,
-                    lokasi
-                )
-            `, { count: 'exact' })
+            .select(selectQuery, { count: 'exact' })
             .eq('id_user', userId)
             .order('tanggal_daftar', { ascending: false })
             .range(offset, offset + limit - 1);
@@ -564,6 +597,16 @@ exports.uploadDokumen = async (req, res) => {
         }
 
         if (existingDoc) {
+            // Ambil data file lama untuk dihapus
+            const { data: oldDoc } = await supabase
+                .from('mahasiswa_dokumen')
+                .select('file_path')
+                .eq('id_user', userId)
+                .eq('jenis_dokumen', jenis_dokumen)
+                .single();
+
+            const oldPath = oldDoc?.file_path;
+
             // Update dokumen yang ada
             const { error: updateError } = await supabase
                 .from('mahasiswa_dokumen')
@@ -581,6 +624,11 @@ exports.uploadDokumen = async (req, res) => {
                 .eq('jenis_dokumen', jenis_dokumen);
 
             if (updateError) throw updateError;
+
+            // Hapus file fisik lama jika ada
+            if (oldPath && oldPath.startsWith('/uploads/')) {
+                deleteLocalFile(oldPath);
+            }
         } else {
             // Insert dokumen baru
             const { error: insertError } = await supabase
@@ -635,10 +683,10 @@ exports.deleteDokumen = async (req, res) => {
         const userId = req.user.id_user;
         const { id_dokumen } = req.params;
 
-        // Cek kepemilikan dokumen
+        // Cek kepemilikan dokumen dan ambil path file fisiknya
         const { data: existingDoc, error: checkError } = await supabase
             .from('mahasiswa_dokumen')
-            .select('id_dokumen')
+            .select('id_dokumen, file_path')
             .eq('id_dokumen', id_dokumen)
             .eq('id_user', userId)
             .single();
@@ -658,6 +706,11 @@ exports.deleteDokumen = async (req, res) => {
             .eq('id_user', userId);
 
         if (deleteError) throw deleteError;
+
+        // Hapus file fisik dari disk
+        if (existingDoc?.file_path && existingDoc.file_path.startsWith('/uploads/')) {
+            deleteLocalFile(existingDoc.file_path);
+        }
 
         // Log aktivitas
         await supabase
