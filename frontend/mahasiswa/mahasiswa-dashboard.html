@@ -338,10 +338,22 @@
 
                 <!-- Right Actions -->
                 <div class="flex items-center gap-3">
-                    <button id="notificationBtn" class="icon-btn relative p-2 rounded-lg transition">
-                        <i class="fas fa-bell text-lg"></i>
-                        <span id="notificationBadge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full hidden"></span>
-                    </button>
+                    <div class="relative">
+                        <button id="notificationBtn" class="icon-btn relative p-2 rounded-lg transition">
+                            <i class="fas fa-bell text-lg"></i>
+                            <span id="notificationBadge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full hidden"></span>
+                        </button>
+                        <!-- Notification Dropdown -->
+                        <div id="notificationDropdown" class="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hidden z-50">
+                            <div class="p-3 border-b bg-gray-50 flex justify-between items-center">
+                                <span class="font-bold text-sm text-gray-700">Notifikasi</span>
+                                <button onclick="markAllNotificationsRead(event)" class="text-xs text-blue-600 hover:underline">Tandai dibaca</button>
+                            </div>
+                            <div id="notificationList" class="max-h-64 overflow-y-auto divide-y divide-gray-100">
+                                <div class="p-4 text-center text-xs text-gray-500">Memuat...</div>
+                            </div>
+                        </div>
+                    </div>
 
                     <!-- Desktop User Menu -->
                     <div class="relative hidden md:block">
@@ -466,7 +478,165 @@
         function getEventDay(d){ return d?new Date(d).getDate():'-'; }
         function getEventMonth(d){ if(!d) return '-'; const m=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des']; return m[new Date(d).getMonth()]; }
 
-        document.addEventListener('DOMContentLoaded',async()=>{ if(!checkAuth()) return; initDropdown(); setActiveNavLink(); initMobileNav(); document.getElementById('loadingOverlay').classList.remove('hidden'); await refreshAllData(); setTimeout(()=>document.getElementById('loadingOverlay').classList.add('hidden'),500); refreshInterval=setInterval(()=>{ if(!document.hidden) refreshAllData(); },30000); });
+        document.addEventListener('DOMContentLoaded',async()=>{ if(!checkAuth()) return; initDropdown(); setActiveNavLink(); initMobileNav(); initNotifications(); document.getElementById('loadingOverlay').classList.remove('hidden'); await refreshAllData(); setTimeout(()=>document.getElementById('loadingOverlay').classList.add('hidden'),500); refreshInterval=setInterval(()=>{ if(!document.hidden) refreshAllData(); },30000); });
+
+        // ==================== NOTIFICATION SYSTEM ====================
+        function initNotifications() {
+            const btn = document.getElementById('notificationBtn');
+            const drop = document.getElementById('notificationDropdown');
+            if (btn && drop) {
+                btn.onclick = (e) => {
+                    e.stopPropagation();
+                    drop.classList.toggle('hidden');
+                    if (!drop.classList.contains('hidden')) {
+                        loadNotifications();
+                    }
+                };
+                document.addEventListener('click', (e) => {
+                    if (!btn.contains(e.target) && !drop.contains(e.target)) {
+                        drop.classList.add('hidden');
+                    }
+                });
+            }
+            loadNotificationsBadgeOnly();
+        }
+
+        async function loadNotificationsBadgeOnly() {
+            try {
+                const res = await fetch('/api/notifikasi', {
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+                if (res.ok) {
+                    const result = await res.json();
+                    const notifs = result.data || [];
+                    const unread = notifs.filter(n => !n.dibaca).length;
+                    const badge = document.getElementById('notificationBadge');
+                    if (badge) {
+                        if (unread > 0) {
+                            badge.classList.remove('hidden');
+                        } else {
+                            badge.classList.add('hidden');
+                        }
+                    }
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        async function loadNotifications() {
+            const list = document.getElementById('notificationList');
+            if (list) list.innerHTML = '<div class="p-4 text-center text-xs text-gray-500"><i class="fas fa-spinner fa-spin mr-1"></i>Memuat...</div>';
+            
+            try {
+                const res = await fetch('/api/notifikasi', {
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+                if (res.ok) {
+                    const result = await res.json();
+                    const notifs = result.data || [];
+                    renderNotifications(notifs);
+                } else {
+                    if (list) list.innerHTML = '<div class="p-4 text-center text-xs text-red-500">Gagal memuat notifikasi</div>';
+                }
+            } catch (e) {
+                console.error(e);
+                if (list) list.innerHTML = '<div class="p-4 text-center text-xs text-red-500">Gagal memuat notifikasi</div>';
+            }
+        }
+
+        function renderNotifications(notifs) {
+            const badge = document.getElementById('notificationBadge');
+            const unread = notifs.filter(n => !n.dibaca).length;
+            if (badge) {
+                if (unread > 0) badge.classList.remove('hidden');
+                else badge.classList.add('hidden');
+            }
+
+            const list = document.getElementById('notificationList');
+            if (!list) return;
+
+            if (notifs.length === 0) {
+                list.innerHTML = '<div class="p-4 text-center text-xs text-gray-500">Tidak ada notifikasi</div>';
+                return;
+            }
+
+            list.innerHTML = notifs.map(n => {
+                const dateStr = formatDateAgo(n.created_at);
+                const isUnread = !n.dibaca;
+                const bgClass = isUnread ? 'bg-blue-50/50' : 'bg-white';
+                const dotHtml = isUnread ? '<span class="w-2 h-2 bg-blue-600 rounded-full shrink-0 mt-1"></span>' : '';
+                
+                let actionHtml = '';
+                if (n.link) {
+                    actionHtml = `
+                        <div class="mt-2">
+                            <a href="${n.link}" target="_blank" onclick="markNotificationRead('${n.id_notifikasi}')" class="inline-flex items-center gap-1 px-2.5 py-1 bg-green-500 hover:bg-green-600 text-white text-[10px] font-bold rounded transition duration-150">
+                                <i class="fab fa-whatsapp text-xs"></i>
+                                Gabung Grup WA
+                            </a>
+                        </div>
+                    `;
+                }
+
+                return `
+                    <div class="p-3 hover:bg-gray-50/80 transition ${bgClass} flex gap-2.5 items-start">
+                        <div class="flex-1 text-left">
+                            <div class="flex justify-between items-start gap-2">
+                                <h5 class="font-bold text-xs text-gray-800">${escapeHtml(n.judul)}</h5>
+                                <span class="text-[9px] text-gray-400 shrink-0">${dateStr}</span>
+                            </div>
+                            <p class="text-[11px] text-gray-500 mt-0.5 leading-normal">${escapeHtml(n.pesan)}</p>
+                            ${actionHtml}
+                        </div>
+                        ${dotHtml}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function markNotificationRead(id) {
+            try {
+                await fetch(`/api/notifikasi/${id}/read`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${getToken()}`, 'Content-Type': 'application/json' }
+                });
+                loadNotificationsBadgeOnly();
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        async function markAllNotificationsRead(event) {
+            if (event) event.stopPropagation();
+            try {
+                const res = await fetch('/api/notifikasi/read-all', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${getToken()}`, 'Content-Type': 'application/json' }
+                });
+                if (res.ok) {
+                    loadNotifications();
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        function formatDateAgo(d) {
+            if (!d) return '-';
+            const date = new Date(d);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMin = Math.floor(diffMs / 60000);
+            if (diffMin < 1) return 'Baru saja';
+            if (diffMin < 60) return `${diffMin} mnt lalu`;
+            const diffHr = Math.floor(diffMin / 60);
+            if (diffHr < 24) return `${diffHr} jam lalu`;
+            const diffDay = Math.floor(diffHr / 24);
+            if (diffDay === 1) return 'Kemarin';
+            if (diffDay < 7) return `${diffDay} hari lalu`;
+            return date.toLocaleDateString('id-ID');
+        }
     </script>
 </body>
 </html>

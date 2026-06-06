@@ -192,7 +192,7 @@ const registrasiKknController = {
             // Check if registration exists
             const { data: existing, error: checkError } = await supabase
                 .from('registrasi_kkn')
-                .select('id_registrasi, status')
+                .select('id_registrasi, id_user, id_desa, status, catatan')
                 .eq('id_registrasi', id)
                 .single();
 
@@ -227,6 +227,64 @@ const registrasiKknController = {
             if (error) {
                 console.error('Database error in updateStatus:', error);
                 return res.status(500).json(formatError('Gagal mengupdate status: ' + error.message));
+            }
+
+            // Create notification automatically
+            try {
+                if (status === 'approved' || status === 'verified') {
+                    let linkWa = '';
+                    let namaDesa = '';
+
+                    if (existing.id_desa) {
+                        const { data: desa } = await supabase
+                            .from('desa_kkn')
+                            .select('nama_desa, deskripsi')
+                            .eq('id_desa', existing.id_desa)
+                            .single();
+                        
+                        if (desa) {
+                            namaDesa = desa.nama_desa;
+                            const urlRegex = /(https?:\/\/chat\.whatsapp\.com\/[^\s]+|https?:\/\/wa\.me\/[^\s]+)/g;
+                            const urls = desa.deskripsi ? desa.deskripsi.match(urlRegex) : null;
+                            if (urls && urls.length > 0) {
+                                linkWa = urls[0];
+                            }
+                        }
+                    }
+
+                    if (!linkWa) {
+                        const groupLinks = require('../../config/groupLinks');
+                        linkWa = groupLinks.kkn.default;
+                    }
+
+                    const locationText = namaDesa ? ` di Desa ${namaDesa}` : '';
+                    await supabase
+                        .from('notifikasi')
+                        .insert([{
+                            id_user: existing.id_user,
+                            judul: 'Pendaftaran KKN Disetujui',
+                            pesan: `Selamat! Pendaftaran KKN Anda${locationText} telah disetujui. Silakan klik tombol di bawah untuk bergabung dengan grup koordinasi WhatsApp.`,
+                            tipe: 'success',
+                            link: linkWa,
+                            dibaca: false,
+                            created_at: new Date()
+                        }]);
+                } else if (status === 'rejected') {
+                    const alasan = catatan || 'Silakan hubungi pihak LPPM untuk informasi lebih lanjut.';
+                    await supabase
+                        .from('notifikasi')
+                        .insert([{
+                            id_user: existing.id_user,
+                            judul: 'Pendaftaran KKN Ditolak',
+                            pesan: `Mohon maaf, pendaftaran KKN Anda ditolak. Catatan: ${alasan}`,
+                            tipe: 'error',
+                            link: null,
+                            dibaca: false,
+                            created_at: new Date()
+                        }]);
+                }
+            } catch (notifErr) {
+                console.error('Failed to generate KKN status update notification:', notifErr);
             }
 
             return res.status(200).json(

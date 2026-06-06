@@ -139,6 +139,20 @@ const registrasiMagangController = {
                 return res.status(400).json(formatError('Status tidak valid'));
             }
 
+            // Check if registration exists to get id_user
+            const { data: existing, error: checkError } = await supabase
+                .from('registrasi_magang')
+                .select('id_registrasi, id_user, status, catatan')
+                .eq('id_registrasi', id)
+                .single();
+
+            if (checkError) {
+                if (checkError.code === 'PGRST116') {
+                    return res.status(404).json(formatError('Registrasi tidak ditemukan'));
+                }
+                throw checkError;
+            }
+
             const updateData = {
                 status,
                 catatan: catatan || null,
@@ -153,6 +167,62 @@ const registrasiMagangController = {
                 .single();
 
             if (error) throw error;
+
+            // Create notification automatically
+            try {
+                if (status === 'approved' || status === 'verified') {
+                    let linkWa = '';
+
+                    // Get active magang program
+                    const { data: program } = await supabase
+                        .from('programs')
+                        .select('deskripsi')
+                        .eq('jenis', 'magang')
+                        .eq('status', 'aktif')
+                        .limit(1)
+                        .maybeSingle();
+                    
+                    if (program && program.deskripsi) {
+                        const urlRegex = /(https?:\/\/chat\.whatsapp\.com\/[^\s]+|https?:\/\/wa\.me\/[^\s]+)/g;
+                        const urls = program.deskripsi.match(urlRegex);
+                        if (urls && urls.length > 0) {
+                            linkWa = urls[0];
+                        }
+                    }
+
+                    if (!linkWa) {
+                        const groupLinks = require('../../config/groupLinks');
+                        linkWa = groupLinks.magang.default;
+                    }
+
+                    await supabase
+                        .from('notifikasi')
+                        .insert([{
+                            id_user: existing.id_user,
+                            judul: 'Pendaftaran Magang Disetujui',
+                            pesan: 'Selamat! Pendaftaran Magang Anda telah disetujui. Silakan klik tombol di bawah untuk bergabung dengan grup koordinasi WhatsApp.',
+                            tipe: 'success',
+                            link: linkWa,
+                            dibaca: false,
+                            created_at: new Date()
+                        }]);
+                } else if (status === 'rejected') {
+                    const alasan = catatan || 'Silakan hubungi pihak LPPM untuk informasi lebih lanjut.';
+                    await supabase
+                        .from('notifikasi')
+                        .insert([{
+                            id_user: existing.id_user,
+                            judul: 'Pendaftaran Magang Ditolak',
+                            pesan: `Mohon maaf, pendaftaran Magang Anda ditolak. Catatan: ${alasan}`,
+                            tipe: 'error',
+                            link: null,
+                            dibaca: false,
+                            created_at: new Date()
+                        }]);
+                }
+            } catch (notifErr) {
+                console.error('Failed to generate Magang status update notification:', notifErr);
+            }
 
             return res.status(200).json(
                 formatResponse('success', `Status berhasil diubah menjadi ${status}`, data)
