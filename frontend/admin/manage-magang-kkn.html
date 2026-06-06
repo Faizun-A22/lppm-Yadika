@@ -625,6 +625,7 @@
                     <div class="p-4" id="kknRegistrationContainer">
                         <div class="flex justify-between items-center mb-4">
                             <h3 class="text-lg font-semibold text-gray-800">Registrasi KKN</h3>
+                            <button onclick="exportToExcel('kkn')" class="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-sm transition-all"><i class="fas fa-file-excel"></i> Cetak Excel</button>
                         </div>
                         <div class="table-container overflow-x-auto">
                             <table class="w-full min-w-[700px]">
@@ -657,6 +658,7 @@
                     <div class="p-4 border-t border-gray-200" id="magangRegistrationContainer">
                         <div class="flex justify-between items-center mb-4">
                             <h3 class="text-lg font-semibold text-gray-800">Registrasi Magang</h3>
+                            <button onclick="exportToExcel('magang')" class="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-sm transition-all"><i class="fas fa-file-excel"></i> Cetak Excel</button>
                         </div>
                         <div class="table-container overflow-x-auto">
                             <table class="w-full min-w-[700px]">
@@ -892,6 +894,7 @@
     </div>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script>
         // Initialize AOS
         AOS.init({ duration: 800, once: true, easing: 'ease-out-cubic' });
@@ -1226,6 +1229,91 @@
             
             document.getElementById('btnPrevMagang').disabled = !pg.has_prev;
             document.getElementById('btnNextMagang').disabled = !pg.has_next;
+        }
+
+        async function exportToExcel(type) {
+            showLoading();
+            try {
+                const search = document.getElementById('searchRegistration').value;
+                const status = document.getElementById('filterStatusRegistration').value;
+                
+                const response = await fetch(`${API_BASE_URL}/admin/registrasi-${type}?search=${search}&status=${status}&export=true`, { headers: getHeaders() });
+                const result = await response.json();
+                
+                if (!result.success || !result.data || result.data.length === 0) {
+                    showAlert('Tidak ada data untuk diexport', 'error');
+                    return;
+                }
+                
+                const rawData = result.data;
+                let excelData = [];
+                
+                if (type === 'kkn') {
+                    excelData = rawData.map((item, index) => ({
+                        'No': index + 1,
+                        'NIM': item.nim || '-',
+                        'Nama Lengkap': item.nama_lengkap || '-',
+                        'Email': item.email || '-',
+                        'No. HP': item.no_hp || '-',
+                        'Program Studi': item.program_studi?.nama_prodi || '-',
+                        'Fakultas': item.program_studi?.fakultas?.nama_fakultas || '-',
+                        'Semester/Angkatan': item.angkatan || '-',
+                        'Desa KKN': item.desa_kkn?.nama_desa || '-',
+                        'Kecamatan': item.desa_kkn?.kecamatan || '-',
+                        'Kabupaten': item.desa_kkn?.kabupaten || '-',
+                        'Ukuran Jaket': item.ukuran_jaket || '-',
+                        'Status': getStatusText(item.status),
+                        'Tanggal Daftar': formatDate(item.tanggal_daftar)
+                    }));
+                } else {
+                    excelData = rawData.map((item, index) => {
+                        const perusahaan = Array.isArray(item.magang_perusahaan) 
+                            ? (item.magang_perusahaan[0] || {}) 
+                            : (item.magang_perusahaan || {});
+                        return {
+                            'No': index + 1,
+                            'NIM': item.nim || '-',
+                            'Nama Lengkap': item.nama_lengkap || '-',
+                            'Email': item.email || '-',
+                            'No. HP': item.no_hp || '-',
+                            'Program Studi': item.program_studi?.nama_prodi || '-',
+                            'Fakultas': item.program_studi?.fakultas?.nama_fakultas || '-',
+                            'Semester/Angkatan': item.semester || '-',
+                            'Domisili': item.domisili || '-',
+                            'Perusahaan': perusahaan.nama_perusahaan || '-',
+                            'Bidang Magang': perusahaan.bidang_magang || '-',
+                            'Posisi': perusahaan.posisi || '-',
+                            'Alamat Perusahaan': perusahaan.alamat_perusahaan || '-',
+                            'Status': getStatusText(item.status),
+                            'Tanggal Daftar': formatDate(item.created_at)
+                        };
+                    });
+                }
+                
+                const worksheet = XLSX.utils.json_to_sheet(excelData);
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, `Data Registrasi ${type.toUpperCase()}`);
+                
+                // Adjust column widths automatically
+                const maxLen = excelData.reduce((acc, row) => {
+                    Object.keys(row).forEach((key) => {
+                        const len = row[key] ? row[key].toString().length : 10;
+                        acc[key] = Math.max(acc[key] || 0, len, key.length);
+                    });
+                    return acc;
+                }, {});
+                const cols = Object.keys(maxLen).map(key => ({ wch: maxLen[key] + 2 }));
+                worksheet['!cols'] = cols;
+                
+                const fileName = `Registrasi_${type.toUpperCase()}_${new Date().toISOString().slice(0, 10)}.xlsx`;
+                XLSX.writeFile(workbook, fileName);
+                showAlert('Data berhasil diexport ke Excel');
+            } catch (error) {
+                console.error('Error exporting excel:', error);
+                showAlert('Gagal melakukan export data', 'error');
+            } finally {
+                hideLoading();
+            }
         }
 
         async function viewRegistrationDetail(type, id) {

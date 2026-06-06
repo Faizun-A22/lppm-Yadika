@@ -9,14 +9,8 @@ const registrasiKknController = {
      */
     async getAllRegistrasi(req, res) {
         try {
-            const { page = 1, limit = 10, search = '', status = '', id_desa = '' } = req.query;
+            const { page = 1, limit = 10, search = '', status = '', id_desa = '', export: exportFlag } = req.query;
             
-            // Parse pagination parameters
-            const pageNum = parseInt(page);
-            const limitNum = parseInt(limit);
-            const from = (pageNum - 1) * limitNum;
-            const to = from + limitNum - 1;
-
             // Build query
             let query = supabase
                 .from('registrasi_kkn')
@@ -24,7 +18,11 @@ const registrasiKknController = {
                     *,
                     program_studi:program_studi (
                         id_prodi,
-                        nama_prodi
+                        nama_prodi,
+                        fakultas:fakultas (
+                            id_fakultas,
+                            nama_fakultas
+                        )
                     ),
                     desa_kkn:desa_kkn (
                         id_desa,
@@ -47,16 +45,42 @@ const registrasiKknController = {
                 query = query.eq('id_desa', id_desa);
             }
 
-            // Execute query with pagination
-            const { data, error, count } = await query
-                .order('tanggal_daftar', { ascending: false })
-                .range(from, to);
+            // Execute query
+            let data, error, count;
+            
+            if (exportFlag === 'true') {
+                const result = await query.order('tanggal_daftar', { ascending: false });
+                data = result.data;
+                error = result.error;
+                count = result.count;
+            } else {
+                // Parse pagination parameters
+                const pageNum = parseInt(page);
+                const limitNum = parseInt(limit);
+                const from = (pageNum - 1) * limitNum;
+                const to = from + limitNum - 1;
+                
+                const result = await query
+                    .order('tanggal_daftar', { ascending: false })
+                    .range(from, to);
+                data = result.data;
+                error = result.error;
+                count = result.count;
+            }
 
             if (error) {
                 console.error('Database error in getAllRegistrasi:', error);
                 return res.status(500).json(formatError('Gagal mengambil data registrasi KKN: ' + error.message));
             }
 
+            if (exportFlag === 'true') {
+                return res.status(200).json(
+                    formatResponse('success', 'Data registrasi KKN untuk export berhasil diambil', data || [])
+                );
+            }
+
+            const pageNum = parseInt(page);
+            const limitNum = parseInt(limit);
             return res.status(200).json(
                 formatPaginatedResponse(
                     data || [],
