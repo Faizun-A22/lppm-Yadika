@@ -1,10 +1,33 @@
-// js/auth.js - Modified version
+const getBaseUrl = () => {
+    const hostname = window.location.hostname;
+    const protocol = window.location.protocol;
+    
+    if (protocol === 'file:') {
+        return 'http://localhost:3000';
+    }
+    
+    const isLocalHost = hostname === 'localhost' || 
+                        hostname === '127.0.0.1' || 
+                        hostname === '[::1]' ||
+                        hostname === '' ||
+                        hostname.endsWith('.local') ||
+                        !hostname.includes('.') ||
+                        /^127\.\d+\.\d+\.\d+$/.test(hostname) ||
+                        /^192\.168\./.test(hostname) ||
+                        /^10\./.test(hostname) ||
+                        /^172\.(1[6-9]|2\d|3[01])\./.test(hostname);
+    
+    if (isLocalHost) {
+        return `${protocol}//${hostname || 'localhost'}:3000`;
+    }
+    
+    return '';
+};
 
 const API_CONFIG = {
-    BASE_URL: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-        ? 'http://localhost:3000'
-        : ''
+    BASE_URL: getBaseUrl()
 };
+
 
 // Get token from localStorage
 function getToken() {

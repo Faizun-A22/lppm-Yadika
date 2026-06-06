@@ -679,7 +679,32 @@
     <script>
         AOS.init({ duration: 600, once: true, offset: 80 });
 
-        const API_BASE_URL = window.location.origin + '/api';
+        const getApiBaseUrl = () => {
+            const hostname = window.location.hostname;
+            const protocol = window.location.protocol;
+            
+            if (protocol === 'file:') {
+                return 'http://localhost:3000/api';
+            }
+            
+            const isLocalHost = hostname === 'localhost' || 
+                                hostname === '127.0.0.1' || 
+                                hostname === '[::1]' ||
+                                hostname === '' ||
+                                hostname.endsWith('.local') ||
+                                !hostname.includes('.') ||
+                                /^127\.\d+\.\d+\.\d+$/.test(hostname) ||
+                                /^192\.168\./.test(hostname) ||
+                                /^10\./.test(hostname) ||
+                                /^172\.(1[6-9]|2\d|3[01])\./.test(hostname);
+            
+            if (isLocalHost) {
+                return `${protocol}//${hostname || 'localhost'}:3000/api`;
+            }
+            
+            return '/api';
+        };
+        const API_BASE_URL = getApiBaseUrl();
         let userPrograms = { magang: null, kkn: null };
 
         function showLoading() { document.getElementById('loadingOverlay').classList.remove('hidden'); }

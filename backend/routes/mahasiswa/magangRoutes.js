@@ -3,6 +3,7 @@ const router = express.Router();
 const { body } = require('express-validator');
 const { authenticateToken, authorizeRoles } = require('../../middleware/auth');
 const { upload, handleUploadError } = require('../../middleware/upload');
+const { handleValidationErrors } = require('../../utils/validation');
 
 // IMPORT CONTROLLER
 const magangController = require('../../controllers/mahasiswa/magangController');
@@ -34,6 +35,7 @@ router.post(
         body('semester').isInt({ min: 1, max: 14 }).withMessage('Semester tidak valid')
     ],
     handleUploadError,
+    handleValidationErrors,
     magangController.createRegistrasi  // ✅ Perbaiki: dari daftarMagang jadi createRegistrasi
 );
 
@@ -63,6 +65,7 @@ router.put(
         body('semester').optional().isInt({ min: 1, max: 14 }).withMessage('Semester tidak valid')
     ],
     handleUploadError,
+    handleValidationErrors,
     magangController.updateRegistrasi
 );
 
