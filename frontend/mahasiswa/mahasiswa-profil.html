@@ -1109,7 +1109,16 @@ window.changeProfilePicture = function() { document.getElementById('profilePicIn
 window.uploadProfilePicture = async function(input) {
     const file = input.files[0];
     if (!file) return;
-    if (file.size > 2 * 1024 * 1024) { showNotification('Ukuran file maksimal 2MB', false); return; }
+    if (file.size > 2 * 1024 * 1024) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Ukuran Foto Terlalu Besar',
+            text: `Foto profil "${file.name}" berukuran ${(file.size / (1024 * 1024)).toFixed(2)}MB. Batas maksimum ukuran foto profil adalah 2MB. Silakan pilih foto yang lebih kecil.`,
+            confirmButtonColor: '#8B5CF6'
+        });
+        input.value = ''; // Reset input
+        return;
+    }
     const formData = new FormData();
     formData.append('foto', file);
     try {
@@ -1327,6 +1336,26 @@ function setActiveNavLink() {
     });
 }
 
+function setupFileValidation() {
+    const docFileInput = document.getElementById('docFileInput');
+    if (docFileInput) {
+        docFileInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (!file) return;
+            const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+            if (file.size > MAX_SIZE) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Ukuran Dokumen Terlalu Besar',
+                    text: `Dokumen "${file.name}" berukuran ${(file.size / (1024 * 1024)).toFixed(2)}MB. Batas maksimum ukuran dokumen adalah 5MB. Silakan pilih file yang lebih kecil.`,
+                    confirmButtonColor: '#8B5CF6'
+                });
+                this.value = ''; // Reset input
+            }
+        });
+    }
+}
+
 // ===========================================
 // INITIALIZE PAGE
 // ===========================================
@@ -1336,6 +1365,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     initMobileNav();
     setActiveNavLink();
     initNotifications();
+    setupFileValidation();
     const user = checkAuth();
     if (!user) return;
     await updateNavbarUserInfo();

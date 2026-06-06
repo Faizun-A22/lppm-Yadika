@@ -1422,6 +1422,11 @@
             showNotification('Semua file harus diupload', 'warning'); 
             return; 
         }
+
+        const MAX_SIZE = 5 * 1024 * 1024; // 5MB limit
+        if (krsFile && krsFile.size > MAX_SIZE) { showNotification('Ukuran file KRS terlalu besar. Maksimal 5MB.', 'warning'); return; }
+        if (khsFile && khsFile.size > MAX_SIZE) { showNotification('Ukuran file KHS terlalu besar. Maksimal 5MB.', 'warning'); return; }
+        if (paymentFile && paymentFile.size > MAX_SIZE) { showNotification('Ukuran file Bukti Pembayaran terlalu besar. Maksimal 5MB.', 'warning'); return; }
         
         try {
             showLoading();
@@ -1481,10 +1486,17 @@
             if (emailPembimbing) formData.append('email_pembimbing', emailPembimbing);
             const jabatanPembimbing = document.getElementById('supervisorPosition').value;
             if (jabatanPembimbing) formData.append('jabatan_pembimbing', jabatanPembimbing);
+            const MAX_SIZE = 5 * 1024 * 1024; // 5MB limit
             const suratKeterangan = document.getElementById('workCertificate').files[0];
-            if (suratKeterangan) formData.append('surat_keterangan', suratKeterangan);
+            if (suratKeterangan) {
+                if (suratKeterangan.size > MAX_SIZE) { showNotification('Ukuran file Surat Keterangan terlalu besar. Maksimal 5MB.', 'warning'); return; }
+                formData.append('surat_keterangan', suratKeterangan);
+            }
             const strukturOrganisasi = document.getElementById('companyStructure').files[0];
-            if (strukturOrganisasi) formData.append('struktur_organisasi', strukturOrganisasi);
+            if (strukturOrganisasi) {
+                if (strukturOrganisasi.size > MAX_SIZE) { showNotification('Ukuran file Struktur Organisasi terlalu besar. Maksimal 5MB.', 'warning'); return; }
+                formData.append('struktur_organisasi', strukturOrganisasi);
+            }
             if (magangData.registrasi && magangData.registrasi.id_registrasi) {
                 formData.append('id_registrasi', magangData.registrasi.id_registrasi);
             }
@@ -1519,12 +1531,22 @@
             if (laporanLink) formData.append('laporan', laporanLink);
             const fotoLink = document.getElementById('link_foto').value;
             if (fotoLink) formData.append('foto_kegiatan', fotoLink);
+            const MAX_SIZE = 5 * 1024 * 1024; // 5MB limit
             const mouFile = document.getElementById('file_mou_magang').files[0];
-            if (mouFile) formData.append('mou_file', mouFile);
+            if (mouFile) {
+                if (mouFile.size > MAX_SIZE) { showNotification('Ukuran file MoU terlalu besar. Maksimal 5MB.', 'warning'); return; }
+                formData.append('mou_file', mouFile);
+            }
             const sertifikatFile = document.getElementById('sertifikat_magang').files[0];
-            if (sertifikatFile) formData.append('sertifikat', sertifikatFile);
+            if (sertifikatFile) {
+                if (sertifikatFile.size > MAX_SIZE) { showNotification('Ukuran file Sertifikat terlalu besar. Maksimal 5MB.', 'warning'); return; }
+                formData.append('sertifikat', sertifikatFile);
+            }
             const logbookFile = document.getElementById('logbook_magang').files[0];
-            if (logbookFile) formData.append('logbook', logbookFile);
+            if (logbookFile) {
+                if (logbookFile.size > MAX_SIZE) { showNotification('Ukuran file Logbook terlalu besar. Maksimal 5MB.', 'warning'); return; }
+                formData.append('logbook', logbookFile);
+            }
             const luaranId = document.getElementById('luaranId').value;
             const url = luaranId ? `${API_BASE_URL}/magang/luaran/${luaranId}` : `${API_BASE_URL}/magang/luaran`;
             const method = luaranId ? 'PUT' : 'POST';
@@ -1668,6 +1690,25 @@
         });
     }
 
+    function setupFileValidation() {
+        document.querySelectorAll('input[type="file"]').forEach(input => {
+            input.addEventListener('change', function() {
+                const file = this.files[0];
+                if (!file) return;
+                const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+                if (file.size > MAX_SIZE) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Ukuran File Terlalu Besar',
+                        text: `File "${file.name}" berukuran ${(file.size / (1024 * 1024)).toFixed(2)}MB. Batas maksimum ukuran file adalah 5MB. Silakan pilih file yang lebih kecil.`,
+                        confirmButtonColor: '#8B5CF6'
+                    });
+                    this.value = ''; // Reset input
+                }
+            });
+        });
+    }
+
     // ========== INITIALIZATION ==========
     document.addEventListener('DOMContentLoaded', async function() {
         if (!auth.requireRole('mahasiswa')) return;
@@ -1676,6 +1717,7 @@
         setActiveNavLink();
         initNotifications();
         updateUserInfo();
+        setupFileValidation();
         await updateNavbarUserInfo();
         showLoading();
         try {

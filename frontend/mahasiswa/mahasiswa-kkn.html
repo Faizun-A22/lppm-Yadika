@@ -1196,9 +1196,19 @@
             if (!selectedVillage) { showNotification('Pilih desa penempatan', false); return; }
             const selectedJacket = document.querySelector('input[name="jacketSize"]:checked');
             if (!selectedJacket) { showNotification('Pilih ukuran jaket', false); return; }
-            if (!document.getElementById('krsFile').files[0]) { showNotification('Upload file KRS', false); return; }
-            if (!document.getElementById('khsFile').files[0]) { showNotification('Upload file KHS', false); return; }
-            if (!document.getElementById('paymentFile').files[0]) { showNotification('Upload file bukti pembayaran', false); return; }
+            
+            const krsFile = document.getElementById('krsFile').files[0];
+            const khsFile = document.getElementById('khsFile').files[0];
+            const paymentFile = document.getElementById('paymentFile').files[0];
+
+            if (!krsFile) { showNotification('Upload file KRS', false); return; }
+            if (!khsFile) { showNotification('Upload file KHS', false); return; }
+            if (!paymentFile) { showNotification('Upload file bukti pembayaran', false); return; }
+
+            const MAX_SIZE = 5 * 1024 * 1024; // 5MB limit
+            if (krsFile.size > MAX_SIZE) { showNotification('Ukuran file KRS terlalu besar. Maksimal 5MB.', false); return; }
+            if (khsFile.size > MAX_SIZE) { showNotification('Ukuran file KHS terlalu besar. Maksimal 5MB.', false); return; }
+            if (paymentFile.size > MAX_SIZE) { showNotification('Ukuran file bukti pembayaran terlalu besar. Maksimal 5MB.', false); return; }
 
             const formData = new FormData();
             formData.append('id_prodi', document.getElementById('programStudi').value);
@@ -1206,9 +1216,9 @@
             formData.append('no_hp', document.getElementById('noHp').value);
             formData.append('semester', document.getElementById('semester').value);
             formData.append('ukuran_jaket', selectedJacket.value);
-            formData.append('krs_file', document.getElementById('krsFile').files[0]);
-            formData.append('khs_file', document.getElementById('khsFile').files[0]);
-            formData.append('payment_file', document.getElementById('paymentFile').files[0]);
+            formData.append('krs_file', krsFile);
+            formData.append('khs_file', khsFile);
+            formData.append('payment_file', paymentFile);
 
             Swal.fire({ title: 'Konfirmasi Pendaftaran', text: 'Apakah Anda yakin ingin mendaftar KKN?', icon: 'question', showCancelButton: true, confirmButtonColor: '#8B5CF6', cancelButtonColor: '#6B7280', confirmButtonText: 'Ya, Daftar!', cancelButtonText: 'Batal' }).then(async (result) => {
                 if (result.isConfirmed) {
@@ -1230,13 +1240,21 @@
 
         document.getElementById('luaranForm')?.addEventListener('submit', async function(e) {
             e.preventDefault();
+            const mouFile = document.getElementById('mouFile').files[0];
+            if (mouFile) {
+                const MAX_SIZE = 5 * 1024 * 1024; // 5MB limit
+                if (mouFile.size > MAX_SIZE) {
+                    showNotification('Ukuran file MoU terlalu besar. Maksimal 5MB.', false);
+                    return;
+                }
+            }
             const formData = new FormData();
             formData.append('judul_kegiatan', document.getElementById('luaranJudul').value);
             formData.append('link_video', document.getElementById('linkVideo').value);
             formData.append('link_poster', document.getElementById('linkPoster').value);
             formData.append('link_foto', document.getElementById('linkFoto').value);
             formData.append('keterangan', document.getElementById('luaranKeterangan').value);
-            if (document.getElementById('mouFile').files[0]) formData.append('mou_file', document.getElementById('mouFile').files[0]);
+            if (mouFile) formData.append('mou_file', mouFile);
 
             Swal.fire({ title: 'Simpan Luaran', text: 'Pastikan semua data sudah benar', icon: 'info', showCancelButton: true, confirmButtonColor: '#8B5CF6', confirmButtonText: 'Simpan' }).then(async (result) => {
                 if (result.isConfirmed) {
@@ -1374,6 +1392,25 @@
             });
         }
 
+        function setupFileValidation() {
+            document.querySelectorAll('input[type="file"]').forEach(input => {
+                input.addEventListener('change', function() {
+                    const file = this.files[0];
+                    if (!file) return;
+                    const MAX_SIZE = 5 * 1024 * 1024; // 5MB limit
+                    if (file.size > MAX_SIZE) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Ukuran File Terlalu Besar',
+                            text: `File "${file.name}" berukuran ${(file.size / (1024 * 1024)).toFixed(2)}MB. Batas maksimum ukuran file adalah 5MB. Silakan pilih file yang lebih kecil.`,
+                            confirmButtonColor: '#8B5CF6'
+                        });
+                        this.value = ''; // Reset input
+                    }
+                });
+            });
+        }
+
         // ==================== INITIALIZATION ====================
         document.addEventListener('DOMContentLoaded', async function() {
             showLoading();
@@ -1382,6 +1419,7 @@
                 initMobileNav();
                 setActiveNavLink();
                 initNotifications();
+                setupFileValidation();
                 const token = getToken();
                 if (!token) { window.location.href = '../login.html'; return; }
                 const user = await loadUserBasicData();
