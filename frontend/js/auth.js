@@ -6,16 +6,15 @@ const getBaseUrl = () => {
         return 'http://localhost:3000';
     }
     
+    const isIp = /^\d+\.\d+\.\d+\.\d+$/.test(hostname) || hostname.includes(':');
+    
     const isLocalHost = hostname === 'localhost' || 
                         hostname === '127.0.0.1' || 
                         hostname === '[::1]' ||
                         hostname === '' ||
                         hostname.endsWith('.local') ||
                         !hostname.includes('.') ||
-                        /^127\.\d+\.\d+\.\d+$/.test(hostname) ||
-                        /^192\.168\./.test(hostname) ||
-                        /^10\./.test(hostname) ||
-                        /^172\.(1[6-9]|2\d|3[01])\./.test(hostname);
+                        isIp;
     
     if (isLocalHost) {
         return `${protocol}//${hostname || 'localhost'}:3000`;
