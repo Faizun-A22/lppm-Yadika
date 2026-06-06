@@ -168,6 +168,7 @@ const registrasiMagangController = {
 
             if (error) throw error;
 
+<<<<<<< HEAD
             // Create notification automatically
             try {
                 if (status === 'approved' || status === 'verified') {
@@ -222,6 +223,49 @@ const registrasiMagangController = {
                 }
             } catch (notifErr) {
                 console.error('Failed to generate Magang status update notification:', notifErr);
+=======
+            // Jika status disetujui (approved), buat notifikasi otomatis untuk mahasiswa
+            if (status === 'approved') {
+                try {
+                    // Ambil detail registrasi untuk mendapatkan id_user dan nama_lengkap
+                    const { data: registration, error: regError } = await supabase
+                        .from('registrasi_magang')
+                        .select('*')
+                        .eq('id_registrasi', id)
+                        .single();
+
+                    if (!regError && registration) {
+                        const linkGrup = process.env.MAGANG_WA_LINK || 'https://chat.whatsapp.com/GrupMagangYadika';
+
+                        let pesanNotif = `Pendaftaran Magang Anda atas nama ${registration.nama_lengkap} telah disetujui oleh admin.`;
+                        if (catatan) {
+                            pesanNotif += ` Catatan: "${catatan}".`;
+                        }
+                        if (linkGrup) {
+                            pesanNotif += ` Silakan bergabung ke grup koordinasi Magang melalui tautan WhatsApp berikut: ${linkGrup}`;
+                        }
+
+                        // Insert ke tabel notifikasi
+                        const { error: notifError } = await supabase
+                            .from('notifikasi')
+                            .insert([
+                                {
+                                    id_user: registration.id_user,
+                                    judul: 'Pendaftaran Magang Disetujui',
+                                    pesan: pesanNotif,
+                                    tipe: 'success',
+                                    dibaca: false,
+                                    created_at: new Date()
+                                }
+                            ]);
+                        if (notifError) console.error('Error inserting notification Magang:', notifError);
+                    } else {
+                        console.error('Error fetching registration for notification Magang:', regError);
+                    }
+                } catch (notifErr) {
+                    console.error('Gagal mengirim notifikasi otomatis Magang:', notifErr);
+                }
+>>>>>>> a9e4b1877b2882e437714e2e0fa888e2c21367e0
             }
 
             return res.status(200).json(
