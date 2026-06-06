@@ -24,6 +24,17 @@ const registrasiKknController = {
                             nama_fakultas
                         )
                     ),
+                    users:users (
+                        id_user,
+                        program_studi:program_studi (
+                            id_prodi,
+                            nama_prodi,
+                            fakultas:fakultas (
+                                id_fakultas,
+                                nama_fakultas
+                            )
+                        )
+                    ),
                     desa_kkn:desa_kkn (
                         id_desa,
                         nama_desa,

@@ -19,6 +19,17 @@ const registrasiMagangController = {
                             nama_fakultas
                         )
                     ),
+                    users:users (
+                        id_user,
+                        program_studi:program_studi (
+                            id_prodi,
+                            nama_prodi,
+                            fakultas:fakultas (
+                                id_fakultas,
+                                nama_fakultas
+                            )
+                        )
+                    ),
                     magang_perusahaan:magang_perusahaan (
                         nama_perusahaan,
                         bidang_magang,
