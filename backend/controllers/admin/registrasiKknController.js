@@ -229,6 +229,52 @@ const registrasiKknController = {
                 return res.status(500).json(formatError('Gagal mengupdate status: ' + error.message));
             }
 
+            // Jika status disetujui (approved), buat notifikasi otomatis untuk mahasiswa
+            if (status === 'approved') {
+                try {
+                    // Ambil detail registrasi beserta nama desa dan link_grup desa
+                    const { data: registration, error: regError } = await supabase
+                        .from('registrasi_kkn')
+                        .select('*, desa_kkn(nama_desa, link_grup)')
+                        .eq('id_registrasi', id)
+                        .single();
+
+                    if (!regError && registration) {
+                        const villageName = registration.desa_kkn?.nama_desa || 'Desa KKN';
+                        const linkGrup = registration.desa_kkn?.link_grup;
+
+                        let pesanNotif = `Pendaftaran KKN Anda di ${villageName} telah disetujui oleh admin.`;
+                        if (catatan) {
+                            pesanNotif += ` Catatan: "${catatan}".`;
+                        }
+                        if (linkGrup) {
+                            pesanNotif += ` Silakan bergabung ke grup koordinasi desa melalui tautan WhatsApp berikut: ${linkGrup}`;
+                        } else {
+                            pesanNotif += ` Silakan hubungi koordinator desa untuk informasi koordinasi lebih lanjut.`;
+                        }
+
+                        // Insert ke tabel notifikasi
+                        const { error: notifError } = await supabase
+                            .from('notifikasi')
+                            .insert([
+                                {
+                                    id_user: registration.id_user,
+                                    judul: 'Pendaftaran KKN Disetujui',
+                                    pesan: pesanNotif,
+                                    tipe: 'success',
+                                    dibaca: false,
+                                    created_at: new Date()
+                                }
+                            ]);
+                        if (notifError) console.error('Error inserting notification KKN:', notifError);
+                    } else {
+                        console.error('Error fetching registration for notification KKN:', regError);
+                    }
+                } catch (notifErr) {
+                    console.error('Gagal mengirim notifikasi otomatis KKN:', notifErr);
+                }
+            }
+
             return res.status(200).json(
                 formatResponse('success', `Status berhasil diubah menjadi ${status}`, data)
             );

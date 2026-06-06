@@ -41,6 +41,7 @@ const perusahaanMagangRoutes = require('./routes/admin/perusahaanMagangRoutes');
 const magangLuaranRoutes = require('./routes/admin/magangLuaranRoutes');
 const repositoryRoutes = require('./routes/repositoryRoutes');
 const beritaRoutes = require('./routes/beritaRoutes');
+const notifikasiRoutes = require('./routes/admin/notifikasiRoutes');
 
 
 const { authenticateToken } = require('./middleware/auth'); 
@@ -95,6 +96,7 @@ app.use('/api/admin/magang/perusahaan', perusahaanMagangRoutes);
 app.use('/api/admin/magang/luaran', magangLuaranRoutes);
 app.use('/api/repository', repositoryRoutes);
 app.use('/api/berita-umum', beritaRoutes);
+app.use('/api/notifikasi', notifikasiRoutes);
 
 
 
