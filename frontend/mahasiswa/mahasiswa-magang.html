@@ -1045,41 +1045,57 @@
         </div>
     </main>
 
-    <!-- Notification Sidebar Drawer (Card Box Style) -->
-    <div id="notificationDrawer" class="fixed inset-y-0 right-0 w-full sm:w-[400px] bg-gray-50 shadow-2xl z-55 transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col border-l border-gray-100 hidden">
+    <!-- Notification Sidebar Drawer (Premium Card Style) -->
+    <div id="notificationDrawer" class="fixed inset-y-0 right-0 w-full sm:w-[440px] md:w-[480px] bg-slate-50 shadow-[0_0_50px_0_rgba(0,0,0,0.15)] z-[100] transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col border-l border-slate-150/80 hidden">
         <!-- Header -->
-        <div class="p-4 bg-gradient-to-r from-blue-700 to-blue-800 text-white flex justify-between items-center shadow-md shrink-0">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
-                    <i class="fas fa-bell text-lg"></i>
+        <div class="p-4 bg-gradient-to-br from-indigo-950 via-slate-900 to-slate-950 text-white flex justify-between items-center shadow-lg shrink-0 relative overflow-hidden">
+            <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-indigo-500/10 rounded-full blur-xl"></div>
+            <div class="flex items-center gap-3 relative z-10">
+                <div class="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-md border border-white/10 flex items-center justify-center shadow-inner relative" id="bellIconWrapper">
+                    <i class="fas fa-bell text-lg text-yellow-300 animate-pulse"></i>
+                    <span id="bellPulse" class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-red-500 rounded-full animate-ping hidden"></span>
+                    <span id="bellDot" class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-red-500 rounded-full hidden"></span>
                 </div>
                 <div>
-                    <h3 class="font-bold text-sm leading-tight">Pusat Notifikasi</h3>
-                    <p class="text-[10px] text-white/70">Informasi & Pengumuman Sistem</p>
+                    <h3 class="font-bold text-sm leading-tight tracking-wide">Pusat Notifikasi</h3>
+                    <p class="text-[10px] text-slate-400">Update Akademik & Status Registrasi</p>
                 </div>
             </div>
-            <button onclick="toggleNotificationDrawer()" class="text-white/80 hover:text-white text-lg p-1.5 hover:bg-white/10 rounded-lg transition">
+            <button onclick="toggleNotificationDrawer()" class="text-slate-400 hover:text-white text-lg p-2 hover:bg-white/10 rounded-xl transition duration-200">
                 <i class="fas fa-times"></i>
             </button>
         </div>
         
+        <!-- Filter Tabs -->
+        <div class="bg-white px-4 py-3 border-b border-slate-200 flex gap-2 shrink-0 overflow-x-auto">
+            <button onclick="setNotifFilter('semua')" id="btnFilterNotif-semua" class="notif-tab-btn active px-3.5 py-1.5 rounded-full text-xs font-bold transition-all duration-200 text-indigo-600 bg-indigo-50 border border-indigo-100 flex items-center gap-1.5">
+                Semua
+            </button>
+            <button onclick="setNotifFilter('belum_dibaca')" id="btnFilterNotif-belum_dibaca" class="notif-tab-btn px-3.5 py-1.5 rounded-full text-xs font-bold transition-all duration-200 text-slate-500 hover:bg-slate-100 border border-transparent flex items-center gap-1.5">
+                Belum Dibaca <span id="unreadTabBadge" class="px-1.5 py-0.5 bg-indigo-600 text-white rounded-full text-[9px] hidden font-extrabold">0</span>
+            </button>
+            <button onclick="setNotifFilter('penting')" id="btnFilterNotif-penting" class="notif-tab-btn px-3.5 py-1.5 rounded-full text-xs font-bold transition-all duration-200 text-slate-500 hover:bg-slate-100 border border-transparent flex items-center gap-1.5">
+                Penting
+            </button>
+        </div>
+        
         <!-- Cards Area -->
-        <div id="notificationChatArea" class="flex-1 overflow-y-auto p-4 space-y-3.5">
+        <div id="notificationChatArea" class="flex-1 overflow-y-auto p-4 space-y-3">
             <!-- Notification cards will be rendered here -->
         </div>
         
         <!-- Footer -->
-        <div class="p-3.5 bg-white border-t border-gray-150 flex items-center justify-between gap-3 shrink-0">
-            <button onclick="markAllNotificationsRead(event)" class="text-xs text-blue-600 hover:text-blue-800 hover:underline font-bold transition flex items-center gap-1">
+        <div class="p-3.5 bg-white border-t border-slate-150 flex items-center justify-between gap-3 shrink-0">
+            <button onclick="markAllNotificationsRead(event)" class="text-xs text-indigo-600 hover:text-indigo-800 hover:underline font-bold transition flex items-center gap-1">
                 <i class="fas fa-check-double"></i> Tandai semua dibaca
             </button>
-            <button onclick="toggleNotificationDrawer()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-xs font-bold transition">
+            <button onclick="toggleNotificationDrawer()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition">
                 Tutup
             </button>
         </div>
     </div>
     <!-- Backdrop -->
-    <div id="notificationBackdrop" class="fixed inset-0 bg-black/40 z-40 hidden transition-opacity duration-300 opacity-0" onclick="toggleNotificationDrawer()"></div>
+    <div id="notificationBackdrop" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-[90] hidden transition-opacity duration-300 opacity-0" onclick="toggleNotificationDrawer()"></div>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="../js/auth.js"></script>
@@ -1627,6 +1643,10 @@
     });
 
     // ==================== NOTIFICATION SYSTEM ====================
+    const getAuthToken = () => localStorage.getItem('token') || (typeof token !== 'undefined' ? token : (typeof getToken === 'function' ? getToken() : null));
+    let activeNotifFilter = 'semua';
+    let cachedNotifications = [];
+
     function initNotifications() {
         const btn = document.getElementById('notificationBtn');
         if (btn) {
@@ -1637,6 +1657,20 @@
         }
         loadNotificationsBadgeOnly();
     }
+
+    window.setNotifFilter = function(filter) {
+        activeNotifFilter = filter;
+        document.querySelectorAll('.notif-tab-btn').forEach(btn => {
+            btn.classList.remove('active', 'text-indigo-600', 'bg-indigo-50', 'border-indigo-100');
+            btn.classList.add('text-slate-500', 'hover:bg-slate-100', 'border-transparent');
+        });
+        const activeBtn = document.getElementById(`btnFilterNotif-${filter}`);
+        if (activeBtn) {
+            activeBtn.classList.remove('text-slate-500', 'hover:bg-slate-100', 'border-transparent');
+            activeBtn.classList.add('active', 'text-indigo-600', 'bg-indigo-50', 'border-indigo-100');
+        }
+        renderNotifications(cachedNotifications);
+    };
 
     function toggleNotificationDrawer() {
         const drawer = document.getElementById('notificationDrawer');
@@ -1667,12 +1701,14 @@
     async function loadNotificationsBadgeOnly() {
         try {
             const res = await fetch('/api/notifikasi', {
-                headers: { 'Authorization': `Bearer ${getToken()}` }
+                headers: { 'Authorization': `Bearer ${getAuthToken()}` }
             });
             if (res.ok) {
                 const result = await res.json();
                 const notifs = result.data || [];
                 const unread = notifs.filter(n => !n.dibaca).length;
+                
+                // Main bell badge
                 const badge = document.getElementById('notificationBadge');
                 if (badge) {
                     if (unread > 0) {
@@ -1680,6 +1716,30 @@
                         badge.classList.remove('hidden');
                     } else {
                         badge.classList.add('hidden');
+                    }
+                }
+
+                // Unread tab badge inside drawer
+                const tabBadge = document.getElementById('unreadTabBadge');
+                if (tabBadge) {
+                    if (unread > 0) {
+                        tabBadge.textContent = unread;
+                        tabBadge.classList.remove('hidden');
+                    } else {
+                        tabBadge.classList.add('hidden');
+                    }
+                }
+
+                // Bell icon wrapper pulses in drawer header
+                const bellPulse = document.getElementById('bellPulse');
+                const bellDot = document.getElementById('bellDot');
+                if (bellPulse && bellDot) {
+                    if (unread > 0) {
+                        bellPulse.classList.remove('hidden');
+                        bellDot.classList.remove('hidden');
+                    } else {
+                        bellPulse.classList.add('hidden');
+                        bellDot.classList.add('hidden');
                     }
                 }
             }
@@ -1694,12 +1754,12 @@
         
         try {
             const res = await fetch('/api/notifikasi', {
-                headers: { 'Authorization': `Bearer ${getToken()}` }
+                headers: { 'Authorization': `Bearer ${getAuthToken()}` }
             });
             if (res.ok) {
                 const result = await res.json();
-                const notifs = result.data || [];
-                renderNotifications(notifs);
+                cachedNotifications = result.data || [];
+                renderNotifications(cachedNotifications);
             } else {
                 if (chatArea) chatArea.innerHTML = '<div class="p-4 text-center text-xs text-red-500">Gagal memuat pesan</div>';
             }
@@ -1710,8 +1770,10 @@
     }
 
     function renderNotifications(notifs) {
-        const badge = document.getElementById('notificationBadge');
         const unread = notifs.filter(n => !n.dibaca).length;
+        
+        // Sync badges
+        const badge = document.getElementById('notificationBadge');
         if (badge) {
             if (unread > 0) {
                 badge.textContent = unread;
@@ -1721,46 +1783,95 @@
             }
         }
 
+        const tabBadge = document.getElementById('unreadTabBadge');
+        if (tabBadge) {
+            if (unread > 0) {
+                tabBadge.textContent = unread;
+                tabBadge.classList.remove('hidden');
+            } else {
+                tabBadge.classList.add('hidden');
+            }
+        }
+
+        const bellPulse = document.getElementById('bellPulse');
+        const bellDot = document.getElementById('bellDot');
+        if (bellPulse && bellDot) {
+            if (unread > 0) {
+                bellPulse.classList.remove('hidden');
+                bellDot.classList.remove('hidden');
+            } else {
+                bellPulse.classList.add('hidden');
+                bellDot.classList.add('hidden');
+            }
+        }
+
         const chatArea = document.getElementById('notificationChatArea');
         if (!chatArea) return;
 
-        if (notifs.length === 0) {
+        let filteredNotifs = notifs;
+        if (activeNotifFilter === 'belum_dibaca') {
+            filteredNotifs = notifs.filter(n => !n.dibaca);
+        } else if (activeNotifFilter === 'penting') {
+            filteredNotifs = notifs.filter(n => n.tipe === 'success' || n.tipe === 'error');
+        }
+
+        if (filteredNotifs.length === 0) {
+            let emptyMsg = 'Tidak ada notifikasi';
+            let emptyDesc = 'Semua pemberitahuan akademik atau sistem akan muncul di sini.';
+            if (activeNotifFilter === 'belum_dibaca') {
+                emptyMsg = 'Tidak ada pesan belum dibaca';
+                emptyDesc = 'Bagus! Anda telah membaca seluruh notifikasi.';
+            } else if (activeNotifFilter === 'penting') {
+                emptyMsg = 'Tidak ada notifikasi penting';
+                emptyDesc = 'Notifikasi penolakan atau persetujuan KKN/Magang akan muncul di sini.';
+            }
+
             chatArea.innerHTML = `
-                <div class="flex flex-col items-center justify-center h-full text-center text-gray-400 p-6">
-                    <div class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-3 text-gray-300">
+                <div class="flex flex-col items-center justify-center h-full text-center text-gray-400 p-6 my-12">
+                    <div class="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mb-3 text-slate-350 shadow-inner">
                         <i class="fas fa-bell-slash text-2xl"></i>
                     </div>
-                    <p class="text-sm font-semibold text-gray-500">Tidak ada notifikasi</p>
-                    <p class="text-xs text-gray-455 mt-1">Semua pemberitahuan akademik atau sistem akan muncul di sini.</p>
+                    <p class="text-sm font-semibold text-slate-500">${emptyMsg}</p>
+                    <p class="text-xs text-slate-400 mt-1">${emptyDesc}</p>
                 </div>
             `;
             return;
         }
 
-        chatArea.innerHTML = notifs.map(n => {
+        chatArea.innerHTML = filteredNotifs.map(n => {
             const dateStr = formatDateAgo(n.created_at);
             const isUnread = !n.dibaca;
-            const bgClass = isUnread ? 'bg-blue-50/20 border-blue-100 shadow-sm' : 'bg-white border-gray-150 shadow-sm';
             
-            // Accent color, icon, and button classes based on type
-            let accentColor = 'bg-blue-500';
-            let iconHtml = '<div class="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500 shrink-0"><i class="fas fa-bell text-sm"></i></div>';
+            let accentColor = 'bg-indigo-500';
+            let cardBg = isUnread ? 'bg-gradient-to-br from-indigo-50/70 via-blue-50/30 to-white/90 border-indigo-100/80 shadow-[0_4px_12px_rgba(99,102,241,0.04)]' : 'bg-white border-slate-150/70 shadow-sm';
+            let iconHtml = '<div class="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shrink-0 shadow-sm"><i class="fas fa-bell text-sm"></i></div>';
+            let sourceBadge = '<span class="px-2 py-0.5 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-700 text-[9px] font-extrabold uppercase tracking-wider flex items-center gap-1"><i class="fas fa-laptop-code text-[8px]"></i>Sistem</span>';
             
+            const titleLower = n.judul.toLowerCase();
+            if (titleLower.includes('kkn')) {
+                sourceBadge = '<span class="px-2 py-0.5 rounded-full bg-purple-50 border border-purple-100 text-purple-700 text-[9px] font-extrabold uppercase tracking-wider flex items-center gap-1"><i class="fas fa-map-location-dot text-[8px]"></i>KKN</span>';
+            } else if (titleLower.includes('magang')) {
+                sourceBadge = '<span class="px-2 py-0.5 rounded-full bg-blue-50 border border-blue-100 text-blue-700 text-[9px] font-extrabold uppercase tracking-wider flex items-center gap-1"><i class="fas fa-briefcase text-[8px]"></i>Magang</span>';
+            }
+
             if (n.tipe === 'success') {
-                accentColor = 'bg-green-500';
-                iconHtml = '<div class="w-9 h-9 rounded-lg bg-green-50 flex items-center justify-center text-green-500 shrink-0"><i class="fas fa-check-circle text-sm"></i></div>';
+                accentColor = 'bg-emerald-500';
+                if (isUnread) cardBg = 'bg-gradient-to-br from-emerald-50/60 via-slate-50/30 to-white/90 border-emerald-100/80 shadow-[0_4px_12px_rgba(16,185,129,0.04)]';
+                iconHtml = '<div class="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 shrink-0 shadow-sm"><i class="fas fa-check-circle text-base"></i></div>';
             } else if (n.tipe === 'error') {
-                accentColor = 'bg-red-500';
-                iconHtml = '<div class="w-9 h-9 rounded-lg bg-red-50 flex items-center justify-center text-red-500 shrink-0"><i class="fas fa-exclamation-triangle text-sm"></i></div>';
+                accentColor = 'bg-rose-500';
+                if (isUnread) cardBg = 'bg-gradient-to-br from-rose-50/60 via-slate-50/30 to-white/90 border-rose-100/80 shadow-[0_4px_12px_rgba(244,63,94,0.04)]';
+                iconHtml = '<div class="w-10 h-10 rounded-xl bg-rose-50 border border-rose-100 flex items-center justify-center text-rose-600 shrink-0 shadow-sm animate-pulse"><i class="fas fa-exclamation-triangle text-base"></i></div>';
             }
 
             let linkHtml = '';
             if (n.link) {
                 linkHtml = `
                     <div class="mt-2.5">
-                        <a href="${n.link}" target="_blank" onclick="markNotificationRead('${n.id_notifikasi}', event)" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-500 hover:bg-green-600 text-white text-[10px] font-bold rounded-lg shadow-sm hover:shadow transition duration-150 font-sans">
+                        <a href="${n.link}" target="_blank" onclick="markNotificationRead('${n.id_notifikasi}', event)" class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white text-[10px] font-bold rounded-xl shadow-md shadow-green-500/10 hover:shadow-green-500/20 hover:scale-[1.02] transform transition-all duration-200 font-sans">
                             <i class="fab fa-whatsapp text-xs"></i>
                             Gabung Grup WA
+                            <i class="fas fa-chevron-right text-[8px] opacity-80"></i>
                         </a>
                     </div>
                 `;
@@ -1769,33 +1880,42 @@
             let readBtn = '';
             if (isUnread) {
                 readBtn = `
-                    <button onclick="markNotificationRead('${n.id_notifikasi}', event)" class="text-[10px] text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-1 mt-2.5 font-semibold transition">
-                        <i class="fas fa-check"></i> Tandai dibaca
+                    <button onclick="markNotificationRead('${n.id_notifikasi}', event)" class="text-[10px] text-indigo-600 hover:text-indigo-800 font-bold transition flex items-center gap-1 mt-2.5 hover:underline bg-indigo-50/50 hover:bg-indigo-50 px-2 py-1 rounded-lg">
+                        <i class="fas fa-check text-[9px]"></i> Tandai dibaca
                     </button>
                 `;
             } else {
                 readBtn = `
-                    <span class="text-[9px] text-gray-400 flex items-center gap-1 mt-2.5 font-medium select-none">
-                        <i class="fas fa-check-double text-blue-500"></i> Sudah dibaca
+                    <span class="text-[9px] text-slate-400 flex items-center gap-1 mt-2.5 font-medium select-none bg-slate-50 px-2 py-1 rounded-lg">
+                        <i class="fas fa-check-double text-indigo-500"></i> Sudah dibaca
                     </span>
                 `;
             }
 
+            const pulseDot = isUnread ? `
+                <span class="absolute top-3 right-3 flex h-2 w-2">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-600"></span>
+                </span>
+            ` : '';
+
             return `
-                <div class="relative overflow-hidden bg-white rounded-xl border p-4 pl-5 ${bgClass} flex gap-3.5 items-start transition hover:border-gray-300 font-sans">
+                <div class="relative overflow-hidden rounded-2xl border p-4 pl-5 ${cardBg} flex gap-3.5 items-start transition-all duration-300 hover:scale-[1.01] hover:shadow-md hover:border-slate-300 group">
                     <!-- Accent vertical line on the left -->
-                    <div class="absolute left-0 top-0 bottom-0 w-1 ${accentColor}"></div>
+                    <div class="absolute left-0 top-0 bottom-0 w-1.5 ${accentColor} rounded-l-2xl"></div>
                     
+                    ${pulseDot}
                     ${iconHtml}
                     
                     <div class="flex-1 min-w-0 text-left">
-                        <div class="flex justify-between items-start gap-2">
-                            <h4 class="font-bold text-xs text-gray-800 truncate">${escapeHtml(n.judul)}</h4>
-                            <span class="text-[9px] text-gray-400 shrink-0">${dateStr}</span>
+                        <div class="flex items-center gap-2 mb-1 flex-wrap">
+                            ${sourceBadge}
+                            <span class="text-[9px] text-slate-400 font-semibold shrink-0 flex items-center gap-1"><i class="far fa-clock"></i>${dateStr}</span>
                         </div>
-                        <p class="text-[11px] text-gray-500 mt-1 leading-normal">${escapeHtml(n.pesan)}</p>
+                        <h4 class="font-bold text-xs text-slate-800 leading-tight group-hover:text-indigo-950 transition-colors">${escapeHtml(n.judul)}</h4>
+                        <p class="text-[11px] text-slate-500 mt-1.5 leading-relaxed font-medium">${escapeHtml(n.pesan)}</p>
                         
-                        <div class="flex items-center justify-between flex-wrap gap-2 font-sans">
+                        <div class="flex items-center justify-between flex-wrap gap-2 font-sans mt-1">
                             ${linkHtml}
                             ${readBtn}
                         </div>
@@ -1810,7 +1930,7 @@
         try {
             const res = await fetch(`/api/notifikasi/${id}/read`, {
                 method: 'POST',
-                headers: { 'Authorization': `Bearer ${getToken()}`, 'Content-Type': 'application/json' }
+                headers: { 'Authorization': `Bearer ${getAuthToken()}`, 'Content-Type': 'application/json' }
             });
             if (res.ok) {
                 loadNotifications();
@@ -1826,7 +1946,7 @@
         try {
             const res = await fetch('/api/notifikasi/read-all', {
                 method: 'POST',
-                headers: { 'Authorization': `Bearer ${getToken()}`, 'Content-Type': 'application/json' }
+                headers: { 'Authorization': `Bearer ${getAuthToken()}`, 'Content-Type': 'application/json' }
             });
             if (res.ok) {
                 loadNotifications();
