@@ -19,7 +19,7 @@ const registrasiMagangController = {
                             nama_fakultas
                         )
                     ),
-                    users:users (
+                    users:users!fk_reg_magang_user (
                         id_user,
                         program_studi:program_studi (
                             id_prodi,
@@ -104,7 +104,7 @@ const registrasiMagangController = {
                         id_prodi,
                         nama_prodi
                     ),
-                    users:users (
+                    users:users!fk_reg_magang_user (
                         id_user,
                         email,
                         no_hp,

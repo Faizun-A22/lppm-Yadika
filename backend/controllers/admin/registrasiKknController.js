@@ -24,7 +24,7 @@ const registrasiKknController = {
                             nama_fakultas
                         )
                     ),
-                    users:users (
+                    users:users!fk_reg_kkn_user (
                         id_user,
                         program_studi:program_studi (
                             id_prodi,
@@ -138,7 +138,7 @@ const registrasiKknController = {
                         nama_pembimbing_lapangan,
                         kontak_pembimbing_lapangan
                     ),
-                    users:users (
+                    users:users!fk_reg_kkn_user (
                         id_user,
                         email,
                         no_hp,
