@@ -354,24 +354,7 @@ const registrasiKknController = {
                 return res.status(500).json(formatError('Gagal menghapus registrasi: ' + error.message));
             }
 
-            // Kurangi kuota_terisi desa jika ada
-            if (existing.id_desa) {
-                const { data: desa } = await supabase
-                    .from('desa_kkn')
-                    .select('kuota_terisi')
-                    .eq('id_desa', existing.id_desa)
-                    .single();
-                
-                if (desa) {
-                    await supabase
-                        .from('desa_kkn')
-                        .update({
-                            kuota_terisi: Math.max(0, (desa.kuota_terisi || 0) - 1),
-                            updated_at: new Date().toISOString()
-                        })
-                        .eq('id_desa', existing.id_desa);
-                }
-            }
+            // HAPUS manual kuota_terisi decrement (ditangani otomatis oleh database trigger pada tabel registrasi_kkn saat baris disetujui dihapus)
 
             return res.status(200).json(
                 formatResponse('success', `Registrasi KKN atas nama ${existing.nama_lengkap} (NIM: ${existing.nim}) berhasil dihapus`, null)

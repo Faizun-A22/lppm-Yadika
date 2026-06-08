@@ -816,6 +816,77 @@
         </div>
     </div>
 
+    <!-- Modal Edit Perusahaan Magang -->
+    <div id="perusahaanModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50 flex items-center justify-center">
+        <div class="relative bg-white rounded-lg shadow-xl w-11/12 md:w-3/4 lg:w-1/2 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center p-4 md:p-6 border-b sticky top-0 bg-white">
+                <h3 class="text-lg md:text-xl font-bold text-gray-900" id="perusahaanModalTitle">Edit Perusahaan Magang</h3>
+                <button onclick="closePerusahaanModal()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <form id="perusahaanForm" class="p-4 md:p-6" onsubmit="savePerusahaan(event)">
+                <input type="hidden" id="perusahaanId">
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Nama Perusahaan</label>
+                        <input type="text" id="companyName" class="w-full px-3 py-2 border rounded-lg" required>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Bidang Magang</label>
+                        <input type="text" id="companyField" class="w-full px-3 py-2 border rounded-lg" required>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Posisi Magang</label>
+                        <input type="text" id="companyPosition" class="w-full px-3 py-2 border rounded-lg" required>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Durasi (Bulan)</label>
+                        <input type="number" id="companyDuration" min="1" max="12" class="w-full px-3 py-2 border rounded-lg" required>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Tanggal Mulai</label>
+                        <input type="date" id="companyStartDate" class="w-full px-3 py-2 border rounded-lg" required>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Tanggal Selesai</label>
+                        <input type="date" id="companyEndDate" class="w-full px-3 py-2 border rounded-lg" required>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Alamat Perusahaan</label>
+                    <textarea id="companyAddress" rows="2" class="w-full px-3 py-2 border rounded-lg" required></textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Nama Pembimbing Lapangan</label>
+                        <input type="text" id="companySupervisor" class="w-full px-3 py-2 border rounded-lg" required>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Kontak Pembimbing</label>
+                        <input type="text" id="companySupervisorContact" class="w-full px-3 py-2 border rounded-lg" required>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Email Pembimbing</label>
+                        <input type="email" id="companySupervisorEmail" class="w-full px-3 py-2 border rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Jabatan Pembimbing</label>
+                        <input type="text" id="companySupervisorPosition" class="w-full px-3 py-2 border rounded-lg">
+                    </div>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closePerusahaanModal()" class="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-gradient-to-r from-green-500 to-blue-600 text-white rounded-lg hover:shadow-lg">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div id="detailModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50 flex items-center justify-center">
         <div class="relative bg-white rounded-lg shadow-xl w-11/12 md:w-3/4 lg:w-1/2 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center p-4 md:p-6 border-b sticky top-0 bg-white">
@@ -1096,14 +1167,114 @@
         function renderPerusahaanTable(data) {
             const tbody = document.getElementById('perusahaanTableBody');
             if (!data || data.length === 0) { tbody.innerHTML = '<tr><td colspan="7" class="text-center py-8 text-gray-500">Tidak ada data</td></tr>'; return; }
-            // BUG-02 fix: ganti </table> yang salah menjadi </td>
-            tbody.innerHTML = data.map((p, i) => `<tr><td class="px-4 py-3">${i+1}</td><td class="px-4 py-3">${p.nim || '-'}</td><td class="px-4 py-3">${p.nama_lengkap || '-'}</td><td class="px-4 py-3 font-medium">${p.nama_perusahaan}</td><td class="px-4 py-3">${p.bidang_magang}</td><td class="px-4 py-3"><span class="${getStatusBadgeClass(p.status)}">${getStatusText(p.status)}</span></td><td class="px-4 py-3 text-center"><button onclick="viewPerusahaanDetail('${p.id_perusahaan}')" class="text-blue-600 mr-2"><i class="fas fa-eye"></i></button><button onclick="openVerifikasiPerusahaanModal('${p.id_perusahaan}', '${p.status}')" class="text-green-600"><i class="fas fa-check-circle"></i></button></td></tr>`).join('');
+            tbody.innerHTML = data.map((p, i) => `<tr><td class="px-4 py-3">${i+1}</td><td class="px-4 py-3">${p.nim || '-'}</td><td class="px-4 py-3">${p.nama_lengkap || '-'}</td><td class="px-4 py-3 font-medium">${p.nama_perusahaan}</td><td class="px-4 py-3">${p.bidang_magang}</td><td class="px-4 py-3"><span class="${getStatusBadgeClass(p.status)}">${getStatusText(p.status)}</span></td><td class="px-4 py-3 text-center"><button onclick="viewPerusahaanDetail('${p.id_perusahaan}')" class="text-blue-600 mr-2" title="Detail"><i class="fas fa-eye"></i></button><button onclick="editPerusahaan('${p.id_perusahaan}')" class="text-green-600 mr-2" title="Edit"><i class="fas fa-edit"></i></button><button onclick="deletePerusahaan('${p.id_perusahaan}')" class="text-red-600 mr-2" title="Hapus"><i class="fas fa-trash"></i></button><button onclick="openVerifikasiPerusahaanModal('${p.id_perusahaan}', '${p.status}')" class="text-yellow-600" title="Verifikasi"><i class="fas fa-check-circle"></i></button></td></tr>`).join('');
         }
         function changePerusahaanPage(direction) { if (direction === 'prev' && currentPerusahaanPage > 1) currentPerusahaanPage--; else if (direction === 'next') currentPerusahaanPage++; loadPerusahaanData(); }
         async function viewPerusahaanDetail(id) { showLoading(); try { const response = await fetch(`${API_BASE_URL}/admin/magang/perusahaan/${id}`, { headers: getHeaders() }); const result = await response.json(); if (result.success) { const d = result.data; document.getElementById('detailModalContent').innerHTML = `<div class="space-y-4"><div><strong>NIM:</strong> ${d.nim}</div><div><strong>Nama:</strong> ${d.nama_lengkap}</div><div><strong>Perusahaan:</strong> ${d.nama_perusahaan}</div><div><strong>Bidang:</strong> ${d.bidang_magang}</div><div><strong>Posisi:</strong> ${d.posisi}</div><div><strong>Durasi:</strong> ${d.durasi} bulan</div><div><strong>Tanggal Mulai:</strong> ${formatDate(d.tanggal_mulai)}</div><div><strong>Tanggal Selesai:</strong> ${formatDate(d.tanggal_selesai)}</div><div><strong>Status:</strong> <span class="${getStatusBadgeClass(d.status)}">${getStatusText(d.status)}</span></div></div>`; document.getElementById('detailModal').classList.remove('hidden'); } } catch (error) { showAlert('Gagal memuat detail', 'error'); } finally { hideLoading(); } }
         function openVerifikasiPerusahaanModal(id, status) { document.getElementById('verifikasiPerusahaanId').value = id; document.getElementById('verifikasiPerusahaanStatus').value = status; document.getElementById('verifikasiPerusahaanModal').classList.remove('hidden'); }
         function closeVerifikasiPerusahaanModal() { document.getElementById('verifikasiPerusahaanModal').classList.add('hidden'); }
         async function submitVerifikasiPerusahaan(event) { event.preventDefault(); showLoading(); const id = document.getElementById('verifikasiPerusahaanId').value; const data = { status: document.getElementById('verifikasiPerusahaanStatus').value, catatan: document.getElementById('verifikasiPerusahaanCatatan').value }; try { const response = await fetch(`${API_BASE_URL}/admin/magang/perusahaan/${id}/verifikasi`, { method: 'PUT', headers: getHeaders(), body: JSON.stringify(data) }); const result = await response.json(); if (result.success) { showAlert('Verifikasi berhasil'); closeVerifikasiPerusahaanModal(); loadPerusahaanData(); } } catch (error) { showAlert('Gagal verifikasi', 'error'); } finally { hideLoading(); } }
+
+        function closePerusahaanModal() { document.getElementById('perusahaanModal').classList.add('hidden'); }
+        
+        async function editPerusahaan(id) {
+            showLoading();
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin/magang/perusahaan/${id}`, { headers: getHeaders() });
+                const result = await response.json();
+                if (result.success) {
+                    const d = result.data;
+                    document.getElementById('perusahaanId').value = d.id_perusahaan;
+                    document.getElementById('companyName').value = d.nama_perusahaan;
+                    document.getElementById('companyField').value = d.bidang_magang;
+                    document.getElementById('companyPosition').value = d.posisi;
+                    document.getElementById('companyDuration').value = d.durasi;
+                    document.getElementById('companyStartDate').value = d.tanggal_mulai ? d.tanggal_mulai.substring(0, 10) : '';
+                    document.getElementById('companyEndDate').value = d.tanggal_selesai ? d.tanggal_selesai.substring(0, 10) : '';
+                    document.getElementById('companyAddress').value = d.alamat_perusahaan || '';
+                    document.getElementById('companySupervisor').value = d.nama_pembimbing || '';
+                    document.getElementById('companySupervisorContact').value = d.kontak_pembimbing || '';
+                    document.getElementById('companySupervisorEmail').value = d.email_pembimbing || '';
+                    document.getElementById('companySupervisorPosition').value = d.jabatan_pembimbing || '';
+                    document.getElementById('perusahaanModal').classList.remove('hidden');
+                }
+            } catch (error) {
+                showAlert('Gagal memuat data perusahaan', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+        
+        async function savePerusahaan(event) {
+            event.preventDefault();
+            showLoading();
+            const id = document.getElementById('perusahaanId').value;
+            const data = {
+                nama_perusahaan: document.getElementById('companyName').value,
+                bidang_magang: document.getElementById('companyField').value,
+                posisi: document.getElementById('companyPosition').value,
+                durasi: parseInt(document.getElementById('companyDuration').value),
+                tanggal_mulai: document.getElementById('companyStartDate').value,
+                tanggal_selesai: document.getElementById('companyEndDate').value,
+                alamat_perusahaan: document.getElementById('companyAddress').value,
+                nama_pembimbing: document.getElementById('companySupervisor').value,
+                kontak_pembimbing: document.getElementById('companySupervisorContact').value,
+                email_pembimbing: document.getElementById('companySupervisorEmail').value,
+                jabatan_pembimbing: document.getElementById('companySupervisorPosition').value
+            };
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin/magang/perusahaan/${id}`, {
+                    method: 'PUT',
+                    headers: getHeaders(),
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                if (result.success) {
+                    showAlert('Data perusahaan berhasil diperbarui');
+                    closePerusahaanModal();
+                    loadPerusahaanData();
+                } else {
+                    showAlert(result.message || 'Gagal menyimpan', 'error');
+                }
+            } catch (error) {
+                showAlert('Gagal menyimpan data perusahaan', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+        
+        async function deletePerusahaan(id) {
+            const result = await Swal.fire({
+                title: 'Konfirmasi Hapus',
+                text: 'Apakah Anda yakin ingin menghapus data perusahaan ini?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6B7280',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal'
+            });
+            if (!result.isConfirmed) return;
+            
+            showLoading();
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin/magang/perusahaan/${id}`, {
+                    method: 'DELETE',
+                    headers: getHeaders()
+                });
+                const result = await response.json();
+                if (result.success) {
+                    showAlert('Data perusahaan berhasil dihapus');
+                    loadPerusahaanData();
+                } else {
+                    showAlert(result.message || 'Gagal menghapus', 'error');
+                }
+            } catch (error) {
+                showAlert('Gagal menghapus data perusahaan', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
 
         // REGISTRATION FUNCTIONS
         let currentKknPage = 1;

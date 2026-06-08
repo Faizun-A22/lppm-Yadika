@@ -36,6 +36,13 @@ router.get('/:id', perusahaanMagangController.getPerusahaanMagangById);
 router.put('/:id/verifikasi', perusahaanMagangController.verifikasiPerusahaanMagang);
 
 /**
+ * @route   PUT /api/admin/magang/perusahaan/:id
+ * @desc    Update/Edit perusahaan magang details by Admin
+ * @access  Private (Admin)
+ */
+router.put('/:id', perusahaanMagangController.updatePerusahaanMagang);
+
+/**
  * @route   DELETE /api/admin/magang/perusahaan/:id
  * @desc    Delete perusahaan magang
  * @access  Private (Admin)

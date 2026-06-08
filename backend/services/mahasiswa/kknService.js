@@ -158,17 +158,37 @@ async getProgramStudi() {
 
         if (error) throw error;
 
-        // Filter setelah data diambil (lebih aman)
-        const filteredData = data.filter(desa => {
-            const sisaKuota = desa.kuota - (desa.kuota_terisi || 0);
-            return sisaKuota > 0; // Hanya desa dengan sisa kuota > 0
+        // Ambil jumlah registrasi aktif (pending, approved, verified) untuk masing-masing desa
+        const { data: regCounts, error: countError } = await supabase
+            .from(this.tableRegistrasi)
+            .select('id_desa, status')
+            .in('status', ['pending', 'approved', 'verified']);
+
+        if (countError) throw countError;
+
+        // Group counts by id_desa
+        const countsMap = {};
+        if (regCounts) {
+            regCounts.forEach(r => {
+                if (r.id_desa) {
+                    countsMap[r.id_desa] = (countsMap[r.id_desa] || 0) + 1;
+                }
+            });
+        }
+
+        // Map data desa dengan kuota terisi dinamis (approved + pending)
+        const mappedData = data.map(desa => {
+            const trueTerisi = countsMap[desa.id_desa] || 0;
+            return {
+                ...desa,
+                kuota_terisi: trueTerisi,
+                sisa_kuota: desa.kuota - trueTerisi,
+                persentase_terisi: Math.round((trueTerisi / desa.kuota) * 100)
+            };
         });
 
-        return filteredData.map(desa => ({
-            ...desa,
-            sisa_kuota: desa.kuota - (desa.kuota_terisi || 0),
-            persentase_terisi: Math.round(((desa.kuota_terisi || 0) / desa.kuota) * 100)
-        }));
+        // Filter desa yang sisa kuotanya > 0
+        return mappedData.filter(desa => desa.sisa_kuota > 0);
     } catch (error) {
         console.error('Error in getAvailableVillages:', error);
         throw error;
@@ -392,8 +412,17 @@ async getProgramStudi() {
                 throw new Error('Desa tidak ditemukan');
             }
 
-            if (desa.kuota_terisi >= desa.kuota) {
-                throw new Error('Kuota desa sudah penuh');
+            // Hitung pendaftar aktif (pending + approved + verified) untuk memastikan kuota riil
+            const { count: activeRegCount, error: countError } = await supabase
+                .from(this.tableRegistrasi)
+                .select('id_registrasi', { count: 'exact', head: true })
+                .eq('id_desa', data.id_desa)
+                .in('status', ['pending', 'approved', 'verified']);
+
+            if (countError) throw countError;
+
+            if (activeRegCount >= desa.kuota) {
+                throw new Error('Kuota desa sudah penuh (termasuk pendaftaran yang sedang diproses)');
             }
 
             // Ambil data user
@@ -438,15 +467,7 @@ async getProgramStudi() {
 
             if (error) throw error;
 
-            // UPDATE kuota desa
-            await supabase
-                .from(this.tableDesa)
-                .update({ 
-                    kuota_terisi: (desa.kuota_terisi || 0) + 1,
-                    updated_at: new Date()
-                })
-                .eq('id_desa', data.id_desa);
-
+            // HAPUS manual kuota_terisi increment (ditangani otomatis oleh database trigger pada tabel registrasi_kkn saat admin menyetujui status)
             console.log('✅ KKN registration saved successfully');
             return result;
         } catch (error) {

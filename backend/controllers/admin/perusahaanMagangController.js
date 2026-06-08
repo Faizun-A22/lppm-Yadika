@@ -410,6 +410,74 @@ class PerusahaanMagangController {
     }
     
     /**
+     * Update/Edit perusahaan magang details by Admin
+     * PUT /api/admin/magang/perusahaan/:id
+     */
+    async updatePerusahaanMagang(req, res, next) {
+        try {
+            const { id } = req.params;
+            const {
+                nama_perusahaan,
+                bidang_magang,
+                posisi,
+                durasi,
+                tanggal_mulai,
+                tanggal_selesai,
+                alamat_perusahaan,
+                nama_pembimbing,
+                kontak_pembimbing,
+                email_pembimbing,
+                jabatan_pembimbing
+            } = req.body;
+
+            // Check if record exists
+            const { data: currentData, error: getError } = await supabase
+                .from('magang_perusahaan')
+                .select('id_perusahaan')
+                .eq('id_perusahaan', id)
+                .single();
+
+            if (getError) {
+                if (getError.code === 'PGRST116') {
+                    return res.status(404).json(formatError('Data perusahaan tidak ditemukan'));
+                }
+                throw getError;
+            }
+
+            // Update details
+            const { data, error } = await supabase
+                .from('magang_perusahaan')
+                .update({
+                    nama_perusahaan,
+                    bidang_magang,
+                    posisi,
+                    durasi: durasi ? parseInt(durasi) : null,
+                    tanggal_mulai,
+                    tanggal_selesai,
+                    alamat_perusahaan,
+                    nama_pembimbing,
+                    kontak_pembimbing,
+                    email_pembimbing: email_pembimbing || null,
+                    jabatan_pembimbing: jabatan_pembimbing || null,
+                    updated_at: new Date().toISOString()
+                })
+                .eq('id_perusahaan', id)
+                .select()
+                .single();
+
+            if (error) throw error;
+
+            return res.status(200).json(
+                formatResponse('success', 'Data perusahaan berhasil diperbarui', data)
+            );
+
+        } catch (error) {
+            console.error('Error in updatePerusahaanMagang:', error);
+            next(error);
+        }
+    }
+    
+    /**
      * Delete perusahaan magang
      * DELETE /api/admin/magang/perusahaan/:id
      */
