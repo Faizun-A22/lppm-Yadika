@@ -60,7 +60,10 @@ const registrasiKknController = {
             let data, error, count;
             
             if (exportFlag === 'true') {
-                const result = await query.order('tanggal_daftar', { ascending: false });
+                const limitNum = limit ? parseInt(limit) : 1000000;
+                const result = await query
+                    .order('tanggal_daftar', { ascending: false })
+                    .limit(limitNum);
                 data = result.data;
                 error = result.error;
                 count = result.count;

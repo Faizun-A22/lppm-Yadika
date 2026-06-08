@@ -49,7 +49,10 @@ const registrasiMagangController = {
             let data, error, count;
 
             if (exportFlag === 'true') {
-                const result = await query.order('created_at', { ascending: false });
+                const limitNum = limit ? parseInt(limit) : 1000000;
+                const result = await query
+                    .order('created_at', { ascending: false })
+                    .limit(limitNum);
                 data = result.data;
                 error = result.error;
                 count = result.count;
