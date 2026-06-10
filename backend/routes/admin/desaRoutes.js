@@ -24,6 +24,7 @@ const desaValidation = [
 router.get('/', desaController.getAllDesa);
 router.get('/list/aktif', desaController.getDesaAktif);
 router.get('/stats', desaController.getDesaStats);
+router.get('/list/kabupaten', desaController.getKabupatenList);
 router.get('/:id', desaController.getDesaById);
 router.post('/', desaValidation, handleValidationErrors, desaController.createDesa);
 router.put('/:id', desaValidation, handleValidationErrors, desaController.updateDesa);

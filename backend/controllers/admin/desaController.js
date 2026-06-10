@@ -260,6 +260,21 @@ async deleteDesa(req, res) {
             console.error('Error in getPesertaDesa:', error);
             return res.status(500).json(formatError('Gagal mengambil data peserta'));
         }
+    },
+
+    /**
+     * Get list of unique kabupaten
+     */
+    async getKabupatenList(req, res) {
+        try {
+            const list = await desaService.getKabupatenList();
+            return res.status(200).json(
+                formatResponse('success', 'Daftar kabupaten berhasil diambil', list)
+            );
+        } catch (error) {
+            console.error('Error in getKabupatenList:', error);
+            return res.status(500).json(formatError('Gagal mengambil daftar kabupaten'));
+        }
     }
 };
 

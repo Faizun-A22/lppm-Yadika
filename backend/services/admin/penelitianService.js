@@ -41,7 +41,18 @@ class PenelitianService {
             }
             
             if (search) {
-                query = query.or(`judul.ilike.%${search}%,ketua_peneliti.nama_lengkap.ilike.%${search}%`);
+                const { data: users } = await supabase
+                    .from('users')
+                    .select('id_user')
+                    .ilike('nama_lengkap', `%${search}%`);
+                
+                const userIds = users?.map(u => u.id_user) || [];
+                
+                if (userIds.length > 0) {
+                    query = query.or(`judul.ilike.%${search}%,ketua_peneliti.in.(${userIds.join(',')})`);
+                } else {
+                    query = query.ilike('judul', `%${search}%`);
+                }
             }
             
             // Apply pagination
@@ -558,7 +569,18 @@ class PenelitianService {
             }
             
             if (search) {
-                query = query.or(`judul.ilike.%${search}%,ketua_pengabdian.nama_lengkap.ilike.%${search}%`);
+                const { data: users } = await supabase
+                    .from('users')
+                    .select('id_user')
+                    .ilike('nama_lengkap', `%${search}%`);
+                
+                const userIds = users?.map(u => u.id_user) || [];
+                
+                if (userIds.length > 0) {
+                    query = query.or(`judul.ilike.%${search}%,ketua_pengabdian.in.(${userIds.join(',')})`);
+                } else {
+                    query = query.ilike('judul', `%${search}%`);
+                }
             }
             
             // Apply pagination

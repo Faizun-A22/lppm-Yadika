@@ -1652,6 +1652,12 @@
             initMobileNav();
             setActiveNavLink();
             updateNavbarUserInfo();
+
+            document.getElementById('filterKategoriBerita')?.addEventListener('change', loadBerita);
+            document.getElementById('filterStatusBerita')?.addEventListener('change', loadBerita);
+            document.getElementById('filterJenisKegiatan')?.addEventListener('change', loadKegiatan);
+            document.getElementById('filterStatusKegiatan')?.addEventListener('change', loadKegiatan);
+            document.getElementById('filterBulanKegiatan')?.addEventListener('change', loadKegiatan);
         });
     </script>
 </body>

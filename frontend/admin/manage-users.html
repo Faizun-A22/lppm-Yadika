@@ -827,6 +827,9 @@
             initDropdown();
             initMobileNav();
             loadUsers();
+
+            document.getElementById('filterRole')?.addEventListener('change', loadUsers);
+            document.getElementById('filterStatus')?.addEventListener('change', loadUsers);
         });
     </script>
 </body>

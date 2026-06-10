@@ -1127,12 +1127,30 @@
 
         // DESA FUNCTIONS
         let currentDesaPage = 1;
+        async function loadKabupatenList() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin/desa-kkn/list/kabupaten`, { headers: getHeaders() });
+                const result = await response.json();
+                if (result.success) {
+                    const select = document.getElementById('filterKabupaten');
+                    if (select) {
+                        const currentValue = select.value;
+                        select.innerHTML = '<option value="">Semua Kabupaten</option>' + 
+                            result.data.map(k => `<option value="${k.kabupaten}">${k.kabupaten} (${k.total_desa})</option>`).join('');
+                        select.value = currentValue;
+                    }
+                }
+            } catch (error) {
+                console.error('Gagal memuat daftar kabupaten:', error);
+            }
+        }
         async function loadDesaData() {
             showLoading();
             const search = document.getElementById('searchDesa').value;
             const status = document.getElementById('filterStatusDesa').value;
+            const kabupaten = document.getElementById('filterKabupaten')?.value || '';
             try {
-                const response = await fetch(`${API_BASE_URL}/admin/desa-kkn?page=${currentDesaPage}&limit=10&search=${search}&status=${status}`, { headers: getHeaders() });
+                const response = await fetch(`${API_BASE_URL}/admin/desa-kkn?page=${currentDesaPage}&limit=10&search=${search}&status=${status}&kabupaten=${kabupaten}`, { headers: getHeaders() });
                 const result = await response.json();
                 if (result.success) {
                     renderDesaTable(result.data);
@@ -1155,9 +1173,9 @@
         }
         function openAddDesaModal() { document.getElementById('desaForm').reset(); document.getElementById('desaId').value = ''; document.getElementById('desaModal').classList.remove('hidden'); }
         function closeDesaModal() { document.getElementById('desaModal').classList.add('hidden'); }
-        async function saveDesa(event) { event.preventDefault(); showLoading(); const id = document.getElementById('desaId').value; const data = { nama_desa: document.getElementById('desaName').value, kecamatan: document.getElementById('desaKecamatan').value, kabupaten: document.getElementById('desaKabupaten').value, provinsi: document.getElementById('desaProvinsi').value, kuota: parseInt(document.getElementById('desaKuota').value), nama_pembimbing_lapangan: document.getElementById('desaPembimbingLapangan').value, kontak_pembimbing_lapangan: document.getElementById('desaKontakPembimbing').value, alamat: document.getElementById('desaAlamat').value, link_grup: document.getElementById('desaLinkGrup').value }; try { const url = id ? `${API_BASE_URL}/admin/desa-kkn/${id}` : `${API_BASE_URL}/admin/desa-kkn`; const method = id ? 'PUT' : 'POST'; const response = await fetch(url, { method, headers: getHeaders(), body: JSON.stringify(data) }); const result = await response.json(); if (result.success) { showAlert(id ? 'Desa diupdate' : 'Desa ditambahkan'); closeDesaModal(); loadDesaData(); } } catch (error) { showAlert('Gagal simpan', 'error'); } finally { hideLoading(); } }
+        async function saveDesa(event) { event.preventDefault(); showLoading(); const id = document.getElementById('desaId').value; const data = { nama_desa: document.getElementById('desaName').value, kecamatan: document.getElementById('desaKecamatan').value, kabupaten: document.getElementById('desaKabupaten').value, provinsi: document.getElementById('desaProvinsi').value, kuota: parseInt(document.getElementById('desaKuota').value), nama_pembimbing_lapangan: document.getElementById('desaPembimbingLapangan').value, kontak_pembimbing_lapangan: document.getElementById('desaKontakPembimbing').value, alamat: document.getElementById('desaAlamat').value, link_grup: document.getElementById('desaLinkGrup').value }; try { const url = id ? `${API_BASE_URL}/admin/desa-kkn/${id}` : `${API_BASE_URL}/admin/desa-kkn`; const method = id ? 'PUT' : 'POST'; const response = await fetch(url, { method, headers: getHeaders(), body: JSON.stringify(data) }); const result = await response.json(); if (result.success) { showAlert(id ? 'Desa diupdate' : 'Desa ditambahkan'); closeDesaModal(); loadDesaData(); loadKabupatenList(); } } catch (error) { showAlert('Gagal simpan', 'error'); } finally { hideLoading(); } }
         async function editDesa(id) { showLoading(); try { const response = await fetch(`${API_BASE_URL}/admin/desa-kkn/${id}`, { headers: getHeaders() }); const result = await response.json(); if (result.success) { const d = result.data; document.getElementById('desaId').value = d.id_desa; document.getElementById('desaName').value = d.nama_desa; document.getElementById('desaKecamatan').value = d.kecamatan || ''; document.getElementById('desaKabupaten').value = d.kabupaten; document.getElementById('desaProvinsi').value = d.provinsi; document.getElementById('desaKuota').value = d.kuota; document.getElementById('desaPembimbingLapangan').value = d.nama_pembimbing_lapangan || ''; document.getElementById('desaKontakPembimbing').value = d.kontak_pembimbing_lapangan || ''; document.getElementById('desaAlamat').value = d.alamat || ''; document.getElementById('desaLinkGrup').value = d.link_grup || ''; document.getElementById('desaModal').classList.remove('hidden'); } } catch (error) { showAlert('Gagal memuat', 'error'); } finally { hideLoading(); } }
-        async function deleteDesa(id) { const result = await Swal.fire({ title: 'Konfirmasi', text: 'Hapus desa?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: 'Ya' }); if (!result.isConfirmed) return; showLoading(); try { const response = await fetch(`${API_BASE_URL}/admin/desa-kkn/${id}`, { method: 'DELETE', headers: getHeaders() }); const data = await response.json(); if (data.success) { showAlert('Desa dihapus'); loadDesaData(); } } catch (error) { showAlert('Gagal hapus', 'error'); } finally { hideLoading(); } }
+        async function deleteDesa(id) { const result = await Swal.fire({ title: 'Konfirmasi', text: 'Hapus desa?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: 'Ya' }); if (!result.isConfirmed) return; showLoading(); try { const response = await fetch(`${API_BASE_URL}/admin/desa-kkn/${id}`, { method: 'DELETE', headers: getHeaders() }); const data = await response.json(); if (data.success) { showAlert('Desa dihapus'); loadDesaData(); loadKabupatenList(); } } catch (error) { showAlert('Gagal hapus', 'error'); } finally { hideLoading(); } }
         async function viewDesaDetail(id) { showLoading(); try { const response = await fetch(`${API_BASE_URL}/admin/desa-kkn/${id}`, { headers: getHeaders() }); const result = await response.json(); if (result.success) { const d = result.data; document.getElementById('detailModalContent').innerHTML = `<div class="space-y-4"><div><strong>Nama Desa:</strong> ${d.nama_desa}</div><div><strong>Kecamatan:</strong> ${d.kecamatan || '-'}</div><div><strong>Kabupaten:</strong> ${d.kabupaten}</div><div><strong>Provinsi:</strong> ${d.provinsi}</div><div><strong>Kuota:</strong> ${d.kuota}</div><div><strong>Terisi:</strong> ${d.kuota_terisi || 0}</div><div><strong>Pembimbing:</strong> ${d.nama_pembimbing_lapangan || '-'}</div><div><strong>Alamat:</strong> ${d.alamat || '-'}</div><div><strong>Tautan Grup WA:</strong> ${d.link_grup ? `<a href="${d.link_grup}" target="_blank" class="text-green-600 hover:underline">${d.link_grup}</a>` : '-'}</div></div>`; document.getElementById('detailModal').classList.remove('hidden'); } } catch (error) { showAlert('Gagal memuat detail', 'error'); } finally { hideLoading(); } }
         function changeDesaPage(direction) { if (direction === 'prev' && currentDesaPage > 1) currentDesaPage--; else if (direction === 'next') currentDesaPage++; loadDesaData(); }
 
@@ -1776,14 +1794,19 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             initDropdown(); initMobileNav(); setActiveNavLink(); updateNavbarUserInfo();
-            loadProgramData(); loadStatsData();
+            loadProgramData(); loadStatsData(); loadKabupatenList();
             document.getElementById('searchProgram')?.addEventListener('input', debounce(loadProgramData, 500));
+            document.getElementById('filterJenisProgram')?.addEventListener('change', loadProgramData);
             document.getElementById('searchDesa')?.addEventListener('input', debounce(loadDesaData, 500));
+            document.getElementById('filterStatusDesa')?.addEventListener('change', loadDesaData);
+            document.getElementById('filterKabupaten')?.addEventListener('change', loadDesaData);
             document.getElementById('searchPerusahaan')?.addEventListener('input', debounce(loadPerusahaanData, 500));
+            document.getElementById('filterStatusPerusahaan')?.addEventListener('change', loadPerusahaanData);
             document.getElementById('searchRegistration')?.addEventListener('input', debounce(loadRegistrationData, 500));
             document.getElementById('filterJenisRegistration')?.addEventListener('change', loadRegistrationData);
             document.getElementById('filterStatusRegistration')?.addEventListener('change', loadRegistrationData);
             document.getElementById('searchLuaran')?.addEventListener('input', debounce(loadLuaranData, 500));
+            document.getElementById('filterStatusLuaran')?.addEventListener('change', loadLuaranData);
             document.getElementById('searchLuaranMagang')?.addEventListener('input', debounce(loadLuaranMagangData, 500));
             document.getElementById('filterStatusLuaranMagang')?.addEventListener('change', loadLuaranMagangData);
         });

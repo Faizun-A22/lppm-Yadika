@@ -1370,6 +1370,9 @@
             loadCategoryCounts();
             loadDocuments();
             document.getElementById('gridViewBtn').classList.add('bg-pink-100', 'text-pink-600');
+
+            document.getElementById('kategoriFilter')?.addEventListener('change', () => applyFilters());
+            document.getElementById('tahunFilter')?.addEventListener('change', () => applyFilters());
         });
 
         let searchTimeout;
