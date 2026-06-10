@@ -771,13 +771,7 @@
                     </div>
                     <div>
                         <label class="block text-gray-700 text-sm font-bold mb-2">Tahun <span class="text-red-500">*</span></label>
-                        <select id="tahun" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500 text-sm" required>
-                            <option value="2024">2024</option>
-                            <option value="2023">2023</option>
-                            <option value="2022">2022</option>
-                            <option value="2021">2021</option>
-                            <option value="2020">2020</option>
-                        </select>
+                        <input type="number" id="tahun" placeholder="Contoh: 2026" min="1900" max="2100" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 text-sm" required>
                     </div>
                 </div>
 
@@ -1366,6 +1360,17 @@
             setActiveNavLink();
             updateNavbarUserInfo();
             
+            // Populate tahunFilter dynamically from current year down to 2015
+            const tahunFilterSelect = document.getElementById('tahunFilter');
+            if (tahunFilterSelect) {
+                const currentYear = new Date().getFullYear();
+                let options = '<option value="">Semua Tahun</option>';
+                for (let y = currentYear; y >= 2015; y--) {
+                    options += `<option value="${y}">${y}</option>`;
+                }
+                tahunFilterSelect.innerHTML = options;
+            }
+
             loadDashboardStats();
             loadCategoryCounts();
             loadDocuments();
