@@ -1225,6 +1225,17 @@
                     showLoading();
                     try {
                         const response = await fetch(`${API_BASE_URL}/mahasiswa/kkn/daftar`, { method: 'POST', headers: { 'Authorization': `Bearer ${getToken()}` }, body: formData });
+                        if (!response.ok) {
+                            if (response.status === 413) {
+                                throw new Error('Ukuran berkas yang diunggah terlalu besar. Silakan kompres atau perkecil berkas Anda (Maksimal 5MB per file).');
+                            }
+                            try {
+                                const errData = await response.json();
+                                throw new Error(errData.message || 'Gagal mendaftar KKN');
+                            } catch (e) {
+                                throw new Error(e.message || `Terjadi kesalahan server (Status: ${response.status})`);
+                            }
+                        }
                         const result = await response.json();
                         if (result.success) {
                             Swal.fire({ title: 'Berhasil!', text: 'Pendaftaran KKN berhasil dikirim', icon: 'success', confirmButtonColor: '#8B5CF6' }).then(() => {
@@ -1261,13 +1272,24 @@
                     showLoading();
                     try {
                         const response = await fetch(`${API_BASE_URL}/mahasiswa/kkn/luaran/simpan`, { method: 'POST', headers: { 'Authorization': `Bearer ${getToken()}` }, body: formData });
+                        if (!response.ok) {
+                            if (response.status === 413) {
+                                throw new Error('Ukuran berkas yang diunggah terlalu besar. Silakan kompres atau perkecil berkas Anda (Maksimal 5MB).');
+                            }
+                            try {
+                                const errData = await response.json();
+                                throw new Error(errData.message || 'Gagal menyimpan luaran');
+                            } catch (e) {
+                                throw new Error(e.message || `Terjadi kesalahan server (Status: ${response.status})`);
+                            }
+                        }
                         const result = await response.json();
                         if (result.success) {
                             Swal.fire({ title: 'Tersimpan!', text: 'Data luaran berhasil disimpan', icon: 'success', timer: 1500, showConfirmButton: false }).then(() => {
                                 document.getElementById('luaranForm').reset(); loadLuaranData(); showSection('proses');
                             });
                         } else { showNotification(result.message || 'Gagal menyimpan', false); }
-                    } catch (error) { console.error('Error:', error); showNotification('Terjadi kesalahan', false); }
+                    } catch (error) { console.error('Error:', error); showNotification('Terjadi kesalahan: ' + error.message, false); }
                     finally { hideLoading(); }
                 }
             });

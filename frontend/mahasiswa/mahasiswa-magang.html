@@ -1454,8 +1454,18 @@
                 body: formData 
             });
             
+            if (!response.ok) {
+                if (response.status === 413) {
+                    throw new Error('Ukuran berkas yang diunggah terlalu besar. Silakan kompres atau perkecil berkas Anda (Maksimal 5MB per file).');
+                }
+                try {
+                    const result = await response.json();
+                    throw new Error(result.message || 'Gagal mendaftar magang');
+                } catch (e) {
+                    throw new Error(e.message || `Terjadi kesalahan server (Status: ${response.status})`);
+                }
+            }
             const result = await response.json();
-            if (!response.ok) throw new Error(result.message || 'Gagal mendaftar magang');
             showNotification(isUpdate ? 'Pendaftaran magang berhasil diperbarui' : 'Pendaftaran magang berhasil dikirim', 'success');
             this.reset();
             document.getElementById('fakultasSelect').value = '';
@@ -1504,8 +1514,18 @@
             const url = perusahaanId ? `${API_BASE_URL}/magang/perusahaan/${perusahaanId}` : `${API_BASE_URL}/magang/perusahaan`;
             const method = perusahaanId ? 'PUT' : 'POST';
             const response = await fetch(url, { method: method, headers: { 'Authorization': `Bearer ${token}` }, body: formData });
+            if (!response.ok) {
+                if (response.status === 413) {
+                    throw new Error('Ukuran berkas yang diunggah terlalu besar. Silakan kompres atau perkecil berkas Anda (Maksimal 5MB per file).');
+                }
+                try {
+                    const result = await response.json();
+                    throw new Error(result.message || 'Gagal menyimpan data perusahaan');
+                } catch (e) {
+                    throw new Error(e.message || `Terjadi kesalahan server (Status: ${response.status})`);
+                }
+            }
             const result = await response.json();
-            if (!response.ok) throw new Error(result.message || 'Gagal menyimpan data perusahaan');
             showNotification('Data perusahaan berhasil disimpan', 'success');
             this.reset();
             document.getElementById('perusahaanId').value = '';
@@ -1551,8 +1571,18 @@
             const url = luaranId ? `${API_BASE_URL}/magang/luaran/${luaranId}` : `${API_BASE_URL}/magang/luaran`;
             const method = luaranId ? 'PUT' : 'POST';
             const response = await fetch(url, { method: method, headers: { 'Authorization': `Bearer ${token}` }, body: formData });
+            if (!response.ok) {
+                if (response.status === 413) {
+                    throw new Error('Ukuran berkas yang diunggah terlalu besar. Silakan kompres atau perkecil berkas Anda (Maksimal 5MB per file).');
+                }
+                try {
+                    const result = await response.json();
+                    throw new Error(result.message || 'Gagal menyimpan data luaran');
+                } catch (e) {
+                    throw new Error(e.message || `Terjadi kesalahan server (Status: ${response.status})`);
+                }
+            }
             const result = await response.json();
-            if (!response.ok) throw new Error(result.message || 'Gagal menyimpan data luaran');
             showNotification('Data luaran berhasil disimpan', 'success');
             this.reset();
             document.getElementById('luaranId').value = '';

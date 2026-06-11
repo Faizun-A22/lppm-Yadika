@@ -1124,6 +1124,17 @@ window.uploadProfilePicture = async function(input) {
     try {
         showLoading();
         const response = await fetch(`${API_BASE_URL}/mahasiswa/profil/foto`, { method: 'POST', headers: { 'Authorization': `Bearer ${getAuthToken()}` }, body: formData });
+        if (!response.ok) {
+            if (response.status === 413) {
+                throw new Error('Ukuran foto profil yang diunggah terlalu besar. Silakan gunakan foto yang lebih kecil (Maks 2MB).');
+            }
+            try {
+                const errResult = await response.json();
+                throw new Error(errResult.message || 'Gagal memperbarui foto profil');
+            } catch (e) {
+                throw new Error(e.message || `Terjadi kesalahan server (Status: ${response.status})`);
+            }
+        }
         const result = await response.json();
         if (result.success) {
             const newFoto = result.data.foto_profil;
@@ -1264,6 +1275,17 @@ window.submitUploadDoc = async function() {
             body: formData
         });
         
+        if (!response.ok) {
+            if (response.status === 413) {
+                throw new Error('Ukuran dokumen yang diunggah terlalu besar. Silakan gunakan dokumen yang lebih kecil (Maks 5MB).');
+            }
+            try {
+                const errResult = await response.json();
+                throw new Error(errResult.message || 'Gagal mengunggah dokumen');
+            } catch (e) {
+                throw new Error(e.message || `Terjadi kesalahan server (Status: ${response.status})`);
+            }
+        }
         const result = await response.json();
         if (result.success) {
             closeUploadDocModal();
