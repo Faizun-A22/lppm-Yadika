@@ -901,7 +901,31 @@
         AOS.init({ duration: 800, once: true, easing: 'ease-out-cubic' });
 
         // API Configuration
-        const API_BASE_URL = '/api';
+        const getApiBaseUrl = () => {
+            const hostname = window.location.hostname;
+            const protocol = window.location.protocol;
+            
+            if (protocol === 'file:') {
+                return 'http://localhost:3000/api';
+            }
+            
+            const isIp = /^\d+\.\d+\.\d+\.\d+$/.test(hostname) || hostname.includes(':');
+            
+            const isLocalHost = hostname === 'localhost' || 
+                                hostname === '127.0.0.1' || 
+                                hostname === '[::1]' ||
+                                hostname === '' ||
+                                hostname.endsWith('.local') ||
+                                !hostname.includes('.') ||
+                                isIp;
+            
+            if (isLocalHost) {
+                return `${protocol}//${hostname || 'localhost'}:3000/api`;
+            }
+            
+            return '/api';
+        };
+        const API_BASE_URL = getApiBaseUrl();
         let authToken = localStorage.getItem('token');
         
         // Chart instances
