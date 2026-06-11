@@ -899,7 +899,14 @@
         function hideLoading() { document.getElementById('loadingOverlay').classList.add('hidden'); }
 
         function showNotification(message, isSuccess = true) {
-            Swal.fire({ icon: isSuccess ? 'success' : 'error', title: isSuccess ? 'Berhasil' : 'Gagal', text: message, timer: 2000, showConfirmButton: false });
+            Swal.fire({ 
+                icon: isSuccess ? 'success' : 'error', 
+                title: isSuccess ? 'Berhasil' : 'Gagal', 
+                text: message, 
+                timer: isSuccess ? 2000 : null, 
+                showConfirmButton: !isSuccess,
+                confirmButtonColor: '#8B5CF6'
+            });
         }
 
         function getToken() { return localStorage.getItem('token'); }
@@ -1243,7 +1250,14 @@
                                 loadDashboard(); loadStatus(); loadTimeline(); loadRiwayat(); showSection('proses');
                             });
                         } else { showNotification(result.message || 'Gagal mendaftar', false); }
-                    } catch (error) { console.error('Error:', error); showNotification('Terjadi kesalahan: ' + error.message, false); }
+                    } catch (error) { 
+                        console.error('Error:', error); 
+                        let msg = error.message;
+                        if (msg.includes('Failed to fetch') || msg.includes('fetch')) {
+                            msg = 'Gagal terhubung ke server atau unggahan file terlalu besar (Maksimal 5MB per file).';
+                        }
+                        showNotification('Terjadi kesalahan: ' + msg, false); 
+                    }
                     finally { hideLoading(); }
                 }
             });
@@ -1289,7 +1303,14 @@
                                 document.getElementById('luaranForm').reset(); loadLuaranData(); showSection('proses');
                             });
                         } else { showNotification(result.message || 'Gagal menyimpan', false); }
-                    } catch (error) { console.error('Error:', error); showNotification('Terjadi kesalahan: ' + error.message, false); }
+                    } catch (error) { 
+                        console.error('Error:', error); 
+                        let msg = error.message;
+                        if (msg.includes('Failed to fetch') || msg.includes('fetch')) {
+                            msg = 'Gagal terhubung ke server atau unggahan file terlalu besar (Maksimal 5MB).';
+                        }
+                        showNotification('Terjadi kesalahan: ' + msg, false); 
+                    }
                     finally { hideLoading(); }
                 }
             });

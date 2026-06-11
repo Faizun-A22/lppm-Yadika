@@ -1473,7 +1473,14 @@
             document.getElementById('magangStudyProgram').disabled = true;
             await loadMagangData();
             showSection('proses');
-        } catch (error) { console.error('Error:', error); showNotification(error.message, 'error'); } finally { hideLoading(); }
+        } catch (error) { 
+            console.error('Error:', error); 
+            let msg = error.message;
+            if (msg.includes('Failed to fetch') || msg.includes('fetch')) {
+                msg = 'Gagal terhubung ke server atau unggahan file terlalu besar (Maksimal 5MB per file).';
+            }
+            showNotification(msg, 'error'); 
+        } finally { hideLoading(); }
     });
 
     document.getElementById('perusahaanForm')?.addEventListener('submit', async function(e) {
@@ -1532,7 +1539,14 @@
             await loadPerusahaanData();
             await loadMagangData();
             showSection('proses');
-        } catch (error) { console.error('Error:', error); showNotification(error.message, 'error'); } finally { hideLoading(); }
+        } catch (error) { 
+            console.error('Error:', error); 
+            let msg = error.message;
+            if (msg.includes('Failed to fetch') || msg.includes('fetch')) {
+                msg = 'Gagal terhubung ke server atau unggahan file terlalu besar (Maksimal 5MB per file).';
+            }
+            showNotification(msg, 'error'); 
+        } finally { hideLoading(); }
     });
 
     document.getElementById('luaranMagangForm')?.addEventListener('submit', async function(e) {
@@ -1589,7 +1603,14 @@
             await loadLuaranData();
             await loadMagangData();
             showSection('proses');
-        } catch (error) { console.error('Error:', error); showNotification(error.message, 'error'); } finally { hideLoading(); }
+        } catch (error) { 
+            console.error('Error:', error); 
+            let msg = error.message;
+            if (msg.includes('Failed to fetch') || msg.includes('fetch')) {
+                msg = 'Gagal terhubung ke server atau unggahan file terlalu besar (Maksimal 5MB per file).';
+            }
+            showNotification(msg, 'error'); 
+        } finally { hideLoading(); }
     });
     
     async function viewDetail(jenis, id) {

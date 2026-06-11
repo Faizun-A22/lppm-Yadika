@@ -840,8 +840,9 @@ function showNotification(message, isSuccess = true) {
         icon: isSuccess ? 'success' : 'error',
         title: isSuccess ? 'Berhasil' : 'Gagal',
         text: message,
-        timer: 2000,
-        showConfirmButton: false
+        timer: isSuccess ? 2000 : null,
+        showConfirmButton: !isSuccess,
+        confirmButtonColor: '#8B5CF6'
     });
 }
 
@@ -1146,7 +1147,14 @@ window.uploadProfilePicture = async function(input) {
             showNotification('Foto profil berhasil diperbarui');
         }
         else { throw new Error(result.message); }
-    } catch (error) { console.error('Error uploading profile picture:', error); showNotification(error.message || 'Gagal mengupload foto', false); } finally { hideLoading(); }
+    } catch (error) { 
+        console.error('Error uploading profile picture:', error); 
+        let msg = error.message;
+        if (msg.includes('Failed to fetch') || msg.includes('fetch')) {
+            msg = 'Gagal terhubung ke server atau ukuran foto terlalu besar (Maksimal 2MB).';
+        }
+        showNotification(msg, false); 
+    } finally { hideLoading(); }
 };
 
 // ===========================================
@@ -1296,7 +1304,11 @@ window.submitUploadDoc = async function() {
         }
     } catch (error) {
         console.error('Error uploading document:', error);
-        showNotification(error.message || 'Gagal mengunggah dokumen', false);
+        let msg = error.message;
+        if (msg.includes('Failed to fetch') || msg.includes('fetch')) {
+            msg = 'Gagal terhubung ke server atau ukuran dokumen terlalu besar (Maksimal 5MB).';
+        }
+        showNotification(msg, false);
     } finally {
         hideLoading();
     }
