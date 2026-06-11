@@ -890,7 +890,7 @@
     </div>
 
     <div id="detailModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50 flex items-center justify-center">
-        <div class="relative bg-white rounded-lg shadow-xl w-11/12 md:w-3/4 lg:w-1/2 max-h-[90vh] overflow-y-auto">
+        <div class="relative bg-white rounded-lg shadow-xl w-11/12 md:w-3/4 lg:w-2/3 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center p-4 md:p-6 border-b sticky top-0 bg-white">
                 <h3 class="text-lg md:text-xl font-bold text-gray-900">Detail</h3>
                 <button onclick="closeDetailModal()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button>
@@ -1213,6 +1213,87 @@
                     const sisa = d.kuota - (approved + pending);
                     const sisaClass = sisa <= 0 ? 'text-red-600 font-semibold' : 'text-green-600 font-semibold';
                     
+                    // Fetch participants for this village
+                    const pesResponse = await fetch(`${API_BASE_URL}/admin/desa-kkn/${id}/peserta?limit=100`, { headers: getHeaders() });
+                    const pesResult = await pesResponse.json();
+                    let pesTableHTML = '';
+                    
+                    if (pesResult.success && pesResult.data && pesResult.data.length > 0) {
+                        pesTableHTML = `
+                            <div class="mt-6">
+                                <h4 class="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2">
+                                    <i class="fas fa-users text-green-600 text-base"></i>
+                                    Daftar Mahasiswa Terdaftar (${pesResult.data.length} Orang)
+                                </h4>
+                                <div class="overflow-x-auto border border-gray-200 rounded-lg">
+                                    <table class="w-full text-xs text-left text-gray-500">
+                                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 border-b border-gray-200">
+                                            <tr>
+                                                <th class="px-4 py-3 w-10 text-center">No</th>
+                                                <th class="px-4 py-3">NIM</th>
+                                                <th class="px-4 py-3">Nama</th>
+                                                <th class="px-4 py-3">Prodi</th>
+                                                <th class="px-4 py-3 text-center">Status</th>
+                                                <th class="px-4 py-3 text-center">Aksi / Kontak</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-gray-200 bg-white">
+                                            ${pesResult.data.map((p, idx) => {
+                                                let badgeClass = 'bg-gray-100 text-gray-800';
+                                                let statusText = p.status;
+                                                if (p.status === 'pending') {
+                                                    badgeClass = 'bg-yellow-100 text-yellow-800 font-semibold';
+                                                    statusText = 'Pending';
+                                                } else if (p.status === 'approved') {
+                                                    badgeClass = 'bg-green-100 text-green-800 font-semibold';
+                                                    statusText = 'Disetujui';
+                                                } else if (p.status === 'verified') {
+                                                    badgeClass = 'bg-blue-100 text-blue-800 font-semibold';
+                                                    statusText = 'Terverifikasi';
+                                                } else if (p.status === 'rejected') {
+                                                    badgeClass = 'bg-red-100 text-red-800 font-semibold';
+                                                    statusText = 'Ditolak';
+                                                }
+                                                
+                                                const cleanPhone = p.no_hp ? p.no_hp.replace(/[^0-9]/g, '') : '';
+                                                let waPhone = cleanPhone;
+                                                if (waPhone.startsWith('0')) {
+                                                    waPhone = '62' + waPhone.slice(1);
+                                                }
+                                                
+                                                const waButton = p.no_hp ? `
+                                                    <a href="https://wa.me/${waPhone}" target="_blank" class="inline-flex items-center gap-1 text-green-600 hover:text-green-800 bg-green-50 px-2 py-1 rounded" title="Hubungi via WhatsApp">
+                                                        <i class="fab fa-whatsapp"></i> Chat
+                                                    </a>
+                                                ` : '-';
+                                                
+                                                return `
+                                                    <tr class="hover:bg-gray-50">
+                                                        <td class="px-4 py-2 text-center font-medium text-gray-900">${idx + 1}</td>
+                                                        <td class="px-4 py-2 font-medium text-gray-900">${p.nim}</td>
+                                                        <td class="px-4 py-2 font-medium">${p.nama_lengkap}</td>
+                                                        <td class="px-4 py-2">${p.program_studi?.nama_prodi || '-'}</td>
+                                                        <td class="px-4 py-2 text-center">
+                                                            <span class="px-2 py-0.5 text-xs rounded-full ${badgeClass}">${statusText}</span>
+                                                        </td>
+                                                        <td class="px-4 py-2 text-center">${waButton}</td>
+                                                    </tr>
+                                                `;
+                                            }).join('')}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        pesTableHTML = `
+                            <div class="mt-6 border border-dashed border-gray-200 rounded-lg p-6 text-center text-gray-500">
+                                <i class="fas fa-users-slash text-2xl mb-2 text-gray-400"></i>
+                                <p class="text-sm">Belum ada mahasiswa terdaftar di desa ini.</p>
+                            </div>
+                        `;
+                    }
+                    
                     document.getElementById('detailModalContent').innerHTML = `
                         <div class="space-y-4">
                             <div><strong>Nama Desa:</strong> ${d.nama_desa}</div>
@@ -1230,6 +1311,8 @@
                             <div><strong>Pembimbing:</strong> ${d.nama_pembimbing_lapangan || '-'}</div>
                             <div><strong>Alamat:</strong> ${d.alamat || '-'}</div>
                             <div><strong>Tautan Grup WA:</strong> ${d.link_grup ? `<a href="${d.link_grup}" target="_blank" class="text-green-600 hover:underline">${d.link_grup}</a>` : '-'}</div>
+                            
+                            ${pesTableHTML}
                         </div>
                     `;
                     document.getElementById('detailModal').classList.remove('hidden');
