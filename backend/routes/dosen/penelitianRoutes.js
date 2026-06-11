@@ -19,6 +19,17 @@ const penelitianValidation = [
     body('luaran').optional().isJSON().withMessage('Format luaran tidak valid')
 ];
 
+// Validation rules untuk pengabdian (sesuai frontend)
+const pengabdianValidation = [
+    body('judul').notEmpty().withMessage('Judul wajib diisi'),
+    body('skema').notEmpty().withMessage('Skema wajib dipilih'),
+    body('lokasi').notEmpty().withMessage('Lokasi wajib diisi'),
+    body('tahun').isInt({ min: 2000, max: 2100 }).withMessage('Tahun tidak valid'),
+    body('durasi').optional().isInt({ min: 1, max: 36 }).withMessage('Durasi harus antara 1-36 bulan'),
+    body('dana_diajukan').optional().isNumeric().withMessage('Dana harus berupa angka'),
+    body('luaran').optional().isJSON().withMessage('Format luaran tidak valid')
+];
+
 // Semua route memerlukan autentikasi dan role dosen
 router.use(authenticateToken);
 router.use(authorizeRoles('dosen'));
@@ -63,6 +74,46 @@ router.post('/penelitian/:id/laporan',
     ]),
     handleUploadError,
     dosenPenelitianController.uploadLaporan
+);
+
+// ==================== PENGABDIAN ROUTES (HANYA PENGABDIAN) ====================
+
+// GET routes
+router.get('/pengabdian', dosenPenelitianController.getAllPengabdian);
+router.get('/pengabdian/:id', dosenPenelitianController.getPengabdianById);
+
+// POST routes
+router.post('/pengabdian',
+    upload.fields([{ name: 'file_proposal', maxCount: 1 }]),
+    pengabdianValidation,
+    handleValidationErrors,
+    handleUploadError,
+    dosenPenelitianController.createPengabdian
+);
+
+// PUT routes
+router.put('/pengabdian/:id',
+    upload.fields([{ name: 'file_proposal', maxCount: 1 }]),
+    pengabdianValidation,
+    handleValidationErrors,
+    handleUploadError,
+    dosenPenelitianController.updatePengabdian
+);
+
+// DELETE routes
+router.delete('/pengabdian/:id', dosenPenelitianController.deletePengabdian);
+
+// Submit routes
+router.post('/pengabdian/:id/submit', dosenPenelitianController.submitPengabdian);
+
+// Laporan routes
+router.post('/pengabdian/:id/laporan',
+    upload.fields([
+        { name: 'file_laporan_kemajuan', maxCount: 1 },
+        { name: 'file_laporan_akhir', maxCount: 1 }
+    ]),
+    handleUploadError,
+    dosenPenelitianController.uploadLaporanPengabdian
 );
 
 // ==================== LUARAN ROUTES (DENGAN FILE HKI & KARYA ILMIAH) ====================

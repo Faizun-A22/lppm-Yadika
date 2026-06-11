@@ -1445,48 +1445,142 @@ class PenelitianService {
     async getRingkasanDosen({ tahun, fakultas }) {
         try {
             console.log('Getting ringkasan dosen with params:', { tahun, fakultas });
-            
-            let query = `
-                SELECT 
-                    u.id_user,
-                    u.nama_lengkap,
-                    u.nidn,
-                    f.nama_fakultas,
-                    p.nama_prodi,
-                    COUNT(DISTINCT pen.id_penelitian) as jumlah_penelitian,
-                    COUNT(DISTINCT peng.id_pengabdian) as jumlah_pengabdian,
-                    COALESCE(SUM(pen.dana_disetujui), 0) + COALESCE(SUM(peng.dana_disetujui), 0) as total_dana,
-                    COUNT(DISTINCT l.id_luaran) as jumlah_luaran
-                FROM users u
-                LEFT JOIN program_studi p ON u.id_prodi = p.id_prodi
-                LEFT JOIN fakultas f ON p.id_fakultas = f.id_fakultas
-                LEFT JOIN penelitian pen ON (pen.ketua_peneliti = u.id_user OR EXISTS (
-                    SELECT 1 FROM anggota_penelitian ap WHERE ap.id_penelitian = pen.id_penelitian AND ap.id_user = u.id_user
-                )) AND (pen.tahun = ${tahun} OR ${tahun} IS NULL)
-                LEFT JOIN pengabdian peng ON (peng.ketua_pengabdian = u.id_user OR EXISTS (
-                    SELECT 1 FROM anggota_pengabdian ap WHERE ap.id_pengabdian = peng.id_pengabdian AND ap.id_user = u.id_user
-                )) AND (peng.tahun = ${tahun} OR ${tahun} IS NULL)
-                LEFT JOIN luaran_penelitian_pengabdian l ON (l.id_referensi = pen.id_penelitian OR l.id_referensi = peng.id_pengabdian)
-                WHERE u.role = 'dosen'
-            `;
-            
+
+            // 1. Fetch all active faculties
+            const { data: allFakultas, error: fError } = await supabase
+                .from('fakultas')
+                .select('*')
+                .eq('status', 'aktif');
+            if (fError) throw fError;
+
+            // 2. Fetch all program studi
+            const { data: allProdi, error: pError } = await supabase
+                .from('program_studi')
+                .select('*')
+                .eq('status', 'aktif');
+            if (pError) throw pError;
+
+            // 3. Fetch all dosen users
+            const { data: allDosen, error: dError } = await supabase
+                .from('users')
+                .select(`
+                    id_user,
+                    nama_lengkap,
+                    nidn,
+                    id_prodi,
+                    program_studi(
+                        id_prodi,
+                        nama_prodi,
+                        id_fakultas,
+                        fakultas(
+                            id_fakultas,
+                            nama_fakultas
+                        )
+                    )
+                `)
+                .eq('role', 'dosen');
+            if (dError) throw dError;
+
+            // 4. Fetch all penelitian
+            let penQuery = supabase
+                .from('penelitian')
+                .select(`
+                    id_penelitian,
+                    ketua_peneliti,
+                    tahun,
+                    dana_disetujui,
+                    status,
+                    anggota_penelitian(
+                        id_user
+                    )
+                `);
+            if (tahun) {
+                penQuery = penQuery.eq('tahun', parseInt(tahun));
+            }
+            const { data: allPenelitian, error: penError } = await penQuery;
+            if (penError) throw penError;
+
+            // 5. Fetch all pengabdian
+            let pengQuery = supabase
+                .from('pengabdian')
+                .select(`
+                    id_pengabdian,
+                    ketua_pengabdian,
+                    tahun,
+                    dana_disetujui,
+                    status,
+                    anggota_pengabdian(
+                        id_user
+                    )
+                `);
+            if (tahun) {
+                pengQuery = pengQuery.eq('tahun', parseInt(tahun));
+            }
+            const { data: allPengabdian, error: pengError } = await pengQuery;
+            if (pengError) throw pengError;
+
+            // 6. Fetch all luaran
+            const { data: allLuaran, error: luaranError } = await supabase
+                .from('luaran_penelitian_pengabdian')
+                .select('id_luaran, id_referensi');
+            if (luaranError) throw luaranError;
+
+            let dosenSummaries = (allDosen || []).map(user => {
+                const prodi = user.program_studi || {};
+                const fak = prodi.fakultas || {};
+
+                // Find matching research
+                const matchingPen = (allPenelitian || []).filter(pen => 
+                    pen.ketua_peneliti === user.id_user || 
+                    (pen.anggota_penelitian && pen.anggota_penelitian.some(a => a.id_user === user.id_user))
+                );
+
+                // Find matching service
+                const matchingPeng = (allPengabdian || []).filter(peng => 
+                    peng.ketua_pengabdian === user.id_user || 
+                    (peng.anggota_pengabdian && peng.anggota_pengabdian.some(a => a.id_user === user.id_user))
+                );
+
+                const jumlah_penelitian = matchingPen.length;
+                const jumlah_pengabdian = matchingPeng.length;
+
+                const totalDanaPenelitian = matchingPen.reduce((sum, p) => sum + (parseFloat(p.dana_disetujui) || 0), 0);
+                const totalDanaPengabdian = matchingPeng.reduce((sum, p) => sum + (parseFloat(p.dana_disetujui) || 0), 0);
+                const totalDana = totalDanaPenelitian + totalDanaPengabdian;
+
+                // Find luaran associated with matching research or service
+                const refIds = new Set([
+                    ...matchingPen.map(p => p.id_penelitian),
+                    ...matchingPeng.map(p => p.id_pengabdian)
+                ]);
+
+                const matchingLuaran = (allLuaran || []).filter(l => refIds.has(l.id_referensi));
+                const jumlah_luaran = matchingLuaran.length;
+
+                return {
+                    id_user: user.id_user,
+                    nama_lengkap: user.nama_lengkap,
+                    nidn: user.nidn,
+                    nama_fakultas: fak.nama_fakultas || null,
+                    id_fakultas: fak.id_fakultas || null,
+                    nama_prodi: prodi.nama_prodi || null,
+                    jumlah_penelitian,
+                    jumlah_pengabdian,
+                    total_dana: totalDana,
+                    jumlah_luaran
+                };
+            });
+
+            // Apply fakultas filter
             if (fakultas) {
-                query += ` AND f.id_fakultas = '${fakultas}'`;
+                dosenSummaries = dosenSummaries.filter(d => d.id_fakultas === fakultas);
             }
-            
-            query += ` GROUP BY u.id_user, u.nama_lengkap, u.nidn, f.nama_fakultas, p.nama_prodi
-                       ORDER BY total_dana DESC`;
-            
-            const { data, error } = await supabase.rpc('execute_sql', { query });
-            
-            if (error) {
-                console.error('Error executing query:', error);
-                throw error;
-            }
-            
-            console.log(`Found ${data?.length || 0} dosen summaries`);
-            
-            return data || [];
+
+            // Sort by total_dana DESC
+            dosenSummaries.sort((a, b) => b.total_dana - a.total_dana);
+
+            console.log(`Successfully compiled ${dosenSummaries.length} dosen summaries`);
+            return dosenSummaries;
         } catch (error) {
             console.error('Error in getRingkasanDosen:', error);
             throw error;
@@ -1496,40 +1590,117 @@ class PenelitianService {
     async getRingkasanFakultas(tahun) {
         try {
             console.log('Getting ringkasan fakultas for tahun:', tahun);
-            
-            let query = `
-                SELECT 
-                    f.id_fakultas,
-                    f.nama_fakultas,
-                    COUNT(DISTINCT pen.id_penelitian) as jumlah_penelitian,
-                    COUNT(DISTINCT peng.id_pengabdian) as jumlah_pengabdian,
-                    COALESCE(SUM(pen.dana_disetujui), 0) as dana_penelitian,
-                    COALESCE(SUM(peng.dana_disetujui), 0) as dana_pengabdian,
-                    COUNT(DISTINCT u.id_user) as jumlah_dosen
-                FROM fakultas f
-                LEFT JOIN program_studi p ON f.id_fakultas = p.id_fakultas
-                LEFT JOIN users u ON u.id_prodi = p.id_prodi AND u.role = 'dosen'
-                LEFT JOIN penelitian pen ON (pen.ketua_peneliti = u.id_user OR EXISTS (
-                    SELECT 1 FROM anggota_penelitian ap WHERE ap.id_penelitian = pen.id_penelitian AND ap.id_user = u.id_user
-                )) AND (pen.tahun = ${tahun} OR ${tahun} IS NULL)
-                LEFT JOIN pengabdian peng ON (peng.ketua_pengabdian = u.id_user OR EXISTS (
-                    SELECT 1 FROM anggota_pengabdian ap WHERE ap.id_pengabdian = peng.id_pengabdian AND ap.id_user = u.id_user
-                )) AND (peng.tahun = ${tahun} OR ${tahun} IS NULL)
-                WHERE f.status = 'aktif'
-                GROUP BY f.id_fakultas, f.nama_fakultas
-                ORDER BY f.nama_fakultas
-            `;
-            
-            const { data, error } = await supabase.rpc('execute_sql', { query });
-            
-            if (error) {
-                console.error('Error executing query:', error);
-                throw error;
+
+            // 1. Fetch all active faculties
+            const { data: allFakultas, error: fError } = await supabase
+                .from('fakultas')
+                .select('*')
+                .eq('status', 'aktif');
+            if (fError) throw fError;
+
+            // 2. Fetch all program studi
+            const { data: allProdi, error: pError } = await supabase
+                .from('program_studi')
+                .select('*')
+                .eq('status', 'aktif');
+            if (pError) throw pError;
+
+            // 3. Fetch all dosen users
+            const { data: allDosen, error: dError } = await supabase
+                .from('users')
+                .select(`
+                    id_user,
+                    nama_lengkap,
+                    nidn,
+                    id_prodi,
+                    program_studi(
+                        id_prodi,
+                        nama_prodi,
+                        id_fakultas,
+                        fakultas(
+                            id_fakultas,
+                            nama_fakultas
+                        )
+                    )
+                `)
+                .eq('role', 'dosen');
+            if (dError) throw dError;
+
+            // 4. Fetch all penelitian
+            let penQuery = supabase
+                .from('penelitian')
+                .select(`
+                    id_penelitian,
+                    ketua_peneliti,
+                    tahun,
+                    dana_disetujui,
+                    status,
+                    anggota_penelitian(
+                        id_user
+                    )
+                `);
+            if (tahun) {
+                penQuery = penQuery.eq('tahun', parseInt(tahun));
             }
-            
-            console.log(`Found ${data?.length || 0} fakultas summaries`);
-            
-            return data || [];
+            const { data: allPenelitian, error: penError } = await penQuery;
+            if (penError) throw penError;
+
+            // 5. Fetch all pengabdian
+            let pengQuery = supabase
+                .from('pengabdian')
+                .select(`
+                    id_pengabdian,
+                    ketua_pengabdian,
+                    tahun,
+                    dana_disetujui,
+                    status,
+                    anggota_pengabdian(
+                        id_user
+                    )
+                `);
+            if (tahun) {
+                pengQuery = pengQuery.eq('tahun', parseInt(tahun));
+            }
+            const { data: allPengabdian, error: pengError } = await pengQuery;
+            if (pengError) throw pengError;
+
+            let fakultasSummaries = (allFakultas || []).map(fak => {
+                // Get all dosen users in this faculty
+                const facultyDosen = (allDosen || []).filter(d => 
+                    d.program_studi && d.program_studi.id_fakultas === fak.id_fakultas
+                );
+                const facultyDosenIds = new Set(facultyDosen.map(d => d.id_user));
+
+                // Find matching research where either leader or any member is in this faculty
+                const matchingPen = (allPenelitian || []).filter(pen => 
+                    facultyDosenIds.has(pen.ketua_peneliti) ||
+                    (pen.anggota_penelitian && pen.anggota_penelitian.some(a => facultyDosenIds.has(a.id_user)))
+                );
+
+                // Find matching service where either leader or any member is in this faculty
+                const matchingPeng = (allPengabdian || []).filter(peng => 
+                    facultyDosenIds.has(peng.ketua_pengabdian) ||
+                    (peng.anggota_pengabdian && peng.anggota_pengabdian.some(a => facultyDosenIds.has(a.id_user)))
+                );
+
+                const totalDanaPenelitian = matchingPen.reduce((sum, p) => sum + (parseFloat(p.dana_disetujui) || 0), 0);
+                const totalDanaPengabdian = matchingPeng.reduce((sum, p) => sum + (parseFloat(p.dana_disetujui) || 0), 0);
+
+                return {
+                    id_fakultas: fak.id_fakultas,
+                    nama_fakultas: fak.nama_fakultas,
+                    jumlah_penelitian: matchingPen.length,
+                    jumlah_pengabdian: matchingPeng.length,
+                    dana_penelitian: totalDanaPenelitian,
+                    dana_pengabdian: totalDanaPengabdian,
+                    jumlah_dosen: facultyDosen.length
+                };
+            });
+
+            fakultasSummaries.sort((a, b) => a.nama_fakultas.localeCompare(b.nama_fakultas));
+
+            console.log(`Successfully compiled ${fakultasSummaries.length} fakultas summaries`);
+            return fakultasSummaries;
         } catch (error) {
             console.error('Error in getRingkasanFakultas:', error);
             throw error;

@@ -206,6 +206,209 @@ class DosenPenelitianController {
         }
     }
     
+    // ==================== PENGABDIAN ====================
+    
+    async getAllPengabdian(req, res) {
+        try {
+            const { page, limit, status, tahun, skema, search } = req.query;
+            const userId = req.user.id_user;
+            
+            const result = await penelitianService.getAllPengabdian({
+                page: parseInt(page) || 1,
+                limit: parseInt(limit) || 10,
+                status,
+                tahun,
+                skema,
+                search,
+                userId
+            });
+            
+            res.json({
+                success: true,
+                data: result.data,
+                pagination: result.pagination
+            });
+        } catch (error) {
+            console.error('Error in getAllPengabdian:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Gagal mengambil data pengabdian',
+                error: error.message
+            });
+        }
+    }
+    
+    async getPengabdianById(req, res) {
+        try {
+            const { id } = req.params;
+            const userId = req.user.id_user;
+            
+            const data = await penelitianService.getPengabdianById(id, userId);
+            
+            res.json({
+                success: true,
+                data
+            });
+        } catch (error) {
+            console.error('Error in getPengabdianById:', error);
+            res.status(error.message === 'Pengabdian tidak ditemukan' ? 404 : 403).json({
+                success: false,
+                message: error.message
+            });
+        }
+    }
+    
+    async createPengabdian(req, res) {
+        try {
+            const userId = req.user.id_user;
+            
+            let luaran = null;
+            if (req.body.luaran) {
+                try {
+                    luaran = JSON.parse(req.body.luaran);
+                } catch (e) {
+                    luaran = req.body.luaran;
+                }
+            }
+            
+            const data = {
+                judul: req.body.judul,
+                skema: req.body.skema,
+                lokasi: req.body.lokasi,
+                tahun: parseInt(req.body.tahun),
+                durasi: parseInt(req.body.durasi) || 6,
+                dana_diajukan: parseFloat(req.body.dana_diajukan) || 0,
+                file_proposal: req.files?.file_proposal?.[0]?.path || null,
+                id_ketua: userId,
+                created_by: userId,
+                luaran
+            };
+            
+            const result = await penelitianService.createPengabdian(data);
+            
+            res.status(201).json({
+                success: true,
+                message: 'Pengabdian berhasil dibuat',
+                data: result
+            });
+        } catch (error) {
+            console.error('Error in createPengabdian:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Gagal membuat pengabdian',
+                error: error.message
+            });
+        }
+    }
+    
+    async updatePengabdian(req, res) {
+        try {
+            const { id } = req.params;
+            const userId = req.user.id_user;
+            
+            let luaran = null;
+            if (req.body.luaran) {
+                try {
+                    luaran = JSON.parse(req.body.luaran);
+                } catch (e) {
+                    luaran = req.body.luaran;
+                }
+            }
+            
+            const data = {
+                judul: req.body.judul,
+                skema: req.body.skema,
+                lokasi: req.body.lokasi,
+                tahun: parseInt(req.body.tahun),
+                durasi: parseInt(req.body.durasi) || 6,
+                dana_diajukan: parseFloat(req.body.dana_diajukan) || 0,
+                file_proposal: req.files?.file_proposal?.[0]?.path || null,
+                luaran
+            };
+            
+            const result = await penelitianService.updatePengabdian(id, data, userId);
+            
+            res.json({
+                success: true,
+                message: 'Pengabdian berhasil diupdate',
+                data: result
+            });
+        } catch (error) {
+            console.error('Error in updatePengabdian:', error);
+            res.status(error.message.includes('tidak dapat diupdate') ? 400 : 500).json({
+                success: false,
+                message: error.message
+            });
+        }
+    }
+    
+    async deletePengabdian(req, res) {
+        try {
+            const { id } = req.params;
+            const userId = req.user.id_user;
+            
+            await penelitianService.deletePengabdian(id, userId);
+            
+            res.json({
+                success: true,
+                message: 'Pengabdian berhasil dihapus'
+            });
+        } catch (error) {
+            console.error('Error in deletePengabdian:', error);
+            res.status(error.message.includes('Hanya pengabdian') ? 400 : 500).json({
+                success: false,
+                message: error.message
+            });
+        }
+    }
+    
+    async submitPengabdian(req, res) {
+        try {
+            const { id } = req.params;
+            const userId = req.user.id_user;
+            
+            const result = await penelitianService.submitPengabdian(id, userId);
+            
+            res.json({
+                success: true,
+                message: 'Pengabdian berhasil disubmit ke LPPM',
+                data: result
+            });
+        } catch (error) {
+            console.error('Error in submitPengabdian:', error);
+            res.status(error.message.includes('wajib diupload') ? 400 : 500).json({
+                success: false,
+                message: error.message
+            });
+        }
+    }
+    
+    async uploadLaporanPengabdian(req, res) {
+        try {
+            const { id } = req.params;
+            const userId = req.user.id_user;
+            
+            const laporanData = {
+                file_laporan_kemajuan: req.files?.file_laporan_kemajuan?.[0]?.path || null,
+                file_laporan_akhir: req.files?.file_laporan_akhir?.[0]?.path || null
+            };
+            
+            const result = await penelitianService.uploadLaporanPengabdian(id, laporanData, userId);
+            
+            res.json({
+                success: true,
+                message: 'Laporan berhasil diupload',
+                data: result
+            });
+        } catch (error) {
+            console.error('Error in uploadLaporanPengabdian:', error);
+            res.status(500).json({
+                success: false,
+                message: error.message
+            });
+        }
+    }
+    
     // ==================== LUARAN ====================
     
     async uploadLuaran(req, res) {
@@ -315,8 +518,9 @@ class DosenPenelitianController {
     async getRingkasanStatus(req, res) {
         try {
             const userId = req.user.id_user;
+            const { jenis } = req.query;
             
-            const data = await penelitianService.getRingkasanStatus(userId);
+            const data = await penelitianService.getRingkasanStatus(userId, jenis || 'penelitian');
             
             res.json({
                 success: true,

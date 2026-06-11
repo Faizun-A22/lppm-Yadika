@@ -552,6 +552,7 @@
                 <div class="section-tab" onclick="showSection('review-section', event)">Review</div>
                 <div class="section-tab" onclick="showSection('statistik-section', event)">Statistik</div>
                 <div class="section-tab" onclick="showSection('skema-section', event)">Skema</div>
+                <div class="section-tab" onclick="showSection('rekap-section', event)">Rekap Laporan</div>
             </div>
 
             <!-- Content Sections -->
@@ -829,6 +830,58 @@
                             </thead>
                             <tbody id="skemaTableBody" class="divide-y divide-gray-200">
                                 <tr><td colspan="5" class="text-center py-8 text-gray-500">Memuat data...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rekap Section -->
+            <div id="rekap-section" class="content-section" data-aos="fade-up">
+                <!-- Filter Section for Rekap -->
+                <div class="bg-white rounded-xl shadow-lg p-4 md:p-6 mb-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
+                        <select id="filterRekapTahun" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm">
+                            <option value="">Semua Tahun</option>
+                            <option value="2026">2026</option>
+                            <option value="2025">2025</option>
+                            <option value="2024">2024</option>
+                            <option value="2023">2023</option>
+                            <option value="2022">2022</option>
+                        </select>
+
+                        <select id="filterRekapFakultas" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm">
+                            <option value="">Semua Fakultas</option>
+                        </select>
+                        
+                        <button onclick="loadRekapData()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm">
+                            <i class="fas fa-filter mr-2"></i>Filter Rekap
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Rekap Table -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+                        <h3 class="text-base md:text-lg font-semibold">Rekapitulasi Pengajuan Dosen</h3>
+                    </div>
+                    <div class="table-container overflow-x-auto">
+                        <table class="w-full min-w-[1000px]">
+                            <thead class="bg-gray-50 text-gray-700">
+                                <tr>
+                                    <th class="px-3 md:px-4 py-3 text-left text-xs font-medium uppercase">No</th>
+                                    <th class="px-3 md:px-4 py-3 text-left text-xs font-medium uppercase">Nama Dosen</th>
+                                    <th class="px-3 md:px-4 py-3 text-left text-xs font-medium uppercase">NIDN</th>
+                                    <th class="px-3 md:px-4 py-3 text-left text-xs font-medium uppercase">Fakultas</th>
+                                    <th class="px-3 md:px-4 py-3 text-left text-xs font-medium uppercase">Program Studi</th>
+                                    <th class="px-3 md:px-4 py-3 text-center text-xs font-medium uppercase">Penelitian</th>
+                                    <th class="px-3 md:px-4 py-3 text-center text-xs font-medium uppercase">Pengabdian</th>
+                                    <th class="px-3 md:px-4 py-3 text-center text-xs font-medium uppercase">Luaran</th>
+                                    <th class="px-3 md:px-4 py-3 text-right text-xs font-medium uppercase">Total Dana</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rekapTableBody" class="divide-y divide-gray-200">
+                                <tr><td colspan="9" class="text-center py-8 text-gray-500">Silakan klik filter untuk memuat data rekap.</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -1356,6 +1409,7 @@
                 case 'review-section': loadReviewData(); break;
                 case 'statistik-section': loadStatistikData(); break;
                 case 'skema-section': loadSkemaData(); break;
+                case 'rekap-section': loadRekapData(); break;
             }
         }
 
@@ -1432,6 +1486,71 @@
         function editSkema(id) { showNotification('Fitur edit dalam pengembangan', 'info'); }
         function deleteSkema(id) { showNotification('Fitur hapus dalam pengembangan', 'info'); }
 
+        async function loadFakultasFilter() {
+            try {
+                const response = await apiCall('/fakultas');
+                const fakultasData = response.data || [];
+                const filterSelect = document.getElementById('filterRekapFakultas');
+                if (filterSelect) {
+                    filterSelect.innerHTML = '<option value="">Semua Fakultas</option>' + 
+                        fakultasData.map(f => `<option value="${f.id_fakultas}">${f.nama_fakultas}</option>`).join('');
+                }
+            } catch (error) {
+                console.error('Error loading fakultas list:', error);
+            }
+        }
+
+        async function loadRekapData() {
+            showLoading();
+            try {
+                const tahun = document.getElementById('filterRekapTahun').value;
+                const fakultas = document.getElementById('filterRekapFakultas').value;
+                
+                const queryParams = new URLSearchParams({
+                    ...(tahun && { tahun }),
+                    ...(fakultas && { fakultas })
+                });
+                
+                const response = await apiCall(`/admin/penelitian/ringkasan-dosen?${queryParams}`);
+                const data = response.data || [];
+                
+                renderRekapData(data);
+            } catch (error) {
+                console.error('Error loading rekap data:', error);
+                showNotification('Gagal memuat data rekap: ' + error.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function renderRekapData(data) {
+            const tbody = document.getElementById('rekapTableBody');
+            if (!tbody) return;
+            
+            if (!data || data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" class="text-center py-8 text-gray-500">Tidak ada data rekap</td></tr>';
+                return;
+            }
+            
+            let html = '';
+            data.forEach((item, index) => {
+                html += `
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-3 md:px-4 py-3 text-sm">${index + 1}</td>
+                        <td class="px-3 md:px-4 py-3 text-sm font-semibold text-gray-800">${item.nama_lengkap}</td>
+                        <td class="px-3 md:px-4 py-3 text-sm text-gray-600">${item.nidn || '-'}</td>
+                        <td class="px-3 md:px-4 py-3 text-sm text-gray-600">${item.nama_fakultas || '-'}</td>
+                        <td class="px-3 md:px-4 py-3 text-sm text-gray-600">${item.nama_prodi || '-'}</td>
+                        <td class="px-3 md:px-4 py-3 text-sm text-center font-medium">${item.jumlah_penelitian || 0}</td>
+                        <td class="px-3 md:px-4 py-3 text-sm text-center font-medium">${item.jumlah_pengabdian || 0}</td>
+                        <td class="px-3 md:px-4 py-3 text-sm text-center font-medium">${item.jumlah_luaran || 0}</td>
+                        <td class="px-3 md:px-4 py-3 text-sm text-right font-bold text-blue-600">${formatCurrency(item.total_dana)}</td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+        }
+
         function handleLogout() {
             Swal.fire({
                 title: 'Konfirmasi Logout',
@@ -1488,6 +1607,7 @@
             
             loadAllSubmissions(1);
             loadSkemaData();
+            loadFakultasFilter();
 
             // Debounced search inputs
             const searchInputs = [
