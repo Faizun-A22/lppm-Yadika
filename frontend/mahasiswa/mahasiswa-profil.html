@@ -778,7 +778,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Pilih File</label>
                         <input type="file" id="docFileInput" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-500" accept=".pdf,image/*" required>
-                        <p class="text-xs text-gray-500 mt-1">Format: PDF, JPG, PNG (Maksimal 5MB)</p>
+                        <p class="text-xs text-gray-500 mt-1">Format: PDF, JPG, PNG (Maksimal 2MB)</p>
                     </div>
                     
                     <div class="flex justify-end space-x-3 mt-6">
@@ -1269,7 +1269,7 @@ window.submitUploadDoc = async function() {
     if (!jenis) { showNotification('Pilih jenis dokumen terlebih dahulu', false); return; }
     if (!file) { showNotification('Pilih file yang ingin diunggah', false); return; }
     
-    if (file.size > 5 * 1024 * 1024) { showNotification('Ukuran file maksimal 5MB', false); return; }
+    if (file.size > 2 * 1024 * 1024) { showNotification('Ukuran file maksimal 2MB', false); return; }
     
     const formData = new FormData();
     formData.append('jenis_dokumen', jenis);
@@ -1285,7 +1285,7 @@ window.submitUploadDoc = async function() {
         
         if (!response.ok) {
             if (response.status === 413) {
-                throw new Error('Ukuran dokumen yang diunggah terlalu besar. Silakan gunakan dokumen yang lebih kecil (Maks 5MB).');
+                throw new Error('Ukuran dokumen yang diunggah terlalu besar. Silakan gunakan dokumen yang lebih kecil (Maks 2MB).');
             }
             try {
                 const errResult = await response.json();
@@ -1306,7 +1306,7 @@ window.submitUploadDoc = async function() {
         console.error('Error uploading document:', error);
         let msg = error.message;
         if (msg.includes('Failed to fetch') || msg.includes('fetch')) {
-            msg = 'Gagal terhubung ke server atau ukuran dokumen terlalu besar (Maksimal 5MB).';
+            msg = 'Gagal terhubung ke server atau ukuran dokumen terlalu besar (Maksimal 2MB).';
         }
         showNotification(msg, false);
     } finally {
@@ -1376,12 +1376,12 @@ function setupFileValidation() {
         docFileInput.addEventListener('change', function() {
             const file = this.files[0];
             if (!file) return;
-            const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+            const MAX_SIZE = 2 * 1024 * 1024; // 2MB
             if (file.size > MAX_SIZE) {
                 Swal.fire({
                     icon: 'warning',
                     title: 'Ukuran Dokumen Terlalu Besar',
-                    text: `Dokumen "${file.name}" berukuran ${(file.size / (1024 * 1024)).toFixed(2)}MB. Batas maksimum ukuran dokumen adalah 5MB. Silakan pilih file yang lebih kecil.`,
+                    text: `Dokumen "${file.name}" berukuran ${(file.size / (1024 * 1024)).toFixed(2)}MB. Batas maksimum ukuran dokumen adalah 2MB. Silakan pilih file yang lebih kecil.`,
                     confirmButtonColor: '#8B5CF6'
                 });
                 this.value = ''; // Reset input

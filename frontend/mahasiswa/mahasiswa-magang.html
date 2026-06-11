@@ -984,21 +984,21 @@
                             <div class="file-upload-area">
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Upload MOU Magang (PDF)</label>
                                 <input type="file" id="file_mou_magang" name="mou_file" accept=".pdf" class="w-full">
-                                <p class="text-xs text-gray-500 mt-1">Format PDF, Maks 5MB</p>
+                                <p class="text-xs text-gray-500 mt-1">Format PDF, Maks 2MB</p>
                                 <div id="existingMou" class="existing-file hidden"></div>
                             </div>
                             
                             <div className="file-upload-area">
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Upload Sertifikat Magang (PDF/JPG)</label>
                                 <input type="file" id="sertifikat_magang" name="sertifikat" accept=".pdf,.jpg,.jpeg" class="w-full">
-                                <p class="text-xs text-gray-500 mt-1">Format PDF/JPG, Maks 5MB</p>
+                                <p class="text-xs text-gray-500 mt-1">Format PDF/JPG, Maks 2MB</p>
                                 <div id="existingSertifikat" class="existing-file hidden"></div>
                             </div>
                             
                             <div class="file-upload-area">
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Upload Logbook Magang (PDF)</label>
                                 <input type="file" id="logbook_magang" name="logbook" accept=".pdf" class="w-full">
-                                <p class="text-xs text-gray-500 mt-1">Format PDF, Maks 5MB (Opsional)</p>
+                                <p class="text-xs text-gray-500 mt-1">Format PDF, Maks 2MB (Opsional)</p>
                                 <div id="existingLogbook" class="existing-file hidden"></div>
                             </div>
                         </div>
@@ -1423,10 +1423,10 @@
             return; 
         }
 
-        const MAX_SIZE = 5 * 1024 * 1024; // 5MB limit
-        if (krsFile && krsFile.size > MAX_SIZE) { showNotification('Ukuran file KRS terlalu besar. Maksimal 5MB.', 'warning'); return; }
-        if (khsFile && khsFile.size > MAX_SIZE) { showNotification('Ukuran file KHS terlalu besar. Maksimal 5MB.', 'warning'); return; }
-        if (paymentFile && paymentFile.size > MAX_SIZE) { showNotification('Ukuran file Bukti Pembayaran terlalu besar. Maksimal 5MB.', 'warning'); return; }
+        const MAX_SIZE = 2 * 1024 * 1024; // 2MB limit
+        if (krsFile && krsFile.size > MAX_SIZE) { showNotification('Ukuran file KRS terlalu besar. Maksimal 2MB.', 'warning'); return; }
+        if (khsFile && khsFile.size > MAX_SIZE) { showNotification('Ukuran file KHS terlalu besar. Maksimal 2MB.', 'warning'); return; }
+        if (paymentFile && paymentFile.size > MAX_SIZE) { showNotification('Ukuran file Bukti Pembayaran terlalu besar. Maksimal 2MB.', 'warning'); return; }
         
         try {
             showLoading();
@@ -1456,7 +1456,7 @@
             
             if (!response.ok) {
                 if (response.status === 413) {
-                    throw new Error('Ukuran berkas yang diunggah terlalu besar. Silakan kompres atau perkecil berkas Anda (Maksimal 5MB per file).');
+                    throw new Error('Ukuran berkas yang diunggah terlalu besar. Silakan kompres atau perkecil berkas Anda (Maksimal 2MB per file).');
                 }
                 try {
                     const result = await response.json();
@@ -1477,7 +1477,7 @@
             console.error('Error:', error); 
             let msg = error.message;
             if (msg.includes('Failed to fetch') || msg.includes('fetch')) {
-                msg = 'Gagal terhubung ke server atau unggahan file terlalu besar (Maksimal 5MB per file).';
+                msg = 'Gagal terhubung ke server atau unggahan file terlalu besar (Maksimal 2MB per file).';
             }
             showNotification(msg, 'error'); 
         } finally { hideLoading(); }
@@ -1503,15 +1503,15 @@
             if (emailPembimbing) formData.append('email_pembimbing', emailPembimbing);
             const jabatanPembimbing = document.getElementById('supervisorPosition').value;
             if (jabatanPembimbing) formData.append('jabatan_pembimbing', jabatanPembimbing);
-            const MAX_SIZE = 5 * 1024 * 1024; // 5MB limit
+            const MAX_SIZE = 2 * 1024 * 1024; // 2MB limit
             const suratKeterangan = document.getElementById('workCertificate').files[0];
             if (suratKeterangan) {
-                if (suratKeterangan.size > MAX_SIZE) { showNotification('Ukuran file Surat Keterangan terlalu besar. Maksimal 5MB.', 'warning'); return; }
+                if (suratKeterangan.size > MAX_SIZE) { showNotification('Ukuran file Surat Keterangan terlalu besar. Maksimal 2MB.', 'warning'); return; }
                 formData.append('surat_keterangan', suratKeterangan);
             }
             const strukturOrganisasi = document.getElementById('companyStructure').files[0];
-            if (strukturOrganisasi) {
-                if (strukturOrganisasi.size > MAX_SIZE) { showNotification('Ukuran file Struktur Organisasi terlalu besar. Maksimal 5MB.', 'warning'); return; }
+            if (formattingAllowed => true && strukturOrganisasi) {
+                if (strukturOrganisasi.size > MAX_SIZE) { showNotification('Ukuran file Struktur Organisasi terlalu besar. Maksimal 2MB.', 'warning'); return; }
                 formData.append('struktur_organisasi', strukturOrganisasi);
             }
             if (magangData.registrasi && magangData.registrasi.id_registrasi) {
@@ -1523,7 +1523,7 @@
             const response = await fetch(url, { method: method, headers: { 'Authorization': `Bearer ${token}` }, body: formData });
             if (!response.ok) {
                 if (response.status === 413) {
-                    throw new Error('Ukuran berkas yang diunggah terlalu besar. Silakan kompres atau perkecil berkas Anda (Maksimal 5MB per file).');
+                    throw new Error('Ukuran berkas yang diunggah terlalu besar. Silakan kompres atau perkecil berkas Anda (Maksimal 2MB per file).');
                 }
                 try {
                     const result = await response.json();
@@ -1543,7 +1543,7 @@
             console.error('Error:', error); 
             let msg = error.message;
             if (msg.includes('Failed to fetch') || msg.includes('fetch')) {
-                msg = 'Gagal terhubung ke server atau unggahan file terlalu besar (Maksimal 5MB per file).';
+                msg = 'Gagal terhubung ke server atau unggahan file terlalu besar (Maksimal 2MB per file).';
             }
             showNotification(msg, 'error'); 
         } finally { hideLoading(); }
@@ -1565,20 +1565,20 @@
             if (laporanLink) formData.append('laporan', laporanLink);
             const fotoLink = document.getElementById('link_foto').value;
             if (fotoLink) formData.append('foto_kegiatan', fotoLink);
-            const MAX_SIZE = 5 * 1024 * 1024; // 5MB limit
+            const MAX_SIZE = 2 * 1024 * 1024; // 2MB limit
             const mouFile = document.getElementById('file_mou_magang').files[0];
             if (mouFile) {
-                if (mouFile.size > MAX_SIZE) { showNotification('Ukuran file MoU terlalu besar. Maksimal 5MB.', 'warning'); return; }
+                if (mouFile.size > MAX_SIZE) { showNotification('Ukuran file MoU terlalu besar. Maksimal 2MB.', 'warning'); return; }
                 formData.append('mou_file', mouFile);
             }
             const sertifikatFile = document.getElementById('sertifikat_magang').files[0];
             if (sertifikatFile) {
-                if (sertifikatFile.size > MAX_SIZE) { showNotification('Ukuran file Sertifikat terlalu besar. Maksimal 5MB.', 'warning'); return; }
+                if (sertifikatFile.size > MAX_SIZE) { showNotification('Ukuran file Sertifikat terlalu besar. Maksimal 2MB.', 'warning'); return; }
                 formData.append('sertifikat', sertifikatFile);
             }
             const logbookFile = document.getElementById('logbook_magang').files[0];
             if (logbookFile) {
-                if (logbookFile.size > MAX_SIZE) { showNotification('Ukuran file Logbook terlalu besar. Maksimal 5MB.', 'warning'); return; }
+                if (logbookFile.size > MAX_SIZE) { showNotification('Ukuran file Logbook terlalu besar. Maksimal 2MB.', 'warning'); return; }
                 formData.append('logbook', logbookFile);
             }
             const luaranId = document.getElementById('luaranId').value;
@@ -1587,7 +1587,7 @@
             const response = await fetch(url, { method: method, headers: { 'Authorization': `Bearer ${token}` }, body: formData });
             if (!response.ok) {
                 if (response.status === 413) {
-                    throw new Error('Ukuran berkas yang diunggah terlalu besar. Silakan kompres atau perkecil berkas Anda (Maksimal 5MB per file).');
+                    throw new Error('Ukuran berkas yang diunggah terlalu besar. Silakan kompres atau perkecil berkas Anda (Maksimal 2MB per file).');
                 }
                 try {
                     const result = await response.json();
@@ -1607,7 +1607,7 @@
             console.error('Error:', error); 
             let msg = error.message;
             if (msg.includes('Failed to fetch') || msg.includes('fetch')) {
-                msg = 'Gagal terhubung ke server atau unggahan file terlalu besar (Maksimal 5MB per file).';
+                msg = 'Gagal terhubung ke server atau unggahan file terlalu besar (Maksimal 2MB per file).';
             }
             showNotification(msg, 'error'); 
         } finally { hideLoading(); }
@@ -1746,12 +1746,12 @@
             input.addEventListener('change', function() {
                 const file = this.files[0];
                 if (!file) return;
-                const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+                const MAX_SIZE = 2 * 1024 * 1024; // 2MB
                 if (file.size > MAX_SIZE) {
                     Swal.fire({
                         icon: 'warning',
                         title: 'Ukuran File Terlalu Besar',
-                        text: `File "${file.name}" berukuran ${(file.size / (1024 * 1024)).toFixed(2)}MB. Batas maksimum ukuran file adalah 5MB. Silakan pilih file yang lebih kecil.`,
+                        text: `File "${file.name}" berukuran ${(file.size / (1024 * 1024)).toFixed(2)}MB. Batas maksimum ukuran file adalah 2MB. Silakan pilih file yang lebih kecil.`,
                         confirmButtonColor: '#8B5CF6'
                     });
                     this.value = ''; // Reset input

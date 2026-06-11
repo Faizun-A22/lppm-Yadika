@@ -784,7 +784,7 @@
                             <label class="block text-sm font-medium text-gray-700 mb-2">Upload MOU (PDF)</label>
                             <div class="file-upload-area p-4 rounded-lg">
                                 <input type="file" id="mouFile" accept=".pdf" class="w-full">
-                                <p class="text-xs text-gray-500 mt-1">Format PDF, Maks 5MB</p>
+                                <p class="text-xs text-gray-500 mt-1">Format PDF, Maks 2MB</p>
                             </div>
                         </div>
                         
@@ -1212,10 +1212,10 @@
             if (!khsFile) { showNotification('Upload file KHS', false); return; }
             if (!paymentFile) { showNotification('Upload file bukti pembayaran', false); return; }
 
-            const MAX_SIZE = 5 * 1024 * 1024; // 5MB limit
-            if (krsFile.size > MAX_SIZE) { showNotification('Ukuran file KRS terlalu besar. Maksimal 5MB.', false); return; }
-            if (khsFile.size > MAX_SIZE) { showNotification('Ukuran file KHS terlalu besar. Maksimal 5MB.', false); return; }
-            if (paymentFile.size > MAX_SIZE) { showNotification('Ukuran file bukti pembayaran terlalu besar. Maksimal 5MB.', false); return; }
+            const MAX_SIZE = 2 * 1024 * 1024; // 2MB limit
+            if (krsFile.size > MAX_SIZE) { showNotification('Ukuran file KRS terlalu besar. Maksimal 2MB.', false); return; }
+            if (khsFile.size > MAX_SIZE) { showNotification('Ukuran file KHS terlalu besar. Maksimal 2MB.', false); return; }
+            if (paymentFile.size > MAX_SIZE) { showNotification('Ukuran file bukti pembayaran terlalu besar. Maksimal 2MB.', false); return; }
 
             const formData = new FormData();
             formData.append('id_prodi', document.getElementById('programStudi').value);
@@ -1234,7 +1234,7 @@
                         const response = await fetch(`${API_BASE_URL}/mahasiswa/kkn/daftar`, { method: 'POST', headers: { 'Authorization': `Bearer ${getToken()}` }, body: formData });
                         if (!response.ok) {
                             if (response.status === 413) {
-                                throw new Error('Ukuran berkas yang diunggah terlalu besar. Silakan kompres atau perkecil berkas Anda (Maksimal 5MB per file).');
+                                throw new Error('Ukuran berkas yang diunggah terlalu besar. Silakan kompres atau perkecil berkas Anda (Maksimal 2MB per file).');
                             }
                             try {
                                 const errData = await response.json();
@@ -1254,7 +1254,7 @@
                         console.error('Error:', error); 
                         let msg = error.message;
                         if (msg.includes('Failed to fetch') || msg.includes('fetch')) {
-                            msg = 'Gagal terhubung ke server atau unggahan file terlalu besar (Maksimal 5MB per file).';
+                            msg = 'Gagal terhubung ke server atau unggahan file terlalu besar (Maksimal 2MB per file).';
                         }
                         showNotification('Terjadi kesalahan: ' + msg, false); 
                     }
@@ -1267,9 +1267,9 @@
             e.preventDefault();
             const mouFile = document.getElementById('mouFile').files[0];
             if (mouFile) {
-                const MAX_SIZE = 5 * 1024 * 1024; // 5MB limit
+                const MAX_SIZE = 2 * 1024 * 1024; // 2MB limit
                 if (mouFile.size > MAX_SIZE) {
-                    showNotification('Ukuran file MoU terlalu besar. Maksimal 5MB.', false);
+                    showNotification('Ukuran file MoU terlalu besar. Maksimal 2MB.', false);
                     return;
                 }
             }
@@ -1288,7 +1288,7 @@
                         const response = await fetch(`${API_BASE_URL}/mahasiswa/kkn/luaran/simpan`, { method: 'POST', headers: { 'Authorization': `Bearer ${getToken()}` }, body: formData });
                         if (!response.ok) {
                             if (response.status === 413) {
-                                throw new Error('Ukuran berkas yang diunggah terlalu besar. Silakan kompres atau perkecil berkas Anda (Maksimal 5MB).');
+                                throw new Error('Ukuran berkas yang diunggah terlalu besar. Silakan kompres atau perkecil berkas Anda (Maksimal 2MB).');
                             }
                             try {
                                 const errData = await response.json();
@@ -1307,7 +1307,7 @@
                         console.error('Error:', error); 
                         let msg = error.message;
                         if (msg.includes('Failed to fetch') || msg.includes('fetch')) {
-                            msg = 'Gagal terhubung ke server atau unggahan file terlalu besar (Maksimal 5MB).';
+                            msg = 'Gagal terhubung ke server atau unggahan file terlalu besar (Maksimal 2MB).';
                         }
                         showNotification('Terjadi kesalahan: ' + msg, false); 
                     }
@@ -1440,12 +1440,12 @@
                 input.addEventListener('change', function() {
                     const file = this.files[0];
                     if (!file) return;
-                    const MAX_SIZE = 5 * 1024 * 1024; // 5MB limit
+                    const MAX_SIZE = 2 * 1024 * 1024; // 2MB limit
                     if (file.size > MAX_SIZE) {
                         Swal.fire({
                             icon: 'warning',
                             title: 'Ukuran File Terlalu Besar',
-                            text: `File "${file.name}" berukuran ${(file.size / (1024 * 1024)).toFixed(2)}MB. Batas maksimum ukuran file adalah 5MB. Silakan pilih file yang lebih kecil.`,
+                            text: `File "${file.name}" berukuran ${(file.size / (1024 * 1024)).toFixed(2)}MB. Batas maksimum ukuran file adalah 2MB. Silakan pilih file yang lebih kecil.`,
                             confirmButtonColor: '#8B5CF6'
                         });
                         this.value = ''; // Reset input
