@@ -427,10 +427,17 @@ class PenelitianService {
             console.log('   - Status saat ini:', existing.status);
             console.log('   - Akan diupdate menjadi:', status);
             
-            // Update status - LANGSUNG PAKAI STATUS YANG DITERIMA
+            // Map English status values to Indonesian database enum values
+            const statusMap = {
+                'approved': 'diterima',
+                'revision': 'revisi',
+                'rejected': 'ditolak'
+            };
+            const finalStatus = statusMap[status] || status;
+
             console.log('3. Menjalankan query UPDATE...');
             const updateData = {
-                status: status,
+                status: finalStatus,
                 updated_at: new Date(),
                 updated_by: adminId
             };
@@ -919,10 +926,18 @@ class PenelitianService {
             const existing = await this.getPengabdianById(id);
             console.log('Existing pengabdian:', existing.judul, 'Current status:', existing.status);
             
+            // Map English status values to Indonesian database enum values
+            const statusMap = {
+                'approved': 'diterima',
+                'revision': 'revisi',
+                'rejected': 'ditolak'
+            };
+            const finalStatus = statusMap[status] || status;
+            
             const { data, error } = await supabase
                 .from('pengabdian')
                 .update({
-                    status,
+                    status: finalStatus,
                     updated_at: new Date(),
                     updated_by: adminId
                 })

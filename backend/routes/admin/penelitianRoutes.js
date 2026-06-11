@@ -75,7 +75,7 @@ router.post('/penelitian/:id/submit', penelitianController.submitPenelitian);
 // POST update status penelitian (admin only)
 router.post('/penelitian/:id/status',
     authorizeRoles('admin'),
-    body('status').isIn(['draft', 'submitted', 'review', 'review_content', 'revision', 'approved', 'rejected', 'completed']),
+    body('status').isIn(['draft', 'submitted', 'review', 'review_content', 'revisi', 'revision', 'diterima', 'approved', 'ditolak', 'rejected', 'completed']),
     body('catatan').optional(),
     handleValidationErrors,
     penelitianController.updateStatusPenelitian
@@ -127,7 +127,7 @@ router.post('/pengabdian/:id/submit', penelitianController.submitPengabdian);
 // POST update status pengabdian (admin only)
 router.post('/pengabdian/:id/status',
     authorizeRoles('admin'),
-    body('status').isIn(['draft', 'submitted', 'review', 'review_content', 'revision', 'approved', 'rejected', 'completed']),
+    body('status').isIn(['draft', 'submitted', 'review', 'review_content', 'revisi', 'revision', 'diterima', 'approved', 'ditolak', 'rejected', 'completed']),
     body('catatan').optional(),
     handleValidationErrors,
     penelitianController.updateStatusPengabdian
