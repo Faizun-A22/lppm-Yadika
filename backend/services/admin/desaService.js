@@ -30,8 +30,34 @@ const desaService = {
 
         if (error) throw error;
 
+        let mappedData = data || [];
+        if (mappedData.length > 0) {
+            const desaIds = mappedData.map(d => d.id_desa);
+            const { data: pendingCounts, error: pendingError } = await supabase
+                .from('registrasi_kkn')
+                .select('id_desa')
+                .eq('status', 'pending')
+                .in('id_desa', desaIds);
+
+            if (pendingError) throw pendingError;
+
+            const pendingMap = {};
+            if (pendingCounts) {
+                pendingCounts.forEach(p => {
+                    if (p.id_desa) {
+                        pendingMap[p.id_desa] = (pendingMap[p.id_desa] || 0) + 1;
+                    }
+                });
+            }
+
+            mappedData = mappedData.map(desa => ({
+                ...desa,
+                pending_count: pendingMap[desa.id_desa] || 0
+            }));
+        }
+
         return {
-            data: data || [],
+            data: mappedData,
             total: count || 0
         };
     } catch (error) {
@@ -50,6 +76,19 @@ const desaService = {
             .single();
 
         if (error) throw error;
+
+        if (data) {
+            const { count, error: pendingError } = await supabase
+                .from('registrasi_kkn')
+                .select('*', { count: 'exact', head: true })
+                .eq('id_desa', id)
+                .eq('status', 'pending');
+
+            if (pendingError) throw pendingError;
+
+            data.pending_count = count || 0;
+        }
+
         return data;
     } catch (error) {
         console.error('Error in getDesaById:', error);

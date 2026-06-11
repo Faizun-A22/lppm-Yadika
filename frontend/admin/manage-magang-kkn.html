@@ -540,14 +540,16 @@
                                     <th class="px-4 py-3 text-left text-xs font-medium uppercase">Kecamatan</th>
                                     <th class="px-4 py-3 text-left text-xs font-medium uppercase">Kabupaten</th>
                                     <th class="px-4 py-3 text-left text-xs font-medium uppercase">Kuota</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Terisi</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Disetujui</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Pending</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase">Sisa</th>
                                     <th class="px-4 py-3 text-left text-xs font-medium uppercase">Pembimbing Lapangan</th>
                                     <th class="px-4 py-3 text-left text-xs font-medium uppercase">Status</th>
                                     <th class="px-4 py-3 text-center text-xs font-medium uppercase">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody id="desaTableBody" class="bg-white divide-y divide-gray-200">
-                                <tr><td colspan="8" class="text-center py-8 text-gray-500">Memuat data...</td></tr>
+                                <tr><td colspan="10" class="text-center py-8 text-gray-500">Memuat data...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -1168,15 +1170,76 @@
         }
         function renderDesaTable(desaList) {
             const tbody = document.getElementById('desaTableBody');
-            if (!desaList || desaList.length === 0) { tbody.innerHTML = '<tr><td colspan="8" class="text-center py-8 text-gray-500">Tidak ada data</td></tr>'; return; }
-            tbody.innerHTML = desaList.map(d => `<tr><td class="px-4 py-3">${d.nama_desa}</td><td class="px-4 py-3">${d.kecamatan || '-'}</td><td class="px-4 py-3">${d.kabupaten}</td><td class="px-4 py-3">${d.kuota}</td><td class="px-4 py-3"><span class="${d.kuota_terisi >= d.kuota ? 'text-red-600' : 'text-green-600'}">${d.kuota_terisi || 0}/${d.kuota}</span></td><td class="px-4 py-3">${d.nama_pembimbing_lapangan || '-'}</td><td class="px-4 py-3"><span class="px-2 py-1 text-xs rounded-full ${d.status === 'aktif' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">${d.status === 'aktif' ? 'Aktif' : 'Nonaktif'}</span></td><td class="px-4 py-3 text-center"><button onclick="viewDesaDetail('${d.id_desa}')" class="text-blue-600 mr-2"><i class="fas fa-eye"></i></button><button onclick="editDesa('${d.id_desa}')" class="text-green-600 mr-2"><i class="fas fa-edit"></i></button><button onclick="deleteDesa('${d.id_desa}')" class="text-red-600"><i class="fas fa-trash"></i></button></td></tr>`).join('');
+            if (!desaList || desaList.length === 0) { tbody.innerHTML = '<tr><td colspan="10" class="text-center py-8 text-gray-500">Tidak ada data</td></tr>'; return; }
+            tbody.innerHTML = desaList.map(d => {
+                const approved = d.kuota_terisi || 0;
+                const pending = d.pending_count || 0;
+                const sisa = d.kuota - (approved + pending);
+                const sisaClass = sisa <= 0 ? 'text-red-600 font-semibold' : 'text-green-600 font-semibold';
+                const pendingClass = pending > 0 ? 'text-yellow-600 font-semibold' : 'text-gray-500';
+                
+                return `<tr>
+                    <td class="px-4 py-3">${d.nama_desa}</td>
+                    <td class="px-4 py-3">${d.kecamatan || '-'}</td>
+                    <td class="px-4 py-3">${d.kabupaten}</td>
+                    <td class="px-4 py-3 font-semibold">${d.kuota}</td>
+                    <td class="px-4 py-3 text-green-600 font-semibold">${approved}</td>
+                    <td class="px-4 py-3 ${pendingClass}">${pending}</td>
+                    <td class="px-4 py-3 ${sisaClass}">${sisa}</td>
+                    <td class="px-4 py-3">${d.nama_pembimbing_lapangan || '-'}</td>
+                    <td class="px-4 py-3"><span class="px-2 py-1 text-xs rounded-full ${d.status === 'aktif' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">${d.status === 'aktif' ? 'Aktif' : 'Nonaktif'}</span></td>
+                    <td class="px-4 py-3 text-center">
+                        <button onclick="viewDesaDetail('${d.id_desa}')" class="text-blue-600 mr-2"><i class="fas fa-eye"></i></button>
+                        <button onclick="editDesa('${d.id_desa}')" class="text-green-600 mr-2"><i class="fas fa-edit"></i></button>
+                        <button onclick="deleteDesa('${d.id_desa}')" class="text-red-600"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>`;
+            }).join('');
         }
         function openAddDesaModal() { document.getElementById('desaForm').reset(); document.getElementById('desaId').value = ''; document.getElementById('desaModal').classList.remove('hidden'); }
         function closeDesaModal() { document.getElementById('desaModal').classList.add('hidden'); }
         async function saveDesa(event) { event.preventDefault(); showLoading(); const id = document.getElementById('desaId').value; const data = { nama_desa: document.getElementById('desaName').value, kecamatan: document.getElementById('desaKecamatan').value, kabupaten: document.getElementById('desaKabupaten').value, provinsi: document.getElementById('desaProvinsi').value, kuota: parseInt(document.getElementById('desaKuota').value), nama_pembimbing_lapangan: document.getElementById('desaPembimbingLapangan').value, kontak_pembimbing_lapangan: document.getElementById('desaKontakPembimbing').value, alamat: document.getElementById('desaAlamat').value, link_grup: document.getElementById('desaLinkGrup').value }; try { const url = id ? `${API_BASE_URL}/admin/desa-kkn/${id}` : `${API_BASE_URL}/admin/desa-kkn`; const method = id ? 'PUT' : 'POST'; const response = await fetch(url, { method, headers: getHeaders(), body: JSON.stringify(data) }); const result = await response.json(); if (result.success) { showAlert(id ? 'Desa diupdate' : 'Desa ditambahkan'); closeDesaModal(); loadDesaData(); loadKabupatenList(); } } catch (error) { showAlert('Gagal simpan', 'error'); } finally { hideLoading(); } }
         async function editDesa(id) { showLoading(); try { const response = await fetch(`${API_BASE_URL}/admin/desa-kkn/${id}`, { headers: getHeaders() }); const result = await response.json(); if (result.success) { const d = result.data; document.getElementById('desaId').value = d.id_desa; document.getElementById('desaName').value = d.nama_desa; document.getElementById('desaKecamatan').value = d.kecamatan || ''; document.getElementById('desaKabupaten').value = d.kabupaten; document.getElementById('desaProvinsi').value = d.provinsi; document.getElementById('desaKuota').value = d.kuota; document.getElementById('desaPembimbingLapangan').value = d.nama_pembimbing_lapangan || ''; document.getElementById('desaKontakPembimbing').value = d.kontak_pembimbing_lapangan || ''; document.getElementById('desaAlamat').value = d.alamat || ''; document.getElementById('desaLinkGrup').value = d.link_grup || ''; document.getElementById('desaModal').classList.remove('hidden'); } } catch (error) { showAlert('Gagal memuat', 'error'); } finally { hideLoading(); } }
         async function deleteDesa(id) { const result = await Swal.fire({ title: 'Konfirmasi', text: 'Hapus desa?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: 'Ya' }); if (!result.isConfirmed) return; showLoading(); try { const response = await fetch(`${API_BASE_URL}/admin/desa-kkn/${id}`, { method: 'DELETE', headers: getHeaders() }); const data = await response.json(); if (data.success) { showAlert('Desa dihapus'); loadDesaData(); loadKabupatenList(); } } catch (error) { showAlert('Gagal hapus', 'error'); } finally { hideLoading(); } }
-        async function viewDesaDetail(id) { showLoading(); try { const response = await fetch(`${API_BASE_URL}/admin/desa-kkn/${id}`, { headers: getHeaders() }); const result = await response.json(); if (result.success) { const d = result.data; document.getElementById('detailModalContent').innerHTML = `<div class="space-y-4"><div><strong>Nama Desa:</strong> ${d.nama_desa}</div><div><strong>Kecamatan:</strong> ${d.kecamatan || '-'}</div><div><strong>Kabupaten:</strong> ${d.kabupaten}</div><div><strong>Provinsi:</strong> ${d.provinsi}</div><div><strong>Kuota:</strong> ${d.kuota}</div><div><strong>Terisi:</strong> ${d.kuota_terisi || 0}</div><div><strong>Pembimbing:</strong> ${d.nama_pembimbing_lapangan || '-'}</div><div><strong>Alamat:</strong> ${d.alamat || '-'}</div><div><strong>Tautan Grup WA:</strong> ${d.link_grup ? `<a href="${d.link_grup}" target="_blank" class="text-green-600 hover:underline">${d.link_grup}</a>` : '-'}</div></div>`; document.getElementById('detailModal').classList.remove('hidden'); } } catch (error) { showAlert('Gagal memuat detail', 'error'); } finally { hideLoading(); } }
+        async function viewDesaDetail(id) {
+            showLoading();
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin/desa-kkn/${id}`, { headers: getHeaders() });
+                const result = await response.json();
+                if (result.success) {
+                    const d = result.data;
+                    const approved = d.kuota_terisi || 0;
+                    const pending = d.pending_count || 0;
+                    const sisa = d.kuota - (approved + pending);
+                    const sisaClass = sisa <= 0 ? 'text-red-600 font-semibold' : 'text-green-600 font-semibold';
+                    
+                    document.getElementById('detailModalContent').innerHTML = `
+                        <div class="space-y-4">
+                            <div><strong>Nama Desa:</strong> ${d.nama_desa}</div>
+                            <div><strong>Kecamatan:</strong> ${d.kecamatan || '-'}</div>
+                            <div><strong>Kabupaten:</strong> ${d.kabupaten}</div>
+                            <div><strong>Provinsi:</strong> ${d.provinsi}</div>
+                            
+                            <div class="grid grid-cols-2 gap-4 border-y border-gray-100 py-3 bg-gray-50 p-3 rounded-lg my-2">
+                                <div><strong>Kuota Total:</strong> ${d.kuota}</div>
+                                <div><strong>Disetujui:</strong> <span class="text-green-600 font-semibold">${approved}</span></div>
+                                <div><strong>Pending:</strong> <span class="text-yellow-600 font-semibold">${pending}</span></div>
+                                <div><strong>Sisa Kuota:</strong> <span class="${sisaClass}">${sisa}</span></div>
+                            </div>
+                            
+                            <div><strong>Pembimbing:</strong> ${d.nama_pembimbing_lapangan || '-'}</div>
+                            <div><strong>Alamat:</strong> ${d.alamat || '-'}</div>
+                            <div><strong>Tautan Grup WA:</strong> ${d.link_grup ? `<a href="${d.link_grup}" target="_blank" class="text-green-600 hover:underline">${d.link_grup}</a>` : '-'}</div>
+                        </div>
+                    `;
+                    document.getElementById('detailModal').classList.remove('hidden');
+                }
+            } catch (error) {
+                showAlert('Gagal memuat detail', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
         function changeDesaPage(direction) { if (direction === 'prev' && currentDesaPage > 1) currentDesaPage--; else if (direction === 'next') currentDesaPage++; loadDesaData(); }
 
         // PERUSAHAAN FUNCTIONS
