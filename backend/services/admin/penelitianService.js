@@ -202,14 +202,17 @@ class PenelitianService {
         try {
             console.log('Updating penelitian:', id);
             
+            const isAdmin = (typeof userId === 'object' && userId !== null) ? userId.role === 'admin' : false;
+            const uid = (typeof userId === 'object' && userId !== null) ? userId.id_user : userId;
+            
             // Check if exists and user has access
             const existing = await this.getPenelitianById(id);
             
-            if (existing.ketua_peneliti !== userId) {
+            if (!isAdmin && existing.ketua_peneliti !== uid) {
                 throw new Error('Hanya ketua peneliti yang dapat mengupdate penelitian ini');
             }
             
-            if (!['draft', 'revision'].includes(existing.status)) {
+            if (!isAdmin && !['draft', 'revision'].includes(existing.status)) {
                 throw new Error('Penelitian tidak dapat diupdate karena sudah dalam proses review');
             }
             
@@ -229,7 +232,7 @@ class PenelitianService {
                 dana_disetujui: data.dana_disetujui,
                 tahun: data.tahun,
                 updated_at: new Date(),
-                updated_by: userId
+                updated_by: uid
             };
             
             // Update files if new ones uploaded
@@ -303,14 +306,17 @@ class PenelitianService {
         try {
             console.log('Deleting penelitian:', id);
             
+            const isAdmin = (typeof userId === 'object' && userId !== null) ? userId.role === 'admin' : false;
+            const uid = (typeof userId === 'object' && userId !== null) ? userId.id_user : userId;
+            
             // Check if exists and user has access
             const existing = await this.getPenelitianById(id);
             
-            if (existing.ketua_peneliti !== userId) {
+            if (!isAdmin && existing.ketua_peneliti !== uid) {
                 throw new Error('Hanya ketua peneliti yang dapat menghapus penelitian ini');
             }
             
-            if (!['draft', 'rejected'].includes(existing.status)) {
+            if (!isAdmin && !['draft', 'rejected'].includes(existing.status)) {
                 throw new Error('Penelitian tidak dapat dihapus karena sudah dalam proses');
             }
             
@@ -341,14 +347,17 @@ class PenelitianService {
         try {
             console.log('Submitting penelitian:', id);
             
+            const isAdmin = (typeof userId === 'object' && userId !== null) ? userId.role === 'admin' : false;
+            const uid = (typeof userId === 'object' && userId !== null) ? userId.id_user : userId;
+            
             // Check if exists and user has access
             const existing = await this.getPenelitianById(id);
             
-            if (existing.ketua_peneliti !== userId) {
+            if (!isAdmin && existing.ketua_peneliti !== uid) {
                 throw new Error('Hanya ketua peneliti yang dapat mensubmit penelitian');
             }
             
-            if (existing.status !== 'draft' && existing.status !== 'revision') {
+            if (!isAdmin && existing.status !== 'draft' && existing.status !== 'revision') {
                 throw new Error('Penelitian sudah pernah disubmit');
             }
             
@@ -729,13 +738,16 @@ class PenelitianService {
         try {
             console.log('Updating pengabdian:', id);
             
+            const isAdmin = (typeof userId === 'object' && userId !== null) ? userId.role === 'admin' : false;
+            const uid = (typeof userId === 'object' && userId !== null) ? userId.id_user : userId;
+            
             const existing = await this.getPengabdianById(id);
             
-            if (existing.ketua_pengabdian !== userId) {
+            if (!isAdmin && existing.ketua_pengabdian !== uid) {
                 throw new Error('Hanya ketua pengabdian yang dapat mengupdate pengabdian ini');
             }
             
-            if (!['draft', 'revision'].includes(existing.status)) {
+            if (!isAdmin && !['draft', 'revision'].includes(existing.status)) {
                 throw new Error('Pengabdian tidak dapat diupdate karena sudah dalam proses review');
             }
             
@@ -753,7 +765,7 @@ class PenelitianService {
                 dana_disetujui: data.dana_disetujui,
                 tahun: data.tahun,
                 updated_at: new Date(),
-                updated_by: userId
+                updated_by: uid
             };
             
             if (data.file_proposal) updateData.file_proposal = data.file_proposal;
@@ -814,13 +826,16 @@ class PenelitianService {
         try {
             console.log('Deleting pengabdian:', id);
             
+            const isAdmin = (typeof userId === 'object' && userId !== null) ? userId.role === 'admin' : false;
+            const uid = (typeof userId === 'object' && userId !== null) ? userId.id_user : userId;
+            
             const existing = await this.getPengabdianById(id);
             
-            if (existing.ketua_pengabdian !== userId) {
+            if (!isAdmin && existing.ketua_pengabdian !== uid) {
                 throw new Error('Hanya ketua pengabdian yang dapat menghapus pengabdian ini');
             }
             
-            if (!['draft', 'rejected'].includes(existing.status)) {
+            if (!isAdmin && !['draft', 'rejected'].includes(existing.status)) {
                 throw new Error('Pengabdian tidak dapat dihapus karena sudah dalam proses');
             }
             
@@ -849,13 +864,16 @@ class PenelitianService {
         try {
             console.log('Submitting pengabdian:', id);
             
+            const isAdmin = (typeof userId === 'object' && userId !== null) ? userId.role === 'admin' : false;
+            const uid = (typeof userId === 'object' && userId !== null) ? userId.id_user : userId;
+            
             const existing = await this.getPengabdianById(id);
             
-            if (existing.ketua_pengabdian !== userId) {
+            if (!isAdmin && existing.ketua_pengabdian !== uid) {
                 throw new Error('Hanya ketua pengabdian yang dapat mensubmit pengabdian');
             }
             
-            if (!['draft', 'revision'].includes(existing.status)) {
+            if (!isAdmin && !['draft', 'revision'].includes(existing.status)) {
                 throw new Error('Pengabdian sudah pernah disubmit');
             }
             

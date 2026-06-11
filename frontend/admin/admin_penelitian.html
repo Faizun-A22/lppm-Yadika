@@ -890,9 +890,204 @@
         </div>
     </main>
 
-    <!-- Modals (keep the same as original but with responsive adjustments) -->
-    <!-- Modal Detail, Review, Penelitian, Pengabdian, Skema - abbreviated for brevity -->
-    <!-- In production, keep all the modal content from the original file -->
+    <!-- Modal Detail -->
+    <div id="detailModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl transition-all duration-300 transform scale-95" id="detailModalContainer">
+            <div class="p-6 border-b sticky top-0 bg-white flex justify-between items-center z-10">
+                <h3 class="text-xl font-bold text-gray-800" id="detailModalTitle">Detail Pengajuan</h3>
+                <button onclick="closeDetailModal()" class="text-gray-400 hover:text-gray-600 transition-colors">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6 space-y-6" id="detailModalContent">
+                <!-- Content injected dynamically -->
+            </div>
+            <div class="p-6 border-t bg-gray-50 flex justify-end space-x-3">
+                <button onclick="closeDetailModal()" class="px-5 py-2.5 bg-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-300 transition-colors">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Form Penelitian -->
+    <div id="penelitianModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl transition-all duration-300 transform scale-95" id="penelitianModalContainer">
+            <div class="p-6 border-b sticky top-0 bg-white flex justify-between items-center z-10">
+                <h3 class="text-xl font-bold text-gray-800" id="penelitianModalTitle">Tambah Penelitian</h3>
+                <button onclick="closePenelitianModal()" class="text-gray-400 hover:text-gray-600 transition-colors">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form id="penelitianForm" onsubmit="handleSavePenelitian(event)" class="p-6 space-y-4">
+                <input type="hidden" id="editPenelitianId">
+                
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Judul Penelitian <span class="text-red-500">*</span></label>
+                    <input type="text" id="penJudul" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm" placeholder="Masukkan judul penelitian..." required>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Skema Penelitian <span class="text-red-500">*</span></label>
+                        <select id="penSkema" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm" required>
+                            <option value="">Pilih Skema</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Ketua Peneliti <span class="text-red-500">*</span></label>
+                        <select id="penKetua" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm" required>
+                            <option value="">Pilih Dosen</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Sumber Dana <span class="text-red-500">*</span></label>
+                        <input type="text" id="penSumberDana" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm" placeholder="Contoh: Internal Kampus" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Tahun <span class="text-red-500">*</span></label>
+                        <input type="number" id="penTahun" min="2000" max="2100" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm" required>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Dana Diajukan (Rp)</label>
+                        <input type="number" id="penDanaDiajukan" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm" placeholder="0">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Dana Disetujui (Rp)</label>
+                        <input type="number" id="penDanaDisetujui" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm" placeholder="0">
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-gray-700">Dokumen Proposal (PDF)</label>
+                    <div class="file-upload-area" id="proposalUploadArea" onclick="document.getElementById('penFileProposal').click()">
+                        <i class="fas fa-cloud-upload-alt text-3xl text-gray-400 mb-2"></i>
+                        <p class="text-xs text-gray-500">Klik untuk mengupload File Proposal (.pdf)</p>
+                        <p class="text-xs text-blue-600 font-semibold mt-1" id="proposalFileName"></p>
+                    </div>
+                    <input type="file" id="penFileProposal" accept=".pdf" class="hidden" onchange="handleFileChange(this, 'proposalFileName')">
+                </div>
+
+                <div class="flex justify-end space-x-3 pt-4 border-t">
+                    <button type="button" onclick="closePenelitianModal()" class="px-5 py-2.5 bg-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-300 transition-colors">Batal</button>
+                    <button type="submit" class="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-blue-800 text-white font-semibold rounded-xl hover:shadow-lg hover:from-blue-700 hover:to-blue-900 transition-all">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Form Pengabdian -->
+    <div id="pengabdianModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl transition-all duration-300 transform scale-95" id="pengabdianModalContainer">
+            <div class="p-6 border-b sticky top-0 bg-white flex justify-between items-center z-10">
+                <h3 class="text-xl font-bold text-gray-800" id="pengabdianModalTitle">Tambah Pengabdian</h3>
+                <button onclick="closePengabdianModal()" class="text-gray-400 hover:text-gray-600 transition-colors">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form id="pengabdianForm" onsubmit="handleSavePengabdian(event)" class="p-6 space-y-4">
+                <input type="hidden" id="editPengabdianId">
+                
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Judul Pengabdian <span class="text-red-500">*</span></label>
+                    <input type="text" id="pengJudul" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm" placeholder="Masukkan judul pengabdian..." required>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Skema Pengabdian <span class="text-red-500">*</span></label>
+                        <select id="pengSkema" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm" required>
+                            <option value="">Pilih Skema</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Ketua Pengabdian <span class="text-red-500">*</span></label>
+                        <select id="pengKetua" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm" required>
+                            <option value="">Pilih Dosen</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Lokasi <span class="text-red-500">*</span></label>
+                        <input type="text" id="pengLokasi" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm" placeholder="Masukkan lokasi pengabdian..." required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Tahun <span class="text-red-500">*</span></label>
+                        <input type="number" id="pengTahun" min="2000" max="2100" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm" required>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Dana Diajukan (Rp)</label>
+                        <input type="number" id="pengDanaDiajukan" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm" placeholder="0">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Dana Disetujui (Rp)</label>
+                        <input type="number" id="pengDanaDisetujui" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm" placeholder="0">
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-gray-700">Dokumen Proposal (PDF)</label>
+                    <div class="file-upload-area" id="pengProposalUploadArea" onclick="document.getElementById('pengFileProposal').click()">
+                        <i class="fas fa-cloud-upload-alt text-3xl text-gray-400 mb-2"></i>
+                        <p class="text-xs text-gray-500">Klik untuk mengupload File Proposal (.pdf)</p>
+                        <p class="text-xs text-green-600 font-semibold mt-1" id="pengProposalFileName"></p>
+                    </div>
+                    <input type="file" id="pengFileProposal" accept=".pdf" class="hidden" onchange="handleFileChange(this, 'pengProposalFileName')">
+                </div>
+
+                <div class="flex justify-end space-x-3 pt-4 border-t">
+                    <button type="button" onclick="closePengabdianModal()" class="px-5 py-2.5 bg-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-300 transition-colors">Batal</button>
+                    <button type="submit" class="px-5 py-2.5 bg-gradient-to-r from-green-600 to-green-800 text-white font-semibold rounded-xl hover:shadow-lg hover:from-green-700 hover:to-green-900 transition-all">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Review -->
+    <div id="reviewModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full shadow-2xl transition-all duration-300 transform scale-95" id="reviewModalContainer">
+            <div class="p-6 border-b flex justify-between items-center">
+                <h3 class="text-xl font-bold text-gray-800">Review Pengajuan</h3>
+                <button onclick="closeReviewModal()" class="text-gray-400 hover:text-gray-600 transition-colors">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form id="reviewForm" onsubmit="handleSaveReview(event)" class="p-6 space-y-4">
+                <input type="hidden" id="reviewItemId">
+                <input type="hidden" id="reviewItemJenis">
+                <input type="hidden" id="reviewTipe">
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Rekomendasi Keputusan <span class="text-red-500">*</span></label>
+                    <select id="reviewStatus" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm" required>
+                        <option value="">Pilih Keputusan</option>
+                        <option value="diterima">Setujui (Approved)</option>
+                        <option value="revisi">Minta Revisi (Revision)</option>
+                        <option value="ditolak">Tolak (Rejected)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Catatan Review <span class="text-red-500">*</span></label>
+                    <textarea id="reviewCatatan" rows="4" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm" placeholder="Berikan catatan, alasan, atau arahan revisi..." required></textarea>
+                </div>
+
+                <div class="flex justify-end space-x-3 pt-4 border-t">
+                    <button type="button" onclick="closeReviewModal()" class="px-5 py-2.5 bg-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-300 transition-colors">Batal</button>
+                    <button type="submit" class="px-5 py-2.5 bg-gradient-to-r from-green-600 to-green-800 text-white font-semibold rounded-xl hover:shadow-lg hover:from-green-700 hover:to-green-900 transition-all">Simpan Review</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     
@@ -1134,6 +1329,15 @@
                             <button onclick="viewDetail('${jenis}', '${id}')" class="text-blue-600 hover:text-blue-900 mx-1" title="Detail">
                                 <i class="fas fa-eye"></i>
                             </button>
+                            ${jenis === 'penelitian' ? `
+                                <button onclick="openAddPenelitianModal('${id}')" class="text-amber-600 hover:text-amber-900 mx-1" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            ` : `
+                                <button onclick="openAddPengabdianModal('${id}')" class="text-amber-600 hover:text-amber-900 mx-1" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            `}
                             <button onclick="openReviewModal('${jenis}', '${id}')" class="text-green-600 hover:text-green-900 mx-1" title="Review">
                                 <i class="fas fa-check-circle"></i>
                             </button>
@@ -1197,11 +1401,17 @@
                             <span class="px-2 py-1 rounded text-xs font-semibold ${badge.class}">${badge.text}</span>
                         </td>
                         <td class="px-3 md:px-4 py-3 text-center">
-                            <button onclick="viewDetail('penelitian', '${item.id_penelitian}')" class="text-blue-600 hover:text-blue-900 mx-1">
+                            <button onclick="viewDetail('penelitian', '${item.id_penelitian}')" class="text-blue-600 hover:text-blue-900 mx-1" title="Detail">
                                 <i class="fas fa-eye"></i>
                             </button>
-                            <button onclick="openReviewModal('penelitian', '${item.id_penelitian}')" class="text-green-600 hover:text-green-900 mx-1">
+                            <button onclick="openAddPenelitianModal('${item.id_penelitian}')" class="text-amber-600 hover:text-amber-900 mx-1" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="openReviewModal('penelitian', '${item.id_penelitian}')" class="text-green-600 hover:text-green-900 mx-1" title="Review">
                                 <i class="fas fa-check-circle"></i>
+                            </button>
+                            <button onclick="deleteSubmission('penelitian', '${item.id_penelitian}')" class="text-red-600 hover:text-red-900 mx-1" title="Hapus">
+                                <i class="fas fa-trash"></i>
                             </button>
                         </td>
                     </tr>
@@ -1260,11 +1470,17 @@
                             <span class="px-2 py-1 rounded text-xs font-semibold ${badge.class}">${badge.text}</span>
                         </td>
                         <td class="px-3 md:px-4 py-3 text-center">
-                            <button onclick="viewDetail('pengabdian', '${item.id_pengabdian}')" class="text-blue-600 hover:text-blue-900 mx-1">
+                            <button onclick="viewDetail('pengabdian', '${item.id_pengabdian}')" class="text-blue-600 hover:text-blue-900 mx-1" title="Detail">
                                 <i class="fas fa-eye"></i>
                             </button>
-                            <button onclick="openReviewModal('pengabdian', '${item.id_pengabdian}')" class="text-green-600 hover:text-green-900 mx-1">
+                            <button onclick="openAddPengabdianModal('${item.id_pengabdian}')" class="text-amber-600 hover:text-amber-900 mx-1" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="openReviewModal('pengabdian', '${item.id_pengabdian}')" class="text-green-600 hover:text-green-900 mx-1" title="Review">
                                 <i class="fas fa-check-circle"></i>
+                            </button>
+                            <button onclick="deleteSubmission('pengabdian', '${item.id_pengabdian}')" class="text-red-600 hover:text-red-900 mx-1" title="Hapus">
+                                <i class="fas fa-trash"></i>
                             </button>
                         </td>
                     </tr>
@@ -1500,13 +1716,476 @@
             };
         }
 
-        // Placeholder functions for modals (implement as needed)
-        function openAddPenelitianModal() { showNotification('Fitur dalam pengembangan', 'info'); }
-        function openAddPengabdianModal() { showNotification('Fitur dalam pengembangan', 'info'); }
+        // Form options caching
+        let skemasLoaded = false;
+        let dosenLoaded = false;
+
+        async function loadPenelitianFormOptions() {
+            try {
+                if (!skemasLoaded) {
+                    const res = await apiCall('/admin/penelitian/skema?jenis=penelitian');
+                    const skemas = res.data || [];
+                    const penSkemaSelect = document.getElementById('penSkema');
+                    if (penSkemaSelect) {
+                        penSkemaSelect.innerHTML = '<option value="">Pilih Skema</option>' + 
+                            skemas.map(s => `<option value="${s.kode_skema}">${s.nama_skema}</option>`).join('');
+                    }
+                    skemasLoaded = true;
+                }
+                
+                if (!dosenLoaded) {
+                    const res = await apiCall('/admin/users?role=dosen');
+                    const dosens = res.data || [];
+                    const penKetuaSelect = document.getElementById('penKetua');
+                    if (penKetuaSelect) {
+                        penKetuaSelect.innerHTML = '<option value="">Pilih Dosen</option>' + 
+                            dosens.map(d => `<option value="${d.id_user}">${d.nama_lengkap} (${d.nidn || '-'})</option>`).join('');
+                    }
+                    dosenLoaded = true;
+                }
+            } catch (error) {
+                console.error('Error loading form options:', error);
+            }
+        }
+
+        async function openAddPenelitianModal(id = null) {
+            await loadPenelitianFormOptions();
+            
+            const modal = document.getElementById('penelitianModal');
+            const container = document.getElementById('penelitianModalContainer');
+            const title = document.getElementById('penelitianModalTitle');
+            const form = document.getElementById('penelitianForm');
+            
+            form.reset();
+            document.getElementById('editPenelitianId').value = '';
+            document.getElementById('proposalFileName').textContent = '';
+            
+            if (id) {
+                title.textContent = 'Edit Penelitian';
+                document.getElementById('editPenelitianId').value = id;
+                showLoading();
+                try {
+                    const res = await apiCall(`/admin/penelitian/penelitian/${id}`);
+                    const pen = res.data || {};
+                    
+                    document.getElementById('penJudul').value = pen.judul || '';
+                    document.getElementById('penSkema').value = pen.skema_penelitian || '';
+                    document.getElementById('penKetua').value = pen.ketua_peneliti || '';
+                    document.getElementById('penSumberDana').value = pen.sumber_dana || '';
+                    document.getElementById('penTahun').value = pen.tahun || '';
+                    document.getElementById('penDanaDiajukan').value = pen.dana_diajukan || '';
+                    document.getElementById('penDanaDisetujui').value = pen.dana_disetujui || '';
+                    
+                    if (pen.file_proposal) {
+                        document.getElementById('proposalFileName').textContent = pen.file_proposal.split('/').pop();
+                    }
+                } catch (error) {
+                    showNotification('Gagal memuat data penelitian: ' + error.message, 'error');
+                    return;
+                } finally {
+                    hideLoading();
+                }
+            } else {
+                title.textContent = 'Tambah Penelitian';
+                document.getElementById('penTahun').value = new Date().getFullYear();
+            }
+            
+            modal.classList.remove('hidden');
+            setTimeout(() => container.classList.remove('scale-95'), 50);
+        }
+
+        function closePenelitianModal() {
+            const modal = document.getElementById('penelitianModal');
+            const container = document.getElementById('penelitianModalContainer');
+            container.classList.add('scale-95');
+            setTimeout(() => modal.classList.add('hidden'), 200);
+        }
+
+        function handleFileChange(input, labelId) {
+            const label = document.getElementById(labelId);
+            if (input.files && input.files.length > 0) {
+                label.textContent = input.files[0].name;
+            } else {
+                label.textContent = '';
+            }
+        }
+
+        async function handleSavePenelitian(event) {
+            event.preventDefault();
+            showLoading();
+            
+            try {
+                const id = document.getElementById('editPenelitianId').value;
+                const formData = new FormData();
+                
+                formData.append('judul', document.getElementById('penJudul').value);
+                formData.append('skema_penelitian', document.getElementById('penSkema').value);
+                formData.append('id_ketua', document.getElementById('penKetua').value);
+                formData.append('sumber_dana', document.getElementById('penSumberDana').value);
+                formData.append('tahun', document.getElementById('penTahun').value);
+                
+                const danaDiajukan = document.getElementById('penDanaDiajukan').value;
+                if (danaDiajukan) {
+                    formData.append('dana_diajukan', danaDiajukan);
+                }
+                
+                const danaDisetujui = document.getElementById('penDanaDisetujui').value;
+                if (danaDisetujui) {
+                    formData.append('dana_disetujui', danaDisetujui);
+                }
+                
+                const fileInput = document.getElementById('penFileProposal');
+                if (fileInput.files && fileInput.files.length > 0) {
+                    formData.append('file_proposal', fileInput.files[0]);
+                }
+                
+                const url = id ? `/admin/penelitian/penelitian/${id}` : '/admin/penelitian/penelitian';
+                const method = id ? 'PUT' : 'POST';
+                
+                const res = await apiCall(url, {
+                    method: method,
+                    body: formData
+                });
+                
+                showNotification(id ? 'Penelitian berhasil diupdate' : 'Penelitian berhasil ditambahkan');
+                closePenelitianModal();
+                loadAllSubmissions(1);
+                loadPenelitianData(1);
+            } catch (error) {
+                console.error('Error saving penelitian:', error);
+                showNotification('Gagal menyimpan penelitian: ' + error.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function viewDetail(jenis, id) {
+            showLoading();
+            try {
+                const res = await apiCall(`/admin/penelitian/${jenis}/${id}`);
+                const item = res.data || {};
+                
+                const modal = document.getElementById('detailModal');
+                const container = document.getElementById('detailModalContainer');
+                const title = document.getElementById('detailModalTitle');
+                const content = document.getElementById('detailModalContent');
+                
+                title.textContent = `Detail ${jenis === 'penelitian' ? 'Penelitian' : 'Pengabdian'}`;
+                
+                const badge = getStatusBadge(item.status);
+                
+                const fileProposalUrl = item.file_proposal ? `${API_BASE_URL}/uploads/${item.file_proposal.replace(/\\/g, '/').split('/').pop()}` : null;
+                
+                let anggotaHtml = '';
+                if (item.anggota && item.anggota.length > 0) {
+                    anggotaHtml = `
+                        <div class="mt-4">
+                            <h4 class="text-sm font-semibold text-gray-700 mb-2">Anggota Tim:</h4>
+                            <ul class="divide-y divide-gray-100 bg-gray-50 rounded-xl p-3">
+                                ${item.anggota.map(a => `
+                                    <li class="py-2 flex justify-between items-center text-sm">
+                                        <span class="font-medium text-gray-800">${a.nama_lengkap}</span>
+                                        <span class="text-xs text-gray-500 capitalize bg-white px-2 py-1 rounded border">${a.peran || 'anggota'}</span>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                    `;
+                } else {
+                    anggotaHtml = '<p class="text-sm text-gray-500 mt-2">Tidak ada anggota tambahan.</p>';
+                }
+                
+                content.innerHTML = `
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="md:col-span-2 space-y-4">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400">Judul Kegiatan</label>
+                                <p class="text-lg font-bold text-gray-800 mt-1">${item.judul}</p>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400">Ketua Pengusul</label>
+                                    <p class="text-sm font-medium text-gray-800 mt-1">${item.ketua?.nama_lengkap || item.ketua_pengabdian?.nama_lengkap || '-'}</p>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400">NIDN</label>
+                                    <p class="text-sm font-medium text-gray-800 mt-1">${item.ketua?.nidn || item.ketua_pengabdian?.nidn || '-'}</p>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400">Skema</label>
+                                    <p class="text-sm font-medium text-gray-800 mt-1 capitalize">${item.skema_penelitian || item.skema_pengabdian || '-'}</p>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400">Tahun Pengajuan</label>
+                                    <p class="text-sm font-medium text-gray-800 mt-1">${item.tahun || '-'}</p>
+                                </div>
+                            </div>
+                            
+                            ${anggotaHtml}
+                        </div>
+                        
+                        <div class="bg-gray-50 p-5 rounded-2xl border border-gray-100 space-y-4">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400">Status</label>
+                                <span class="inline-block mt-2 px-3 py-1.5 rounded-xl text-xs font-bold ${badge.class}">${badge.text}</span>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400">Total Dana</label>
+                                <p class="text-xl font-bold text-blue-600 mt-1">${formatCurrency(item.dana_disetujui || item.dana_diajukan || 0)}</p>
+                                <p class="text-xs text-gray-400">${item.dana_disetujui ? 'Disetujui' : 'Diajukan'}</p>
+                            </div>
+
+                            <div class="pt-4 border-t border-gray-200">
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">Dokumen Pendukung</label>
+                                ${fileProposalUrl ? `
+                                    <a href="${fileProposalUrl}" target="_blank" class="flex items-center space-x-2 text-sm text-blue-600 hover:text-blue-800 bg-white p-2.5 rounded-xl border hover:shadow-sm transition-all">
+                                        <i class="fas fa-file-pdf text-red-500 text-lg"></i>
+                                        <span class="font-medium truncate">File Proposal.pdf</span>
+                                    </a>
+                                ` : '<p class="text-xs text-gray-500">Proposal belum diupload.</p>'}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                modal.classList.remove('hidden');
+                setTimeout(() => container.classList.remove('scale-95'), 50);
+            } catch (error) {
+                showNotification('Gagal memuat detail pengajuan: ' + error.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function closeDetailModal() {
+            const modal = document.getElementById('detailModal');
+            const container = document.getElementById('detailModalContainer');
+            container.classList.add('scale-95');
+            setTimeout(() => modal.classList.add('hidden'), 200);
+        }
+
+        async function deleteSubmission(jenis, id) {
+            const confirm = await Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: `Anda akan menghapus pengajuan ${jenis} ini secara permanen!`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal'
+            });
+            
+            if (!confirm.isConfirmed) return;
+            
+            showLoading();
+            try {
+                await apiCall(`/admin/penelitian/${jenis}/${id}`, {
+                    method: 'DELETE'
+                });
+                
+                showNotification('Pengajuan berhasil dihapus');
+                loadAllSubmissions(1);
+                if (jenis === 'penelitian') loadPenelitianData(1);
+                else loadPengabdianData(1);
+            } catch (error) {
+                showNotification('Gagal menghapus pengajuan: ' + error.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function openReviewModal(jenis, id, tipe = 'admin') {
+            const modal = document.getElementById('reviewModal');
+            const container = document.getElementById('reviewModalContainer');
+            const form = document.getElementById('reviewForm');
+            
+            form.reset();
+            document.getElementById('reviewItemId').value = id;
+            document.getElementById('reviewItemJenis').value = jenis;
+            document.getElementById('reviewTipe').value = tipe;
+            
+            modal.classList.remove('hidden');
+            setTimeout(() => container.classList.remove('scale-95'), 50);
+        }
+
+        function closeReviewModal() {
+            const modal = document.getElementById('reviewModal');
+            const container = document.getElementById('reviewModalContainer');
+            container.classList.add('scale-95');
+            setTimeout(() => modal.classList.add('hidden'), 200);
+        }
+
+        async function handleSaveReview(event) {
+            event.preventDefault();
+            showLoading();
+            
+            try {
+                const id = document.getElementById('reviewItemId').value;
+                const jenis = document.getElementById('reviewItemJenis').value;
+                const tipe = document.getElementById('reviewTipe').value;
+                const status = document.getElementById('reviewStatus').value;
+                const catatan = document.getElementById('reviewCatatan').value;
+                
+                await apiCall(`/admin/penelitian/review/${jenis}/${id}`, {
+                    method: 'POST',
+                    body: {
+                        status_review: status,
+                        catatan: catatan,
+                        tipe_review: tipe
+                    }
+                });
+                
+                showNotification('Review berhasil disimpan');
+                closeReviewModal();
+                loadAllSubmissions(1);
+                loadReviewData();
+            } catch (error) {
+                console.error('Error saving review:', error);
+                showNotification('Gagal menyimpan review: ' + error.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        let pengSkemasLoaded = false;
+        let pengDosenLoaded = false;
+
+        async function loadPengabdianFormOptions() {
+            try {
+                if (!pengSkemasLoaded) {
+                    const res = await apiCall('/admin/penelitian/skema?jenis=pengabdian');
+                    const skemas = res.data || [];
+                    const pengSkemaSelect = document.getElementById('pengSkema');
+                    if (pengSkemaSelect) {
+                        pengSkemaSelect.innerHTML = '<option value="">Pilih Skema</option>' + 
+                            skemas.map(s => `<option value="${s.kode_skema}">${s.nama_skema}</option>`).join('');
+                    }
+                    pengSkemasLoaded = true;
+                }
+                
+                if (!pengDosenLoaded) {
+                    const res = await apiCall('/admin/users?role=dosen');
+                    const dosens = res.data || [];
+                    const pengKetuaSelect = document.getElementById('pengKetua');
+                    if (pengKetuaSelect) {
+                        pengKetuaSelect.innerHTML = '<option value="">Pilih Dosen</option>' + 
+                            dosens.map(d => `<option value="${d.id_user}">${d.nama_lengkap} (${d.nidn || '-'})</option>`).join('');
+                    }
+                    pengDosenLoaded = true;
+                }
+            } catch (error) {
+                console.error('Error loading form options:', error);
+            }
+        }
+
+        async function openAddPengabdianModal(id = null) {
+            await loadPengabdianFormOptions();
+            
+            const modal = document.getElementById('pengabdianModal');
+            const container = document.getElementById('pengabdianModalContainer');
+            const title = document.getElementById('pengabdianModalTitle');
+            const form = document.getElementById('pengabdianForm');
+            
+            form.reset();
+            document.getElementById('editPengabdianId').value = '';
+            document.getElementById('pengProposalFileName').textContent = '';
+            
+            if (id) {
+                title.textContent = 'Edit Pengabdian';
+                document.getElementById('editPengabdianId').value = id;
+                showLoading();
+                try {
+                    const res = await apiCall(`/admin/penelitian/pengabdian/${id}`);
+                    const peng = res.data || {};
+                    
+                    document.getElementById('pengJudul').value = peng.judul || '';
+                    document.getElementById('pengSkema').value = peng.skema_pengabdian || '';
+                    document.getElementById('pengKetua').value = peng.ketua_pengabdian || '';
+                    document.getElementById('pengLokasi').value = peng.lokasi || '';
+                    document.getElementById('pengTahun').value = peng.tahun || '';
+                    document.getElementById('pengDanaDiajukan').value = peng.dana_diajukan || '';
+                    document.getElementById('pengDanaDisetujui').value = peng.dana_disetujui || '';
+                    
+                    if (peng.file_proposal) {
+                        document.getElementById('pengProposalFileName').textContent = peng.file_proposal.split('/').pop();
+                    }
+                } catch (error) {
+                    showNotification('Gagal memuat data pengabdian: ' + error.message, 'error');
+                    return;
+                } finally {
+                    hideLoading();
+                }
+            } else {
+                title.textContent = 'Tambah Pengabdian';
+                document.getElementById('pengTahun').value = new Date().getFullYear();
+            }
+            
+            modal.classList.remove('hidden');
+            setTimeout(() => container.classList.remove('scale-95'), 50);
+        }
+
+        function closePengabdianModal() {
+            const modal = document.getElementById('pengabdianModal');
+            const container = document.getElementById('pengabdianModalContainer');
+            container.classList.add('scale-95');
+            setTimeout(() => modal.classList.add('hidden'), 200);
+        }
+
+        async function handleSavePengabdian(event) {
+            event.preventDefault();
+            showLoading();
+            
+            try {
+                const id = document.getElementById('editPengabdianId').value;
+                const formData = new FormData();
+                
+                formData.append('judul', document.getElementById('pengJudul').value);
+                formData.append('skema_pengabdian', document.getElementById('pengSkema').value);
+                formData.append('id_ketua', document.getElementById('pengKetua').value);
+                formData.append('lokasi', document.getElementById('pengLokasi').value);
+                formData.append('tahun', document.getElementById('pengTahun').value);
+                
+                const danaDiajukan = document.getElementById('pengDanaDiajukan').value;
+                if (danaDiajukan) {
+                    formData.append('dana_diajukan', danaDiajukan);
+                }
+                
+                const danaDisetujui = document.getElementById('pengDanaDisetujui').value;
+                if (danaDisetujui) {
+                    formData.append('dana_disetujui', danaDisetujui);
+                }
+                
+                const fileInput = document.getElementById('pengFileProposal');
+                if (fileInput.files && fileInput.files.length > 0) {
+                    formData.append('file_proposal', fileInput.files[0]);
+                }
+                
+                const url = id ? `/admin/penelitian/pengabdian/${id}` : '/admin/penelitian/pengabdian';
+                const method = id ? 'PUT' : 'POST';
+                
+                const res = await apiCall(url, {
+                    method: method,
+                    body: formData
+                });
+                
+                showNotification(id ? 'Pengabdian berhasil diupdate' : 'Pengabdian berhasil ditambahkan');
+                closePengabdianModal();
+                loadAllSubmissions(1);
+                loadPengabdianData(1);
+            } catch (error) {
+                console.error('Error saving pengabdian:', error);
+                showNotification('Gagal menyimpan pengabdian: ' + error.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
         function openAddSkemaModal() { showNotification('Fitur dalam pengembangan', 'info'); }
-        function viewDetail(jenis, id) { showNotification('Fitur detail dalam pengembangan', 'info'); }
-        function openReviewModal(jenis, id, tipe = 'admin') { showNotification('Fitur review dalam pengembangan', 'info'); }
-        function deleteSubmission(jenis, id) { showNotification('Fitur hapus dalam pengembangan', 'info'); }
         function editSkema(id) { showNotification('Fitur edit dalam pengembangan', 'info'); }
         function deleteSkema(id) { showNotification('Fitur hapus dalam pengembangan', 'info'); }
 

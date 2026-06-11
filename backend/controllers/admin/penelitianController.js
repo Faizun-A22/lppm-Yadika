@@ -130,7 +130,7 @@ const updatePenelitian = async (req, res, next) => {
             penelitianData.anggota = JSON.parse(req.body.anggota);
         }
         
-        const updatedPenelitian = await penelitianService.updatePenelitian(id, penelitianData, req.user.id_user);
+        const updatedPenelitian = await penelitianService.updatePenelitian(id, penelitianData, req.user);
         
         res.json(formatResponse('success', 'Penelitian berhasil diupdate', updatedPenelitian));
     } catch (error) {
@@ -142,7 +142,7 @@ const deletePenelitian = async (req, res, next) => {
     try {
         const { id } = req.params;
         
-        await penelitianService.deletePenelitian(id, req.user.id_user);
+        await penelitianService.deletePenelitian(id, req.user);
         
         res.json(formatResponse('success', 'Penelitian berhasil dihapus'));
     } catch (error) {
@@ -154,7 +154,7 @@ const submitPenelitian = async (req, res, next) => {
     try {
         const { id } = req.params;
         
-        const result = await penelitianService.submitPenelitian(id, req.user.id_user);
+        const result = await penelitianService.submitPenelitian(id, req.user);
         
         res.json(formatResponse('success', 'Penelitian berhasil disubmit untuk review', result));
     } catch (error) {
@@ -314,7 +314,7 @@ const updatePengabdian = async (req, res, next) => {
             pengabdianData.anggota = JSON.parse(req.body.anggota);
         }
         
-        const updatedPengabdian = await penelitianService.updatePengabdian(id, pengabdianData, req.user.id_user);
+        const updatedPengabdian = await penelitianService.updatePengabdian(id, pengabdianData, req.user);
         
         res.json(formatResponse('success', 'Pengabdian berhasil diupdate', updatedPengabdian));
     } catch (error) {
@@ -326,7 +326,7 @@ const deletePengabdian = async (req, res, next) => {
     try {
         const { id } = req.params;
         
-        await penelitianService.deletePengabdian(id, req.user.id_user);
+        await penelitianService.deletePengabdian(id, req.user);
         
         res.json(formatResponse('success', 'Pengabdian berhasil dihapus'));
     } catch (error) {
@@ -338,7 +338,7 @@ const submitPengabdian = async (req, res, next) => {
     try {
         const { id } = req.params;
         
-        const result = await penelitianService.submitPengabdian(id, req.user.id_user);
+        const result = await penelitianService.submitPengabdian(id, req.user);
         
         res.json(formatResponse('success', 'Pengabdian berhasil disubmit untuk review', result));
     } catch (error) {
