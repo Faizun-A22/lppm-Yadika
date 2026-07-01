@@ -10,10 +10,9 @@ class AuthController {
 
   async register(req, res) {
     try {
-      // Force isDosen and isAdmin to be false for public registration
+      // Force isAdmin to be false for public registration, but allow isDosen
       const publicUserData = {
         ...req.body,
-        isDosen: false,
         isAdmin: false
       };
       const result = await authService.register(publicUserData);

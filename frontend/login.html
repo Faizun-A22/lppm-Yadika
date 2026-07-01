@@ -435,9 +435,24 @@
             <div id="registerMessage"></div>
 
             <form id="registerForm">
-                <!-- Registration role indicator (Fixed to student/mahasiswa only) -->
+                <!-- Role Selector for Register -->
+                <div class="role-selector">
+                    <div class="role-option">
+                        <input type="radio" id="registerRoleMahasiswa" name="registerUserRole" value="mahasiswa" checked>
+                        <label for="registerRoleMahasiswa">Mahasiswa</label>
+                    </div>
+                    <div class="role-option">
+                        <input type="radio" id="registerRoleDosen" name="registerUserRole" value="dosen">
+                        <label for="registerRoleDosen">Dosen</label>
+                    </div>
+                </div>
+
+                <!-- Registration role indicators -->
                 <div id="registerMahasiswaIndicator" class="role-indicator mahasiswa-indicator" style="display: block;">
                     🎓 Registrasi sebagai Mahasiswa
+                </div>
+                <div id="registerDosenIndicator" class="role-indicator dosen-indicator" style="display: none;">
+                    👨‍🏫 Registrasi sebagai Dosen
                 </div>
 
                 <!-- Nama Lengkap -->
@@ -457,6 +472,13 @@
                     <label for="registerNim">Nomor Induk Mahasiswa (NIM) <span style="color: #ef4444;">*</span></label>
                     <input type="text" id="registerNim" maxlength="15" required placeholder="Contoh: 1210203040">
                     <div class="info-text">Hanya angka, maksimal 15 digit. NIM wajib diisi untuk verifikasi mahasiswa.</div>
+                </div>
+                
+                <!-- Field NIDN (Wajib untuk dosen) -->
+                <div id="nidnField" class="form-group" style="display: none;">
+                    <label for="registerNidn">Nomor Induk Dosen Nasional (NIDN) <span style="color: #ef4444;">*</span></label>
+                    <input type="text" id="registerNidn" maxlength="10" placeholder="Contoh: 0712345678">
+                    <div class="info-text">Hanya angka, wajib 10 digit. NIDN wajib diisi untuk verifikasi dosen.</div>
                 </div>
                 
                 <!-- Field Fakultas & Prodi -->
@@ -558,11 +580,29 @@
             if (dosenIndicator) dosenIndicator.style.display = 'none';
             if (mahasiswaIndicator) mahasiswaIndicator.style.display = 'block';
             
+            // Reset register indicators and fields
+            const registerDosenIndicator = document.getElementById('registerDosenIndicator');
+            const registerMahasiswaIndicator = document.getElementById('registerMahasiswaIndicator');
+            const nimField = document.getElementById('nimField');
+            const nidnField = document.getElementById('nidnField');
+            
+            if (registerDosenIndicator) registerDosenIndicator.style.display = 'none';
+            if (registerMahasiswaIndicator) registerMahasiswaIndicator.style.display = 'block';
+            if (nimField) nimField.style.display = 'block';
+            if (nidnField) nidnField.style.display = 'none';
+            
             // Reset NIM
             const registerNim = document.getElementById('registerNim');
             if (registerNim) {
                 registerNim.required = true;
                 registerNim.value = '';
+            }
+            
+            // Reset NIDN
+            const registerNidn = document.getElementById('registerNidn');
+            if (registerNidn) {
+                registerNidn.required = false;
+                registerNidn.value = '';
             }
             
             // Reset dropdown prodi
@@ -691,6 +731,43 @@
         const mahasiswaIndicator = document.getElementById('mahasiswaIndicator');
         if (mahasiswaIndicator) mahasiswaIndicator.style.display = 'block';
 
+        // ==================== REGISTER ROLE ====================
+        const registerRoleRadios = document.querySelectorAll('input[name="registerUserRole"]');
+        if (registerRoleRadios.length) {
+            registerRoleRadios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    const registerDosenIndicator = document.getElementById('registerDosenIndicator');
+                    const registerMahasiswaIndicator = document.getElementById('registerMahasiswaIndicator');
+                    const nimField = document.getElementById('nimField');
+                    const nidnField = document.getElementById('nidnField');
+                    const registerNim = document.getElementById('registerNim');
+                    const registerNidn = document.getElementById('registerNidn');
+                    
+                    if (this.value === 'dosen') {
+                        if (registerDosenIndicator) registerDosenIndicator.style.display = 'block';
+                        if (registerMahasiswaIndicator) registerMahasiswaIndicator.style.display = 'none';
+                        if (nimField) nimField.style.display = 'none';
+                        if (nidnField) nidnField.style.display = 'block';
+                        if (registerNim) {
+                            registerNim.required = false;
+                            registerNim.value = '';
+                        }
+                        if (registerNidn) registerNidn.required = true;
+                    } else {
+                        if (registerDosenIndicator) registerDosenIndicator.style.display = 'none';
+                        if (registerMahasiswaIndicator) registerMahasiswaIndicator.style.display = 'block';
+                        if (nimField) nimField.style.display = 'block';
+                        if (nidnField) nidnField.style.display = 'none';
+                        if (registerNim) registerNim.required = true;
+                        if (registerNidn) {
+                            registerNidn.required = false;
+                            registerNidn.value = '';
+                        }
+                    }
+                });
+            });
+        }
+
         const loginForm = document.getElementById('loginForm');
         if (loginForm) {
             loginForm.addEventListener('submit', async function(e) {
@@ -770,15 +847,30 @@
                 const name = document.getElementById('registerName').value.trim();
                 const email = document.getElementById('registerEmail').value.trim();
                 const nim = document.getElementById('registerNim').value.trim();
+                const nidn = document.getElementById('registerNidn') ? document.getElementById('registerNidn').value.trim() : '';
                 const fakultas = document.getElementById('registerFakultas').value;
                 const prodi = document.getElementById('registerProdi').value;
                 const noHp = document.getElementById('registerNoHp').value.trim();
                 const password = document.getElementById('registerPassword').value;
                 const confirmPassword = document.getElementById('registerConfirmPassword').value;
                 
+                const roleRadio = document.querySelector('input[name="registerUserRole"]:checked');
+                const roleValue = roleRadio ? roleRadio.value : 'mahasiswa';
+                const isDosen = roleValue === 'dosen';
+
                 // Validasi dasar
-                if (!name || !email || !nim || !noHp || !password || !confirmPassword) {
-                    showMessage('registerMessage', 'Semua field (Nama, Email, NIM, No HP, Password) harus diisi!');
+                if (!name || !email || !noHp || !password || !confirmPassword || !fakultas || !prodi) {
+                    showMessage('registerMessage', 'Semua field wajib diisi!');
+                    return;
+                }
+
+                if (isDosen && !nidn) {
+                    showMessage('registerMessage', 'NIDN wajib diisi untuk dosen!');
+                    return;
+                }
+
+                if (!isDosen && !nim) {
+                    showMessage('registerMessage', 'NIM wajib diisi untuk mahasiswa!');
                     return;
                 }
                 
@@ -788,14 +880,26 @@
                     return;
                 }
                 
-                // Validasi NIM (hanya angka)
-                if (!/^\d+$/.test(nim)) {
-                    showMessage('registerMessage', 'NIM hanya boleh berisi angka!');
-                    return;
-                }
-                if (nim.length > 15) {
-                    showMessage('registerMessage', 'NIM maksimal 15 digit!');
-                    return;
+                if (!isDosen) {
+                    // Validasi NIM (hanya angka)
+                    if (!/^\d+$/.test(nim)) {
+                        showMessage('registerMessage', 'NIM hanya boleh berisi angka!');
+                        return;
+                    }
+                    if (nim.length > 15) {
+                        showMessage('registerMessage', 'NIM maksimal 15 digit!');
+                        return;
+                    }
+                } else {
+                    // Validasi NIDN (hanya angka, tepat 10 digit)
+                    if (!/^\d+$/.test(nidn)) {
+                        showMessage('registerMessage', 'NIDN hanya boleh berisi angka!');
+                        return;
+                    }
+                    if (nidn.length !== 10) {
+                        showMessage('registerMessage', 'NIDN harus tepat 10 digit!');
+                        return;
+                    }
                 }
                 
                 // Validasi Fakultas & Prodi
@@ -821,17 +925,24 @@
                     return;
                 }
                 
-                // Siapkan data untuk dikirim (hanya mahasiswa dari form publik)
+                // Siapkan data untuk dikirim
                 let registerData = {
                     name: name,
                     email: email,
                     password: password,
                     no_hp: noHp,
-                    nim: nim,
                     id_prodi: prodi,
-                    isDosen: false,
+                    isDosen: isDosen,
                     isAdmin: false
                 };
+
+                if (isDosen) {
+                    registerData.nidn = nidn;
+                    registerData.nim = null;
+                } else {
+                    registerData.nim = nim;
+                    registerData.nidn = null;
+                }
                 
                 console.log('Register data:', registerData);
                 
