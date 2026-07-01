@@ -894,47 +894,5 @@
             }
         });
     </script>
-                    const response = await fetch(`${API_CONFIG.BASE_URL}/api/auth/register`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(registerData)
-                    });
-                    
-                    const data = await response.json();
-                    console.log('Register response:', data);
-                    
-                    setLoading('registerBtn', false, 'Daftar');
-                    
-                    if (response.status === 201 && data.success) {
-                        showMessage('registerMessage', data.message, true);
-                        setTimeout(() => {
-                            switchToLogin();
-                        }, 2000);
-                    } else {
-                        showMessage('registerMessage', data.message || 'Pendaftaran gagal!');
-                    }
-                } catch (error) {
-                    console.error('Network error:', error);
-                    setLoading('registerBtn', false, 'Daftar');
-                    showMessage('registerMessage', 'Terjadi kesalahan jaringan!');
-                }
-            });
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const token = localStorage.getItem('token');
-            const user = JSON.parse(localStorage.getItem('user') || '{}');
-            
-            if (token && user.id) {
-                if (user.isAdmin) {
-                    window.location.href = 'admin/admin-dashboard.html';
-                } else if (user.isDosen) {
-                    window.location.href = 'dosen/dosen-dashboard.html';
-                } else {
-                    window.location.href = 'mahasiswa/mahasiswa-dashboard.html';
-                }
-            }
-        });
-    </script>
 </body>
 </html>
