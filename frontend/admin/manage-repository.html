@@ -864,7 +864,7 @@
 
         // ==================== AUTHENTICATION ====================
         let token = localStorage.getItem('token');
-        if (!token) window.location.href = '../login.html';
+        if (!token) window.location.href = '../login-admin.html';
 
         const user = JSON.parse(localStorage.getItem('user') || '{}');
 
@@ -955,7 +955,7 @@
                 if (response.status === 401) {
                     localStorage.removeItem('token');
                     localStorage.removeItem('user');
-                    window.location.href = '../login.html?session=expired';
+                    window.location.href = '../login-admin.html?session=expired';
                     throw new Error('Sesi berakhir');
                 }
                 const error = await response.json();
@@ -1350,7 +1350,7 @@
                 confirmButtonColor: '#d33',
                 confirmButtonText: 'Ya, Logout',
                 cancelButtonText: 'Batal'
-            }).then((result) => { if (result.isConfirmed) { localStorage.removeItem('token'); localStorage.removeItem('user'); window.location.href = '../login.html'; } });
+            }).then((result) => { if (result.isConfirmed) { localStorage.removeItem('token'); localStorage.removeItem('user'); window.location.href = '../login-admin.html'; } });
         }
 
         // ==================== INITIALIZATION ====================

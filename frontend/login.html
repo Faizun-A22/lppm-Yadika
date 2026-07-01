@@ -14,48 +14,37 @@
         }
 
         body {
-            background-color: #0b0f19;
-            background-image: 
-                radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
-                radial-gradient(at 50% 0%, hsla(225,39%,30%,0.2) 0, transparent 50%),
-                radial-gradient(at 100% 0%, hsla(260,85%,57%,0.15) 0, transparent 40%),
-                radial-gradient(at 0% 100%, hsla(242,85%,57%,0.08) 0, transparent 40%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             background-attachment: fixed;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
-            color: #f3f4f6;
+            color: #1e293b;
             overflow-x: hidden;
             position: relative;
         }
 
-        /* Decorative glowing blobs */
-        .glowing-blob {
+        /* Decorative subtle white circles for depth */
+        .ambient-circle {
             position: absolute;
-            width: 350px;
-            height: 350px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-            filter: blur(80px);
-            opacity: 0.12;
-            z-index: 0;
+            background: rgba(255, 255, 255, 0.05);
             pointer-events: none;
+            z-index: 0;
         }
-        .blob-1 { top: 15%; left: 10%; }
-        .blob-2 { bottom: 15%; right: 10%; }
+        .circle-1 { width: 400px; height: 400px; top: -100px; left: -100px; }
+        .circle-2 { width: 300px; height: 300px; bottom: -50px; right: -50px; }
 
         .container {
-            background: rgba(17, 24, 39, 0.7);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.8);
             border-radius: 24px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 5px 15px rgba(0, 0, 0, 0.05);
             padding: 40px;
             width: 100%;
-            max-width: 520px;
+            max-width: 500px;
             position: relative;
             z-index: 10;
             overflow: hidden;
@@ -68,56 +57,54 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #6366f1, #a855f7, #ec4899);
+            height: 5px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
         }
 
         .brand-logo-container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .brand-logo {
-            width: 65px;
-            height: 65px;
+            width: 70px;
+            height: 70px;
             object-fit: contain;
             border-radius: 16px;
-            background: rgba(255, 255, 255, 0.95);
+            background: #f8fafc;
             padding: 8px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-            margin-bottom: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            margin-bottom: 12px;
+            border: 1px solid #e2e8f0;
             transition: transform 0.3s ease;
         }
 
         .brand-logo:hover {
-            transform: scale(1.05) rotate(2deg);
+            transform: scale(1.05);
         }
 
         .brand-title-main {
             font-size: 20px;
             font-weight: 800;
-            background: linear-gradient(to right, #ffffff, #94a3b8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #1e293b;
             text-align: center;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
         }
 
         .brand-subtitle-main {
-            font-size: 13px;
-            color: #94a3b8;
-            font-weight: 500;
-            margin-top: 4px;
+            font-size: 11px;
+            color: #64748b;
+            font-weight: 700;
+            margin-top: 3px;
             text-transform: uppercase;
             letter-spacing: 1.5px;
         }
 
         .page {
             display: none;
-            animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .page.active {
@@ -125,13 +112,13 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         h2 {
             text-align: center;
-            color: #ffffff;
+            color: #1e293b;
             margin-bottom: 25px;
             font-size: 24px;
             font-weight: 700;
@@ -139,54 +126,53 @@
         }
 
         .form-group {
-            margin-bottom: 22px;
+            margin-bottom: 20px;
             position: relative;
         }
 
         .form-group label {
             display: block;
-            color: #94a3b8;
-            margin-bottom: 8px;
-            font-size: 14px;
+            color: #475569;
+            margin-bottom: 6px;
+            font-size: 13.5px;
             font-weight: 600;
         }
 
         .form-group input, .form-group select {
             width: 100%;
-            padding: 14px 16px;
-            background: rgba(30, 41, 59, 0.5);
-            border: 1.5px solid rgba(255, 255, 255, 0.08);
+            padding: 13px 16px;
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0;
             border-radius: 12px;
-            color: #ffffff;
+            color: #1e293b;
             font-size: 15px;
-            transition: all 0.25s ease;
+            transition: all 0.2s ease;
         }
 
         .form-group input::placeholder {
-            color: #4b5563;
+            color: #94a3b8;
         }
 
         .form-group input:focus, .form-group select:focus {
             outline: none;
-            border-color: #6366f1;
-            background: rgba(30, 41, 59, 0.8);
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+            border-color: #667eea;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
         }
 
         .form-group input:disabled, .form-group select:disabled {
-            background-color: rgba(15, 23, 42, 0.6);
-            border-color: rgba(255, 255, 255, 0.03);
+            background-color: #e2e8f0;
+            border-color: #cbd5e1;
             color: #64748b;
             cursor: not-allowed;
-            opacity: 0.6;
+            opacity: 0.7;
         }
 
         .role-selector {
             display: flex;
             justify-content: space-between;
             margin-bottom: 25px;
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: #f1f5f9;
             border-radius: 12px;
             padding: 4px;
             gap: 4px;
@@ -210,39 +196,39 @@
             text-align: center;
             cursor: pointer;
             border-radius: 8px;
-            transition: all 0.25s ease;
-            color: #94a3b8;
+            transition: all 0.2s ease;
+            color: #64748b;
             font-weight: 600;
             font-size: 14px;
         }
 
         .role-option input[type="radio"]:checked + label {
-            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-            color: white;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+            box-shadow: 0 4px 10px rgba(102, 126, 234, 0.2);
         }
 
         .btn {
             width: 100%;
             padding: 14px;
-            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-            color: white;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
             border: none;
             border-radius: 12px;
             font-size: 15px;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.25);
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
         .btn:hover {
-            transform: translateY(-1.5px);
-            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.35);
-            background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.35);
+            opacity: 0.95;
         }
 
         .btn:active {
@@ -260,29 +246,29 @@
             text-align: center;
             margin-top: 25px;
             font-size: 14px;
-            color: #94a3b8;
+            color: #64748b;
         }
 
         .switch-link a {
-            color: #818cf8;
+            color: #667eea;
             text-decoration: none;
             font-weight: 700;
             transition: all 0.2s ease;
         }
 
         .switch-link a:hover {
-            color: #a5b4fc;
+            color: #764ba2;
             text-decoration: underline;
         }
 
         .success-message, .error-message {
             padding: 14px;
             border-radius: 12px;
-            margin-bottom: 22px;
+            margin-bottom: 20px;
             text-align: center;
             font-size: 14px;
             font-weight: 600;
-            animation: slideDown 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: slideDown 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -290,19 +276,19 @@
         }
 
         .success-message {
-            background: rgba(16, 185, 129, 0.15);
-            color: #34d399;
-            border: 1px solid rgba(16, 185, 129, 0.25);
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
         }
 
         .error-message {
-            background: rgba(239, 68, 68, 0.15);
-            color: #f87171;
-            border: 1px solid rgba(239, 68, 68, 0.25);
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
         }
 
         @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-12px); }
+            from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -310,7 +296,7 @@
             padding: 8px 12px;
             border-radius: 8px;
             text-align: center;
-            margin-bottom: 22px;
+            margin-bottom: 20px;
             font-weight: 700;
             font-size: 13px;
             display: none;
@@ -318,15 +304,15 @@
         }
 
         .dosen-indicator {
-            background: rgba(249, 115, 22, 0.15);
-            color: #fb923c;
-            border: 1px solid rgba(249, 115, 22, 0.2);
+            background: #ffedd5;
+            color: #c2410c;
+            border: 1px solid #fed7aa;
         }
 
         .mahasiswa-indicator {
-            background: rgba(59, 130, 246, 0.15);
-            color: #60a5fa;
-            border: 1px solid rgba(59, 130, 246, 0.2);
+            background: #dbeafe;
+            color: #1d4ed8;
+            border: 1px solid #bfdbfe;
         }
 
         .loading-spinner {
@@ -344,9 +330,9 @@
             display: inline-block;
             width: 14px;
             height: 14px;
-            border: 1.5px solid rgba(255, 255, 255, 0.2);
+            border: 1.5px solid rgba(0, 0, 0, 0.1);
             border-radius: 50%;
-            border-top: 1.5px solid #818cf8;
+            border-top: 1.5px solid #667eea;
             animation: spin 0.8s linear infinite;
             margin-right: 5px;
         }
@@ -358,7 +344,7 @@
         .form-row {
             display: flex;
             gap: 15px;
-            margin-bottom: 22px;
+            margin-bottom: 20px;
         }
 
         .form-row .form-group {
@@ -369,7 +355,7 @@
         .info-text {
             font-size: 11px;
             color: #64748b;
-            margin-top: 6px;
+            margin-top: 5px;
             line-height: 1.4;
         }
 
@@ -380,15 +366,15 @@
             
             .form-row {
                 flex-direction: column;
-                gap: 22px;
+                gap: 20px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Background elements -->
-    <div class="glowing-blob blob-1"></div>
-    <div class="glowing-blob blob-2"></div>
+    <!-- Ambient circles -->
+    <div class="ambient-circle circle-1"></div>
+    <div class="ambient-circle circle-2"></div>
 
     <div class="container">
         <!-- Logo and Brand Title -->
@@ -468,7 +454,7 @@
                 
                 <!-- Field NIM (Wajib untuk mahasiswa) -->
                 <div id="nimField" class="form-group">
-                    <label for="registerNim">Nomor Induk Mahasiswa (NIM) <span style="color: #f87171;">*</span></label>
+                    <label for="registerNim">Nomor Induk Mahasiswa (NIM) <span style="color: #ef4444;">*</span></label>
                     <input type="text" id="registerNim" maxlength="15" required placeholder="Contoh: 1210203040">
                     <div class="info-text">Hanya angka, maksimal 15 digit. NIM wajib diisi untuk verifikasi mahasiswa.</div>
                 </div>

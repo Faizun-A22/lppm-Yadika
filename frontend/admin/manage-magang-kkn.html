@@ -1000,11 +1000,11 @@
         };
         const API_BASE_URL = getApiBaseUrl();
         let token = localStorage.getItem('token');
-        if (!token) window.location.href = '../login.html';
+        if (!token) window.location.href = '../login-admin.html';
 
         function handleLogout() {
             Swal.fire({ title: 'Konfirmasi Logout', text: 'Apakah Anda yakin ingin logout?', icon: 'question', showCancelButton: true, confirmButtonColor: '#d33', cancelButtonColor: '#3085d6', confirmButtonText: 'Ya, Logout', cancelButtonText: 'Batal' }).then((result) => {
-                if (result.isConfirmed) { localStorage.removeItem('token'); localStorage.removeItem('user'); window.location.href = '../login.html'; }
+                if (result.isConfirmed) { localStorage.removeItem('token'); localStorage.removeItem('user'); window.location.href = '../login-admin.html'; }
             });
         }
 

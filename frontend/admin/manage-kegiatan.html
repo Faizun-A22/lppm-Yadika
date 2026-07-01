@@ -930,7 +930,7 @@
 
         // Cek autentikasi
         if (!token) {
-            window.location.href = '../login.html';
+            window.location.href = '../login-admin.html';
         }
 
         function updateNavbarUserInfo() {
@@ -1085,7 +1085,7 @@
                     showLoading();
                     localStorage.removeItem('token');
                     localStorage.removeItem('user');
-                    setTimeout(() => { window.location.href = '../login.html'; }, 1000);
+                    setTimeout(() => { window.location.href = '../login-admin.html'; }, 1000);
                 }
             });
         }

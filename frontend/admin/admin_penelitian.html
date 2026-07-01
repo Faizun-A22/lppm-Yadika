@@ -1134,7 +1134,7 @@
         
         function checkAuth() {
             if (!authToken) {
-                window.location.href = '../login.html';
+                window.location.href = '../login-admin.html';
             }
         }
 
@@ -2268,7 +2268,7 @@
                 if (result.isConfirmed) {
                     localStorage.removeItem('token');
                     localStorage.removeItem('user');
-                    window.location.href = '../login.html';
+                    window.location.href = '../login-admin.html';
                 }
             });
         }

@@ -649,7 +649,7 @@
         // ==================== AUTHENTICATION ====================
         let token = localStorage.getItem('token');
         if (!token) {
-            window.location.href = '../login.html';
+            window.location.href = '../login-admin.html';
         }
 
         const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -733,7 +733,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     localStorage.clear();
-                    window.location.href = '../login.html';
+                    window.location.href = '../login-admin.html';
                 }
             });
         }

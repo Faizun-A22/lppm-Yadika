@@ -746,7 +746,7 @@
         // ==================== AUTHENTICATION ====================
         let token = localStorage.getItem('token');
         if (!token) {
-            window.location.href = '../login.html';
+            window.location.href = '../login-admin.html';
         }
 
         const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -1120,7 +1120,7 @@
                     showLoading();
                     localStorage.removeItem('token');
                     localStorage.removeItem('user');
-                    setTimeout(() => { window.location.href = '../login.html'; }, 1000);
+                    setTimeout(() => { window.location.href = '../login-admin.html'; }, 1000);
                 }
             });
         }
@@ -1139,7 +1139,7 @@
                 if (response.status === 401) {
                     localStorage.removeItem('token');
                     localStorage.removeItem('user');
-                    window.location.href = '../login.html';
+                    window.location.href = '../login-admin.html';
                     return;
                 }
 
