@@ -406,10 +406,16 @@
     <main class="pt-[95px] md:pt-[110px] pb-12">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Header Section -->
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6" data-aos="fade-down">
+            <div class="flex flex-col md:flex-row md:items-start md:items-center md:justify-between mb-6 gap-4" data-aos="fade-down">
                 <div>
-                    <h2 class="text-2xl md:text-3xl font-bold text-gray-800">Kelola Pengguna</h2>
-                    <p class="text-sm md:text-base text-gray-600">Daftar pengguna (Mahasiswa, Dosen, Admin) yang terdaftar di sistem.</p>
+                    <h2 class="text-2xl md:text-3xl font-extrabold text-gray-800 tracking-tight">Kelola Pengguna</h2>
+                    <p class="text-sm md:text-base text-gray-500 mt-1">Daftar pengguna (Mahasiswa, Dosen, Admin) yang terdaftar di sistem.</p>
+                </div>
+                <div>
+                    <button onclick="openAddDosenModal()" class="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl font-bold text-sm shadow-md hover:shadow-lg transition-all duration-200 border-none flex items-center gap-2 cursor-pointer">
+                        <i class="fas fa-user-plus text-xs"></i>
+                        <span>Tambah Dosen Baru</span>
+                    </button>
                 </div>
             </div>
 
@@ -535,6 +541,105 @@
             </div>
         </div>
     </main>
+
+    <!-- Modal Tambah Dosen -->
+    <div id="addDosenModal" class="fixed inset-0 z-50 overflow-y-auto hidden flex items-center justify-center p-4">
+        <!-- Backdrop -->
+        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="closeAddDosenModal()"></div>
+
+        <!-- Modal Content Box -->
+        <div class="bg-white rounded-2xl max-w-xl w-full shadow-2xl border border-gray-100 overflow-hidden relative z-10 flex flex-col max-h-[90vh] animate-in fade-in zoom-in-95 duration-200">
+            <!-- Header -->
+            <div class="px-6 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-user-tie text-lg"></i>
+                    <h3 class="font-bold text-lg mb-0">Tambah Dosen Baru</h3>
+                </div>
+                <button onclick="closeAddDosenModal()" class="text-white/80 hover:text-white transition cursor-pointer border-none bg-transparent">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Body -->
+            <div class="p-6 overflow-y-auto space-y-4 flex-1">
+                <form id="addDosenForm" class="space-y-4">
+                    <!-- Nama Lengkap -->
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2" for="dosenNama">Nama Lengkap</label>
+                        <input type="text" id="dosenNama" required placeholder="Nama lengkap dosen beserta gelar" 
+                               class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition text-sm">
+                    </div>
+
+                    <!-- Email & No HP -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2" for="dosenEmail">Alamat Email</label>
+                            <input type="email" id="dosenEmail" required placeholder="email@yadika.ac.id" 
+                                   class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2" for="dosenNoHp">Nomor HP</label>
+                            <input type="tel" id="dosenNoHp" required placeholder="Contoh: 08123456789" 
+                                   class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition text-sm">
+                            <p class="text-[10px] text-gray-400 mt-1">10-15 digit angka</p>
+                        </div>
+                    </div>
+
+                    <!-- NIDN & Prodi -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2" for="dosenNidn">NIDN</label>
+                            <input type="text" id="dosenNidn" required maxlength="10" placeholder="10 digit angka NIDN" 
+                                   class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition text-sm font-mono">
+                            <p class="text-[10px] text-gray-400 mt-1">Wajib 10 digit angka</p>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2" for="dosenFakultas">Fakultas</label>
+                            <select id="dosenFakultas" required 
+                                    class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition text-sm">
+                                <option value="">Memuat Fakultas...</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Program Studi -->
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2" for="dosenProdi">Program Studi</label>
+                        <select id="dosenProdi" required disabled
+                                class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition text-sm">
+                            <option value="">Pilih Fakultas Terlebih Dahulu</option>
+                        </select>
+                    </div>
+
+                    <!-- Password & Konfirmasi -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-gray-100">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2" for="dosenPassword">Password</label>
+                            <input type="password" id="dosenPassword" required minlength="6" placeholder="Minimal 6 karakter" 
+                                   class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2" for="dosenConfirmPassword">Konfirmasi Password</label>
+                            <input type="password" id="dosenConfirmPassword" required minlength="6" placeholder="Ulangi password" 
+                                   class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition text-sm">
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Footer -->
+            <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end gap-3">
+                <button type="button" onclick="closeAddDosenModal()" 
+                        class="px-5 py-2.5 bg-white border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition text-sm font-semibold cursor-pointer">
+                    Batal
+                </button>
+                <button type="submit" form="addDosenForm" id="saveDosenBtn"
+                        class="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition text-sm font-semibold cursor-pointer shadow-md flex items-center gap-2">
+                    <span id="saveDosenBtnText">Simpan Data</span>
+                </button>
+            </div>
+        </div>
+    </div>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
@@ -821,6 +926,170 @@
             }
         }
 
+        // ==================== ADD DOSEN MODAL FUNCTIONS ====================
+        function openAddDosenModal() {
+            const modal = document.getElementById('addDosenModal');
+            const form = document.getElementById('addDosenForm');
+            if (form) form.reset();
+            
+            // Reset prodi select
+            const prodiSelect = document.getElementById('dosenProdi');
+            if (prodiSelect) {
+                prodiSelect.innerHTML = '<option value="">Pilih Fakultas Terlebih Dahulu</option>';
+                prodiSelect.disabled = true;
+            }
+
+            if (modal) modal.classList.remove('hidden');
+            loadFakultasModal();
+        }
+
+        function closeAddDosenModal() {
+            const modal = document.getElementById('addDosenModal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        async function loadFakultasModal() {
+            const select = document.getElementById('dosenFakultas');
+            if (!select) return;
+            
+            try {
+                select.innerHTML = '<option value="">Memuat data fakultas...</option>';
+                const response = await fetch(`${API_BASE.replace('/admin', '')}/fakultas`);
+                const result = await response.json();
+                
+                if (result.success && result.data && result.data.length > 0) {
+                    select.innerHTML = '<option value="">Pilih Fakultas</option>';
+                    result.data.forEach(fakultas => {
+                        const option = document.createElement('option');
+                        option.value = fakultas.id_fakultas;
+                        option.textContent = fakultas.nama_fakultas;
+                        select.appendChild(option);
+                    });
+                } else {
+                    select.innerHTML = '<option value="">Tidak ada data fakultas</option>';
+                }
+            } catch (error) {
+                console.error('Error loading fakultas in modal:', error);
+                select.innerHTML = '<option value="">Gagal memuat data</option>';
+            }
+        }
+
+        async function loadProdiModal(fakultasId) {
+            const select = document.getElementById('dosenProdi');
+            if (!select) return;
+            
+            if (!fakultasId) {
+                select.innerHTML = '<option value="">Pilih Fakultas Terlebih Dahulu</option>';
+                select.disabled = true;
+                return;
+            }
+            
+            try {
+                select.innerHTML = '<option value="">Memuat data program studi...</option>';
+                select.disabled = true;
+                
+                const response = await fetch(`${API_BASE.replace('/admin', '')}/prodi/by-fakultas/${fakultasId}`);
+                const result = await response.json();
+                
+                if (result.success && result.data && result.data.length > 0) {
+                    select.innerHTML = '<option value="">Pilih Program Studi</option>';
+                    result.data.forEach(prodi => {
+                        const option = document.createElement('option');
+                        option.value = prodi.id_prodi;
+                        let displayText = prodi.nama_prodi;
+                        if (prodi.jenjang) displayText += ` (${prodi.jenjang})`;
+                        option.textContent = displayText;
+                        select.appendChild(option);
+                    });
+                    select.disabled = false;
+                } else {
+                    select.innerHTML = '<option value="">Tidak ada program studi tersedia</option>';
+                }
+            } catch (error) {
+                console.error('Error loading prodi in modal:', error);
+                select.innerHTML = '<option value="">Gagal memuat data</option>';
+            }
+        }
+
+        // Handle Add Dosen Form Submit
+        document.getElementById('addDosenForm')?.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('dosenNama').value.trim();
+            const email = document.getElementById('dosenEmail').value.trim();
+            const noHp = document.getElementById('dosenNoHp').value.trim();
+            const nidn = document.getElementById('dosenNidn').value.trim();
+            const idProdi = document.getElementById('dosenProdi').value;
+            const password = document.getElementById('dosenPassword').value;
+            const confirmPassword = document.getElementById('dosenConfirmPassword').value;
+            
+            if (password !== confirmPassword) {
+                Swal.fire('Error', 'Password dan konfirmasi password tidak cocok!', 'error');
+                return;
+            }
+
+            if (!/^\d+$/.test(nidn) || nidn.length !== 10) {
+                Swal.fire('Error', 'NIDN harus tepat 10 digit angka!', 'error');
+                return;
+            }
+
+            if (!/^[0-9]{10,15}$/.test(noHp)) {
+                Swal.fire('Error', 'Nomor HP harus berisi 10-15 digit angka!', 'error');
+                return;
+            }
+
+            const payload = {
+                name,
+                email,
+                no_hp: noHp,
+                nidn,
+                id_prodi: idProdi,
+                password,
+                isDosen: true,
+                isAdmin: false
+            };
+
+            const btn = document.getElementById('saveDosenBtn');
+            const btnText = document.getElementById('saveDosenBtnText');
+            
+            // Set loading
+            if (btn && btnText) {
+                btn.disabled = true;
+                btnText.innerHTML = '<span class="loading-spinner"></span> Menyimpan...';
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/admin/users`, {
+                    method: 'POST',
+                    headers: getHeaders(),
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    Swal.fire({
+                        title: 'Berhasil',
+                        text: 'Dosen baru berhasil didaftarkan!',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+                    closeAddDosenModal();
+                    loadUsers();
+                } else {
+                    Swal.fire('Gagal', data.message || 'Gagal mendaftarkan dosen baru', 'error');
+                }
+            } catch (error) {
+                console.error('Error in register dosen:', error);
+                Swal.fire('Error', 'Terjadi kesalahan sistem saat memproses permintaan', 'error');
+            } finally {
+                if (btn && btnText) {
+                    btn.disabled = false;
+                    btnText.textContent = 'Simpan Data';
+                }
+            }
+        });
+
         // ==================== DOCUMENT READY ====================
         document.addEventListener('DOMContentLoaded', () => {
             updateNavbarUserInfo();
@@ -830,6 +1099,9 @@
 
             document.getElementById('filterRole')?.addEventListener('change', loadUsers);
             document.getElementById('filterStatus')?.addEventListener('change', loadUsers);
+            document.getElementById('dosenFakultas')?.addEventListener('change', (e) => {
+                loadProdiModal(e.target.value);
+            });
         });
     </script>
 </body>

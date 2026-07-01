@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LPPM ITB Yadika - Admin Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: #05070c;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(24, 30%, 7%, 1) 0, transparent 50%), 
+                radial-gradient(at 50% 0%, hsla(36, 100%, 10%, 0.15) 0, transparent 50%),
+                radial-gradient(at 100% 0%, hsla(45, 100%, 50%, 0.08) 0, transparent 40%),
+                radial-gradient(at 0% 100%, hsla(38, 90%, 50%, 0.05) 0, transparent 40%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #f3f4f6;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Ambient glow blobs */
+        .glowing-blob {
+            position: absolute;
+            width: 380px;
+            height: 380px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+            filter: blur(90px);
+            opacity: 0.1;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .blob-1 { top: 10%; left: 15%; }
+        .blob-2 { bottom: 10%; right: 15%; }
+
+        .container {
+            background: rgba(13, 16, 23, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(245, 158, 11, 0.15);
+            border-radius: 24px;
+            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 40px rgba(245, 158, 11, 0.03);
+            padding: 50px 40px;
+            width: 100%;
+            max-width: 480px;
+            position: relative;
+            z-index: 10;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #d97706, #fbbf24, #f59e0b);
+        }
+
+        .admin-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 35px;
+            text-align: center;
+        }
+
+        .brand-logo {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            border-radius: 14px;
+            background: #ffffff;
+            padding: 8px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            margin-bottom: 15px;
+            border: 2.5px solid #d97706;
+            transition: all 0.3s ease;
+        }
+
+        .brand-logo:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(217, 119, 6, 0.3);
+        }
+
+        .brand-title {
+            font-size: 22px;
+            font-weight: 800;
+            background: linear-gradient(to right, #ffffff, #d1d5db);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 0.5px;
+        }
+
+        .portal-badge {
+            margin-top: 8px;
+            padding: 4px 10px;
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            border-radius: 100px;
+        }
+
+        h2 {
+            color: #ffffff;
+            margin-bottom: 25px;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #9ca3af;
+            margin-bottom: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(22, 28, 41, 0.6);
+            border: 1.5px solid rgba(245, 158, 11, 0.08);
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 15px;
+            transition: all 0.25s ease;
+        }
+
+        .form-group input::placeholder {
+            color: #4b5563;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #fbbf24;
+            background: rgba(22, 28, 41, 0.85);
+            box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.15);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(217, 119, 6, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            letter-spacing: 0.5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-1.5px);
+            box-shadow: 0 8px 25px rgba(217, 119, 6, 0.4);
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+
+        .btn:active {
+            transform: translateY(0.5px);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .success-message, .error-message {
+            padding: 14px;
+            border-radius: 12px;
+            margin-bottom: 22px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            animation: slideDown 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .success-message {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.25);
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.25);
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 13px;
+        }
+
+        .back-link a {
+            color: #9ca3af;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .back-link a:hover {
+            color: #fbbf24;
+        }
+    </style>
+</head>
+<body>
+    <div class="glowing-blob blob-1"></div>
+    <div class="glowing-blob blob-2"></div>
+
+    <div class="container">
+        <div class="admin-header">
+            <img src="yadika.png" alt="Logo ITB Yadika" class="brand-logo">
+            <div class="brand-title">LPPM ITB YADIKA</div>
+            <div class="portal-badge">🔒 PANEL ADMINISTRATOR</div>
+        </div>
+
+        <h2>Autentikasi Admin</h2>
+        <div id="loginMessage"></div>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="loginEmail">Email Administrator</label>
+                <input type="email" id="loginEmail" required placeholder="admin@yadika.ac.id">
+            </div>
+
+            <div class="form-group">
+                <label for="loginPassword">Password Akses</label>
+                <input type="password" id="loginPassword" required placeholder="••••••••">
+            </div>
+
+            <button type="submit" class="btn" id="loginBtn">
+                <span id="loginBtnText">Masuk ke Panel</span>
+            </button>
+        </form>
+
+        <div class="back-link">
+            <a href="login.html">
+                ← Kembali ke Portal Utama
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const API_CONFIG = {
+            BASE_URL: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+                ? 'http://localhost:3000'
+                : ''
+        };
+
+        function showMessage(message, isSuccess = false) {
+            const messageEl = document.getElementById('loginMessage');
+            messageEl.innerHTML = `<div class="${isSuccess ? 'success-message' : 'error-message'}">${message}</div>`;
+            setTimeout(() => {
+                messageEl.innerHTML = '';
+            }, 5000);
+        }
+
+        function setLoading(isLoading) {
+            const btn = document.getElementById('loginBtn');
+            const btnText = document.getElementById('loginBtnText');
+            
+            if (isLoading) {
+                btn.disabled = true;
+                btnText.innerHTML = '<span class="loading-spinner"></span> Memverifikasi...';
+            } else {
+                btn.disabled = false;
+                btnText.textContent = 'Masuk ke Panel';
+            }
+        }
+
+        const loginForm = document.getElementById('loginForm');
+        if (loginForm) {
+            loginForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const email = document.getElementById('loginEmail').value.trim();
+                const password = document.getElementById('loginPassword').value;
+                
+                if (!email || !password) {
+                    showMessage('Email dan password wajib diisi!');
+                    return;
+                }
+                
+                setLoading(true);
+
+                try {
+                    const response = await fetch(`${API_CONFIG.BASE_URL}/api/auth/login`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, password, isAdmin: true, isDosen: false })
+                    });
+                        
+                    const data = await response.json();
+                    setLoading(false);
+                    
+                    if (!response.ok) {
+                        showMessage(data.message || 'Gagal masuk sebagai admin!');
+                        return;
+                    }
+
+                    // Save session details
+                    localStorage.setItem('token', data.data.token);
+                    localStorage.setItem('user', JSON.stringify(data.data.user));
+
+                    showMessage('Autentikasi berhasil! Sedang dialihkan...', true);
+
+                    setTimeout(() => {
+                        window.location.href = 'admin/admin-dashboard.html';
+                    }, 1500);
+                } catch (error) {
+                    console.error('Error:', error);
+                    setLoading(false);
+                    showMessage('Terjadi kesalahan jaringan saat mencoba masuk!');
+                }
+            });
+        }
+
+        // Auto-redirect if already logged in as Admin
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem('token');
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            
+            if (token && user.id && user.isAdmin) {
+                window.location.href = 'admin/admin-dashboard.html';
+            }
+        });
+    </script>
+</body>
+</html>

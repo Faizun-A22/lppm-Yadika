@@ -1,5 +1,6 @@
 const supabase = require('../../config/database');
 const { formatResponse, formatError } = require('../../utils/responseFormatter');
+const authService = require('../../services/authService');
 
 const userController = {
     /**
@@ -56,6 +57,21 @@ const userController = {
         } catch (error) {
             console.error('Error in getUsers:', error);
             return res.status(500).json(formatError('Gagal mengambil data user: ' + error.message));
+        }
+    },
+
+    /**
+     * Create user (Lecturer / Dosen) by Admin
+     */
+    async createUser(req, res) {
+        try {
+            const result = await authService.register(req.body);
+            return res.status(201).json(
+                formatResponse('success', result.message || 'User berhasil didaftarkan', result.data)
+            );
+        } catch (error) {
+            console.error('Error in createUser:', error);
+            return res.status(400).json(formatError('Gagal mendaftarkan user: ' + error.message));
         }
     },
 

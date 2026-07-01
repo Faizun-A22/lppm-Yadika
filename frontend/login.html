@@ -3,33 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Jurnal - Login & Daftar (Dengan Admin Register)</title>
+    <title>LPPM ITB Yadika - Masuk & Daftar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-color: #0b0f19;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+                radial-gradient(at 50% 0%, hsla(225,39%,30%,0.2) 0, transparent 50%),
+                radial-gradient(at 100% 0%, hsla(260,85%,57%,0.15) 0, transparent 40%),
+                radial-gradient(at 0% 100%, hsla(242,85%,57%,0.08) 0, transparent 40%);
+            background-attachment: fixed;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            color: #f3f4f6;
+            overflow-x: hidden;
+            position: relative;
         }
 
+        /* Decorative glowing blobs */
+        .glowing-blob {
+            position: absolute;
+            width: 350px;
+            height: 350px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            filter: blur(80px);
+            opacity: 0.12;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .blob-1 { top: 15%; left: 10%; }
+        .blob-2 { bottom: 15%; right: 10%; }
+
         .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
             padding: 40px;
             width: 100%;
-            max-width: 500px;
+            max-width: 520px;
             position: relative;
+            z-index: 10;
             overflow: hidden;
+            transition: all 0.3s ease;
         }
 
         .container::before {
@@ -38,13 +68,56 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #667eea, #764ba2);
+            height: 3px;
+            background: linear-gradient(90deg, #6366f1, #a855f7, #ec4899);
+        }
+
+        .brand-logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .brand-logo {
+            width: 65px;
+            height: 65px;
+            object-fit: contain;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 8px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .brand-logo:hover {
+            transform: scale(1.05) rotate(2deg);
+        }
+
+        .brand-title-main {
+            font-size: 20px;
+            font-weight: 800;
+            background: linear-gradient(to right, #ffffff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+
+        .brand-subtitle-main {
+            font-size: 13px;
+            color: #94a3b8;
+            font-weight: 500;
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
         }
 
         .page {
             display: none;
-            animation: fadeIn 0.5s ease-in-out;
+            animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .page.active {
@@ -52,61 +125,71 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         h2 {
             text-align: center;
-            color: #333;
-            margin-bottom: 30px;
-            font-size: 28px;
-            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 25px;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 22px;
             position: relative;
         }
 
         .form-group label {
             display: block;
-            color: #555;
+            color: #94a3b8;
             margin-bottom: 8px;
-            font-weight: 500;
+            font-size: 14px;
+            font-weight: 600;
         }
 
         .form-group input, .form-group select {
             width: 100%;
-            padding: 15px;
-            border: 2px solid #e1e5e9;
-            border-radius: 10px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            background: #f8f9fa;
+            padding: 14px 16px;
+            background: rgba(30, 41, 59, 0.5);
+            border: 1.5px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 15px;
+            transition: all 0.25s ease;
+        }
+
+        .form-group input::placeholder {
+            color: #4b5563;
         }
 
         .form-group input:focus, .form-group select:focus {
             outline: none;
-            border-color: #667eea;
-            background: white;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+            border-color: #6366f1;
+            background: rgba(30, 41, 59, 0.8);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
         }
 
         .form-group input:disabled, .form-group select:disabled {
-            background-color: #e9ecef;
+            background-color: rgba(15, 23, 42, 0.6);
+            border-color: rgba(255, 255, 255, 0.03);
+            color: #64748b;
             cursor: not-allowed;
-            opacity: 0.7;
+            opacity: 0.6;
         }
 
         .role-selector {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 20px;
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 5px;
+            margin-bottom: 25px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 4px;
+            gap: 4px;
         }
 
         .role-option {
@@ -123,149 +206,148 @@
 
         .role-option label {
             display: block;
-            padding: 12px;
+            padding: 10px;
             text-align: center;
             cursor: pointer;
             border-radius: 8px;
-            transition: all 0.3s ease;
-            color: #666;
-            font-weight: 500;
+            transition: all 0.25s ease;
+            color: #94a3b8;
+            font-weight: 600;
+            font-size: 14px;
         }
 
         .role-option input[type="radio"]:checked + label {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
             color: white;
-            box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
         }
 
         .btn {
             width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 14px;
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
             color: white;
             border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+            transform: translateY(-1.5px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.35);
+            background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
         }
 
         .btn:active {
-            transform: translateY(0);
+            transform: translateY(0.5px);
         }
 
         .btn:disabled {
-            opacity: 0.6;
+            opacity: 0.5;
             cursor: not-allowed;
             transform: none;
+            box-shadow: none;
         }
 
         .switch-link {
             text-align: center;
             margin-top: 25px;
             font-size: 14px;
-            color: #666;
+            color: #94a3b8;
         }
 
         .switch-link a {
-            color: #667eea;
+            color: #818cf8;
             text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
+            font-weight: 700;
+            transition: all 0.2s ease;
         }
 
         .switch-link a:hover {
-            color: #764ba2;
+            color: #a5b4fc;
             text-decoration: underline;
         }
 
         .success-message, .error-message {
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
+            padding: 14px;
+            border-radius: 12px;
+            margin-bottom: 22px;
             text-align: center;
-            font-weight: 500;
-            animation: slideDown 0.3s ease;
+            font-size: 14px;
+            font-weight: 600;
+            animation: slideDown 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .success-message {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.25);
         }
 
         .error-message {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.25);
         }
 
         @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-20px); }
+            from { opacity: 0; transform: translateY(-12px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         .role-indicator {
-            padding: 10px;
-            border-radius: 10px;
+            padding: 8px 12px;
+            border-radius: 8px;
             text-align: center;
-            margin-bottom: 20px;
-            font-weight: 600;
-            font-size: 14px;
+            margin-bottom: 22px;
+            font-weight: 700;
+            font-size: 13px;
             display: none;
-        }
-
-        .admin-indicator {
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-            color: white;
+            letter-spacing: 0.3px;
         }
 
         .dosen-indicator {
-            background: linear-gradient(135deg, #fd7e14 0%, #e83e8c 100%);
-            color: white;
+            background: rgba(249, 115, 22, 0.15);
+            color: #fb923c;
+            border: 1px solid rgba(249, 115, 22, 0.2);
         }
 
         .mahasiswa-indicator {
-            background: linear-gradient(135deg, #007bff 0%, #6f42c1 100%);
-            color: white;
-        }
-
-        .form-group.hidden {
-            display: none;
-        }
-
-        .form-group.show {
-            display: block;
-            animation: fadeIn 0.3s ease-in-out;
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.2);
         }
 
         .loading-spinner {
             display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255,255,255,.3);
             border-radius: 50%;
             border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
+            animation: spin 0.8s linear infinite;
             margin-right: 8px;
         }
 
         .loading-small {
             display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid #f3f3f3;
+            width: 14px;
+            height: 14px;
+            border: 1.5px solid rgba(255, 255, 255, 0.2);
             border-radius: 50%;
-            border-top: 2px solid #667eea;
-            animation: spin 1s ease-in-out infinite;
+            border-top: 1.5px solid #818cf8;
+            animation: spin 0.8s linear infinite;
             margin-right: 5px;
         }
 
@@ -276,7 +358,7 @@
         .form-row {
             display: flex;
             gap: 15px;
-            margin-bottom: 20px;
+            margin-bottom: 22px;
         }
 
         .form-row .form-group {
@@ -285,29 +367,40 @@
         }
 
         .info-text {
-            font-size: 12px;
-            color: #6c757d;
-            margin-top: 5px;
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 6px;
+            line-height: 1.4;
         }
 
         @media (max-width: 600px) {
             .container {
-                padding: 20px;
-                max-width: 100%;
+                padding: 30px 20px;
             }
             
             .form-row {
                 flex-direction: column;
-                gap: 20px;
+                gap: 22px;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Background elements -->
+    <div class="glowing-blob blob-1"></div>
+    <div class="glowing-blob blob-2"></div>
+
     <div class="container">
+        <!-- Logo and Brand Title -->
+        <div class="brand-logo-container">
+            <img src="yadika.png" alt="Logo ITB Yadika" class="brand-logo">
+            <div class="brand-title-main">LPPM ITB YADIKA</div>
+            <div class="brand-subtitle-main">Portal Akademik</div>
+        </div>
+
         <!-- Halaman Login -->
         <div id="loginPage" class="page active">
-            <h2>Login Akun</h2>
+            <h2>Masuk ke Akun</h2>
             <div id="loginMessage"></div>
             
             <form id="loginForm">
@@ -320,14 +413,6 @@
                         <input type="radio" id="roleDosen" name="userRole" value="dosen">
                         <label for="roleDosen">Dosen</label>
                     </div>
-                    <div class="role-option">
-                        <input type="radio" id="roleAdmin" name="userRole" value="admin">
-                        <label for="roleAdmin">Admin</label>
-                    </div>
-                </div>
-                
-                <div id="adminIndicator" class="role-indicator admin-indicator">
-                    🔐 Mode Login Admin
                 </div>
                 
                 <div id="dosenIndicator" class="role-indicator dosen-indicator">
@@ -339,17 +424,17 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="loginEmail">Email</label>
-                    <input type="email" id="loginEmail" required placeholder="email@example.com">
+                    <label for="loginEmail">Alamat Email</label>
+                    <input type="email" id="loginEmail" required placeholder="nama@mahasiswa.yadika.ac.id">
                 </div>
 
                 <div class="form-group">
                     <label for="loginPassword">Password</label>
-                    <input type="password" id="loginPassword" required placeholder="Minimal 6 karakter">
+                    <input type="password" id="loginPassword" required placeholder="••••••">
                 </div>
 
                 <button type="submit" class="btn" id="loginBtn">
-                    <span id="loginBtnText">Login</span>
+                    <span id="loginBtnText">Masuk</span>
                 </button>
             </form>
 
@@ -364,69 +449,28 @@
             <div id="registerMessage"></div>
 
             <form id="registerForm">
-                <!-- Role selector -->
-                <div class="role-selector">
-                    <div class="role-option">
-                        <input type="radio" id="registerRoleMahasiswa" name="registerUserRole" value="mahasiswa" checked>
-                        <label for="registerRoleMahasiswa">Mahasiswa</label>
-                    </div>
-                    <div class="role-option">
-                        <input type="radio" id="registerRoleDosen" name="registerUserRole" value="dosen">
-                        <label for="registerRoleDosen">Dosen</label>
-                    </div>
-                    <div class="role-option">
-                        <input type="radio" id="registerRoleAdmin" name="registerUserRole" value="admin">
-                        <label for="registerRoleAdmin">Admin</label>
-                    </div>
-                </div>
-                
+                <!-- Registration role indicator (Fixed to student/mahasiswa only) -->
                 <div id="registerMahasiswaIndicator" class="role-indicator mahasiswa-indicator" style="display: block;">
-                    🎓 Mendaftar sebagai Mahasiswa
-                </div>
-                
-                <div id="registerDosenIndicator" class="role-indicator dosen-indicator" style="display: none;">
-                    👨‍🏫 Mendaftar sebagai Dosen
-                </div>
-
-                <div id="registerAdminIndicator" class="role-indicator admin-indicator" style="display: none;">
-                    👑 Mendaftar sebagai Admin
+                    🎓 Registrasi sebagai Mahasiswa
                 </div>
 
                 <!-- Nama Lengkap -->
                 <div class="form-group">
                     <label for="registerName">Nama Lengkap</label>
-                    <input type="text" id="registerName" required placeholder="John Doe">
+                    <input type="text" id="registerName" required placeholder="Nama lengkap sesuai KTM">
                 </div>
                 
                 <!-- Email -->
                 <div class="form-group">
-                    <label for="registerEmail">Email</label>
-                    <input type="email" id="registerEmail" required placeholder="email@example.com">
+                    <label for="registerEmail">Alamat Email</label>
+                    <input type="email" id="registerEmail" required placeholder="nama@mahasiswa.yadika.ac.id">
                 </div>
                 
-                <!-- Field NIM UNTUK SEMUA ROLE (Admin juga pakai NIM) -->
+                <!-- Field NIM (Wajib untuk mahasiswa) -->
                 <div id="nimField" class="form-group">
-                    <label for="registerNim">NIM <span id="nimRequiredStar" style="color: red;">*</span></label>
-                    <input type="text" id="registerNim" maxlength="15" placeholder="Contoh: 123456789012345">
-                    <div class="info-text">Hanya angka, maksimal 15 digit (wajib untuk semua role termasuk admin)</div>
-                </div>
-                
-                <!-- Field NIDN untuk Dosen (opsional, NIM tetap dipakai) -->
-                <div id="dosenFields" style="display: none;">
-                    <div id="nidnField" class="form-group">
-                        <label for="registerNidn">NIDN (Opsional untuk Dosen)</label>
-                        <input type="text" id="registerNidn" maxlength="10" placeholder="Contoh: 1234567890">
-                        <div class="info-text">Hanya angka, maksimal 10 digit</div>
-                    </div>
-                </div>
-
-                <!-- Field Admin (tidak perlu tambahan, karena NIM sudah ada) -->
-                <div id="adminFields" style="display: none;">
-                    <div class="form-group">
-                        <label>Role Admin</label>
-                        <input type="text" value="Administrator (Akses Penuh)" disabled style="background: #e9ecef;">
-                        <div class="info-text">Admin tetap harus mengisi NIM untuk keperluan sistem</div>
-                    </div>
+                    <label for="registerNim">Nomor Induk Mahasiswa (NIM) <span style="color: #f87171;">*</span></label>
+                    <input type="text" id="registerNim" maxlength="15" required placeholder="Contoh: 1210203040">
+                    <div class="info-text">Hanya angka, maksimal 15 digit. NIM wajib diisi untuk verifikasi mahasiswa.</div>
                 </div>
                 
                 <!-- Field Fakultas & Prodi -->
@@ -434,14 +478,14 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="registerFakultas">Fakultas <span id="fakultasLoading" style="display: none;" class="loading-small"></span></label>
-                            <select id="registerFakultas">
+                            <select id="registerFakultas" required>
                                 <option value="">Memuat data fakultas...</option>
                             </select>
                         </div>
                         
                         <div class="form-group">
                             <label for="registerProdi">Program Studi</label>
-                            <select id="registerProdi" disabled>
+                            <select id="registerProdi" disabled required>
                                 <option value="">Pilih Fakultas Terlebih Dahulu</option>
                             </select>
                         </div>
@@ -451,8 +495,8 @@
                 <!-- No HP -->
                 <div class="form-group">
                     <label for="registerNoHp">Nomor Handphone</label>
-                    <input type="tel" id="registerNoHp" required placeholder="Contoh: 081234567890">
-                    <div class="info-text">10-15 digit angka</div>
+                    <input type="tel" id="registerNoHp" required placeholder="Contoh: 08123456789">
+                    <div class="info-text">Masukkan nomor aktif (10-15 digit angka).</div>
                 </div>
                 
                 <!-- Password -->
@@ -463,7 +507,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="registerConfirmPassword">Konfirmasi Password</label>
+                        <label for="registerConfirmPassword">Konfirmasi</label>
                         <input type="password" id="registerConfirmPassword" required minlength="6" placeholder="Ulangi password">
                     </div>
                 </div>
@@ -474,7 +518,7 @@
             </form>
 
             <div class="switch-link">
-                Sudah punya akun? <a href="#" onclick="switchToLogin()">Login di sini</a>
+                Sudah punya akun? <a href="#" onclick="switchToLogin()">Masuk di sini</a>
             </div>
         </div>
     </div>
@@ -522,43 +566,17 @@
             document.getElementById('registerForm').reset();
             
             // Reset role indicators login
-            const adminIndicator = document.getElementById('adminIndicator');
             const dosenIndicator = document.getElementById('dosenIndicator');
             const mahasiswaIndicator = document.getElementById('mahasiswaIndicator');
             
-            if (adminIndicator) adminIndicator.style.display = 'none';
             if (dosenIndicator) dosenIndicator.style.display = 'none';
             if (mahasiswaIndicator) mahasiswaIndicator.style.display = 'block';
             
-            // Reset role indicators register
-            const registerMahasiswaIndicator = document.getElementById('registerMahasiswaIndicator');
-            const registerDosenIndicator = document.getElementById('registerDosenIndicator');
-            const registerAdminIndicator = document.getElementById('registerAdminIndicator');
-            
-            if (registerMahasiswaIndicator) registerMahasiswaIndicator.style.display = 'block';
-            if (registerDosenIndicator) registerDosenIndicator.style.display = 'none';
-            if (registerAdminIndicator) registerAdminIndicator.style.display = 'none';
-            
-            // Tampilkan fields
-            const dosenFields = document.getElementById('dosenFields');
-            const adminFields = document.getElementById('adminFields');
-            const academicFields = document.getElementById('academicFields');
-            
-            if (dosenFields) dosenFields.style.display = 'none';
-            if (adminFields) adminFields.style.display = 'none';
-            if (academicFields) academicFields.style.display = 'block';
-            
             // Reset NIM
             const registerNim = document.getElementById('registerNim');
-            const registerNidn = document.getElementById('registerNidn');
-            
             if (registerNim) {
                 registerNim.required = true;
                 registerNim.value = '';
-            }
-            if (registerNidn) {
-                registerNidn.required = false;
-                registerNidn.value = '';
             }
             
             // Reset dropdown prodi
@@ -571,12 +589,6 @@
             const fakultasSelect = document.getElementById('registerFakultas');
             if (fakultasSelect) {
                 fakultasSelect.value = '';
-            }
-            
-            // Pastikan radio button mahasiswa terpilih
-            const registerRoleMahasiswa = document.getElementById('registerRoleMahasiswa');
-            if (registerRoleMahasiswa) {
-                registerRoleMahasiswa.checked = true;
             }
         }
 
@@ -675,17 +687,13 @@
         if (roleRadios.length) {
             roleRadios.forEach(radio => {
                 radio.addEventListener('change', function() {
-                    const adminIndicator = document.getElementById('adminIndicator');
                     const dosenIndicator = document.getElementById('dosenIndicator');
                     const mahasiswaIndicator = document.getElementById('mahasiswaIndicator');
                     
-                    if (adminIndicator) adminIndicator.style.display = 'none';
                     if (dosenIndicator) dosenIndicator.style.display = 'none';
                     if (mahasiswaIndicator) mahasiswaIndicator.style.display = 'none';
                     
-                    if (this.value === 'admin' && adminIndicator) {
-                        adminIndicator.style.display = 'block';
-                    } else if (this.value === 'dosen' && dosenIndicator) {
+                    if (this.value === 'dosen' && dosenIndicator) {
                         dosenIndicator.style.display = 'block';
                     } else if (mahasiswaIndicator) {
                         mahasiswaIndicator.style.display = 'block';
@@ -715,10 +723,9 @@
                 let isAdmin = false;
                 let isDosen = false;
                 
-                if (roleValue === 'admin') isAdmin = true;
-                else if (roleValue === 'dosen') isDosen = true;
+                if (roleValue === 'dosen') isDosen = true;
 
-                setLoading('loginBtn', true, 'Login');
+                setLoading('loginBtn', true, 'Masuk');
 
                 try {
                     const response = await fetch(`${API_CONFIG.BASE_URL}/api/auth/login`, {
@@ -728,7 +735,7 @@
                     });
                         
                     const data = await response.json();
-                    setLoading('loginBtn', false, 'Login');
+                    setLoading('loginBtn', false, 'Masuk');
                     
                     if (!response.ok) {
                         showMessage('loginMessage', data.message || 'Login gagal!');
@@ -751,58 +758,13 @@
                     }, 1500);
                 } catch (error) {
                     console.error('Error:', error);
-                    setLoading('loginBtn', false, 'Login');
+                    setLoading('loginBtn', false, 'Masuk');
                     showMessage('loginMessage', 'Terjadi kesalahan jaringan!');
                 }
             });
         }
 
         // ==================== REGISTER ====================
-
-        // Event listener untuk perubahan role pendaftaran
-        const registerRoleRadios = document.querySelectorAll('input[name="registerUserRole"]');
-        if (registerRoleRadios.length) {
-            registerRoleRadios.forEach(radio => {
-                radio.addEventListener('change', function() {
-                    const role = this.value;
-                    const isMahasiswa = role === 'mahasiswa';
-                    const isDosen = role === 'dosen';
-                    const isAdmin = role === 'admin';
-                    
-                    const registerMahasiswaIndicator = document.getElementById('registerMahasiswaIndicator');
-                    const registerDosenIndicator = document.getElementById('registerDosenIndicator');
-                    const registerAdminIndicator = document.getElementById('registerAdminIndicator');
-                    const dosenFields = document.getElementById('dosenFields');
-                    const adminFields = document.getElementById('adminFields');
-                    const academicFields = document.getElementById('academicFields');
-                    const registerNim = document.getElementById('registerNim');
-                    const registerNidn = document.getElementById('registerNidn');
-                    const fakultasSelect = document.getElementById('registerFakultas');
-                    const prodiSelect = document.getElementById('registerProdi');
-                    
-                    if (registerMahasiswaIndicator) registerMahasiswaIndicator.style.display = isMahasiswa ? 'block' : 'none';
-                    if (registerDosenIndicator) registerDosenIndicator.style.display = isDosen ? 'block' : 'none';
-                    if (registerAdminIndicator) registerAdminIndicator.style.display = isAdmin ? 'block' : 'none';
-                    
-                    if (dosenFields) dosenFields.style.display = isDosen ? 'block' : 'none';
-                    if (adminFields) adminFields.style.display = isAdmin ? 'block' : 'none';
-                    if (academicFields) academicFields.style.display = 'block'; // semua role tetap tampil
-                    
-                    // NIM tetap required untuk SEMUA ROLE (termasuk admin)
-                    if (registerNim) {
-                        registerNim.required = true;
-                        registerNim.placeholder = isAdmin ? "Contoh: 123456789012345 (wajib untuk admin)" : "Contoh: 123456789012345";
-                    }
-                    
-                    if (registerNidn) {
-                        registerNidn.required = false;
-                    }
-                    
-                    if (fakultasSelect) fakultasSelect.required = true;
-                    if (prodiSelect) prodiSelect.required = true;
-                });
-            });
-        }
 
         // Event listener untuk fakultas
         const registerFakultas = document.getElementById('registerFakultas');
@@ -818,25 +780,17 @@
             registerForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
                 
-                const roleRadio = document.querySelector('input[name="registerUserRole"]:checked');
-                const role = roleRadio ? roleRadio.value : 'mahasiswa';
-                
-                const isMahasiswa = role === 'mahasiswa';
-                const isDosen = role === 'dosen';
-                const isAdmin = role === 'admin';
-                
                 // Ambil semua nilai
                 const name = document.getElementById('registerName').value.trim();
                 const email = document.getElementById('registerEmail').value.trim();
                 const nim = document.getElementById('registerNim').value.trim();
-                const nidn = document.getElementById('registerNidn') ? document.getElementById('registerNidn').value.trim() : '';
                 const fakultas = document.getElementById('registerFakultas').value;
                 const prodi = document.getElementById('registerProdi').value;
                 const noHp = document.getElementById('registerNoHp').value.trim();
                 const password = document.getElementById('registerPassword').value;
                 const confirmPassword = document.getElementById('registerConfirmPassword').value;
                 
-                // Validasi dasar semua role
+                // Validasi dasar
                 if (!name || !email || !nim || !noHp || !password || !confirmPassword) {
                     showMessage('registerMessage', 'Semua field (Nama, Email, NIM, No HP, Password) harus diisi!');
                     return;
@@ -848,7 +802,7 @@
                     return;
                 }
                 
-                // Validasi NIM untuk semua role (termasuk admin)
+                // Validasi NIM (hanya angka)
                 if (!/^\d+$/.test(nim)) {
                     showMessage('registerMessage', 'NIM hanya boleh berisi angka!');
                     return;
@@ -858,17 +812,7 @@
                     return;
                 }
                 
-                // Validasi NIDN (hanya untuk dosen, opsional)
-                if (isDosen && nidn && !/^\d+$/.test(nidn)) {
-                    showMessage('registerMessage', 'NIDN hanya boleh berisi angka!');
-                    return;
-                }
-                if (isDosen && nidn && nidn.length > 10) {
-                    showMessage('registerMessage', 'NIDN maksimal 10 digit!');
-                    return;
-                }
-                
-                // Validasi Fakultas & Prodi untuk semua role
+                // Validasi Fakultas & Prodi
                 if (!fakultas || !prodi) {
                     showMessage('registerMessage', 'Fakultas dan Program Studi harus dipilih!');
                     return;
@@ -891,31 +835,65 @@
                     return;
                 }
                 
-                // Siapkan data untuk dikirim
+                // Siapkan data untuk dikirim (hanya mahasiswa dari form publik)
                 let registerData = {
                     name: name,
                     email: email,
                     password: password,
                     no_hp: noHp,
-                    nim: nim,  // NIM untuk semua role (termasuk admin)
-                    id_prodi: prodi
+                    nim: nim,
+                    id_prodi: prodi,
+                    isDosen: false,
+                    isAdmin: false
                 };
-                
-                if (isMahasiswa) {
-                    registerData.isDosen = false;
-                } else if (isDosen) {
-                    registerData.isDosen = true;
-                    if (nidn) registerData.nidn = nidn;
-                } else if (isAdmin) {
-                    registerData.isAdmin = true;
-                    registerData.isDosen = false;
-                }
                 
                 console.log('Register data:', registerData);
                 
                 setLoading('registerBtn', true, 'Daftar');
                 
                 try {
+                    const response = await fetch(`${API_CONFIG.BASE_URL}/api/auth/register`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(registerData)
+                    });
+                    
+                    const data = await response.json();
+                    console.log('Register response:', data);
+                    
+                    setLoading('registerBtn', false, 'Daftar');
+                    
+                    if (response.status === 201 && data.success) {
+                        showMessage('registerMessage', data.message, true);
+                        setTimeout(() => {
+                            switchToLogin();
+                        }, 2000);
+                    } else {
+                        showMessage('registerMessage', data.message || 'Pendaftaran gagal!');
+                    }
+                } catch (error) {
+                    console.error('Network error:', error);
+                    setLoading('registerBtn', false, 'Daftar');
+                    showMessage('registerMessage', 'Terjadi kesalahan jaringan!');
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem('token');
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            
+            if (token && user.id) {
+                if (user.isAdmin) {
+                    window.location.href = 'admin/admin-dashboard.html';
+                } else if (user.isDosen) {
+                    window.location.href = 'dosen/dosen-dashboard.html';
+                } else {
+                    window.location.href = 'mahasiswa/mahasiswa-dashboard.html';
+                }
+            }
+        });
+    </script>
                     const response = await fetch(`${API_CONFIG.BASE_URL}/api/auth/register`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
