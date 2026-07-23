@@ -652,18 +652,14 @@ async function fetchJournalDetail() {
     try {
         showLoading();
         
-        const { id, type } = getJournalParams();
+        const { id } = getJournalParams();
         
-        if (!id || !type) {
-            throw new Error('Parameter ID dan tipe jurnal diperlukan');
+        if (!id) {
+            throw new Error('Parameter ID jurnal diperlukan');
         }
         
-        if (type !== 'spirit' && type !== 'josiati') {
-            throw new Error('Tipe jurnal tidak valid');
-        }
-        
-        // GUNAKAN ENDPOINT YANG BARU
-        const response = await fetch(`${API_BASE_URL}/journals/${type}/${id}`);
+        // Fetch from the correct repository detail endpoint
+        const response = await fetch(`${API_BASE_URL}/repository/${id}`);
         
         if (!response.ok) {
             let errorMessage = 'Failed to fetch journal detail';
@@ -682,10 +678,43 @@ async function fetchJournalDetail() {
             throw new Error(data.message || 'Response tidak valid');
         }
         
-        journal = data.data;
+        const rawJournal = data.data;
         
-        if (!journal) {
+        if (!rawJournal) {
             throw new Error('Data jurnal tidak ditemukan');
+        }
+        
+        // Map rawJournal to the expected frontend journal structure
+        journal = {
+            id: rawJournal.id_jurnal || rawJournal.id_dokumen || rawJournal.id,
+            title: rawJournal.title || rawJournal.judul || '',
+            abstract: rawJournal.abstract || rawJournal.abstrak || '',
+            file_path: rawJournal.file_path || rawJournal.filepath || '',
+            year: rawJournal.year || rawJournal.tahun || '',
+            journal_type: rawJournal.journal_type || (rawJournal.journal_name === 'Josiati Journal' ? 'josiati' : (rawJournal.kategori || 'spirit')),
+            journal_name: rawJournal.journal_name || '',
+            doi: rawJournal.doi || '',
+            link: rawJournal.link || '',
+            created_at: rawJournal.created_at || new Date().toISOString(),
+            updated_at: rawJournal.updated_at || rawJournal.created_at || new Date().toISOString()
+        };
+        
+        // Handle authors (could be string or array of objects or array of strings)
+        if (typeof rawJournal.authors === 'string') {
+            journal.authors = rawJournal.authors;
+        } else if (Array.isArray(rawJournal.authors)) {
+            journal.authors = rawJournal.authors.map(a => typeof a === 'string' ? a : (a.nama || a.name || '')).filter(Boolean).join(', ');
+        } else {
+            journal.authors = 'Tidak diketahui';
+        }
+        
+        // Handle keywords (could be string, array of strings, etc.)
+        if (typeof rawJournal.keywords === 'string') {
+            journal.keywords = rawJournal.keywords;
+        } else if (Array.isArray(rawJournal.keywords)) {
+            journal.keywords = rawJournal.keywords.join(', ');
+        } else {
+            journal.keywords = '';
         }
         
         // Update UI
@@ -704,33 +733,30 @@ async function fetchJournalDetail() {
 // Fetch related journals
 async function fetchRelatedJournals() {
     try {
-        // Fetch both spirit and josiati journals
-        const [spiritResponse, josiatiResponse] = await Promise.all([
-            fetch(`${API_BASE_URL}/journals/spirit`),
-            fetch(`${API_BASE_URL}/journals/josiati`)
-        ]);
-        
-        if (!spiritResponse.ok || !josiatiResponse.ok) {
+        const response = await fetch(`${API_BASE_URL}/repository?limit=10`);
+        if (!response.ok) {
             throw new Error('Failed to fetch related journals');
         }
         
-        const spiritData = await spiritResponse.json();
-        const josiatiData = await josiatiResponse.json();
-        
-        // Combine both types of journals
-        const allJournals = [
-            ...spiritData.data.map(j => ({ ...j, journal_type: 'spirit' })),
-            ...josiatiData.data.map(j => ({ ...j, journal_type: 'josiati' }))
-        ];
-        
-        // Filter out current journal and get related ones
-        relatedJournals = allJournals
-            .filter(j => j.id !== journal.id)
-            .filter(j => j.journal_type === journal.journal_type) // Same type
-            .slice(0, 3); // Get only 3 related journals
-        
-        // Update UI
-        updateRelatedJournals();
+        const data = await response.json();
+        if (data.success && data.data) {
+            // Map the items to match the expected related journal format
+            const allJournals = data.data.map(j => ({
+                id: j.id_jurnal || j.id_dokumen || j.id,
+                title: j.title || j.judul || '',
+                journal_type: j.journal_type || (j.journal_name === 'Josiati Journal' ? 'josiati' : (j.kategori || 'spirit')),
+                year: j.year || j.tahun || '',
+                authors: typeof j.authors === 'string' ? j.authors : (Array.isArray(j.authors) ? j.authors.map(a => typeof a === 'string' ? a : (a.nama || a.name || '')).join(', ') : '')
+            }));
+            
+            // Filter out current journal and get related ones
+            relatedJournals = allJournals
+                .filter(j => j.id !== journal.id)
+                .slice(0, 3); // Get only 3 related journals
+            
+            // Update UI
+            updateRelatedJournals();
+        }
     } catch (error) {
         console.error('Error fetching related journals:', error);
     }
@@ -742,17 +768,20 @@ function updateJournalDetail() {
     document.getElementById('journal-title').textContent = journal.title;
     
     // Update meta information
+    const badgeClass = journal.journal_type === 'josiati' ? 'josiati-badge' : 'spirit-badge';
+    const badgeText = journal.journal_name || (journal.journal_type === 'spirit' ? 'Spirit Journal' : (journal.journal_type === 'josiati' ? 'Josiati Journal' : journal.journal_type));
+    
     const metaContainer = document.getElementById('journal-meta');
     metaContainer.innerHTML = `
-        <span class="journal-type-badge ${journal.journal_type === 'spirit' ? 'spirit-badge' : 'josiati-badge'}">
-            ${journal.journal_type === 'spirit' ? 'Spirit Journal' : 'Josiati Journal'}
+        <span class="journal-type-badge ${badgeClass}">
+            ${badgeText}
         </span>
         <span><i class="bi bi-calendar3 mr-1"></i>${journal.year}</span>
         <span><i class="bi bi-person mr-1"></i>${journal.authors}</span>
     `;
     
     // Update journal info
-    document.getElementById('journal-type').textContent = journal.journal_type === 'spirit' ? 'Spirit Journal' : 'Josiati Journal';
+    document.getElementById('journal-type').textContent = badgeText;
     document.getElementById('journal-year').textContent = journal.year;
     document.getElementById('journal-created-date').textContent = new Date(journal.created_at).toLocaleDateString('id-ID');
     document.getElementById('journal-updated-date').textContent = new Date(journal.updated_at).toLocaleDateString('id-ID');
@@ -800,11 +829,11 @@ function updateJournalDetail() {
                     <i class="bi bi-file-earmark-pdf text-6xl text-red-500 mb-4"></i>
                     <p class="text-gray-600 mb-4">Pratinjau PDF tersedia</p>
                     <div class="space-x-4">
-                        <a href="${API_BASE_URL}/journals/${journal.journal_type}/${journal.id}/view" target="_blank" 
+                        <a href="${API_BASE_URL}${journal.file_path}" target="_blank" 
                            class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition inline-block">
                             <i class="bi bi-eye mr-2"></i>Lihat PDF
                         </a>
-                        <a href="${API_BASE_URL}/journals/${journal.journal_type}/${journal.id}/download" 
+                        <a href="${API_BASE_URL}/repository/${journal.id}/download" 
                            class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition inline-block">
                             <i class="bi bi-download mr-2"></i>Unduh PDF
                         </a>
@@ -813,8 +842,9 @@ function updateJournalDetail() {
             </div>
         `;
         
-         downloadPdfBtn.href = `${API_BASE_URL}/journals/${journal.journal_type}/${journal.id}/download`;
+        downloadPdfBtn.href = `${API_BASE_URL}/repository/${journal.id}/download`;
         downloadPdfBtn.target = '_blank';
+        downloadPdfBtn.style.display = 'inline-block';
     } else {
         pdfPreview.innerHTML = `
             <div class="bg-gray-200 rounded-lg h-64 flex items-center justify-center">
@@ -833,29 +863,30 @@ function updateJournalDetail() {
     // Update bookmark button
     updateBookmarkButton();
 }
+
 // Update citations
 function updateCitations() {
     const authors = journal.authors.split(',').map(author => author.trim());
     const year = journal.year;
     const title = journal.title;
-    const journalType = journal.journal_type === 'spirit' ? 'Spirit Journal' : 'Josiati Journal';
+    const badgeText = journal.journal_name || (journal.journal_type === 'spirit' ? 'Spirit Journal' : (journal.journal_type === 'josiati' ? 'Josiati Journal' : journal.journal_type));
     
     // APA citation
     const apaCitation = authors.length > 1 
-        ? `${authors[0]} et al. (${year}). ${title}. ${journalType}.`
-        : `${authors[0]} (${year}). ${title}. ${journalType}.`;
+        ? `${authors[0]} et al. (${year}). ${title}. ${badgeText}.`
+        : `${authors[0]} (${year}). ${title}. ${badgeText}.`;
     document.getElementById('apa-citation-text').textContent = apaCitation;
     
     // MLA citation
     const mlaCitation = authors.length > 1
-        ? `${authors[0]} et al. "${title}." ${journalType}, ${year}.`
-        : `${authors[0]}. "${title}." ${journalType}, ${year}.`;
+        ? `${authors[0]} et al. "${title}." ${badgeText}, ${year}.`
+        : `${authors[0]}. "${title}." ${badgeText}, ${year}.`;
     document.getElementById('mla-citation-text').textContent = mlaCitation;
     
     // Chicago citation
     const chicagoCitation = authors.length > 1
-        ? `${authors[0]} et al. "${title}." ${journalType} (${year}).`
-        : `${authors[0]}. "${title}." ${journalType} (${year}).`;
+        ? `${authors[0]} et al. "${title}." ${badgeText} (${year}).`
+        : `${authors[0]}. "${title}." ${badgeText} (${year}).`;
     document.getElementById('chicago-citation-text').textContent = chicagoCitation;
 }
 
@@ -873,14 +904,14 @@ function updateRelatedJournals() {
         const journalCard = document.createElement('div');
         journalCard.className = 'related-journal-card bg-gray-50 rounded-lg p-4';
         
-        const typeClass = relatedJournal.journal_type === 'spirit' ? 'spirit-badge' : 'josiati-badge';
-        const typeName = relatedJournal.journal_type === 'spirit' ? 'Spirit Journal' : 'Josiati Journal';
+        const typeClass = relatedJournal.journal_type === 'josiati' ? 'josiati-badge' : 'spirit-badge';
+        const typeName = relatedJournal.journal_name || (relatedJournal.journal_type === 'spirit' ? 'Spirit Journal' : (relatedJournal.journal_type === 'josiati' ? 'Josiati Journal' : relatedJournal.journal_type));
         
         journalCard.innerHTML = `
             <div class="flex items-start">
                 <div class="flex-1">
                     <h4 class="font-semibold text-gray-800 mb-2">
-                        <a href="journal-detail.html?id=${relatedJournal.id}&type=${relatedJournal.journal_type}" class="hover:text-blue-600 transition">
+                        <a href="journal-detail.html?id=${relatedJournal.id}" class="hover:text-blue-600 transition">
                             ${relatedJournal.title}
                         </a>
                     </h4>
