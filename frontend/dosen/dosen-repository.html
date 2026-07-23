@@ -1274,7 +1274,7 @@
                             <div class="flex flex-wrap items-center gap-2">
                                 <span class="px-2 py-0.5 rounded text-xs font-semibold ${badgeClass}">
                                     <i class="fas ${iconClass} mr-1"></i>
-                                    ${item.tipe.charAt(0).toUpperCase() + item.tipe.slice(1)}
+                                    ${(item.tipe || 'dokumen').charAt(0).toUpperCase() + (item.tipe || 'dokumen').slice(1)}
                                 </span>
                                 
                                 <div class="metrics-badge text-xs">
@@ -1296,12 +1296,14 @@
                             <button onclick="downloadRepository('${item.id}')" class="action-button download" title="Download">
                                 <i class="fas fa-download text-sm"></i>
                             </button>
+                            ${(auth.getUser() && auth.getUser().id_user === item.uploaded_by?.id) ? `
                             <button onclick="editRepository('${item.id}')" class="action-button edit" title="Edit">
                                 <i class="fas fa-edit text-sm"></i>
                             </button>
                             <button onclick="deleteRepository('${item.id}')" class="action-button delete" title="Hapus">
                                 <i class="fas fa-trash text-sm"></i>
                             </button>
+                            ` : ''}
                         </div>
                     </div>
                 </div>
@@ -1440,9 +1442,9 @@
                 modalContent.innerHTML = `
                     <div class="space-y-4">
                         <div class="flex flex-wrap items-center gap-2 pb-3 border-b">
-                            <span class="px-2 py-0.5 rounded text-xs font-semibold ${badgeClass}">
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold ${badgeClass} inline-flex items-center">
                                 <i class="fas ${getIconClass(item.tipe)} mr-1"></i>
-                                ${item.tipe.charAt(0).toUpperCase() + item.tipe.slice(1)}
+                                ${(item.tipe || 'dokumen').charAt(0).toUpperCase() + (item.tipe || 'dokumen').slice(1)}
                             </span>
                             <span class="text-xs text-gray-500"><i class="fas fa-calendar mr-1"></i>${item.tahun}</span>
                             <span class="text-xs text-gray-500"><i class="fas fa-eye mr-1"></i>${item.stats?.views || 0} dilihat</span>
@@ -1484,12 +1486,14 @@
                         </div>
                         
                         <div class="flex justify-end space-x-2 pt-3 border-t">
+                            ${(auth.getUser() && auth.getUser().id_user === item.uploaded_by?.id) ? `
                             <button onclick="editRepository('${item.id}')" class="bg-blue-500 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-blue-600">
                                 <i class="fas fa-edit mr-1"></i>Edit
                             </button>
                             <button onclick="deleteRepository('${item.id}')" class="bg-red-500 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-red-600">
                                 <i class="fas fa-trash mr-1"></i>Hapus
                             </button>
+                            ` : ''}
                             <button onclick="closeViewModal()" class="bg-gray-200 text-gray-700 px-3 py-1.5 rounded-lg text-sm hover:bg-gray-300">
                                 Tutup
                             </button>

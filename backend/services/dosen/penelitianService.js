@@ -94,7 +94,23 @@ class DosenPenelitianService {
             if (error) throw error;
             if (!penelitian) throw new Error('Penelitian tidak ditemukan');
             
-            if (penelitian.ketua_peneliti !== userId) {
+            // Check if user is ketua
+            let hasAccess = penelitian.ketua_peneliti === userId;
+            
+            // Or check if user is anggota
+            if (!hasAccess) {
+                const { data: anggotaCheck, error: checkError } = await supabase
+                    .from('anggota_penelitian')
+                    .select('id_user')
+                    .eq('id_penelitian', id)
+                    .eq('id_user', userId);
+                    
+                if (!checkError && anggotaCheck && anggotaCheck.length > 0) {
+                    hasAccess = true;
+                }
+            }
+
+            if (!hasAccess) {
                 throw new Error('Anda tidak memiliki akses ke penelitian ini');
             }
             
@@ -192,6 +208,10 @@ class DosenPenelitianService {
         try {
             const existing = await this.getPenelitianById(id, userId);
             
+            if (existing.ketua_peneliti !== userId) {
+                throw new Error('Hanya ketua peneliti yang dapat memperbarui data penelitian ini');
+            }
+            
             if (!['draft', 'revisi'].includes(existing.status)) {
                 throw new Error('Penelitian tidak dapat diupdate karena sudah dalam proses review');
             }
@@ -243,6 +263,10 @@ class DosenPenelitianService {
         try {
             const existing = await this.getPenelitianById(id, userId);
             
+            if (existing.ketua_peneliti !== userId) {
+                throw new Error('Hanya ketua peneliti yang dapat menghapus penelitian ini');
+            }
+            
             if (existing.status !== 'draft') {
                 throw new Error('Hanya penelitian dengan status draft yang dapat dihapus');
             }
@@ -281,6 +305,10 @@ class DosenPenelitianService {
         try {
             const existing = await this.getPenelitianById(id, userId);
             
+            if (existing.ketua_peneliti !== userId) {
+                throw new Error('Hanya ketua peneliti yang dapat mensubmit penelitian ini');
+            }
+            
             if (!['draft', 'revisi'].includes(existing.status)) {
                 throw new Error('Penelitian sudah pernah disubmit');
             }
@@ -309,6 +337,10 @@ class DosenPenelitianService {
     async uploadLaporan(id, laporanData, userId) {
         try {
             const existing = await this.getPenelitianById(id, userId);
+            
+            if (existing.ketua_peneliti !== userId) {
+                throw new Error('Hanya ketua peneliti yang dapat mengunggah laporan untuk penelitian ini');
+            }
             
             if (existing.status !== 'diterima' && existing.status !== 'completed') {
                 throw new Error('Laporan hanya dapat diupload setelah penelitian disetujui');
@@ -450,7 +482,23 @@ class DosenPenelitianService {
             if (error) throw error;
             if (!pengabdian) throw new Error('Pengabdian tidak ditemukan');
             
-            if (pengabdian.ketua_pengabdian !== userId) {
+            // Check if user is ketua
+            let hasAccess = pengabdian.ketua_pengabdian === userId;
+            
+            // Or check if user is anggota
+            if (!hasAccess) {
+                const { data: anggotaCheck, error: checkError } = await supabase
+                    .from('anggota_pengabdian')
+                    .select('id_user')
+                    .eq('id_pengabdian', id)
+                    .eq('id_user', userId);
+                    
+                if (!checkError && anggotaCheck && anggotaCheck.length > 0) {
+                    hasAccess = true;
+                }
+            }
+            
+            if (!hasAccess) {
                 throw new Error('Anda tidak memiliki akses ke pengabdian ini');
             }
             
@@ -547,6 +595,10 @@ class DosenPenelitianService {
         try {
             const existing = await this.getPengabdianById(id, userId);
             
+            if (existing.ketua_pengabdian !== userId) {
+                throw new Error('Hanya ketua pengabdian yang dapat memperbarui data pengabdian ini');
+            }
+            
             if (!['draft', 'revisi'].includes(existing.status)) {
                 throw new Error('Pengabdian tidak dapat diupdate karena sudah dalam proses review');
             }
@@ -597,6 +649,10 @@ class DosenPenelitianService {
         try {
             const existing = await this.getPengabdianById(id, userId);
             
+            if (existing.ketua_pengabdian !== userId) {
+                throw new Error('Hanya ketua pengabdian yang dapat menghapus pengabdian ini');
+            }
+            
             if (existing.status !== 'draft') {
                 throw new Error('Hanya pengabdian dengan status draft yang dapat dihapus');
             }
@@ -635,6 +691,10 @@ class DosenPenelitianService {
         try {
             const existing = await this.getPengabdianById(id, userId);
             
+            if (existing.ketua_pengabdian !== userId) {
+                throw new Error('Hanya ketua pengabdian yang dapat mensubmit pengabdian ini');
+            }
+            
             if (!['draft', 'revisi'].includes(existing.status)) {
                 throw new Error('Pengabdian sudah pernah disubmit');
             }
@@ -663,6 +723,10 @@ class DosenPenelitianService {
     async uploadLaporanPengabdian(id, laporanData, userId) {
         try {
             const existing = await this.getPengabdianById(id, userId);
+            
+            if (existing.ketua_pengabdian !== userId) {
+                throw new Error('Hanya ketua pengabdian yang dapat mengunggah laporan untuk pengabdian ini');
+            }
             
             if (existing.status !== 'diterima' && existing.status !== 'completed') {
                 throw new Error('Laporan hanya dapat diupload setelah pengabdian disetujui');

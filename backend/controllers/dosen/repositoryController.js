@@ -40,6 +40,44 @@ const getAllRepository = async (req, res, next) => {
 };
 
 /**
+ * Get user's personal repository (dosen only)
+ */
+const getUserRepository = async (req, res, next) => {
+    try {
+        const {
+            page = 1,
+            limit = 10,
+            tipe,
+            tahun,
+            search,
+            sortBy = 'created_at',
+            sortOrder = 'DESC'
+        } = req.query;
+        
+        const userId = req.user.id_user;
+
+        const result = await repositoryService.getUserRepository(userId, {
+            page: parseInt(page),
+            limit: parseInt(limit),
+            tipe,
+            tahun,
+            search,
+            sortBy,
+            sortOrder
+        });
+
+        return res.status(200).json({
+            success: true,
+            message: 'Repository pribadi berhasil diambil',
+            data: result.documents,
+            pagination: result.pagination
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
  * Get repository by ID (public)
  * Tidak memerlukan kepemilikan untuk VIEW
  */
@@ -362,6 +400,7 @@ const downloadDocument = async (req, res, next) => {
 
 module.exports = {
     getAllRepository,
+    getUserRepository,
     getRepositoryById,
     searchRepository,
     createRepository,

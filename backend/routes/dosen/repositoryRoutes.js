@@ -17,8 +17,8 @@ router.get('/:id/download', repositoryController.downloadDocument);
 router.post('/:id/view', repositoryController.incrementViews);
 
 // ============= PERSONAL ROUTES (khusus untuk user sendiri) =============
-// HAPUS atau KOMENTAR dulu baris ini karena function-nya belum ada
 // router.get('/my/list', repositoryController.getUserRepository); 
+router.get('/my/list', repositoryController.getUserRepository); 
 
 // Ganti dengan ini (pakai yang sudah ada)
 router.get('/my/statistics', repositoryController.getMyStatistics);
