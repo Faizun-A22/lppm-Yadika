@@ -4,6 +4,15 @@ const path = require('path');
 const supabase = require('../../config/database');
 const logger = require('../../config/logger');
 
+const getLocalPath = (dbPath) => {
+    if (!dbPath) return '';
+    let cleanPath = dbPath.replace(/\\/g, '/');
+    if (cleanPath.startsWith('/')) {
+        cleanPath = cleanPath.substring(1);
+    }
+    return path.resolve(cleanPath);
+};
+
 class RepositoryService {
     constructor() {
         this.uploadDir = process.env.UPLOAD_DIR || 'uploads/repository';
@@ -325,7 +334,7 @@ class RepositoryService {
             if (data.file) {
                 // Delete old file
                 try {
-                    await fs.unlink(existing.filepath);
+                    await fs.unlink(getLocalPath(existing.filepath));
                 } catch (err) {
                     logger.warn('Failed to delete old file:', err);
                 }
@@ -390,7 +399,7 @@ class RepositoryService {
 
             // Delete file
             try {
-                await fs.unlink(document.filepath);
+                await fs.unlink(getLocalPath(document.filepath));
             } catch (err) {
                 logger.warn('Failed to delete file:', err);
             }
@@ -431,14 +440,14 @@ class RepositoryService {
 
             // Check if file exists
             try {
-                await fs.access(document.filepath);
+                await fs.access(getLocalPath(document.filepath));
             } catch (err) {
-                logger.error('File not found:', document.filepath);
+                logger.error('File not found:', getLocalPath(document.filepath));
                 return null;
             }
 
             return {
-                filePath: document.filepath,
+                filePath: getLocalPath(document.filepath),
                 fileName: document.filename,
                 document
             };

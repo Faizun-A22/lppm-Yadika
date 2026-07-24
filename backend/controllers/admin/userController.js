@@ -84,7 +84,7 @@ const userController = {
             const currentAdminId = req.user?.id_user;
 
             // Prevent self-deletion
-            if (parseInt(id) === currentAdminId) {
+            if (id === currentAdminId) {
                 return res.status(400).json(formatError('Anda tidak dapat menghapus akun Anda sendiri'));
             }
 
