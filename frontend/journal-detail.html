@@ -768,7 +768,9 @@ async function fetchRelatedJournals() {
             const allJournals = data.data.map(j => ({
                 id: j.id_jurnal || j.id_dokumen || j.id,
                 title: j.title || j.judul || '',
+                abstract: j.abstract || j.abstrak || '',
                 journal_type: j.journal_type || (j.journal_name === 'Josiati Journal' ? 'josiati' : (j.kategori || 'spirit')),
+                journal_name: j.journal_name || '',
                 year: j.year || j.tahun || '',
                 authors: typeof j.authors === 'string' ? j.authors : (Array.isArray(j.authors) ? j.authors.map(a => typeof a === 'string' ? a : (a.nama || a.name || '')).join(', ') : '')
             }));

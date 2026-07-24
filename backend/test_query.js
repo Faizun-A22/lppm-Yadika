@@ -2,24 +2,23 @@ const supabase = require('./config/database');
 
 async function testQuery() {
     try {
-        console.log('Running test query with !inner join...');
+        console.log('Querying documents by ABDUL ROKHIM...');
         const { data, error } = await supabase
-            .from('pendaftar_kegiatan')
-            .select(`
-                id_pendaftaran,
-                kegiatan:kegiatan!pendaftar_kegiatan_id_kegiatan_fkey!inner (
-                    id_kegiatan,
-                    nama_kegiatan,
-                    jenis_kegiatan
-                )
-            `)
-            .eq('kegiatan.jenis_kegiatan', 'magang')
-            .limit(5);
+            .from('repository_dokumen')
+            .select('id_dokumen, judul, abstrak, keywords')
+            .ilike('penulis', '%ABDUL ROKHIM%');
 
         if (error) {
             console.error('Query failed:', error);
         } else {
-            console.log('Query succeeded! Result:', data);
+            console.log('Query succeeded! Total records:', data.length);
+            data.forEach((row, i) => {
+                console.log(`\n--- Record ${i + 1} ---`);
+                console.log(`ID: ${row.id_dokumen}`);
+                console.log(`Judul: ${row.judul}`);
+                console.log(`Abstrak: ${row.abstrak ? row.abstrak.substring(0, 100) + '...' : null}`);
+                console.log(`Keywords: ${row.keywords}`);
+            });
         }
     } catch (e) {
         console.error('Exception:', e);
