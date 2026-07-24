@@ -125,4 +125,29 @@ router.put('/pendidikan/:id_pendidikan', profilController.updateRiwayatPendidika
  */
 router.delete('/pendidikan/:id_pendidikan', profilController.deleteRiwayatPendidikan);
 
+// ===========================================
+// ROUTES RIWAYAT JABATAN
+// ===========================================
+
+/**
+ * @route   GET /api/dosen/profil/jabatan
+ * @desc    Mendapatkan riwayat jabatan fungsional
+ * @access  Private (Dosen)
+ */
+router.get('/jabatan', profilController.getRiwayatJabatan);
+
+/**
+ * @route   POST /api/dosen/profil/jabatan
+ * @desc    Menambah riwayat jabatan fungsional
+ * @access  Private (Dosen)
+ */
+router.post('/jabatan', profilController.addRiwayatJabatan);
+
+/**
+ * @route   DELETE /api/dosen/profil/jabatan/:id_dosen_jabatan
+ * @desc    Menghapus riwayat jabatan fungsional
+ * @access  Private (Dosen)
+ */
+router.delete('/jabatan/:id_dosen_jabatan', profilController.deleteRiwayatJabatan);
+
 module.exports = router;

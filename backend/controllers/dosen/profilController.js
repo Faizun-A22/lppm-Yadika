@@ -861,3 +861,142 @@ exports.exportDataKinerja = async (req, res) => {
         });
     }
 };
+
+// ===========================================
+// RIWAYAT JABATAN FUNGSIONAL DOSEN
+// ===========================================
+
+exports.getRiwayatJabatan = async (req, res) => {
+    try {
+        const userId = req.user.id_user;
+
+        const { data: jabatan, error } = await supabase
+            .from('dosen_jabatan')
+            .select(`
+                *,
+                jabatan_fungsional:id_jabatan_fungsional (*)
+            `)
+            .eq('id_user', userId)
+            .order('tanggal_mulai', { ascending: false });
+
+        if (error) throw error;
+
+        res.json({
+            success: true,
+            data: jabatan || []
+        });
+
+    } catch (error) {
+        console.error('Error getRiwayatJabatan:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Terjadi kesalahan server',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+    }
+};
+
+exports.addRiwayatJabatan = async (req, res) => {
+    try {
+        const userId = req.user.id_user;
+        const {
+            id_jabatan_fungsional,
+            nomor_sk,
+            tanggal_sk,
+            tanggal_mulai,
+            tanggal_selesai,
+            keterangan
+        } = req.body;
+
+        if (!id_jabatan_fungsional || !nomor_sk || !tanggal_mulai) {
+            return res.status(400).json({
+                success: false,
+                message: 'Jabatan, nomor SK, dan tanggal mulai harus diisi'
+            });
+        }
+
+        const { data, error } = await supabase
+            .from('dosen_jabatan')
+            .insert([{
+                id_user: userId,
+                id_jabatan_fungsional,
+                nomor_sk,
+                tanggal_sk: tanggal_sk || null,
+                tanggal_mulai,
+                tanggal_selesai: tanggal_selesai || null,
+                keterangan: keterangan || null
+            }])
+            .select(`
+                *,
+                jabatan_fungsional:id_jabatan_fungsional (*)
+            `)
+            .single();
+
+        if (error) throw error;
+
+        // Log aktivitas
+        await supabase
+            .from('log_aktivitas')
+            .insert([{
+                id_user: userId,
+                aktivitas: `Menambah riwayat jabatan fungsional`
+            }]);
+
+        res.json({
+            success: true,
+            message: 'Riwayat jabatan berhasil ditambahkan',
+            data
+        });
+
+    } catch (error) {
+        console.error('Error addRiwayatJabatan:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Terjadi kesalahan server',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+    }
+};
+
+exports.deleteRiwayatJabatan = async (req, res) => {
+    try {
+        const userId = req.user.id_user;
+        const { id_dosen_jabatan } = req.params;
+
+        // Cek kepemilikan
+        const { data: existing, error: checkError } = await supabase
+            .from('dosen_jabatan')
+            .select('id_dosen_jabatan')
+            .eq('id_dosen_jabatan', id_dosen_jabatan)
+            .eq('id_user', userId)
+            .single();
+
+        if (checkError || !existing) {
+            return res.status(404).json({
+                success: false,
+                message: 'Riwayat jabatan tidak ditemukan'
+            });
+        }
+
+        const { error } = await supabase
+            .from('dosen_jabatan')
+            .delete()
+            .eq('id_dosen_jabatan', id_dosen_jabatan)
+            .eq('id_user', userId);
+
+        if (error) throw error;
+
+        res.json({
+            success: true,
+            message: 'Riwayat jabatan berhasil dihapus'
+        });
+
+    } catch (error) {
+        console.error('Error deleteRiwayatJabatan:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Terjadi kesalahan server',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+    }
+};

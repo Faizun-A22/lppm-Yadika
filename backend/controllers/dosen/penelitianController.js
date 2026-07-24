@@ -1,5 +1,6 @@
 // controllers/dosen/penelitianController.js
 const penelitianService = require('../../services/dosen/penelitianService');
+const { getFileUrl } = require('../../utils/helpers');
 
 class DosenPenelitianController {
     
@@ -20,9 +21,17 @@ class DosenPenelitianController {
                 userId
             });
             
+            // Format file URLs
+            const formattedData = result.data.map(item => ({
+                ...item,
+                file_proposal_url: item.file_proposal ? getFileUrl(item.file_proposal) : null,
+                file_laporan_kemajuan_url: item.file_laporan_kemajuan ? getFileUrl(item.file_laporan_kemajuan) : null,
+                file_laporan_akhir_url: item.file_laporan_akhir ? getFileUrl(item.file_laporan_akhir) : null
+            }));
+            
             res.json({
                 success: true,
-                data: result.data,
+                data: formattedData,
                 pagination: result.pagination
             });
         } catch (error) {
@@ -42,9 +51,16 @@ class DosenPenelitianController {
             
             const data = await penelitianService.getPenelitianById(id, userId);
             
+            const formatted = {
+                ...data,
+                file_proposal_url: data.file_proposal ? getFileUrl(data.file_proposal) : null,
+                file_laporan_kemajuan_url: data.file_laporan_kemajuan ? getFileUrl(data.file_laporan_kemajuan) : null,
+                file_laporan_akhir_url: data.file_laporan_akhir ? getFileUrl(data.file_laporan_akhir) : null
+            };
+            
             res.json({
                 success: true,
-                data
+                data: formatted
             });
         } catch (error) {
             console.error('Error in getPenelitianById:', error);
@@ -223,9 +239,17 @@ class DosenPenelitianController {
                 userId
             });
             
+            // Format file URLs
+            const formattedData = result.data.map(item => ({
+                ...item,
+                file_proposal_url: item.file_proposal ? getFileUrl(item.file_proposal) : null,
+                file_laporan_kemajuan_url: item.file_laporan_kemajuan ? getFileUrl(item.file_laporan_kemajuan) : null,
+                file_laporan_akhir_url: item.file_laporan_akhir ? getFileUrl(item.file_laporan_akhir) : null
+            }));
+            
             res.json({
                 success: true,
-                data: result.data,
+                data: formattedData,
                 pagination: result.pagination
             });
         } catch (error) {
@@ -245,9 +269,16 @@ class DosenPenelitianController {
             
             const data = await penelitianService.getPengabdianById(id, userId);
             
+            const formatted = {
+                ...data,
+                file_proposal_url: data.file_proposal ? getFileUrl(data.file_proposal) : null,
+                file_laporan_kemajuan_url: data.file_laporan_kemajuan ? getFileUrl(data.file_laporan_kemajuan) : null,
+                file_laporan_akhir_url: data.file_laporan_akhir ? getFileUrl(data.file_laporan_akhir) : null
+            };
+            
             res.json({
                 success: true,
-                data
+                data: formatted
             });
         } catch (error) {
             console.error('Error in getPengabdianById:', error);

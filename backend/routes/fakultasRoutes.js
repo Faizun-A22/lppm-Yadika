@@ -11,4 +11,7 @@ router.get('/prodi/by-fakultas/:id_fakultas', fakultasController.getProdiByFakul
 // Route untuk mendapatkan semua prodi
 router.get('/prodi', fakultasController.getAllProdi);
 
+// Route untuk mendapatkan semua jabatan fungsional (untuk profil dosen)
+router.get('/jabatan-fungsional', fakultasController.getAllJabatanFungsional);
+
 module.exports = router;

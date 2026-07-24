@@ -1178,7 +1178,7 @@
                 }
                 
                 detailHtml += `
-                        ${s.file_proposal ? `<div class="mt-4"><p class="text-sm font-medium">Dokumen Laporan</p><a href="${API_BASE_URL}/uploads/${s.file_proposal}" target="_blank" class="text-blue-600 text-sm"><i class="fas fa-file-pdf mr-1"></i>Download Laporan</a></div>` : ''}
+                        ${s.file_proposal ? `<div class="mt-4"><p class="text-sm font-medium">Dokumen Laporan</p><a href="${s.file_proposal_url || (s.file_proposal.startsWith('http') ? s.file_proposal : `${API_BASE_URL}/uploads/${s.file_proposal.replace(/\\/g, '/').replace(/^uploads\//, '')}`)}" target="_blank" class="text-blue-600 text-sm"><i class="fas fa-file-pdf mr-1"></i>Download Laporan</a></div>` : ''}
                         ${currentTab === 'penelitian' ? `<div class="bg-gray-50 p-3 rounded-lg mt-4"><p class="font-medium mb-2 text-sm">Target Luaran</p>${luaranHtml || '<p class="text-gray-500 text-sm">Belum ada luaran</p>'}</div>` : ''}
                         <div class="flex justify-end pt-4"><button onclick="closeDetailModal()" class="bg-gray-200 px-4 py-2 rounded-lg text-sm">Tutup</button></div>
                     </div>

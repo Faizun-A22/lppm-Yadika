@@ -342,7 +342,7 @@
             </div>
             
             <div class="text-center" data-aos="fade-up" data-aos-duration="800">
-                <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight" id="journal-title">
+                <h1 class="text-2xl md:text-3xl font-bold mb-4 leading-tight" id="journal-title">
                     <!-- Title will be populated dynamically -->
                 </h1>
                 <div class="flex flex-wrap justify-center items-center gap-4 text-blue-100" id="journal-meta">
@@ -403,6 +403,28 @@
                             <div>
                                 <p class="text-sm text-gray-500 mb-1">Diperbarui</p>
                                 <p class="font-medium" id="journal-updated-date">-</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Statistik Jurnal -->
+                    <div class="bg-white p-6 rounded-xl shadow-lg mb-6" data-aos="fade-right" data-aos-delay="150">
+                        <h3 class="text-lg font-semibold mb-4 text-gray-800">Statistik</h3>
+                        <div class="grid grid-cols-3 gap-2 text-center">
+                            <div class="bg-blue-50 p-2 rounded-lg border border-blue-100">
+                                <i class="bi bi-eye text-xl text-blue-600 mb-1 block"></i>
+                                <span class="text-[10px] text-gray-500 block">Dilihat</span>
+                                <span class="font-bold text-base text-gray-800" id="journal-views">0</span>
+                            </div>
+                            <div class="bg-green-50 p-2 rounded-lg border border-green-100">
+                                <i class="bi bi-download text-xl text-green-600 mb-1 block"></i>
+                                <span class="text-[10px] text-gray-500 block">Unduh</span>
+                                <span class="font-bold text-base text-gray-800" id="journal-downloads">0</span>
+                            </div>
+                            <div class="bg-purple-50 p-2 rounded-lg border border-purple-100">
+                                <i class="bi bi-quote text-xl text-purple-600 mb-1 block"></i>
+                                <span class="text-[10px] text-gray-500 block">Sitasi</span>
+                                <span class="font-bold text-base text-gray-800" id="journal-citations">0</span>
                             </div>
                         </div>
                     </div>
@@ -695,6 +717,8 @@ async function fetchJournalDetail() {
             journal_name: rawJournal.journal_name || '',
             doi: rawJournal.doi || '',
             link: rawJournal.link || '',
+            views: rawJournal.views || 0,
+            downloads: rawJournal.downloads || 0,
             created_at: rawJournal.created_at || new Date().toISOString(),
             updated_at: rawJournal.updated_at || rawJournal.created_at || new Date().toISOString()
         };
@@ -762,6 +786,15 @@ async function fetchRelatedJournals() {
     }
 }
 
+// Helper to increment download count locally
+function incrementLocalDownloads() {
+    const dlEl = document.getElementById('journal-downloads');
+    if (dlEl) {
+        const current = parseInt(dlEl.textContent) || 0;
+        dlEl.textContent = current + 1;
+    }
+}
+
 // Update journal detail
 function updateJournalDetail() {
     // Update title
@@ -785,6 +818,13 @@ function updateJournalDetail() {
     document.getElementById('journal-year').textContent = journal.year;
     document.getElementById('journal-created-date').textContent = new Date(journal.created_at).toLocaleDateString('id-ID');
     document.getElementById('journal-updated-date').textContent = new Date(journal.updated_at).toLocaleDateString('id-ID');
+    
+    // Update stats
+    document.getElementById('journal-views').textContent = journal.views || 0;
+    document.getElementById('journal-downloads').textContent = journal.downloads || 0;
+    
+    const citationKey = `citations_${journal.id}`;
+    document.getElementById('journal-citations').textContent = localStorage.getItem(citationKey) || '0';
     
     // Update authors
     const authorsContainer = document.getElementById('journal-authors');
@@ -834,7 +874,8 @@ function updateJournalDetail() {
                             <i class="bi bi-eye mr-2"></i>Lihat PDF
                         </a>
                         <a href="${API_BASE_URL}/repository/${journal.id}/download" 
-                           class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition inline-block">
+                           class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition inline-block"
+                           onclick="incrementLocalDownloads()">
                             <i class="bi bi-download mr-2"></i>Unduh PDF
                         </a>
                     </div>
@@ -845,6 +886,7 @@ function updateJournalDetail() {
         downloadPdfBtn.href = `${API_BASE_URL}/repository/${journal.id}/download`;
         downloadPdfBtn.target = '_blank';
         downloadPdfBtn.style.display = 'inline-block';
+        downloadPdfBtn.onclick = incrementLocalDownloads;
     } else {
         pdfPreview.innerHTML = `
             <div class="bg-gray-200 rounded-lg h-64 flex items-center justify-center">
@@ -961,6 +1003,17 @@ function copyCitation(format) {
         const button = event.target;
         const originalText = button.innerHTML;
         button.innerHTML = '<i class="bi bi-check mr-1"></i>Disalin!';
+        
+        // Increment citation count
+        const citationKey = `citations_${journal.id}`;
+        let citationCount = parseInt(localStorage.getItem(citationKey) || '0');
+        citationCount++;
+        localStorage.setItem(citationKey, citationCount.toString());
+        
+        const citEl = document.getElementById('journal-citations');
+        if (citEl) {
+            citEl.textContent = citationCount;
+        }
         
         setTimeout(() => {
             button.innerHTML = originalText;

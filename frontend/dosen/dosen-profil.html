@@ -1175,11 +1175,16 @@
             const tahun = item.tahun_lulus ? (item.tahun_masuk ? `${item.tahun_masuk}-${item.tahun_lulus}` : item.tahun_lulus) : '-';
             
             return `
-                <div class="border-l-4 border-${color}-500 pl-4">
-                    <h4 class="font-semibold text-gray-800">${item.jenjang || ''} ${item.gelar ? `(${item.gelar})` : ''}</h4>
-                    <p class="text-sm text-gray-600">${item.institusi || '-'} • ${tahun}</p>
-                    ${item.judul_tesis ? `<p class="text-xs text-gray-500">${item.jenjang === 'S3' ? 'Disertasi' : item.jenjang === 'S2' ? 'Tesis' : 'Skripsi'}: ${item.judul_tesis}</p>` : ''}
-                    ${item.bidang_studi ? `<p class="text-xs text-gray-500">Bidang: ${item.bidang_studi}</p>` : ''}
+                <div class="border-l-4 border-${color}-500 pl-4 flex justify-between items-start">
+                    <div>
+                        <h4 class="font-semibold text-gray-800">${item.jenjang || ''} ${item.gelar ? `(${item.gelar})` : ''}</h4>
+                        <p class="text-sm text-gray-600">${item.institusi || '-'} • ${tahun}</p>
+                        ${item.judul_tesis ? `<p class="text-xs text-gray-500">${item.jenjang === 'S3' ? 'Disertasi' : item.jenjang === 'S2' ? 'Tesis' : 'Skripsi'}: ${item.judul_tesis}</p>` : ''}
+                        ${item.bidang_studi ? `<p class="text-xs text-gray-500">Bidang: ${item.bidang_studi}</p>` : ''}
+                    </div>
+                    <button onclick="deleteEducation('${item.id_pendidikan}')" class="text-red-500 hover:text-red-700 p-1">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
                 </div>
             `;
         }).join('');
@@ -1207,11 +1212,16 @@
             const periode = tahunMulai ? `${tahunMulai} - ${tahunSelesai}` : '-';
             
             return `
-                <div class="border-l-4 border-${color}-500 pl-4">
-                    <h4 class="font-semibold text-gray-800">${jabatan}</h4>
-                    <p class="text-sm text-gray-600">ITB Yadika • ${periode}</p>
-                    <p class="text-xs text-gray-500">SK: ${item.nomor_sk || '-'}</p>
-                    ${item.keterangan ? `<p class="text-xs text-gray-500">${item.keterangan}</p>` : ''}
+                <div class="border-l-4 border-${color}-500 pl-4 flex justify-between items-start">
+                    <div>
+                        <h4 class="font-semibold text-gray-800">${jabatan}</h4>
+                        <p class="text-sm text-gray-600">ITB Yadika • ${periode}</p>
+                        <p class="text-xs text-gray-500">SK: ${item.nomor_sk || '-'}</p>
+                        ${item.keterangan ? `<p class="text-xs text-gray-500">${item.keterangan}</p>` : ''}
+                    </div>
+                    <button onclick="deletePosition('${item.id_dosen_jabatan}')" class="text-red-500 hover:text-red-700 p-1">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
                 </div>
             `;
         }).join('');
@@ -1570,6 +1580,80 @@
             } catch (error) {
                 console.error('Error adding position:', error);
                 showNotification(error.message || 'Gagal menambah riwayat jabatan', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+    };
+
+    // ===========================================
+    // DELETE POSITION
+    // ===========================================
+    window.deletePosition = async function(id) {
+        const confirm = await Swal.fire({
+            title: 'Hapus Riwayat Jabatan',
+            text: 'Apakah Anda yakin ingin menghapus riwayat jabatan ini?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, Hapus',
+            cancelButtonText: 'Batal',
+            confirmButtonColor: '#EF4444'
+        });
+
+        if (confirm.isConfirmed) {
+            try {
+                showLoading();
+                const response = await fetch(`${API_BASE_URL}/dosen/profil/jabatan/${id}`, {
+                    method: 'DELETE',
+                    headers: getAuthHeaders()
+                });
+                const result = await response.json();
+                if (result.success) {
+                    await loadJabatan();
+                    showNotification('Riwayat jabatan berhasil dihapus', 'success');
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                console.error('Error deleting position:', error);
+                showNotification(error.message || 'Gagal menghapus riwayat jabatan', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+    };
+
+    // ===========================================
+    // DELETE EDUCATION
+    // ===========================================
+    window.deleteEducation = async function(id) {
+        const confirm = await Swal.fire({
+            title: 'Hapus Riwayat Pendidikan',
+            text: 'Apakah Anda yakin ingin menghapus riwayat pendidikan ini?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, Hapus',
+            cancelButtonText: 'Batal',
+            confirmButtonColor: '#EF4444'
+        });
+
+        if (confirm.isConfirmed) {
+            try {
+                showLoading();
+                const response = await fetch(`${API_BASE_URL}/dosen/profil/pendidikan/${id}`, {
+                    method: 'DELETE',
+                    headers: getAuthHeaders()
+                });
+                const result = await response.json();
+                if (result.success) {
+                    await loadPendidikan();
+                    showNotification('Riwayat pendidikan berhasil dihapus', 'success');
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                console.error('Error deleting education:', error);
+                showNotification(error.message || 'Gagal menghapus riwayat pendidikan', 'error');
             } finally {
                 hideLoading();
             }

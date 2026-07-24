@@ -332,10 +332,7 @@ class RepositoryService {
             }
             
             // Increment download count
-            await supabase
-                .from('repository_dokumen')
-                .update({ downloads: supabase.rpc('increment', { row_id: id }) })
-                .eq('id_dokumen', id);
+            await this.incrementDownloads(id);
             
             return {
                 success: true,
@@ -353,10 +350,8 @@ class RepositoryService {
      */
     async incrementViews(id) {
         try {
-            await supabase
-                .from('repository_dokumen')
-                .update({ views: supabase.rpc('increment', { row_id: id }) })
-                .eq('id_dokumen', id);
+            const { error } = await supabase.rpc('increment_repository_views', { doc_id: id });
+            if (error) throw error;
             return true;
         } catch (error) {
             console.error('Error in incrementViews:', error);
@@ -369,10 +364,8 @@ class RepositoryService {
      */
     async incrementDownloads(id) {
         try {
-            await supabase
-                .from('repository_dokumen')
-                .update({ downloads: supabase.rpc('increment', { row_id: id }) })
-                .eq('id_dokumen', id);
+            const { error } = await supabase.rpc('increment_repository_downloads', { doc_id: id });
+            if (error) throw error;
             return true;
         } catch (error) {
             console.error('Error in incrementDownloads:', error);

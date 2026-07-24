@@ -1874,7 +1874,7 @@
                 
                 const badge = getStatusBadge(item.status);
                 
-                const fileProposalUrl = item.file_proposal ? `${API_BASE_URL}/uploads/${item.file_proposal.replace(/\\/g, '/').split('/').pop()}` : null;
+                const fileProposalUrl = item.file_proposal_url || (item.file_proposal ? (item.file_proposal.startsWith('http') ? item.file_proposal : `${API_BASE_URL}/uploads/${item.file_proposal.replace(/\\/g, '/').replace(/^uploads\//, '')}`) : null);
                 
                 let anggotaHtml = '';
                 if (item.anggota && item.anggota.length > 0) {

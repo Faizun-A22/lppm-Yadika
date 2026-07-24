@@ -95,6 +95,30 @@ class FakultasController {
       });
     }
   }
+
+  // Get all jabatan fungsional
+  async getAllJabatanFungsional(req, res) {
+    try {
+      const { data, error } = await supabase
+        .from('jabatan_fungsional')
+        .select('*')
+        .order('tingkat', { ascending: true });
+
+      if (error) throw error;
+
+      res.status(200).json({
+        success: true,
+        data: data || []
+      });
+    } catch (error) {
+      console.error('Error getting all jabatan fungsional:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Gagal mengambil data jabatan fungsional',
+        data: []
+      });
+    }
+  }
 }
 
 module.exports = new FakultasController();
