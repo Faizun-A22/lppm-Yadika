@@ -10,5 +10,6 @@ router.use(authorizeRoles('admin'));
 
 router.get('/', luaranKknController.getAllLuaran);
 router.put('/:id/verifikasi', luaranKknController.verifikasiLuaran);
+router.delete('/:id', luaranKknController.deleteLuaran);
 
 module.exports = router;
