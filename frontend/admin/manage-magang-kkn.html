@@ -948,6 +948,9 @@
             </div>
             <form id="verificationForm" class="p-4 md:p-6" onsubmit="submitVerification(event)">
                 <input type="hidden" id="verificationId">
+                <div id="luaranDetailsContainer" class="mb-6 p-4 bg-gray-50 rounded-lg border text-sm space-y-2">
+                    <!-- Detail luaran dimuat secara dinamis -->
+                </div>
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2">Status Verifikasi</label>
                     <select id="verificationStatus" class="w-full px-3 py-2 border rounded-lg" required>
@@ -1884,13 +1887,44 @@
         async function updateRegistrationStatus(event) { event.preventDefault(); showLoading(); const type = document.getElementById('statusType').value; const id = document.getElementById('statusId').value; const newStatus = document.getElementById('newStatus').value; const catatan = document.getElementById('statusCatatan').value; try { const response = await fetch(`${API_BASE_URL}/admin/registrasi-${type}/${id}/status`, { method: 'PUT', headers: getHeaders(), body: JSON.stringify({ status: newStatus, catatan }) }); const result = await response.json(); if (result.success) { showAlert(`Status berubah menjadi ${getStatusText(newStatus)}`); closeStatusModal(); loadRegistrationData(); loadStatsData(); } } catch (error) { showAlert('Gagal update status', 'error'); } finally { hideLoading(); } }
 
         // LUARAN FUNCTIONS
-        async function loadLuaranData() { showLoading(); const status = document.getElementById('filterStatusLuaran').value; const search = document.getElementById('searchLuaran').value; try { const response = await fetch(`${API_BASE_URL}/admin/luaran-kkn?status=${status}&search=${search}&limit=100`, { headers: getHeaders() }); const result = await response.json(); if (result.success) renderLuaranTable(result.data); } catch (error) { showAlert('Gagal memuat', 'error'); } finally { hideLoading(); } }
+        // LUARAN FUNCTIONS
+        let kknLuaranData = [];
+        async function loadLuaranData() { showLoading(); const status = document.getElementById('filterStatusLuaran').value; const search = document.getElementById('searchLuaran').value; try { const response = await fetch(`${API_BASE_URL}/admin/luaran-kkn?status=${status}&search=${search}&limit=100`, { headers: getHeaders() }); const result = await response.json(); if (result.success) { kknLuaranData = result.data || []; renderLuaranTable(kknLuaranData); } } catch (error) { showAlert('Gagal memuat', 'error'); } finally { hideLoading(); } }
         function renderLuaranTable(data) { const tbody = document.getElementById('luaranTableBody'); if (!data || data.length === 0) { tbody.innerHTML = '<tr><td colspan="7" class="text-center py-8">Tidak ada data</td></tr>'; return; } tbody.innerHTML = data.map((d, i) => `<tr class="hover:bg-gray-50"><td class="px-4 py-3">${i+1}</td><td class="px-4 py-3">${d.nim}</td><td class="px-4 py-3">${d.nama_lengkap}</td><td class="px-4 py-3">${d.desa_name}</td><td class="px-4 py-3">${d.judul_kegiatan}</td><td class="px-4 py-3"><span class="${getStatusBadgeClass(d.status)}">${getStatusText(d.status)}</span></td><td class="px-4 py-3 text-center"><button onclick="openVerificationModal('${d.id_luaran}')" class="text-green-600"><i class="fas fa-check-circle"></i></button></td></tr>`).join(''); }
         function openVerificationModal(id) {
-            // BUG-01 fix: reset dulu, lalu set id setelah reset (reset bisa clear hidden input)
             document.getElementById('verificationForm')?.reset();
             document.getElementById('verificationId').value = id;
             document.getElementById('verificationStatus').value = 'approved';
+            
+            const item = kknLuaranData.find(d => d.id_luaran === id);
+            const detailsContainer = document.getElementById('luaranDetailsContainer');
+            if (detailsContainer && item) {
+                const videoHtml = item.link_video ? `<a href="${item.link_video}" target="_blank" class="text-purple-600 font-semibold hover:underline"><i class="fas fa-external-link-alt mr-1"></i> Lihat Video</a>` : '<span class="text-gray-400">Tidak ada</span>';
+                const posterHtml = item.file_poster ? `<a href="${item.file_poster}" target="_blank" class="text-purple-600 font-semibold hover:underline"><i class="fas fa-external-link-alt mr-1"></i> Lihat Poster</a>` : '<span class="text-gray-400">Tidak ada</span>';
+                const mouUrl = getFrontendFileUrl(item.file_mou);
+                const mouHtml = item.file_mou ? `<a href="${mouUrl}" target="_blank" class="text-purple-600 font-semibold hover:underline"><i class="fas fa-file-pdf mr-1"></i> Unduh MOU</a>` : '<span class="text-gray-400">Tidak ada</span>';
+                
+                detailsContainer.innerHTML = `
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs md:text-sm">
+                        <div class="md:col-span-2">
+                            <span class="text-gray-500 font-medium">Judul Kegiatan:</span>
+                            <div class="font-semibold text-gray-800">${item.judul_kegiatan}</div>
+                        </div>
+                        <div>
+                            <span class="text-gray-500 font-medium">Link Video:</span>
+                            <div>${videoHtml}</div>
+                        </div>
+                        <div>
+                            <span class="text-gray-500 font-medium">Link Poster:</span>
+                            <div>${posterHtml}</div>
+                        </div>
+                        <div class="md:col-span-2">
+                            <span class="text-gray-500 font-medium">Berkas MOU:</span>
+                            <div>${mouHtml}</div>
+                        </div>
+                    </div>
+                `;
+            }
             document.getElementById('verificationModal')?.classList.remove('hidden');
         }
         function closeVerificationModal() { document.getElementById('verificationModal')?.classList.add('hidden'); }

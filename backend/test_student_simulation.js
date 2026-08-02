@@ -1,99 +1,76 @@
 const supabase = require('./config/database');
-const profilController = require('./controllers/mahasiswa/profilController');
+const kknService = require('./services/mahasiswa/kknService');
 
-async function runStudentSimulation() {
-    console.log('🏁 Starting Student File Upload Simulation Test...');
+async function runStudentKknSimulation() {
+    console.log('🏁 Starting KKN Luaran Save Simulation Test...');
     const userId = 'fbd2ae83-cddf-49e8-bf4b-858b0474eaec'; // Yudi's ID
-    let oldFoto = null;
+    let testLuaranId = null;
 
     try {
-        // 1. Fetch current profile to backup old foto_profil
-        console.log('\n--- 1. Backup old photo profile ---');
-        const { data: user, error: fetchError } = await supabase
-            .from('users')
-            .select('foto_profil')
-            .eq('id_user', userId)
-            .single();
-
-        if (fetchError) {
-            throw new Error(`Failed to fetch Yudi profile: ${fetchError.message}`);
-        }
-        oldFoto = user.foto_profil;
-        console.log(`✅ Current photo profile path: ${oldFoto}`);
-
-        // 2. Mock Request and Response for photo upload (.webp simulation)
-        console.log('\n--- 2. Simulating WebP profile photo upload ---');
-        const req = {
-            user: { id_user: userId },
-            file: {
-                filename: 'test-profile-pic-yudi-simulation.webp',
-                size: 512 * 1024, // 512 KB
-                mimetype: 'image/webp'
-            }
+        // 1. Simulating KKN output save
+        console.log('\n--- 1. Simulating saving KKN output (Luaran KKN) ---');
+        const mockData = {
+            judul_kegiatan: 'SIMULASI KKN: Sosialisasi Literasi Digital di Desa Yadika',
+            link_video: 'https://youtube.com/watch?v=simulation-video-kkn',
+            link_poster: 'https://drive.google.com/file/d/simulation-poster-kkn',
+            link_foto: 'https://drive.google.com/file/d/simulation-photo-kkn', // Will be ignored by service as it's not in db schema
+            file_mou: { path: 'uploads/kkn/mou/simulation-mou.pdf' },
+            keterangan: 'Ini keterangan deskripsi simulasi KKN yang akan diabaikan karena kolom tidak ada.'
         };
 
-        let responseStatus = 200;
-        let responseJson = null;
+        const result = await kknService.simpanLuaran(userId, mockData);
 
-        const res = {
-            status: function(code) {
-                responseStatus = code;
-                return this;
-            },
-            json: function(data) {
-                responseJson = data;
-                return this;
-            }
-        };
-
-        // Invoke the controller method
-        await profilController.uploadFotoProfil(req, res);
-
-        console.log(`Response Status: ${responseStatus}`);
-        console.log('Response JSON:', responseJson);
-
-        if (responseStatus !== 200 || !responseJson.success) {
-            throw new Error(`Upload simulation failed: ${responseJson?.message || 'Unknown error'}`);
+        if (!result || !result.id_luaran) {
+            throw new Error('Simulation failed: kknService.simpanLuaran did not return a valid result');
         }
-        console.log('✅ Photo upload simulation completed with success response!');
+        testLuaranId = result.id_luaran;
+        console.log(`✅ KKN Luaran saved successfully without database errors! ID: ${testLuaranId}`);
 
-        // 3. Verify in Database that the profile photo was updated
-        console.log('\n--- 3. Verifying updated photo profile path in Database ---');
-        const { data: updatedUser, error: verifyError } = await supabase
-            .from('users')
-            .select('foto_profil')
-            .eq('id_user', userId)
+        // 2. Fetch and Verify from database
+        console.log('\n--- 2. Verifying saved columns in Database ---');
+        const { data: luaran, error: fetchError } = await supabase
+            .from('luaran_kkn')
+            .select('*')
+            .eq('id_luaran', testLuaranId)
             .single();
 
-        if (verifyError) {
-            throw new Error(`Verification query failed: ${verifyError.message}`);
+        if (fetchError || !luaran) {
+            throw new Error(`Verification query failed: ${fetchError?.message}`);
         }
-        console.log(`Database Foto Profil: ${updatedUser.foto_profil}`);
-        if (updatedUser.foto_profil !== `/uploads/profil/test-profile-pic-yudi-simulation.webp`) {
-            throw new Error(`Mismatched photo profile path in database: expected "/uploads/profil/test-profile-pic-yudi-simulation.webp" but got "${updatedUser.foto_profil}"`);
-        }
-        console.log('✅ Updated path in database verified successfully!');
         
-        console.log('\n🎉 STUDENT FILE UPLOAD SIMULATION PASSED SUCCESSFULLY!');
+        console.log('Retrieved Luaran data:');
+        console.log(`   - Judul: ${luaran.judul_kegiatan}`);
+        console.log(`   - Video Link: ${luaran.link_video}`);
+        console.log(`   - Poster Link (mapped to file_poster): ${luaran.file_poster}`);
+        console.log(`   - MOU Path: ${luaran.file_mou}`);
+        console.log(`   - Status: ${luaran.status}`);
+        
+        if (luaran.file_poster !== mockData.link_poster) {
+            throw new Error(`Mismatched file_poster: expected "${mockData.link_poster}" but got "${luaran.file_poster}"`);
+        }
+        console.log('✅ All saved columns verified successfully in Supabase DB!');
+        console.log('\n🎉 KKN LUARAN SYSTEM VERIFICATION PASSED SUCCESSFULLY!');
 
     } catch (e) {
         console.error('\n❌ SIMULATION TEST FAILED!');
         console.error(e.message);
     } finally {
-        // 4. Restore old photo path to keep database clean
-        console.log('\n--- 4. Restoring old photo path... ---');
-        const { error: restoreError } = await supabase
-            .from('users')
-            .update({ foto_profil: oldFoto })
-            .eq('id_user', userId);
-
-        if (restoreError) {
-            console.error(`❌ Failed to restore old photo profile: ${restoreError.message}`);
-        } else {
-            console.log('🧹 Database restored to original state.');
+        // 3. Clean up the inserted luaran row
+        if (testLuaranId) {
+            console.log('\n--- 3. Cleaning up mock KKN Luaran row... ---');
+            const { error: cleanError } = await supabase
+                .from('luaran_kkn')
+                .delete()
+                .eq('id_luaran', testLuaranId);
+                
+            if (cleanError) {
+                console.error(`❌ Failed to cleanup KKN luaran: ${cleanError.message}`);
+            } else {
+                console.log('🧹 Mock KKN Luaran row cleaned up successfully.');
+            }
         }
-        console.log('🏁 Integration Test Closed.');
+        console.log('🏁 Simulation Test Closed.');
     }
 }
 
-runStudentSimulation();
+runStudentKknSimulation();

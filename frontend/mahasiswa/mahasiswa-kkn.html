@@ -1328,7 +1328,7 @@
                     if (jenis === 'pendaftaran') {
                         html = `<div class="text-left space-y-2"><p><strong>No. Registrasi:</strong> ${data.no_registrasi || '-'}</p><p><strong>Desa:</strong> ${data.desa_kkn?.nama_desa || '-'}</p><p><strong>Semester:</strong> ${data.angkatan || '-'}</p><p><strong>Ukuran Jaket:</strong> ${data.ukuran_jaket || '-'}</p><p><strong>Tanggal Daftar:</strong> ${formatDate(data.tanggal_daftar)}</p><p><strong>Status:</strong> ${getStatusText(data.status)}</p>${data.catatan ? `<p><strong>Catatan:</strong> ${data.catatan}</p>` : ''}</div>`;
                     } else {
-                        html = `<div class="text-left space-y-2"><p><strong>Judul Kegiatan:</strong> ${data.judul_kegiatan}</p><p><strong>Link Video:</strong> ${data.link_video ? `<a href="${data.link_video}" target="_blank" class="text-blue-600">Lihat</a>` : '-'}</p><p><strong>Link Poster:</strong> ${data.link_poster ? `<a href="${data.link_poster}" target="_blank" class="text-blue-600">Lihat</a>` : '-'}</p><p><strong>Link Foto:</strong> ${data.link_foto ? `<a href="${data.link_foto}" target="_blank" class="text-blue-600">Lihat</a>` : '-'}</p><p><strong>Tanggal Upload:</strong> ${formatDate(data.created_at)}</p><p><strong>Status:</strong> ${getStatusText(data.status)}</p>${data.catatan_review ? `<p><strong>Catatan Review:</strong> ${data.catatan_review}</p>` : ''}</div>`;
+                        html = `<div class="text-left space-y-2"><p><strong>Judul Kegiatan:</strong> ${data.judul_kegiatan}</p><p><strong>Link Video:</strong> ${data.link_video ? `<a href="${data.link_video}" target="_blank" class="text-blue-600">Lihat</a>` : '-'}</p><p><strong>Link Poster:</strong> ${data.file_poster ? `<a href="${data.file_poster}" target="_blank" class="text-blue-600">Lihat</a>` : '-'}</p><p><strong>Tanggal Upload:</strong> ${formatDate(data.created_at)}</p><p><strong>Status:</strong> ${getStatusText(data.status)}</p>${data.catatan_review ? `<p><strong>Catatan Review:</strong> ${data.catatan_review}</p>` : ''}</div>`;
                     }
                     Swal.fire({ title: `Detail ${jenis === 'pendaftaran' ? 'Pendaftaran' : 'Luaran'}`, html: html, icon: 'info', confirmButtonColor: '#8B5CF6' });
                 }
@@ -1345,9 +1345,7 @@
                     const data = result.data;
                     document.getElementById('luaranJudul').value = data.judul_kegiatan || '';
                     document.getElementById('linkVideo').value = data.link_video || '';
-                    document.getElementById('linkPoster').value = data.link_poster || '';
-                    document.getElementById('linkFoto').value = data.link_foto || '';
-                    document.getElementById('luaranKeterangan').value = data.keterangan || '';
+                    document.getElementById('linkPoster').value = data.file_poster || '';
                     showSection('luaran');
                     document.getElementById('sectionLuaran').scrollIntoView({ behavior: 'smooth' });
                 }

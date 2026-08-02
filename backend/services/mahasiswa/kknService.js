@@ -500,10 +500,8 @@ async getProgramStudi() {
                 id_registrasi: registrasi.id_registrasi,
                 judul_kegiatan: data.judul_kegiatan,
                 link_video: data.link_video || null,
-                link_poster: data.link_poster || null,
-                link_foto: data.link_foto || null,
+                file_poster: data.link_poster || null,
                 file_mou: mouPath,  // Path lengkap: uploads/kkn/mou/xxxx.pdf
-                keterangan: data.keterangan || null,
                 status: 'pending',
                 tanggal_submit: new Date(),
                 created_at: new Date(),
@@ -583,9 +581,7 @@ async getProgramStudi() {
             const updateData = {
                 judul_kegiatan: data.judul_kegiatan,
                 link_video: data.link_video,
-                link_poster: data.link_poster,
-                link_foto: data.link_foto,
-                keterangan: data.keterangan,
+                file_poster: data.link_poster,
                 updated_at: new Date()
             };
 

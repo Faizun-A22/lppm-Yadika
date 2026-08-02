@@ -1,24 +1,45 @@
 const supabase = require('./config/database');
-const bcrypt = require('bcryptjs');
 
-async function updatePassword() {
+async function testQuery() {
     try {
-        console.log('Hashing password for Yudi...');
-        const hashedPassword = await bcrypt.hash('yudi1234', 10);
-        console.log('Updating password for yudi@gmail.com in local DB...');
+        console.log('Inserting mock row to luaran_kkn to inspect columns...');
+        // Let's find a valid id_registrasi first
+        const { data: reg } = await supabase
+            .from('registrasi_kkn')
+            .select('id_registrasi')
+            .limit(1)
+            .single();
+            
+        if (!reg) {
+            console.log('No registrasi_kkn record found to link to');
+            return;
+        }
+        
         const { data, error } = await supabase
-            .from('users')
-            .update({ password: hashedPassword })
-            .eq('email', 'yudi@gmail.com');
-
+            .from('luaran_kkn')
+            .insert([{
+                id_registrasi: reg.id_registrasi,
+                judul_kegiatan: 'Test Mock Judul',
+                status: 'pending'
+            }])
+            .select();
+            
         if (error) {
-            console.error('Update failed:', error);
+            console.error('Insert failed:', error);
         } else {
-            console.log('Password updated successfully for Yudi!');
+            console.log('Insert succeeded! Record columns:', Object.keys(data[0] || {}));
+            console.log('Record data:', data[0]);
+            
+            // Clean up immediately
+            await supabase
+                .from('luaran_kkn')
+                .delete()
+                .eq('id_luaran', data[0].id_luaran);
+            console.log('Cleaned up mock row');
         }
     } catch (e) {
         console.error('Exception:', e);
     }
 }
 
-updatePassword();
+testQuery();
