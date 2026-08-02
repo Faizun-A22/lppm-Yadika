@@ -226,9 +226,9 @@ const fileFilter = (req, file, cb) => {
     ];
     
     const extname = allowedExts.includes(path.extname(file.originalname).toLowerCase());
-    const mimetype = allowedMimeTypes.includes(file.mimetype);
+    const mimetype = allowedMimeTypes.includes(file.mimetype) || file.mimetype === 'application/octet-stream';
 
-    if (mimetype && extname) {
+    if (extname) {
         return cb(null, true);
     } else {
         cb(new Error('Tipe file tidak diizinkan. Hanya file berikut yang diperbolehkan: ' + allowedExts.join(', ')));

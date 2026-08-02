@@ -52,13 +52,16 @@ const dokumenStorage = multer.diskStorage({
     }
 });
 
-// Filter file untuk upload
+// Filter file untuk upload dokumen
 const fileFilter = (req, file, cb) => {
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'application/pdf'];
-    if (allowedTypes.includes(file.mimetype)) {
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'application/pdf'];
+    const ext = path.extname(file.originalname).toLowerCase();
+    const allowedExts = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.pdf'];
+    
+    if (allowedTypes.includes(file.mimetype) || allowedExts.includes(ext) || file.mimetype === 'application/octet-stream') {
         cb(null, true);
     } else {
-        cb(new Error('Tipe file tidak didukung. Hanya JPG, PNG, GIF, dan PDF yang diperbolehkan.'), false);
+        cb(new Error('Tipe file tidak didukung. Hanya JPG, JPEG, PNG, GIF, WEBP, dan PDF yang diperbolehkan.'), false);
     }
 };
 
@@ -67,11 +70,14 @@ const profileUpload = multer({
     storage: profileStorage,
     limits: { fileSize: 2 * 1024 * 1024 }, // 2MB
     fileFilter: (req, file, cb) => {
-        const allowedImages = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
-        if (allowedImages.includes(file.mimetype)) {
+        const allowedImages = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+        const ext = path.extname(file.originalname).toLowerCase();
+        const allowedExts = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
+        
+        if (allowedImages.includes(file.mimetype) || allowedExts.includes(ext) || file.mimetype === 'application/octet-stream') {
             cb(null, true);
         } else {
-            cb(new Error('Hanya file gambar yang diperbolehkan (JPG, PNG, GIF)'), false);
+            cb(new Error('Hanya file gambar yang diperbolehkan (JPG, JPEG, PNG, GIF, WEBP)'), false);
         }
     }
 });
@@ -81,6 +87,17 @@ const dokumenUpload = multer({
     limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
     fileFilter: fileFilter
 });
+
+const handleMulterError = (err, req, res, next) => {
+    if (err) {
+        console.error('Multer error in profile/document upload:', err.message);
+        return res.status(400).json({
+            success: false,
+            message: err.message || 'Gagal mengunggah file'
+        });
+    }
+    next();
+};
 
 // ===========================================
 // ROUTE UNTUK DATA DASAR (ringan)
@@ -187,7 +204,7 @@ router.put('/', profilController.updateProfile);
  * @desc    Upload foto profil
  * @access  Private (Mahasiswa)
  */
-router.post('/foto', profileUpload.single('foto'), profilController.uploadFotoProfil);
+router.post('/foto', profileUpload.single('foto'), handleMulterError, profilController.uploadFotoProfil);
 
 /**
  * @route   GET /api/mahasiswa/profil/statistik
@@ -222,7 +239,7 @@ router.get('/dokumen', profilController.getDokumen);
  * @desc    Upload dokumen
  * @access  Private (Mahasiswa)
  */
-router.post('/dokumen', dokumenUpload.single('file'), profilController.uploadDokumen);
+router.post('/dokumen', dokumenUpload.single('file'), handleMulterError, profilController.uploadDokumen);
 
 /**
  * @route   DELETE /api/mahasiswa/profil/dokumen/:id_dokumen

@@ -1075,6 +1075,9 @@
                 return filePath;
             }
             let cleanPath = filePath.replace(/\\/g, '/');
+            if (cleanPath.startsWith('/')) {
+                cleanPath = cleanPath.substring(1);
+            }
             if (cleanPath.startsWith('uploads/')) {
                 cleanPath = cleanPath.substring('uploads/'.length);
             }
