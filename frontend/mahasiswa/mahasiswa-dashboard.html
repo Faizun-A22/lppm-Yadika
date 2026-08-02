@@ -401,7 +401,7 @@
                 </div>
                 <div class="flex items-center gap-3">
                     <div class="realtime-badge text-xs"><i class="fas fa-circle pulse"></i> Live Data <span id="lastUpdateTime" class="ml-1 text-[10px]"></span></div>
-                    <button onclick="refreshAllData()" class="bg-gray-200 hover:bg-gray-300 p-2 rounded-lg"><i class="fas fa-sync-alt"></i></button>
+                    <button onclick="refreshAllData(true)" class="bg-gray-200 hover:bg-gray-300 p-2 rounded-lg"><i class="fas fa-sync-alt"></i></button>
                 </div>
             </div>
 
@@ -492,6 +492,36 @@
     <!-- Backdrop -->
     <div id="notificationBackdrop" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-[90] hidden transition-opacity duration-300 opacity-0" onclick="toggleNotificationDrawer()"></div>
 
+    <!-- Modal Detail Notifikasi (Gmail Style) -->
+    <div id="notifDetailModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden overflow-y-auto h-full w-full z-[200] flex items-center justify-center">
+        <div class="relative bg-white rounded-2xl shadow-2xl w-11/12 md:w-3/4 lg:w-1/2 overflow-hidden border border-slate-100 transform transition-all duration-300 scale-95 opacity-0" id="notifDetailContent">
+            <!-- Header -->
+            <div class="flex justify-between items-center p-5 border-b border-slate-100 bg-gradient-to-r from-indigo-50/50 to-blue-50/20">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600"><i class="fas fa-envelope-open"></i></div>
+                    <h3 class="text-sm font-bold text-slate-800">Detail Pemberitahuan</h3>
+                </div>
+                <button onclick="closeNotifDetailModal()" class="text-slate-400 hover:text-slate-600 p-1.5 hover:bg-slate-100 rounded-lg transition"><i class="fas fa-times text-lg"></i></button>
+            </div>
+            <!-- Body -->
+            <div class="p-6 space-y-4">
+                <div>
+                    <h2 class="text-base md:text-lg font-extrabold text-slate-900 leading-tight" id="notifDetailTitle">-</h2>
+                    <div class="flex items-center gap-2 mt-2 flex-wrap">
+                        <span id="notifDetailBadge" class="px-2 py-0.5 rounded-full border text-[9px] font-extrabold uppercase tracking-wider flex items-center gap-1">-</span>
+                        <span class="text-[10px] text-slate-400 font-semibold" id="notifDetailTime"><i class="far fa-clock mr-1"></i>-</span>
+                    </div>
+                </div>
+                <div class="border-t border-slate-100 pt-4">
+                    <div class="text-slate-650 text-xs md:text-sm leading-relaxed whitespace-pre-line font-medium" id="notifDetailMessage">-</div>
+                </div>
+                <div class="flex items-center justify-end gap-3 border-t border-slate-100 pt-4 mt-6" id="notifDetailActions">
+                    <!-- Dynamic Actions -->
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="toast" class="toast-notification"><i class="fas fa-info-circle"></i><span id="toastMessage">Data berhasil diperbarui</span></div>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
@@ -518,7 +548,7 @@
         async function loadAnnouncements(toast=false){ try{ const res=await fetch(`${API_BASE}/mahasiswa/berita?limit=3`,{headers:{'Authorization':`Bearer ${getToken()}`}}); const container=document.getElementById('pengumumanList'); if(res.ok){ const items=(await res.json()).data||[]; if(!items.length) container.innerHTML='<div class="text-center text-gray-400 py-6">Tidak ada pengumuman</div>'; else container.innerHTML=items.map(i=>`<div class="border-l-4 border-purple-500 pl-4 py-2"><h4 class="font-semibold">${escapeHtml(i.judul)}</h4><p class="text-xs text-gray-500 mt-1">${escapeHtml((i.konten||'').substring(0,100))}</p><span class="text-xs text-gray-400">${formatDate(i.created_at)}</span></div>`).join(''); if(toast) showToast('Pengumuman diperbarui'); } }catch(e){ console.error(e); } }
         async function loadUpcomingEvents(toast=false){ try{ const res=await fetch(`${API_BASE}/mahasiswa/kegiatan/upcoming?limit=3`,{headers:{'Authorization':`Bearer ${getToken()}`}}); const container=document.getElementById('kegiatanList'); if(res.ok){ const items=(await res.json()).data||[]; if(!items.length) container.innerHTML='<div class="text-center text-gray-400 py-6">Tidak ada kegiatan</div>'; else container.innerHTML=items.map(e=>`<div class="flex gap-3"><div class="bg-green-100 rounded-lg px-3 py-1 text-center"><span class="font-bold text-green-600">${getEventDay(e.tanggal_mulai)}</span><span class="text-xs block text-green-600">${getEventMonth(e.tanggal_mulai)}</span></div><div><h4 class="font-semibold">${escapeHtml(e.nama_kegiatan)}</h4><p class="text-xs text-gray-500"><i class="fas fa-map-marker-alt"></i> ${e.lokasi||'Online'}</p>${e.sisa_kuota!==undefined?`<p class="text-xs ${e.sisa_kuota<=0?'text-red-500':'text-green-500'}">Sisa kuota: ${e.sisa_kuota}</p>`:''}</div></div>`).join(''); if(toast) showToast('Kegiatan diperbarui'); } }catch(e){ console.error(e); } }
         async function loadUserProfile(){ const user=getUser(); if(user){ document.getElementById('userName').innerText=user.name||user.nama_lengkap||'Mahasiswa'; try{ const res=await fetch(`${API_BASE}/mahasiswa/profil/basic`,{headers:{'Authorization':`Bearer ${getToken()}`}}); if(res.ok){ const p=(await res.json()).data; document.getElementById('userNim').innerText=p.nim||'-'; document.getElementById('userProdi').innerText=p.nama_prodi||'Teknik Informatika'; updateNavbarUserInfo(p); } }catch(e){ console.error(e); } } }
-        async function refreshAllData(){ if(isRefreshing) return; isRefreshing=true; try{ await Promise.all([loadUserProfile(),loadMagangData(),loadKKNData(),loadKegiatanCount(),loadSertifikatDanLuaran(),loadMagangTimeline(),loadKKNTimeline(),loadRecentActivities(),loadAnnouncements(),loadUpcomingEvents(),loadNotificationsBadgeOnly()]); updateLastUpdateTime(); showToast('Semua data diperbarui'); }catch(e){ showToast('Gagal refresh','error'); }finally{ isRefreshing=false; } }
+        async function refreshAllData(showToastMsg = false){ if(isRefreshing) return; isRefreshing=true; try{ await Promise.all([loadUserProfile(),loadMagangData(),loadKKNData(),loadKegiatanCount(),loadSertifikatDanLuaran(),loadMagangTimeline(),loadKKNTimeline(),loadRecentActivities(),loadAnnouncements(),loadUpcomingEvents(),loadNotificationsBadgeOnly()]); updateLastUpdateTime(); if(showToastMsg) showToast('Semua data diperbarui'); }catch(e){ if(showToastMsg) showToast('Gagal refresh','error'); }finally{ isRefreshing=false; } }
         function updateNavbarUserInfo(p){ if(!p) return; const url=p.foto_profil?(p.foto_profil.startsWith('/')?p.foto_profil:`/${p.foto_profil}`):`https://ui-avatars.com/api/?name=${encodeURIComponent(p.nama_lengkap||'User')}&background=3B82F6&color=fff`; ['navAvatar','dropdownAvatar','mobileNavAvatar'].forEach(id=>{ const el=document.getElementById(id); if(el) el.src=url; }); ['navUserName','dropdownUserName','mobileNavUserName'].forEach(id=>{ const el=document.getElementById(id); if(el) el.innerText=p.nama_lengkap||'Mahasiswa'; }); const nim=document.getElementById('dropdownUserNim'); if(nim) nim.innerText=p.nim?`NIM: ${p.nim}`:'-'; }
         function initMobileNav(){ const hamburger=document.getElementById('hamburgerBtn'), mobileNav=document.getElementById('mobileNav'), closeBtn=document.getElementById('closeMobileNav'); if(hamburger&&mobileNav){ hamburger.onclick=()=>mobileNav.classList.add('active'); closeBtn.onclick=()=>mobileNav.classList.remove('active'); mobileNav.onclick=(e)=>{ if(e.target===mobileNav) mobileNav.classList.remove('active'); }; document.querySelectorAll('.mobile-nav-link').forEach(l=>l.addEventListener('click',()=>mobileNav.classList.remove('active'))); } const page=window.location.pathname.split('/').pop(); document.querySelectorAll('.mobile-nav-link').forEach(link=>{ const href=link.getAttribute('href'); if(href===page||(page==='mahasiswa-dashboard.html'&&href==='mahasiswa-dashboard.html')) link.classList.add('active'); else link.classList.remove('active'); }); }
         function setActiveNavLink(){ const page=window.location.pathname.split('/').pop(); document.querySelectorAll('.nav-link').forEach(link=>{ const href=link.getAttribute('href'); if(href===page||(page==='mahasiswa-dashboard.html'&&href==='mahasiswa-dashboard.html')) link.classList.add('active'); else link.classList.remove('active'); }); }
@@ -527,7 +557,7 @@
         function formatDate(d){ if(!d) return '-'; const date=new Date(d), now=new Date(), diff=Math.floor((now-date)/(86400000)); if(diff===0) return 'Hari ini'; if(diff===1) return 'Kemarin'; if(diff<7) return `${diff} hari lalu`; return date.toLocaleDateString('id-ID'); }
         function getEventMonth(d){ if(!d) return '-'; const m=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des']; return m[new Date(d).getMonth()]; }
 
-        document.addEventListener('DOMContentLoaded',async()=>{ if(!checkAuth()) return; initDropdown(); setActiveNavLink(); initMobileNav(); initNotifications(); document.getElementById('loadingOverlay').classList.remove('hidden'); await refreshAllData(); setTimeout(()=>document.getElementById('loadingOverlay').classList.add('hidden'),500); refreshInterval=setInterval(()=>{ if(!document.hidden) refreshAllData(); },30000); });
+        document.addEventListener('DOMContentLoaded',async()=>{ if(!checkAuth()) return; initDropdown(); setActiveNavLink(); initMobileNav(); initNotifications(); document.getElementById('loadingOverlay').classList.remove('hidden'); await refreshAllData(false); setTimeout(()=>document.getElementById('loadingOverlay').classList.add('hidden'),500); refreshInterval=setInterval(()=>{ if(!document.hidden) refreshAllData(false); },30000); });
 
         // ==================== NOTIFICATION SYSTEM ====================
         let activeNotifFilter = 'semua';
@@ -786,7 +816,7 @@
                 ` : '';
 
                 return `
-                    <div class="relative overflow-hidden rounded-2xl border p-4 pl-5 ${cardBg} flex gap-3.5 items-start transition-all duration-300 hover:scale-[1.01] hover:shadow-md hover:border-slate-300 group">
+                    <div onclick="openNotificationDetailModal('${n.id_notifikasi}')" class="cursor-pointer relative overflow-hidden rounded-2xl border p-4 pl-5 ${cardBg} flex gap-3.5 items-start transition-all duration-300 hover:scale-[1.01] hover:shadow-md hover:border-slate-300 group">
                         <!-- Accent vertical line on the left -->
                         <div class="absolute left-0 top-0 bottom-0 w-1.5 ${accentColor} rounded-l-2xl"></div>
                         
@@ -858,6 +888,73 @@
             if (diffDay < 7) return `${diffDay} hari lalu`;
             return date.toLocaleDateString('id-ID');
         }
+
+        function formatDateTime(d) {
+            if (!d) return '-';
+            return new Date(d).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+        }
+
+        window.openNotificationDetailModal = function(id) {
+            const item = cachedNotifications.find(n => n.id_notifikasi === id);
+            if (!item) return;
+
+            document.getElementById('notifDetailTitle').textContent = item.judul;
+            document.getElementById('notifDetailMessage').textContent = item.pesan;
+            document.getElementById('notifDetailTime').innerHTML = `<i class="far fa-clock mr-1"></i>${formatDateTime(item.created_at)}`;
+
+            // Badge styling
+            const badge = document.getElementById('notifDetailBadge');
+            const titleLower = item.judul.toLowerCase();
+            let badgeHtml = '<i class="fas fa-laptop-code text-[8px]"></i>Sistem';
+            let badgeClass = 'bg-indigo-50 border-indigo-100 text-indigo-700';
+            if (titleLower.includes('kkn')) {
+                badgeHtml = '<i class="fas fa-map-location-dot text-[8px]"></i>KKN';
+                badgeClass = 'bg-purple-50 border-purple-100 text-purple-700';
+            } else if (titleLower.includes('magang')) {
+                badgeHtml = '<i class="fas fa-briefcase text-[8px]"></i>Magang';
+                badgeClass = 'bg-blue-50 border-blue-100 text-blue-700';
+            }
+            badge.className = `px-2 py-0.5 rounded-full border text-[9px] font-extrabold uppercase tracking-wider flex items-center gap-1 ${badgeClass}`;
+            badge.innerHTML = badgeHtml;
+
+            // Actions
+            let actionsHtml = '';
+            if (item.link) {
+                actionsHtml += `
+                    <a href="${item.link}" target="_blank" onclick="markNotificationRead('${item.id_notifikasi}'); closeNotifDetailModal()" class="px-4 py-2 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white text-xs font-bold rounded-xl shadow-md flex items-center gap-1.5 transform hover:scale-[1.02] transition">
+                        <i class="fab fa-whatsapp text-sm"></i> Gabung Grup WA
+                    </a>
+                `;
+            }
+            if (!item.dibaca) {
+                actionsHtml += `
+                    <button onclick="markNotificationRead('${item.id_notifikasi}'); closeNotifDetailModal()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-md transition flex items-center gap-1.5">
+                        <i class="fas fa-check"></i> Tandai Dibaca
+                    </button>
+                `;
+            }
+            actionsHtml += `<button onclick="closeNotifDetailModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-650 text-xs font-bold rounded-xl border transition">Tutup</button>`;
+            document.getElementById('notifDetailActions').innerHTML = actionsHtml;
+
+            // Animation
+            const modal = document.getElementById('notifDetailModal');
+            const content = document.getElementById('notifDetailContent');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 50);
+        };
+
+        window.closeNotifDetailModal = function() {
+            const modal = document.getElementById('notifDetailModal');
+            const content = document.getElementById('notifDetailContent');
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 200);
+        };
     </script>
 </body>
 </html>

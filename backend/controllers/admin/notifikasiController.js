@@ -26,9 +26,8 @@ const markAllAsRead = async (req, res, next) => {
         
         const { error } = await supabase
             .from('notifikasi')
-            .update({ dibaca: true })
-            .eq('id_user', userId)
-            .eq('dibaca', false);
+            .delete()
+            .eq('id_user', userId);
         
         if (error) throw error;
         
@@ -45,7 +44,7 @@ const markAsRead = async (req, res, next) => {
         
         const { error } = await supabase
             .from('notifikasi')
-            .update({ dibaca: true })
+            .delete()
             .eq('id_notifikasi', id)
             .eq('id_user', userId);
         
