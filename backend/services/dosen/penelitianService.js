@@ -706,8 +706,7 @@ class DosenPenelitianService {
             const { error } = await supabase
                 .from('pengabdian')
                 .update({
-                    status: 'submit',
-                    tanggal_pengajuan: new Date()
+                    status: 'submit'
                 })
                 .eq('id_pengabdian', id);
             

@@ -891,8 +891,7 @@ class PenelitianService {
             const { error } = await supabase
                 .from('pengabdian')
                 .update({
-                    status: 'submitted',
-                    tanggal_pengajuan: new Date()
+                    status: 'submitted'
                 })
                 .eq('id_pengabdian', id);
             
@@ -1097,7 +1096,7 @@ class PenelitianService {
                     ketua_pengabdian,
                     ketua:ketua_pengabdian(nama_lengkap),
                     status,
-                    tanggal_pengajuan,
+                    tanggal_pengajuan:created_at,
                     jenis:'pengabdian'
                 `)
                 .in('status', ['submitted', 'review', 'review_content']);
