@@ -8,7 +8,7 @@ const { uploadRepository } = require('../../middleware/upload');
 // Validasi rules
 const documentValidation = [
     body('judul').notEmpty().withMessage('Judul harus diisi'),
-    body('kategori').isIn(['jurnal', 'penelitian', 'pengabdian', 'buku', 'haki', 'prosiding', 'laporan'])
+    body('kategori').isIn(['jurnal', 'penelitian', 'pengabdian', 'buku', 'haki', 'hki', 'prosiding', 'laporan'])
         .withMessage('Kategori tidak valid'),
     body('tahun').isInt({ min: 2000, max: 2100 }).withMessage('Tahun tidak valid'),
     body('penulis').notEmpty().withMessage('Penulis harus diisi'),

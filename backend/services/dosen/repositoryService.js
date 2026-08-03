@@ -32,7 +32,11 @@ class RepositoryService {
 
             // Apply filters
             if (tipe && tipe !== 'all' && tipe !== '') {
-                query = query.eq('kategori', tipe);
+                if (tipe === 'hki' || tipe === 'haki') {
+                    query = query.in('kategori', ['hki', 'haki']);
+                } else {
+                    query = query.eq('kategori', tipe);
+                }
             }
 
             if (tahun && tahun !== 'all' && tahun !== '') {
@@ -105,7 +109,11 @@ class RepositoryService {
                 .eq('uploaded_by', userId);
 
             if (tipe && tipe !== 'all' && tipe !== '') {
-                query = query.eq('kategori', tipe);
+                if (tipe === 'hki' || tipe === 'haki') {
+                    query = query.in('kategori', ['hki', 'haki']);
+                } else {
+                    query = query.eq('kategori', tipe);
+                }
             }
 
             if (tahun && tahun !== 'all' && tahun !== '') {
@@ -208,7 +216,11 @@ class RepositoryService {
             }
 
             if (tipe && tipe !== 'all') {
-                supabaseQuery = supabaseQuery.eq('kategori', tipe);
+                if (tipe === 'hki' || tipe === 'haki') {
+                    supabaseQuery = supabaseQuery.in('kategori', ['hki', 'haki']);
+                } else {
+                    supabaseQuery = supabaseQuery.eq('kategori', tipe);
+                }
             }
 
             if (tahun && tahun !== 'all') {
@@ -267,7 +279,7 @@ class RepositoryService {
 
             const insertData = {
                 judul: data.judul,
-                kategori: data.tipe,
+                kategori: data.tipe === 'hki' ? 'haki' : data.tipe,
                 tahun: data.tahun,
                 penulis: penulis,
                 abstrak: data.abstrak,
@@ -364,7 +376,7 @@ class RepositoryService {
             };
 
             if (data.judul) updateData.judul = data.judul;
-            if (data.tipe) updateData.kategori = data.tipe;
+            if (data.tipe) updateData.kategori = data.tipe === 'hki' ? 'haki' : data.tipe;
             if (data.tahun) updateData.tahun = data.tahun;
             if (data.penulis) updateData.penulis = data.penulis.join(', ');
             if (data.abstrak) updateData.abstrak = data.abstrak;
@@ -481,6 +493,7 @@ class RepositoryService {
                 prosiding: 0,
                 buku: 0,
                 hki: 0,
+                haki: 0,
                 laporan: 0,
                 skripsi: 0,
                 tesis: 0
@@ -491,6 +504,10 @@ class RepositoryService {
                     typeCount[doc.kategori]++;
                 }
             });
+
+            const combinedHaki = (typeCount.haki || 0) + (typeCount.hki || 0);
+            typeCount.haki = combinedHaki;
+            typeCount.hki = combinedHaki;
 
             // Count by year
             const yearCount = {};
@@ -539,6 +556,7 @@ class RepositoryService {
                 prosiding: 0,
                 buku: 0,
                 hki: 0,
+                haki: 0,
                 laporan: 0
             };
 
@@ -547,6 +565,10 @@ class RepositoryService {
                     typeCount[doc.kategori]++;
                 }
             });
+
+            const combinedHaki = (typeCount.haki || 0) + (typeCount.hki || 0);
+            typeCount.haki = combinedHaki;
+            typeCount.hki = combinedHaki;
 
             const yearCount = {};
             allDocs.forEach(doc => {

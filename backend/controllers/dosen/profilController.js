@@ -385,6 +385,15 @@ exports.getStatistik = async (req, res) => {
 
         if (penulisError) throw penulisError;
 
+        // Hitung HKI
+        const { count: hkiCount, error: hkiError } = await supabase
+            .from('repository_dokumen')
+            .select('*', { count: 'exact', head: true })
+            .eq('uploaded_by', userId)
+            .in('kategori', ['hki', 'haki']);
+
+        if (hkiError) throw hkiError;
+
         res.json({
             success: true,
             data: {
@@ -392,7 +401,7 @@ exports.getStatistik = async (req, res) => {
                 pengabdian: (pengabdianCount || 0) + (anggotaPengabdian?.length || 0),
                 publikasi: (jurnalCount || 0) + (penulisJurnal?.length || 0),
                 mahasiswa_bimbingan: await getMahasiswaBimbinganCount(userId),
-                hki: 0
+                hki: hkiCount || 0
             }
         });
 

@@ -981,7 +981,7 @@
                     document.getElementById('storageInfo').textContent = `dari 5 GB total (${percentage.toFixed(1)}% terpakai)`;
                     
                     if (stats.popular_category) {
-                        const categoryNames = { 'jurnal': 'Jurnal', 'penelitian': 'Penelitian', 'pengabdian': 'Pengabdian', 'buku': 'Buku', 'haki': 'HKI', 'prosiding': 'Prosiding' };
+                        const categoryNames = { 'jurnal': 'Jurnal', 'penelitian': 'Penelitian', 'pengabdian': 'Pengabdian', 'buku': 'Buku', 'haki': 'HKI', 'hki': 'HKI', 'prosiding': 'Prosiding' };
                         document.getElementById('kategoriPopuler').textContent = categoryNames[stats.popular_category.kategori] || stats.popular_category.kategori;
                         const percent = stats.total_documents > 0 ? Math.round((stats.popular_category.jumlah / stats.total_documents) * 100) : 0;
                         document.getElementById('popularCategoryPercentage').textContent = `${percent}% dari total`;
@@ -1064,6 +1064,7 @@
                 'pengabdian': 'bg-green-100 text-green-800',
                 'buku': 'bg-orange-100 text-orange-800',
                 'haki': 'bg-red-100 text-red-800',
+                'hki': 'bg-red-100 text-red-800',
                 'prosiding': 'bg-indigo-100 text-indigo-800'
             };
             return badges[kategori] || 'bg-gray-100 text-gray-800';
@@ -1076,6 +1077,7 @@
                 'pengabdian': 'fa-hands-helping',
                 'buku': 'fa-book',
                 'haki': 'fa-copyright',
+                'hki': 'fa-copyright',
                 'prosiding': 'fa-file-alt'
             };
             return icons[kategori] || 'fa-file';

@@ -1066,6 +1066,7 @@
             'prosiding': 'badge-prosiding',
             'buku': 'badge-buku',
             'hki': 'badge-hki',
+            'haki': 'badge-hki',
             'laporan': 'badge-laporan'
         };
         return classes[tipe] || 'bg-gray-100 text-gray-800';
@@ -1077,6 +1078,7 @@
             'prosiding': 'fa-file-alt',
             'buku': 'fa-book',
             'hki': 'fa-copyright',
+            'haki': 'fa-copyright',
             'laporan': 'fa-file-pdf'
         };
         return icons[tipe] || 'fa-file';
@@ -1192,6 +1194,7 @@
     }
 
     function updateStatistics(stats) {
+        const hkiCount = (stats.by_type?.hki || 0) + (stats.by_type?.haki || 0);
         const elements = {
             totalJurnal: 'totalJurnal',
             totalProsiding: 'totalProsiding',
@@ -1211,13 +1214,19 @@
         
         for (const [key, id] of Object.entries(elements)) {
             const el = document.getElementById(id);
-            if (el) el.textContent = stats.by_type?.[key.replace('total', '').toLowerCase()] || stats[key] || 0;
+            if (el) {
+                if (key === 'totalHKI' || key === 'countHKI') {
+                    el.textContent = hkiCount;
+                } else {
+                    el.textContent = stats.by_type?.[key.replace('total', '').toLowerCase()] || stats[key] || 0;
+                }
+            }
         }
         
         const total = (stats.by_type?.jurnal || 0) + 
                       (stats.by_type?.prosiding || 0) + 
                       (stats.by_type?.buku || 0) + 
-                      (stats.by_type?.hki || 0) + 
+                      hkiCount + 
                       (stats.by_type?.laporan || 0);
         
         const countAll = document.getElementById('countAll');
@@ -1247,8 +1256,9 @@
         }
 
         const itemsHTML = data.map(item => {
-            const badgeClass = getBadgeClass(item.tipe);
-            const iconClass = getIconClass(item.tipe);
+            const itemTipe = item.tipe === 'haki' ? 'hki' : item.tipe;
+            const badgeClass = getBadgeClass(itemTipe);
+            const iconClass = getIconClass(itemTipe);
             const authors = Array.isArray(item.penulis) ? item.penulis : [item.penulis];
             const kataKunci = Array.isArray(item.kata_kunci) ? item.kata_kunci : [];
             
@@ -1274,7 +1284,7 @@
                             <div class="flex flex-wrap items-center gap-2">
                                 <span class="px-2 py-0.5 rounded text-xs font-semibold ${badgeClass}">
                                     <i class="fas ${iconClass} mr-1"></i>
-                                    ${(item.tipe || 'dokumen').charAt(0).toUpperCase() + (item.tipe || 'dokumen').slice(1)}
+                                    ${(itemTipe || 'dokumen').charAt(0).toUpperCase() + (itemTipe || 'dokumen').slice(1)}
                                 </span>
                                 
                                 <div class="metrics-badge text-xs">
@@ -1610,6 +1620,7 @@
             formData.append('penulis', penulis);
             formData.append('abstrak', abstrak || '');
             formData.append('kata_kunci', document.getElementById('repoKeywords')?.value || '');
+            formData.append('doi', document.getElementById('repoDoi')?.value || '');
             
             const fileInput = document.getElementById('repoFile');
             if (fileInput && fileInput.files && fileInput.files.length > 0) {
@@ -1699,18 +1710,32 @@
         if (!container) return;
         
         let fields = '';
+        let doiLabel = 'DOI/Identitas';
+        let doiPlaceholder = 'Masukkan DOI jika ada...';
         
-        switch(type) {
-            case 'jurnal':
-                fields = `<input type="hidden" id="repoKeywords" value="">`;
-                break;
-            default:
-                fields = `<div class="form-modern">
-                            <label><i class="fas fa-tags mr-2 text-purple-500"></i>Kata Kunci</label>
-                            <input type="text" id="repoKeywords" placeholder="Kata kunci (pisahkan dengan koma)">
-                          </div>`;
-                break;
+        if (type === 'jurnal') {
+            doiLabel = 'DOI/ISSN';
+            doiPlaceholder = 'Contoh: 10.1234/jurnal.v1i1.123 atau ISSN...';
+        } else if (type === 'buku') {
+            doiLabel = 'ISBN';
+            doiPlaceholder = 'Masukkan nomor ISBN buku...';
+        } else if (type === 'hki') {
+            doiLabel = 'Nomor HKI/Paten';
+            doiPlaceholder = 'Contoh: EC002024xxxxx atau P002024xxxxx...';
         }
+        
+        fields = `
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="form-modern">
+                    <label><i class="fas fa-fingerprint mr-2 text-purple-500"></i>${doiLabel}</label>
+                    <input type="text" id="repoDoi" placeholder="${doiPlaceholder}">
+                </div>
+                <div class="form-modern">
+                    <label><i class="fas fa-tags mr-2 text-purple-500"></i>Kata Kunci</label>
+                    <input type="text" id="repoKeywords" placeholder="Kata kunci (pisahkan dengan koma)">
+                </div>
+            </div>
+        `;
         
         container.innerHTML = fields;
     }
@@ -1745,7 +1770,11 @@
             const abstractInput = document.getElementById('repoAbstract');
             
             if (titleInput) titleInput.value = item.judul || '';
-            if (typeSelect) typeSelect.value = item.tipe || 'jurnal';
+            if (typeSelect) {
+                let tipeVal = item.tipe || 'jurnal';
+                if (tipeVal === 'haki') tipeVal = 'hki'; // Map haki db category to hki frontend select option
+                typeSelect.value = tipeVal;
+            }
             if (yearInput) yearInput.value = item.tahun || '';
             if (authorsInput) authorsInput.value = Array.isArray(item.penulis) ? item.penulis.join(', ') : item.penulis || '';
             if (abstractInput) abstractInput.value = item.abstrak || '';
@@ -1756,6 +1785,10 @@
                 const keywordsInput = document.getElementById('repoKeywords');
                 if (keywordsInput) {
                     keywordsInput.value = Array.isArray(item.kata_kunci) ? item.kata_kunci.join(', ') : item.kata_kunci || '';
+                }
+                const doiInput = document.getElementById('repoDoi');
+                if (doiInput) {
+                    doiInput.value = item.doi || '';
                 }
             }, 100);
             

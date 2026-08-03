@@ -154,7 +154,7 @@ const storage = multer.diskStorage({
         }
         else if (req.baseUrl?.includes('repository')) {
             uploadPath += 'repository/';
-            const kategori = req.body?.kategori || req.query?.kategori || 'documents';
+            const kategori = req.body?.kategori || req.body?.tipe || req.query?.kategori || 'documents';
             
             const categoryFolders = {
                 'jurnal': 'jurnal',
@@ -162,6 +162,7 @@ const storage = multer.diskStorage({
                 'pengabdian': 'pengabdian',
                 'buku': 'buku',
                 'haki': 'haki',
+                'hki': 'haki',
                 'prosiding': 'prosiding',
                 'laporan': 'laporan'
             };

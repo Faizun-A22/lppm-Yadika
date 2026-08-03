@@ -194,6 +194,8 @@ const createRepository = async (req, res, next) => {
             kata_kunci: kata_kunci,
             visibility: req.body.visibility || 'public',
             uploaded_by_role: userRole,
+            doi: req.body.doi || null,
+            link: req.body.link || null,
             ...additionalData
         };
 
@@ -254,6 +256,8 @@ const updateRepository = async (req, res, next) => {
             abstrak: req.body.abstrak,
             kata_kunci,
             visibility: req.body.visibility,
+            doi: req.body.doi,
+            link: req.body.link,
             ...additionalData
         };
 
