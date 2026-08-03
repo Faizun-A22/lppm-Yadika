@@ -817,7 +817,7 @@
     function updateNavbarUserInfo(profile) {
         if (!profile) return;
         
-        const avatarUrl = profile.foto_profil ? `/${profile.foto_profil}` : `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.nama_lengkap || 'Dosen')}&background=3B82F6&color=fff&bold=true`;
+        const avatarUrl = profile.foto_profil ? (profile.foto_profil.startsWith('/') ? profile.foto_profil : `/${profile.foto_profil}`) : `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.nama_lengkap || 'Dosen')}&background=3B82F6&color=fff&bold=true`;
         
         const navAvatar = document.getElementById('navAvatar');
         const dropdownAvatar = document.getElementById('dropdownAvatar');
@@ -949,8 +949,11 @@
         
         // Foto profil
         const profilePicture = document.getElementById('profilePicture');
-        if (profilePicture && dosenProfile.foto_profil) {
-            profilePicture.src = dosenProfile.foto_profil;
+        if (profilePicture) {
+            const cleanFotoUrl = dosenProfile.foto_profil 
+                ? (dosenProfile.foto_profil.startsWith('/') ? dosenProfile.foto_profil : `/${dosenProfile.foto_profil}`)
+                : `https://ui-avatars.com/api/?name=${encodeURIComponent(dosenProfile.nama_lengkap || 'Dosen')}&background=3B82F6&color=fff&bold=true`;
+            profilePicture.src = cleanFotoUrl;
         }
 
         // Masa kerja

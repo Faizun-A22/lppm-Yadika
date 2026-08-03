@@ -623,7 +623,7 @@
             if (response.ok) {
                 const result = await response.json();
                 dosenProfile = result.data;
-                const avatarUrl = dosenProfile.foto_profil ? `/${dosenProfile.foto_profil}` : `https://ui-avatars.com/api/?name=${encodeURIComponent(dosenProfile.nama_lengkap || 'Dosen')}&background=3B82F6&color=fff&bold=true`;
+                const avatarUrl = dosenProfile.foto_profil ? (dosenProfile.foto_profil.startsWith('/') ? dosenProfile.foto_profil : `/${dosenProfile.foto_profil}`) : `https://ui-avatars.com/api/?name=${encodeURIComponent(dosenProfile.nama_lengkap || 'Dosen')}&background=3B82F6&color=fff&bold=true`;
                 document.getElementById('navAvatar') && (document.getElementById('navAvatar').src = avatarUrl);
                 document.getElementById('dropdownAvatar') && (document.getElementById('dropdownAvatar').src = avatarUrl);
                 document.getElementById('mobileNavAvatar') && (document.getElementById('mobileNavAvatar').src = avatarUrl);

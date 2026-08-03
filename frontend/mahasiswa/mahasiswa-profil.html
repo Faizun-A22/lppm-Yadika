@@ -488,6 +488,63 @@
                             </button>
                         </div>
                     </div>
+
+                    <!-- Status Program & Luaran Card -->
+                    <div class="bg-white rounded-xl shadow-lg p-5 md:p-6 mt-6" data-aos="fade-up">
+                        <h4 class="font-bold text-gray-800 mb-4 flex items-center text-sm md:text-base">
+                            <i class="fas fa-tasks mr-2 text-purple-600"></i>Status Program & Luaran
+                        </h4>
+                        <div class="space-y-4 text-xs md:text-sm">
+                            <!-- Status Magang -->
+                            <div class="border-b pb-3">
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="font-medium text-gray-600 flex items-center">
+                                        <i class="fas fa-briefcase mr-2 text-blue-500 w-4"></i>Magang:
+                                    </span>
+                                    <span class="font-semibold" id="programMagangStatus">Memuat...</span>
+                                </div>
+                                <p class="text-xs text-gray-500" id="programMagangDetail">-</p>
+                            </div>
+                            
+                            <!-- Status KKN -->
+                            <div class="border-b pb-3">
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="font-medium text-gray-600 flex items-center">
+                                        <i class="fas fa-users mr-2 text-green-500 w-4"></i>KKN:
+                                    </span>
+                                    <span class="font-semibold" id="programKknStatus">Memuat...</span>
+                                </div>
+                                <p class="text-xs text-gray-500" id="programKknDetail">-</p>
+                            </div>
+
+                            <!-- Jurnal / Logbook Magang -->
+                            <div class="border-b pb-3">
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="font-medium text-gray-600 flex items-center">
+                                        <i class="fas fa-book-open mr-2 text-purple-500 w-4"></i>Jurnal/Logbook:
+                                    </span>
+                                    <span class="font-semibold" id="programLogbookStatus">Memuat...</span>
+                                </div>
+                                <div class="flex items-center justify-between mt-1">
+                                    <p class="text-xs text-gray-500 truncate mr-2" id="programLogbookName">-</p>
+                                    <span id="programLogbookLink"></span>
+                                </div>
+                            </div>
+
+                            <!-- Luaran KKN (MoU / Poster) -->
+                            <div>
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="font-medium text-gray-600 flex items-center">
+                                        <i class="fas fa-file-export mr-2 text-orange-500 w-4"></i>Luaran KKN:
+                                    </span>
+                                    <span class="font-semibold" id="programKknLuaranStatus">Memuat...</span>
+                                </div>
+                                <div class="space-y-1 mt-1 text-xs" id="programKknLuaranList">
+                                    <p class="text-gray-500 text-[11px]">-</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Details & History -->
@@ -997,9 +1054,10 @@ function updateProfileUI() {
     document.getElementById('profilePhone').textContent = userProfile.no_hp || '-';
     document.getElementById('profileAddress').textContent = userProfile.info_pribadi?.alamat || '-';
     
-    if (userProfile.foto_profil) {
-        document.getElementById('profilePicture').src = userProfile.foto_profil;
-    }
+    const cleanAvatarUrl = userProfile.foto_profil 
+        ? (userProfile.foto_profil.startsWith('/') ? userProfile.foto_profil : `/${userProfile.foto_profil}`)
+        : `https://ui-avatars.com/api/?name=${encodeURIComponent(userProfile.nama_lengkap || 'Mahasiswa')}&background=8B5CF6&color=fff&bold=true`;
+    document.getElementById('profilePicture').src = cleanAvatarUrl;
 
     document.getElementById('fullName').value = userProfile.nama_lengkap || '';
     document.getElementById('phone').value = userProfile.no_hp || '';
@@ -1012,6 +1070,187 @@ function updateProfileUI() {
         document.getElementById('religion').value = userProfile.info_pribadi.agama || 'Islam';
         document.getElementById('address').value = userProfile.info_pribadi.alamat || '';
         document.getElementById('ktpAddress').value = userProfile.info_pribadi.alamat_ktp || '';
+    }
+}
+
+// ===========================================
+// LOAD STATUS PROGRAM & LUARAN (MAGANG & KKN)
+// ===========================================
+async function loadProgramStatus() {
+    try {
+        // Fetch Magang Status
+        const magangRes = await fetch(`${API_BASE_URL}/magang/status`, {
+            headers: getAuthHeaders()
+        });
+        
+        let hasLogbook = false;
+        let logbookPath = '';
+        
+        if (magangRes.ok) {
+            const magangResult = await magangRes.json();
+            const d = magangResult.data || {};
+            
+            let status = 'Belum Terdaftar';
+            let cls = 'text-gray-500';
+            let detail = '-';
+            
+            if (d.registrasi) {
+                const s = d.registrasi.status;
+                if (s === 'pending') {
+                    status = 'Menunggu Verifikasi';
+                    cls = 'text-yellow-600';
+                    detail = 'Pengajuan sedang diperiksa';
+                } else if (s === 'approved') {
+                    status = 'Disetujui';
+                    cls = 'text-green-600';
+                    detail = 'Silakan isi data perusahaan';
+                } else if (s === 'verified') {
+                    status = 'Selesai';
+                    cls = 'text-blue-600';
+                    detail = 'Program magang selesai';
+                } else if (s === 'rejected') {
+                    status = 'Ditolak';
+                    cls = 'text-red-600';
+                    detail = d.registrasi.catatan || 'Pengajuan ditolak';
+                }
+            }
+            if (d.perusahaan) {
+                status = 'Magang Aktif';
+                cls = 'text-blue-600';
+                detail = `${d.perusahaan.nama_perusahaan || 'Perusahaan'} - ${d.perusahaan.posisi || 'Magang'}`;
+            }
+            if (d.luaran) {
+                status = 'Selesai & Lulus';
+                cls = 'text-green-600';
+                detail = 'Luaran magang telah diunggah';
+                
+                if (d.luaran.file_logbook) {
+                    hasLogbook = true;
+                    logbookPath = d.luaran.file_logbook;
+                }
+            }
+            
+            const magangEl = document.getElementById('programMagangStatus');
+            if (magangEl) {
+                magangEl.innerHTML = `<span class="${cls}">${status}</span>`;
+            }
+            const magangDetEl = document.getElementById('programMagangDetail');
+            if (magangDetEl) {
+                magangDetEl.textContent = detail;
+            }
+        }
+        
+        // Render Logbook
+        const logbookStatusEl = document.getElementById('programLogbookStatus');
+        const logbookNameEl = document.getElementById('programLogbookName');
+        const logbookLinkEl = document.getElementById('programLogbookLink');
+        
+        if (hasLogbook) {
+            if (logbookStatusEl) logbookStatusEl.innerHTML = '<span class="text-green-600">Terunggah</span>';
+            if (logbookNameEl) {
+                const filename = logbookPath.split('/').pop();
+                logbookNameEl.textContent = filename || 'Logbook Magang';
+                logbookNameEl.title = filename;
+            }
+            if (logbookLinkEl) {
+                logbookLinkEl.innerHTML = `<a href="${logbookPath.startsWith('/') ? logbookPath : '/' + logbookPath}" target="_blank" class="text-blue-600 hover:text-blue-800 text-xs font-semibold"><i class="fas fa-download mr-1"></i>Unduh</a>`;
+            }
+        } else {
+            if (logbookStatusEl) logbookStatusEl.innerHTML = '<span class="text-gray-500">Belum Unggah</span>';
+            if (logbookNameEl) logbookNameEl.textContent = '-';
+            if (logbookLinkEl) logbookLinkEl.innerHTML = '';
+        }
+        
+        // Fetch KKN Status
+        const kknRes = await fetch(`${API_BASE_URL}/mahasiswa/kkn/status`, {
+            headers: getAuthHeaders()
+        });
+        
+        if (kknRes.ok) {
+            const kknResult = await kknRes.json();
+            const d = kknResult.data || {};
+            
+            let status = 'Belum Terdaftar';
+            let cls = 'text-gray-500';
+            let detail = '-';
+            
+            if (d.pendaftaran && d.pendaftaran.status !== 'belum_daftar') {
+                const s = d.pendaftaran.status;
+                if (s === 'pending') {
+                    status = 'Menunggu Verifikasi';
+                    cls = 'text-yellow-600';
+                    detail = `Desa: ${d.pendaftaran.desa || '-'}`;
+                } else if (s === 'approved') {
+                    status = 'Disetujui';
+                    cls = 'text-green-600';
+                    detail = `Desa: ${d.pendaftaran.desa || '-'}`;
+                } else if (s === 'verified') {
+                    status = 'Selesai';
+                    cls = 'text-blue-600';
+                    detail = `Desa: ${d.pendaftaran.desa || '-'} (Selesai)`;
+                } else if (s === 'rejected') {
+                    status = 'Ditolak';
+                    cls = 'text-red-600';
+                    detail = 'Pengajuan ditolak';
+                }
+            }
+            
+            const kknEl = document.getElementById('programKknStatus');
+            if (kknEl) {
+                kknEl.innerHTML = `<span class="${cls}">${status}</span>`;
+            }
+            const kknDetEl = document.getElementById('programKknDetail');
+            if (kknDetEl) {
+                kknDetEl.textContent = detail;
+            }
+            
+            // Render KKN Luaran
+            const luaranStatusEl = document.getElementById('programKknLuaranStatus');
+            const luaranListEl = document.getElementById('programKknLuaranList');
+            
+            if (d.luaran && d.luaran.jumlah > 0) {
+                if (luaranStatusEl) luaranStatusEl.innerHTML = '<span class="text-green-600">Terunggah</span>';
+                
+                // Fetch KKN luaran
+                const kknLuaranRes = await fetch(`${API_BASE_URL}/mahasiswa/kkn/luaran`, {
+                    headers: getAuthHeaders()
+                });
+                
+                let listHTML = '';
+                if (kknLuaranRes.ok) {
+                    const kknLuaranResult = await kknLuaranRes.json();
+                    const luarans = kknLuaranResult.data || [];
+                    
+                    if (luarans.length > 0) {
+                        const luaranData = luarans[0]; // ambil yang terbaru
+                        if (luaranData.file_mou) {
+                            const path = luaranData.file_mou;
+                            const filename = path.split('/').pop();
+                            listHTML += `<div class="flex items-center justify-between text-[11px] text-gray-700 bg-gray-50 p-1.5 rounded mb-1">
+                                <span class="truncate mr-2 flex-1" title="${filename}"><i class="fas fa-file-pdf text-red-500 mr-1"></i>MoU: ${filename}</span>
+                                <a href="${path.startsWith('/') ? path : '/' + path}" target="_blank" class="text-blue-600 hover:text-blue-800 font-semibold"><i class="fas fa-eye"></i></a>
+                            </div>`;
+                        }
+                        if (luaranData.file_poster) {
+                            const path = luaranData.file_poster;
+                            listHTML += `<div class="flex items-center justify-between text-[11px] text-gray-700 bg-gray-50 p-1.5 rounded">
+                                <span class="truncate mr-2 flex-1" title="${path}"><i class="fas fa-image text-green-500 mr-1"></i>Poster</span>
+                                <a href="${path.startsWith('http') ? path : (path.startsWith('/') ? path : '/' + path)}" target="_blank" class="text-blue-600 hover:text-blue-800 font-semibold"><i class="fas fa-external-link-alt"></i></a>
+                            </div>`;
+                        }
+                    }
+                }
+                
+                if (luaranListEl) {
+                    luaranListEl.innerHTML = listHTML || '<p class="text-gray-500 text-[11px]">Luaran terunggah</p>';
+                }
+            } else {
+                if (luaranStatusEl) luaranStatusEl.innerHTML = '<span class="text-gray-500">Belum Unggah</span>';
+                if (luaranListEl) luaranListEl.innerHTML = '<p class="text-gray-500 text-[11px]">-</p>';
+            }
+        }
+    } catch (e) {
+        console.error('Error loading program statuses:', e);
     }
 }
 
@@ -1404,6 +1643,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     if (!user) return;
     await updateNavbarUserInfo();
     await loadProfileData();
+    await loadProgramStatus();
 });
 
 // ==================== NOTIFICATION SYSTEM ====================
