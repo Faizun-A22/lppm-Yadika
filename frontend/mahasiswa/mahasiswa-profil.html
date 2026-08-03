@@ -857,7 +857,56 @@
         // ===========================================
 // KONFIGURASI API
 // ===========================================
-const API_BASE_URL = '/api';
+const getApiBaseUrl = () => {
+    const hostname = window.location.hostname;
+    const protocol = window.location.protocol;
+    
+    if (protocol === 'file:') {
+        return 'http://localhost:3000/api';
+    }
+    
+    const isIp = /^\d+\.\d+\.\d+\.\d+$/.test(hostname) || hostname.includes(':');
+    const isLocalHost = hostname === 'localhost' || 
+                        hostname === '127.0.0.1' || 
+                        hostname === '[::1]' ||
+                        hostname === '' ||
+                        hostname.endsWith('.local') ||
+                        !hostname.includes('.') ||
+                        isIp;
+    
+    if (isLocalHost) {
+        return `${protocol}//${hostname || 'localhost'}:3000/api`;
+    }
+    
+    return '/api';
+};
+
+const getImageBaseUrl = () => {
+    const hostname = window.location.hostname;
+    const protocol = window.location.protocol;
+    
+    if (protocol === 'file:') {
+        return 'http://localhost:3000';
+    }
+    
+    const isIp = /^\d+\.\d+\.\d+\.\d+$/.test(hostname) || hostname.includes(':');
+    const isLocalHost = hostname === 'localhost' || 
+                        hostname === '127.0.0.1' || 
+                        hostname === '[::1]' ||
+                        hostname === '' ||
+                        hostname.endsWith('.local') ||
+                        !hostname.includes('.') ||
+                        isIp;
+    
+    if (isLocalHost) {
+        return `${protocol}//${hostname || 'localhost'}:3000`;
+    }
+    
+    return '';
+};
+
+const API_BASE_URL = getApiBaseUrl();
+const IMAGE_BASE_URL = getImageBaseUrl();
 
 // ===========================================
 // STATE MANAGEMENT
@@ -1055,7 +1104,7 @@ function updateProfileUI() {
     document.getElementById('profileAddress').textContent = userProfile.info_pribadi?.alamat || '-';
     
     const cleanAvatarUrl = userProfile.foto_profil 
-        ? (userProfile.foto_profil.startsWith('/') ? userProfile.foto_profil : `/${userProfile.foto_profil}`)
+        ? (userProfile.foto_profil.startsWith('http') ? userProfile.foto_profil : `${IMAGE_BASE_URL}${userProfile.foto_profil.startsWith('/') ? '' : '/'}${userProfile.foto_profil}`)
         : `https://ui-avatars.com/api/?name=${encodeURIComponent(userProfile.nama_lengkap || 'Mahasiswa')}&background=8B5CF6&color=fff&bold=true`;
     document.getElementById('profilePicture').src = cleanAvatarUrl;
 
@@ -1378,8 +1427,8 @@ window.uploadProfilePicture = async function(input) {
         const result = await response.json();
         if (result.success) {
             const newFoto = result.data.foto_profil;
-            document.getElementById('profilePicture').src = newFoto;
-            const cleanFotoUrl = newFoto.startsWith('/') ? newFoto : `/${newFoto}`;
+            const cleanFotoUrl = newFoto.startsWith('http') ? newFoto : `${IMAGE_BASE_URL}${newFoto.startsWith('/') ? '' : '/'}${newFoto}`;
+            document.getElementById('profilePicture').src = cleanFotoUrl;
             if (document.getElementById('navAvatar')) document.getElementById('navAvatar').src = cleanFotoUrl;
             if (document.getElementById('dropdownAvatar')) document.getElementById('dropdownAvatar').src = cleanFotoUrl;
             if (document.getElementById('mobileNavAvatar')) document.getElementById('mobileNavAvatar').src = cleanFotoUrl;
@@ -1565,7 +1614,7 @@ async function updateNavbarUserInfo() {
             const result = await response.json();
             const profile = result.data;
             if (profile) {
-                const cleanFotoUrl = profile.foto_profil ? (profile.foto_profil.startsWith('/') ? profile.foto_profil : `/${profile.foto_profil}`) : `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.nama_lengkap || 'Mahasiswa')}&background=3B82F6&color=fff&bold=true`;
+                const cleanFotoUrl = profile.foto_profil ? (profile.foto_profil.startsWith('http') ? profile.foto_profil : `${IMAGE_BASE_URL}${profile.foto_profil.startsWith('/') ? '' : '/'}${profile.foto_profil}`) : `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.nama_lengkap || 'Mahasiswa')}&background=3B82F6&color=fff&bold=true`;
                 document.getElementById('navAvatar').src = cleanFotoUrl;
                 document.getElementById('dropdownAvatar').src = cleanFotoUrl;
                 document.getElementById('mobileNavAvatar').src = cleanFotoUrl;

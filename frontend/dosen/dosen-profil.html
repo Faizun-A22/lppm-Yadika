@@ -735,7 +735,56 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     
     <script>
-    const API_BASE_URL = '/api';
+    const getApiBaseUrl = () => {
+        const hostname = window.location.hostname;
+        const protocol = window.location.protocol;
+        
+        if (protocol === 'file:') {
+            return 'http://localhost:3000/api';
+        }
+        
+        const isIp = /^\d+\.\d+\.\d+\.\d+$/.test(hostname) || hostname.includes(':');
+        const isLocalHost = hostname === 'localhost' || 
+                            hostname === '127.0.0.1' || 
+                            hostname === '[::1]' ||
+                            hostname === '' ||
+                            hostname.endsWith('.local') ||
+                            !hostname.includes('.') ||
+                            isIp;
+        
+        if (isLocalHost) {
+            return `${protocol}//${hostname || 'localhost'}:3000/api`;
+        }
+        
+        return '/api';
+    };
+
+    const getImageBaseUrl = () => {
+        const hostname = window.location.hostname;
+        const protocol = window.location.protocol;
+        
+        if (protocol === 'file:') {
+            return 'http://localhost:3000';
+        }
+        
+        const isIp = /^\d+\.\d+\.\d+\.\d+$/.test(hostname) || hostname.includes(':');
+        const isLocalHost = hostname === 'localhost' || 
+                            hostname === '127.0.0.1' || 
+                            hostname === '[::1]' ||
+                            hostname === '' ||
+                            hostname.endsWith('.local') ||
+                            !hostname.includes('.') ||
+                            isIp;
+        
+        if (isLocalHost) {
+            return `${protocol}//${hostname || 'localhost'}:3000`;
+        }
+        
+        return '';
+    };
+
+    const API_BASE_URL = getApiBaseUrl();
+    const IMAGE_BASE_URL = getImageBaseUrl();
 
     let currentUser = null;
     let dosenProfile = null;
@@ -817,7 +866,7 @@
     function updateNavbarUserInfo(profile) {
         if (!profile) return;
         
-        const avatarUrl = profile.foto_profil ? (profile.foto_profil.startsWith('/') ? profile.foto_profil : `/${profile.foto_profil}`) : `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.nama_lengkap || 'Dosen')}&background=3B82F6&color=fff&bold=true`;
+        const avatarUrl = profile.foto_profil ? (profile.foto_profil.startsWith('http') ? profile.foto_profil : `${IMAGE_BASE_URL}${profile.foto_profil.startsWith('/') ? '' : '/'}${profile.foto_profil}`) : `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.nama_lengkap || 'Dosen')}&background=3B82F6&color=fff&bold=true`;
         
         const navAvatar = document.getElementById('navAvatar');
         const dropdownAvatar = document.getElementById('dropdownAvatar');
@@ -951,7 +1000,7 @@
         const profilePicture = document.getElementById('profilePicture');
         if (profilePicture) {
             const cleanFotoUrl = dosenProfile.foto_profil 
-                ? (dosenProfile.foto_profil.startsWith('/') ? dosenProfile.foto_profil : `/${dosenProfile.foto_profil}`)
+                ? (dosenProfile.foto_profil.startsWith('http') ? dosenProfile.foto_profil : `${IMAGE_BASE_URL}${dosenProfile.foto_profil.startsWith('/') ? '' : '/'}${dosenProfile.foto_profil}`)
                 : `https://ui-avatars.com/api/?name=${encodeURIComponent(dosenProfile.nama_lengkap || 'Dosen')}&background=3B82F6&color=fff&bold=true`;
             profilePicture.src = cleanFotoUrl;
         }
@@ -1335,8 +1384,11 @@
             const result = await response.json();
 
             if (result.success) {
+                const newFoto = result.data.foto_profil;
+                if (dosenProfile) dosenProfile.foto_profil = newFoto;
+                const cleanFotoUrl = newFoto.startsWith('http') ? newFoto : `${IMAGE_BASE_URL}${newFoto.startsWith('/') ? '' : '/'}${newFoto}`;
                 const profilePicture = document.getElementById('profilePicture');
-                if (profilePicture) profilePicture.src = result.data.foto_profil;
+                if (profilePicture) profilePicture.src = cleanFotoUrl;
                 updateNavbarUserInfo(dosenProfile);
                 showNotification('Foto profil berhasil diperbarui', 'success');
             } else {
