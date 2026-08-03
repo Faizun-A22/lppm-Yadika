@@ -148,6 +148,7 @@ class DosenPenelitianService {
             penelitian.reviews = reviews || [];
             penelitian.luaran = (luaran || []).map(l => ({
                 ...l,
+                kategori: l.kategori || l.deskripsi || null,
                 file_path: l.file_publikasi || l.file_haki || l.file_luaran_lain
             }));
             
@@ -536,6 +537,7 @@ class DosenPenelitianService {
             pengabdian.reviews = reviews || [];
             pengabdian.luaran = (luaran || []).map(l => ({
                 ...l,
+                kategori: l.kategori || l.deskripsi || null,
                 file_path: l.file_publikasi || l.file_haki || l.file_luaran_lain
             }));
             
@@ -1047,7 +1049,7 @@ class DosenPenelitianService {
                                       item.tipe_luaran === 'haki' ? `Target HKI: ${item.kategori || ''}` : 
                                       item.tipe_luaran === 'karya' || item.tipe_luaran === 'buku' ? `Target Buku/Karya` : `Target Luaran`,
                         tipe_luaran: item.tipe_luaran === 'buku' ? 'karya' : item.tipe_luaran,
-                        kategori: item.kategori || null,
+                        deskripsi: item.kategori || null,
                         status: 'pending',
                         created_by: userId,
                         created_at: new Date()
@@ -1061,7 +1063,7 @@ class DosenPenelitianService {
                             jenis_referensi: jenis,
                             judul_luaran: `Target Publikasi: ${item}`,
                             tipe_luaran: 'publikasi',
-                            kategori: item,
+                            deskripsi: item,
                             status: 'pending',
                             created_by: userId,
                             created_at: new Date()
@@ -1076,7 +1078,7 @@ class DosenPenelitianService {
                             jenis_referensi: jenis,
                             judul_luaran: `Target Conference: ${item}`,
                             tipe_luaran: 'conference',
-                            kategori: item,
+                            deskripsi: item,
                             status: 'pending',
                             created_by: userId,
                             created_at: new Date()
@@ -1091,7 +1093,7 @@ class DosenPenelitianService {
                             jenis_referensi: jenis,
                             judul_luaran: item.judul || `Target HKI: ${item.kategori || ''}`,
                             tipe_luaran: 'haki',
-                            kategori: item.kategori,
+                            deskripsi: item.kategori,
                             status: 'pending',
                             created_by: userId,
                             created_at: new Date()
