@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LPPM ITB Yadika - Lupa Kata Sandi</title>
+    <title>LPPM ITB Yadika - Verifikasi OTP</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
@@ -113,6 +113,24 @@
             line-height: 1.5;
         }
 
+        .email-badge {
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            color: #334155;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .email-badge strong {
+            color: #1e293b;
+            word-break: break-all;
+        }
+
         .form-group {
             margin-bottom: 20px;
         }
@@ -120,24 +138,30 @@
         .form-group label {
             display: block;
             color: #475569;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             font-size: 13px;
             font-weight: 600;
+            text-align: center;
         }
 
-        .form-group input {
+        .otp-input {
             width: 100%;
-            padding: 13px 16px;
+            padding: 14px 16px;
             background: #f8fafc;
-            border: 1.5px solid #e2e8f0;
+            border: 2px dashed #667eea;
             border-radius: 12px;
-            color: #1e293b;
-            font-size: 14.5px;
+            color: #4338ca;
+            font-size: 28px;
+            font-weight: 800;
+            text-align: center;
+            letter-spacing: 8px;
+            font-family: monospace;
             transition: all 0.2s ease;
         }
 
-        .form-group input:focus {
+        .otp-input:focus {
             outline: none;
+            border-style: solid;
             border-color: #667eea;
             background: #ffffff;
             box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
@@ -193,6 +217,32 @@
             border: 1px solid #a7f3d0;
         }
 
+        .message-info {
+            background: #e0e7ff;
+            color: #3730a3;
+            border: 1px solid #c7d2fe;
+        }
+
+        .resend-box {
+            text-align: center;
+            margin-top: 18px;
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .resend-btn {
+            background: none;
+            border: none;
+            color: #667eea;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .resend-btn:disabled {
+            color: #94a3b8;
+            cursor: not-allowed;
+        }
+
         .back-link {
             text-align: center;
             margin-top: 24px;
@@ -234,31 +284,44 @@
         <div class="brand-logo-container">
             <img src="yadika.png" alt="Logo ITB Yadika" class="brand-logo">
             <div class="brand-title-main">LPPM ITB YADIKA</div>
-            <div class="brand-subtitle-main">Layanan Pemulihan Akun</div>
+            <div class="brand-subtitle-main">Verifikasi Kode OTP</div>
         </div>
 
         <div id="alertBox"></div>
 
         <div class="page-header">
-            <h2>Lupa Kata Sandi?</h2>
+            <h2>Masukkan Kode OTP</h2>
             <p class="page-description">
-                Masukkan alamat email akun Anda. Kami akan mengirimkan kode verifikasi (OTP) untuk mereset kata sandi.
+                Kode verifikasi 6 digit telah dikirimkan ke email Anda.
             </p>
         </div>
 
-        <form id="requestForm">
+        <div class="email-badge">
+            <span>Email: <strong id="displayEmail">-</strong></span>
+            <a href="lupa-password.html" style="color: #667eea; font-weight: 700; text-decoration: none; font-size: 12px;">Ubah</a>
+        </div>
+
+        <form id="otpForm">
             <div class="form-group">
-                <label for="inputEmail">Alamat Email Terdaftar</label>
-                <input type="email" id="inputEmail" required placeholder="nama@mahasiswa.yadika.ac.id" autocomplete="email">
+                <label for="inputOtp">6 Digit Kode Verifikasi</label>
+                <input type="text" id="inputOtp" class="otp-input" maxlength="6" placeholder="••••••" required autocomplete="one-time-code" inputmode="numeric">
             </div>
 
-            <button type="submit" class="btn" id="btnSubmit">
-                <span id="btnText">Kirim Kode OTP</span>
+            <button type="submit" class="btn" id="btnVerify">
+                <span id="btnText">Verifikasi Kode OTP</span>
             </button>
         </form>
 
+        <div class="resend-box">
+            Tidak menerima kode? 
+            <button type="button" id="btnResend" class="resend-btn">Kirim Ulang</button>
+            <div id="countdownBox" style="font-size: 12px; color: #94a3b8; margin-top: 4px; display: none;">
+                Kirim ulang dapat dilakukan dalam <span id="timerCount">60</span>s
+            </div>
+        </div>
+
         <div class="back-link">
-            <a href="login.html">← Kembali ke Halaman Masuk</a>
+            <a href="lupa-password.html">← Kembali</a>
         </div>
     </div>
 
@@ -272,47 +335,119 @@
         };
 
         const API_BASE = getBaseUrl();
+        const urlParams = new URLSearchParams(window.location.search);
+        let targetEmail = urlParams.get('email') || sessionStorage.getItem('reset_email') || '';
 
-        document.getElementById('requestForm').addEventListener('submit', async function(e) {
+        if (!targetEmail) {
+            window.location.href = 'lupa-password.html';
+        } else {
+            document.getElementById('displayEmail').textContent = targetEmail;
+        }
+
+        const devOtp = sessionStorage.getItem('dev_otp');
+        if (devOtp) {
+            document.getElementById('inputOtp').value = devOtp;
+            document.getElementById('alertBox').innerHTML = `<div class="message-alert message-info">Mode Development OTP: <strong>${devOtp}</strong></div>`;
+        }
+
+        // Handle Verify OTP
+        document.getElementById('otpForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            const email = document.getElementById('inputEmail').value.trim();
-            const btn = document.getElementById('btnSubmit');
+            const otp = document.getElementById('inputOtp').value.trim();
+            const btn = document.getElementById('btnVerify');
             const btnText = document.getElementById('btnText');
             const alertBox = document.getElementById('alertBox');
 
-            if (!email) return;
+            if (!otp || otp.length !== 6) {
+                alertBox.innerHTML = `<div class="message-alert message-error">Kode OTP harus berisi 6 digit angka!</div>`;
+                return;
+            }
 
             btn.disabled = true;
-            btnText.innerHTML = '<span class="loading-spinner"></span> Mengirim OTP...';
-            alertBox.innerHTML = '';
+            btnText.innerHTML = '<span class="loading-spinner"></span> Memverifikasi...';
+
+            try {
+                const response = await fetch(`${API_BASE}/api/auth/verify-reset-code`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: targetEmail, code: otp })
+                });
+
+                const data = await response.json();
+                btn.disabled = false;
+                btnText.textContent = 'Verifikasi Kode OTP';
+
+                if (response.ok && data.success) {
+                    sessionStorage.setItem('reset_otp', otp);
+                    window.location.href = `reset-password.html?email=${encodeURIComponent(targetEmail)}&otp=${encodeURIComponent(otp)}`;
+                } else {
+                    alertBox.innerHTML = `<div class="message-alert message-error">${data.message || 'Kode OTP salah atau telah kadaluarsa.'}</div>`;
+                }
+            } catch (err) {
+                console.error(err);
+                btn.disabled = false;
+                btnText.textContent = 'Verifikasi Kode OTP';
+                alertBox.innerHTML = `<div class="message-alert message-error">Terjadi kesalahan koneksi server.</div>`;
+            }
+        });
+
+        // Resend OTP logic
+        let timer = null;
+        function startTimer(sec = 60) {
+            const btnResend = document.getElementById('btnResend');
+            const countdownBox = document.getElementById('countdownBox');
+            const timerCount = document.getElementById('timerCount');
+
+            btnResend.disabled = true;
+            countdownBox.style.display = 'block';
+            let left = sec;
+            timerCount.textContent = left;
+
+            if (timer) clearInterval(timer);
+
+            timer = setInterval(() => {
+                left--;
+                timerCount.textContent = left;
+                if (left <= 0) {
+                    clearInterval(timer);
+                    btnResend.disabled = false;
+                    countdownBox.style.display = 'none';
+                }
+            }, 1000);
+        }
+
+        document.getElementById('btnResend').addEventListener('click', async function() {
+            this.disabled = true;
+            const alertBox = document.getElementById('alertBox');
 
             try {
                 const response = await fetch(`${API_BASE}/api/auth/forgot-password`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email })
+                    body: JSON.stringify({ email: targetEmail })
                 });
-
                 const data = await response.json();
-                btn.disabled = false;
-                btnText.textContent = 'Kirim Kode OTP';
 
                 if (response.ok && data.success) {
-                    sessionStorage.setItem('reset_email', email);
                     if (data.data && data.data.devOtp) {
                         sessionStorage.setItem('dev_otp', data.data.devOtp);
+                        document.getElementById('inputOtp').value = data.data.devOtp;
+                        alertBox.innerHTML = `<div class="message-alert message-info">Kode OTP baru dikirim. Mode Dev: <strong>${data.data.devOtp}</strong></div>`;
+                    } else {
+                        alertBox.innerHTML = `<div class="message-alert message-success">Kode OTP baru telah dikirimkan ke email Anda.</div>`;
                     }
-                    window.location.href = `verifikasi-otp.html?email=${encodeURIComponent(email)}`;
+                    startTimer(60);
                 } else {
-                    alertBox.innerHTML = `<div class="message-alert message-error">${data.message || 'Gagal mengirim kode OTP.'}</div>`;
+                    alertBox.innerHTML = `<div class="message-alert message-error">${data.message || 'Gagal mengirim ulang OTP.'}</div>`;
+                    this.disabled = false;
                 }
-            } catch (err) {
-                console.error(err);
-                btn.disabled = false;
-                btnText.textContent = 'Kirim Kode OTP';
-                alertBox.innerHTML = `<div class="message-alert message-error">Terjadi kesalahan jaringan. Silakan coba lagi.</div>`;
+            } catch (e) {
+                alertBox.innerHTML = `<div class="message-alert message-error">Gagal menghubungi server.</div>`;
+                this.disabled = false;
             }
         });
+
+        startTimer(60);
     </script>
 </body>
 </html>
