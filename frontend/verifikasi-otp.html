@@ -344,12 +344,6 @@
             document.getElementById('displayEmail').textContent = targetEmail;
         }
 
-        const devOtp = sessionStorage.getItem('dev_otp');
-        if (devOtp) {
-            document.getElementById('inputOtp').value = devOtp;
-            document.getElementById('alertBox').innerHTML = `<div class="message-alert message-info">Mode Development OTP: <strong>${devOtp}</strong></div>`;
-        }
-
         // Handle Verify OTP
         document.getElementById('otpForm').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -429,13 +423,7 @@
                 const data = await response.json();
 
                 if (response.ok && data.success) {
-                    if (data.data && data.data.devOtp) {
-                        sessionStorage.setItem('dev_otp', data.data.devOtp);
-                        document.getElementById('inputOtp').value = data.data.devOtp;
-                        alertBox.innerHTML = `<div class="message-alert message-info">Kode OTP baru dikirim. Mode Dev: <strong>${data.data.devOtp}</strong></div>`;
-                    } else {
-                        alertBox.innerHTML = `<div class="message-alert message-success">Kode OTP baru telah dikirimkan ke email Anda.</div>`;
-                    }
+                    alertBox.innerHTML = `<div class="message-alert message-success">Kode OTP baru telah dikirimkan ke email Anda.</div>`;
                     startTimer(60);
                 } else {
                     alertBox.innerHTML = `<div class="message-alert message-error">${data.message || 'Gagal mengirim ulang OTP.'}</div>`;

@@ -316,10 +316,9 @@ _prepareUserData({ name, email, hashedPassword, isDosen, isAdmin, identifier, id
 
     return {
       success: true,
-      message: 'Kode verifikasi dan tautan reset password telah dikirim ke email Anda. Silakan periksa kotak masuk atau spam.',
+      message: 'Kode verifikasi OTP telah dikirim ke email Anda. Silakan periksa kotak masuk atau folder spam email Anda.',
       data: {
-        email: user.email,
-        ...(mailResult.devOtp ? { devOtp: mailResult.devOtp, devResetUrl: mailResult.devResetUrl } : {})
+        email: user.email
       }
     };
   }
