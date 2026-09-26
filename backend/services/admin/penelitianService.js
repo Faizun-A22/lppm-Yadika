@@ -409,7 +409,7 @@ class PenelitianService {
             console.log('2. Mencari penelitian dengan ID:', id);
             const { data: existing, error: findError } = await supabase
                 .from('penelitian')
-                .select('id_penelitian, judul, status')
+                .select('id_penelitian, judul, status, ketua_peneliti')
                 .eq('id_penelitian', id)
                 .single();
             
@@ -451,9 +451,6 @@ class PenelitianService {
             
             if (updateError) {
                 console.error('   ❌ ERROR UPDATE:', updateError);
-                console.error('   - Error code:', updateError.code);
-                console.error('   - Error message:', updateError.message);
-                console.error('   - Error details:', updateError.details);
                 throw updateError;
             }
             
@@ -470,17 +467,6 @@ class PenelitianService {
             
             if (verifyError) {
                 console.error('   ❌ Error verifikasi:', verifyError);
-            } else {
-                console.log('   - Status setelah update:', afterUpdate.status);
-                console.log('   - Updated at:', afterUpdate.updated_at);
-                
-                if (afterUpdate.status === status) {
-                    console.log('   ✅ Status berhasil diubah!');
-                } else {
-                    console.error('   ❌ Status tidak berubah!');
-                    console.log('   - Expected:', status);
-                    console.log('   - Actual:', afterUpdate.status);
-                }
             }
             
             // Add to review history if catatan exists
@@ -506,11 +492,25 @@ class PenelitianService {
             
             // Create notification for ketua
             try {
+                const indoStatusMap = {
+                    'draft': 'Draft',
+                    'submitted': 'Diajukan',
+                    'review': 'Dalam Review',
+                    'review_content': 'Review Isi',
+                    'revisi': 'Revisi',
+                    'diterima': 'Disetujui',
+                    'approved': 'Disetujui',
+                    'ditolak': 'Ditolak',
+                    'rejected': 'Ditolak',
+                    'completed': 'Selesai'
+                };
+                const statusText = indoStatusMap[finalStatus] || finalStatus;
+
                 await this.createNotification({
                     id_user: existing.ketua_peneliti,
-                    judul: `Status Penelitian: ${status}`,
-                    pesan: `Status penelitian "${existing.judul}" telah diupdate menjadi ${status}`,
-                    tipe: status === 'diterima' ? 'success' : status === 'ditolak' ? 'error' : 'warning',
+                    judul: `Status Penelitian: ${statusText}`,
+                    pesan: `Status penelitian "${existing.judul}" telah diupdate menjadi ${statusText}`,
+                    tipe: finalStatus === 'diterima' ? 'success' : finalStatus === 'ditolak' ? 'error' : 'warning',
                     link: `/dosen/penelitian/${id}`
                 });
                 console.log('   ✅ Notification created for ketua');
@@ -971,11 +971,25 @@ class PenelitianService {
             }
             
             try {
+                const indoStatusMap = {
+                    'draft': 'Draft',
+                    'submitted': 'Diajukan',
+                    'review': 'Dalam Review',
+                    'review_content': 'Review Isi',
+                    'revisi': 'Revisi',
+                    'diterima': 'Disetujui',
+                    'approved': 'Disetujui',
+                    'ditolak': 'Ditolak',
+                    'rejected': 'Ditolak',
+                    'completed': 'Selesai'
+                };
+                const statusText = indoStatusMap[finalStatus] || finalStatus;
+
                 await this.createNotification({
                     id_user: existing.ketua_pengabdian,
-                    judul: `Status Pengabdian: ${status}`,
-                    pesan: `Status pengabdian "${existing.judul}" telah diupdate menjadi ${status}`,
-                    tipe: status === 'diterima' ? 'success' : status === 'ditolak' ? 'error' : 'warning',
+                    judul: `Status Pengabdian: ${statusText}`,
+                    pesan: `Status pengabdian "${existing.judul}" telah diupdate menjadi ${statusText}`,
+                    tipe: finalStatus === 'diterima' ? 'success' : finalStatus === 'ditolak' ? 'error' : 'warning',
                     link: `/dosen/pengabdian/${id}`
                 });
                 console.log('Notification created for ketua');

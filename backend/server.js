@@ -61,9 +61,10 @@ app.use((req, res, next) => {
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 
-// Static files untuk upload
+// Static files untuk upload dan frontend
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use(express.static(path.join(__dirname, '../frontend')));
 
 // Routes
 app.use('/api', fakultasRoutes);

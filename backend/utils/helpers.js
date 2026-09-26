@@ -71,7 +71,7 @@ const getFileUrl = (filePath) => {
     cleanPath = cleanPath.split('/').map(part => encodeURIComponent(part)).join('/');
     
     // Gunakan base URL tanpa /api
-    const baseUrl = process.env.API_BASE_URL || 'http://103.189.234.236';
+    const baseUrl = process.env.API_BASE_URL || 'http://localhost:3000';
     
     // Langsung ke /uploads/, BUKAN /api/uploads/
     return `${baseUrl}/uploads/${cleanPath}`;

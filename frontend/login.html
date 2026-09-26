@@ -261,6 +261,26 @@
             text-decoration: underline;
         }
 
+        .forgot-password-row {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: -10px;
+            margin-bottom: 22px;
+        }
+
+        .forgot-link {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .forgot-link:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
         .success-message, .error-message {
             padding: 14px;
             border-radius: 12px;
@@ -417,6 +437,10 @@
                 <div class="form-group">
                     <label for="loginPassword">Password</label>
                     <input type="password" id="loginPassword" required placeholder="••••••">
+                </div>
+
+                <div class="forgot-password-row">
+                    <a href="lupa-password.html" class="forgot-link">Lupa Password?</a>
                 </div>
 
                 <button type="submit" class="btn" id="loginBtn">

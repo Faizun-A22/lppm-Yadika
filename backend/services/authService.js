@@ -3,6 +3,7 @@
 const supabase = require('../config/database');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const emailService = require('./emailService');
 const { 
   validateEmail, 
   validatePassword, 
@@ -14,6 +15,10 @@ const {
 } = require('../utils/validation');
 
 class AuthService {
+  constructor() {
+    this.resetCache = new Map();
+  }
+
   /**
    * Register new user
    * @param {Object} userData - Data user yang akan didaftarkan
@@ -222,7 +227,314 @@ _prepareUserData({ name, email, hashedPassword, isDosen, isAdmin, identifier, id
     // ==================== KEMBALIKAN RESPON ====================
     return this._formatLoginResponse(user, token);
   }
-  
+
+  /**
+   * Mengirim instruksi & kode verifikasi lupa sandi ke email
+   * @param {string} email - Email akun yang lupa sandi
+   * @param {string} clientOrigin - Origin domain pemanggil (opsional)
+   * @returns {Object}
+   */
+  async forgotPassword(email, clientOrigin = '') {
+    console.log('=== FORGOT PASSWORD ATTEMPT ===');
+    console.log('Target Email:', email);
+
+    if (!email || !validateEmail(email)) {
+      throw new Error('Alamat email tidak valid');
+    }
+
+    // 1. Cari user di database
+    const { data: user, error: userError } = await supabase
+      .from('users')
+      .select('id_user, nama_lengkap, email, password, status, role')
+      .eq('email', email.toLowerCase().trim())
+      .maybeSingle();
+
+    if (userError || !user) {
+      console.log('Forgot password: User not found for email', email);
+      throw new Error('Alamat email tidak terdaftar dalam sistem LPPM ITB Yadika.');
+    }
+
+    if (user.status !== 'aktif') {
+      throw new Error('Akun Anda sedang dinonaktifkan. Silakan hubungi admin LPPM.');
+    }
+
+    // 2. Generate 6 digit OTP & secure signed JWT token
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const tokenPayload = {
+      userId: user.id_user,
+      email: user.email.toLowerCase(),
+      otp: otp,
+      type: 'password_reset'
+    };
+
+    // Ditandatangani dengan JWT_SECRET + user.password (otomatis invalidated saat password berubah)
+    const resetToken = jwt.sign(tokenPayload, process.env.JWT_SECRET + user.password, { expiresIn: '15m' });
+    const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
+
+    // 3. Simpan ke in-memory cache dan tabel password_resets jika ada
+    this.resetCache.set(user.email.toLowerCase(), {
+      otp: otp,
+      token: resetToken,
+      expiresAt: expiresAt.getTime(),
+      userId: user.id_user
+    });
+
+    try {
+      const { error: insertErr } = await supabase.from('password_resets').insert([{
+        email: user.email.toLowerCase(),
+        token: resetToken,
+        otp_code: otp,
+        expires_at: expiresAt.toISOString(),
+        used: false
+      }]);
+      if (insertErr) {
+        console.warn('ℹ️ password_resets insert notice:', insertErr.message);
+      }
+    } catch (tblErr) {
+      console.warn('ℹ️ password_resets write note:', tblErr.message);
+    }
+
+    // 4. Susun link reset password
+    let baseUrl = clientOrigin || process.env.API_BASE_URL || 'http://localhost:3000';
+    baseUrl = baseUrl.replace(/\/+$/, '');
+    
+    // Tentukan URL reset
+    let resetUrl = '';
+    if (baseUrl.includes('/frontend')) {
+      resetUrl = `${baseUrl}/reset-password.html?token=${encodeURIComponent(resetToken)}&email=${encodeURIComponent(user.email)}`;
+    } else {
+      resetUrl = `${baseUrl}/reset-password.html?token=${encodeURIComponent(resetToken)}&email=${encodeURIComponent(user.email)}`;
+    }
+
+    // 5. Kirim email
+    const mailResult = await emailService.sendResetPasswordEmail({
+      to: user.email,
+      name: user.nama_lengkap,
+      otp,
+      resetUrl
+    });
+
+    return {
+      success: true,
+      message: 'Kode verifikasi dan tautan reset password telah dikirim ke email Anda. Silakan periksa kotak masuk atau spam.',
+      data: {
+        email: user.email,
+        ...(mailResult.devOtp ? { devOtp: mailResult.devOtp, devResetUrl: mailResult.devResetUrl } : {})
+      }
+    };
+  }
+
+  /**
+   * Verifikasi kode OTP atau token reset
+   * @param {string} email
+   * @param {string} code
+   * @returns {Object}
+   */
+  async verifyResetCode(email, code) {
+    if (!email || !code) {
+      throw new Error('Email dan kode verifikasi wajib diisi.');
+    }
+
+    const normalizedEmail = email.toLowerCase().trim();
+    const cleanCode = code.trim();
+
+    // 1. Cek di tabel password_resets jika ada
+    let valid = false;
+    try {
+      const { data: records, error } = await supabase
+        .from('password_resets')
+        .select('*')
+        .eq('email', normalizedEmail)
+        .eq('used', false)
+        .gt('expires_at', new Date().toISOString())
+        .order('created_at', { ascending: false });
+
+      if (!error && records && records.length > 0) {
+        const found = records.find(r => r.otp_code === cleanCode || r.token === cleanCode);
+        if (found) {
+          valid = true;
+        }
+      }
+    } catch (e) {
+      console.warn('Table lookup note:', e.message);
+    }
+
+    // 2. Cek di in-memory cache jika tabel database belum dibuat
+    if (!valid && this.resetCache.has(normalizedEmail)) {
+      const cached = this.resetCache.get(normalizedEmail);
+      if (cached && cached.expiresAt > Date.now()) {
+        if (cached.otp === cleanCode || cached.token === cleanCode) {
+          valid = true;
+        }
+      } else {
+        this.resetCache.delete(normalizedEmail);
+      }
+    }
+
+    // 3. Fallback verifikasi JWT jika kode adalah token JWT
+    if (!valid) {
+      const { data: user } = await supabase
+        .from('users')
+        .select('id_user, email, password')
+        .eq('email', normalizedEmail)
+        .maybeSingle();
+
+      if (user) {
+        try {
+          const decoded = jwt.verify(cleanCode, process.env.JWT_SECRET + user.password);
+          if (decoded && decoded.email === normalizedEmail) {
+            valid = true;
+          }
+        } catch (jwtErr) {
+          // invalid
+        }
+      }
+    }
+
+    if (!valid) {
+      throw new Error('Kode verifikasi atau token tidak valid atau telah kedaluwarsa.');
+    }
+
+    return {
+      success: true,
+      message: 'Kode verifikasi valid.'
+    };
+  }
+
+  /**
+   * Eksekusi perubahan kata sandi baru setelah verifikasi email
+   * @param {Object} data
+   * @param {string} data.email
+   * @param {string} data.token
+   * @param {string} data.otp
+   * @param {string} data.newPassword
+   * @param {string} data.confirmPassword
+   * @returns {Object}
+   */
+  async resetPassword({ email, token, otp, newPassword, confirmPassword }) {
+    console.log('=== RESET PASSWORD ATTEMPT ===');
+    console.log('Target Email:', email);
+
+    if (!email) {
+      throw new Error('Email wajib disertakan.');
+    }
+
+    if (!newPassword || newPassword.length < 6) {
+      throw new Error('Password baru harus memiliki minimal 6 karakter.');
+    }
+
+    if (newPassword !== confirmPassword) {
+      throw new Error('Konfirmasi password tidak cocok dengan password baru.');
+    }
+
+    const normalizedEmail = email.toLowerCase().trim();
+
+    // Cari data pengguna
+    const { data: user, error: userError } = await supabase
+      .from('users')
+      .select('id_user, email, password')
+      .eq('email', normalizedEmail)
+      .maybeSingle();
+
+    if (userError || !user) {
+      throw new Error('Pengguna tidak ditemukan.');
+    }
+
+    // Verifikasi kode OTP atau Token
+    let isAuthorized = false;
+    let matchingRecordId = null;
+
+    try {
+      const { data: records, error: resetErr } = await supabase
+        .from('password_resets')
+        .select('*')
+        .eq('email', normalizedEmail)
+        .eq('used', false)
+        .gt('expires_at', new Date().toISOString())
+        .order('created_at', { ascending: false });
+
+      if (!resetErr && records && records.length > 0) {
+        const found = records.find(r => 
+          (otp && r.otp_code === otp.trim()) || 
+          (token && r.token === token.trim())
+        );
+        if (found) {
+          isAuthorized = true;
+          matchingRecordId = found.id;
+        }
+      }
+    } catch (dbErr) {
+      console.warn('password_resets table verify notice:', dbErr.message);
+    }
+
+    // Cek di in-memory cache jika tabel belum ada
+    if (!isAuthorized && this.resetCache.has(normalizedEmail)) {
+      const cached = this.resetCache.get(normalizedEmail);
+      if (cached && cached.expiresAt > Date.now()) {
+        if ((otp && cached.otp === otp.trim()) || (token && cached.token === token.trim())) {
+          isAuthorized = true;
+          this.resetCache.delete(normalizedEmail);
+        }
+      }
+    }
+
+    // Fallback verifikasi JWT jika tabel belum dibuat atau reset via tautan langsung
+    if (!isAuthorized && token) {
+      try {
+        const decoded = jwt.verify(token.trim(), process.env.JWT_SECRET + user.password);
+        if (decoded && decoded.email === normalizedEmail) {
+          if (otp && decoded.otp !== otp.trim()) {
+            throw new Error('Kode OTP tidak sesuai.');
+          }
+          isAuthorized = true;
+        }
+      } catch (jwtErr) {
+        console.error('JWT verification error during reset:', jwtErr.message);
+      }
+    }
+
+    if (!isAuthorized) {
+      throw new Error('Kode verifikasi atau token tidak valid atau sudah kedaluwarsa. Silakan ajukan lupa sandi kembali.');
+    }
+
+    // Hash password baru
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    // Update password di tabel users
+    const { error: updateError } = await supabase
+      .from('users')
+      .update({
+        password: hashedPassword,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id_user', user.id_user);
+
+    if (updateError) {
+      console.error('Update password error:', updateError);
+      throw new Error('Gagal memperbarui kata sandi: ' + updateError.message);
+    }
+
+    // Tandai token sebagai used di tabel password_resets
+    if (matchingRecordId) {
+      try {
+        await supabase
+          .from('password_resets')
+          .update({ used: true })
+          .eq('id', matchingRecordId);
+      } catch (markErr) {
+        // ignore
+      }
+    }
+
+    console.log(`✅ Kata sandi berhasil diperbarui untuk user: ${normalizedEmail}`);
+
+    return {
+      success: true,
+      message: 'Kata sandi Anda berhasil diperbarui! Silakan masuk kembali dengan kata sandi baru Anda.'
+    };
+  }
+
   /**
    * Verify JWT token
    * @param {string} token - JWT token
