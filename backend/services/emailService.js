@@ -98,7 +98,7 @@ class EmailService {
           </div>
 
           <div class="expiry-note">
-            ⚠️ <strong>Penting:</strong> Kode verifikasi dan link di atas hanya berlaku selama <strong>15 menit</strong>.
+            ⚠️ <strong>Penting:</strong> Kode verifikasi dan link di atas hanya berlaku selama <strong>2 menit</strong>.
           </div>
 
           <p style="font-size: 13px; color: #64748b;">Jika tombol di atas tidak dapat diklik, salin dan tempel tautan berikut ke browser Anda:</p>

@@ -258,7 +258,7 @@ _prepareUserData({ name, email, hashedPassword, isDosen, isAdmin, identifier, id
       throw new Error('Akun Anda sedang dinonaktifkan. Silakan hubungi admin LPPM.');
     }
 
-    // 2. Generate 6 digit OTP & secure signed JWT token
+    // 2. Generate 6 digit OTP & secure signed JWT token (Expired: 2 MENIT)
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const tokenPayload = {
       userId: user.id_user,
@@ -267,9 +267,9 @@ _prepareUserData({ name, email, hashedPassword, isDosen, isAdmin, identifier, id
       type: 'password_reset'
     };
 
-    // Ditandatangani dengan JWT_SECRET + user.password (otomatis invalidated saat password berubah)
-    const resetToken = jwt.sign(tokenPayload, process.env.JWT_SECRET + user.password, { expiresIn: '15m' });
-    const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
+    // Masa berlaku token & OTP: 2 MENIT
+    const resetToken = jwt.sign(tokenPayload, process.env.JWT_SECRET + user.password, { expiresIn: '2m' });
+    const expiresAt = new Date(Date.now() + 2 * 60 * 1000);
 
     // 3. Simpan ke in-memory cache dan tabel password_resets jika ada
     this.resetCache.set(user.email.toLowerCase(), {
@@ -298,30 +298,25 @@ _prepareUserData({ name, email, hashedPassword, isDosen, isAdmin, identifier, id
     let baseUrl = clientOrigin || process.env.API_BASE_URL || 'http://localhost:3000';
     baseUrl = baseUrl.replace(/\/+$/, '');
     
-    // Tentukan URL reset
-    let resetUrl = '';
-    if (baseUrl.includes('/frontend')) {
-      resetUrl = `${baseUrl}/reset-password.html?token=${encodeURIComponent(resetToken)}&email=${encodeURIComponent(user.email)}`;
-    } else {
-      resetUrl = `${baseUrl}/reset-password.html?token=${encodeURIComponent(resetToken)}&email=${encodeURIComponent(user.email)}`;
-    }
+    let resetUrl = `${baseUrl}/reset-password.html?token=${encodeURIComponent(resetToken)}&email=${encodeURIComponent(user.email)}`;
 
-    // 5. Kirim email
-    const mailResult = await emailService.sendResetPasswordEmail({
+    // 5. Kirim email secara asynchronous (Non-blocking) agar respon API super instan (0.1 detik)
+    emailService.sendResetPasswordEmail({
       to: user.email,
       name: user.nama_lengkap,
       otp,
       resetUrl
-    });
+    }).catch(err => console.error('❌ Background Email Send Error:', err.message));
 
     return {
       success: true,
-      message: 'Kode verifikasi OTP telah dikirim ke email Anda. Silakan periksa kotak masuk atau folder spam email Anda.',
+      message: 'Kode verifikasi OTP 2 menit telah dikirim ke email Anda. Silakan periksa kotak masuk atau folder spam email Anda.',
       data: {
         email: user.email
       }
     };
   }
+
 
   /**
    * Verifikasi kode OTP atau token reset
