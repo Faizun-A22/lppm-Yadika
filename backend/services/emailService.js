@@ -3,42 +3,37 @@
 const nodemailer = require('nodemailer');
 
 class EmailService {
-  constructor() {
-    this.transporter = null;
-    this._initTransporter();
-  }
-
   /**
-   * Inisialisasi transporter nodemailer
+   * Mengambil transporter SMTP secara dinamis dari .env
    * @private
    */
-  _initTransporter() {
-    const host = process.env.SMTP_HOST;
-    const port = parseInt(process.env.SMTP_PORT, 10) || 587;
+  _getTransporter() {
+    const host = (process.env.SMTP_HOST || '').trim();
+    const port = parseInt(process.env.SMTP_PORT, 10) || 465;
     const secure = process.env.SMTP_SECURE === 'true' || port === 465;
-    const user = process.env.SMTP_USER || process.env.EMAIL_USER;
-    const pass = process.env.SMTP_PASS || process.env.EMAIL_PASS;
+    const user = (process.env.SMTP_USER || process.env.EMAIL_USER || '').trim();
+    const pass = (process.env.SMTP_PASS || process.env.EMAIL_PASS || '').trim();
 
-    if (host && user && pass) {
+    if (host && user && pass && !user.includes('email_anda') && !pass.includes('app_password')) {
       try {
-        this.transporter = nodemailer.createTransport({
+        return nodemailer.createTransport({
           host,
           port,
           secure,
           auth: { user, pass },
+          connectionTimeout: 6000,
+          greetingTimeout: 6000,
+          socketTimeout: 6000,
           tls: {
             rejectUnauthorized: false
           }
         });
-        console.log(`📧 EmailService: Transporter SMTP siap (${host}:${port})`);
       } catch (err) {
-        console.error('❌ EmailService init error:', err.message);
-        this.transporter = null;
+        console.error('❌ EmailService transporter create error:', err.message);
+        return null;
       }
-    } else {
-      console.log('ℹ️ EmailService: SMTP belum dikonfigurasi di .env (mode simulasi/development aktif)');
-      this.transporter = null;
     }
+    return null;
   }
 
   /**
@@ -51,8 +46,16 @@ class EmailService {
    * @returns {Promise<Object>}
    */
   async sendResetPasswordEmail({ to, name, otp, resetUrl }) {
-    const sender = process.env.SMTP_FROM || process.env.EMAIL_FROM || '"LPPM ITB Yadika" <noreply@yadika.ac.id>';
-    const subject = '🔐 Permintaan Reset Sandi - LPPM ITB Yadika';
+    const user = (process.env.SMTP_USER || '').trim();
+    const envFrom = (process.env.SMTP_FROM || '').trim();
+    
+    // Sesuaikan sender agar cocok dengan akun Gmail pengirim (mencegah error rejected/hanging di Gmail)
+    let sender = envFrom;
+    if (!sender || sender.includes('noreply@yadika.ac.id')) {
+      sender = user ? `"LPPM ITB Yadika" <${user}>` : '"LPPM ITB Yadika" <noreply@yadika.ac.id>';
+    }
+
+    const subject = '🔐 Kode OTP Reset Sandi - LPPM ITB Yadika';
 
     const htmlContent = `
     <!DOCTYPE html>
@@ -88,7 +91,7 @@ class EmailService {
           <p>Kami menerima permintaan untuk mereset kata sandi akun LPPM ITB Yadika Anda yang tertaut dengan alamat email <strong>${to}</strong>.</p>
           
           <div class="otp-box">
-            <div class="otp-label">Kode Verifikasi Anda</div>
+            <div class="otp-label">Kode Verifikasi (OTP) Anda</div>
             <div class="otp-code">${otp}</div>
           </div>
 
@@ -104,7 +107,7 @@ class EmailService {
           <p style="font-size: 13px; color: #64748b;">Jika tombol di atas tidak dapat diklik, salin dan tempel tautan berikut ke browser Anda:</p>
           <div class="url-box">${resetUrl}</div>
 
-          <p style="font-size: 13px; color: #94a3b8; margin-top: 25px;">Jika Anda tidak pernah meminta perubahan kata sandi ini, silakan abaikan email ini. Akun Anda tetap aman dan kata sandi tidak akan berubah.</p>
+          <p style="font-size: 13px; color: #94a3b8; margin-top: 25px;">Jika Anda tidak pernah meminta perubahan kata sandi ini, silakan abaikan email ini. Akun Anda tetap aman.</p>
         </div>
         <div class="footer">
           &copy; ${new Date().getFullYear()} LPPM Institut Teknologi dan Bisnis Yadika Pasuruan.<br>
@@ -115,7 +118,6 @@ class EmailService {
     </html>
     `;
 
-    // Selalu log ke terminal agar developer/admin mudah menguji tanpa email aktif
     console.log('\n================== [ EMAIL NOTIFICATION ] ==================');
     console.log(`✉️ To      : ${to}`);
     console.log(`👤 Name    : ${name}`);
@@ -123,23 +125,31 @@ class EmailService {
     console.log(`🔗 Link    : ${resetUrl}`);
     console.log('============================================================\n');
 
-    if (this.transporter) {
+    const transporter = this._getTransporter();
+
+    if (transporter) {
       try {
-        const info = await this.transporter.sendMail({
+        // Balap pengiriman email dengan timeout 8 detik agar frontend TIDAK PERNAH memutar/hang
+        const mailPromise = transporter.sendMail({
           from: sender,
           to,
           subject,
           html: htmlContent
         });
+
+        const timeoutPromise = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Waktu pengiriman SMTP habis (timeout 8s)')), 8000)
+        );
+
+        const info = await Promise.race([mailPromise, timeoutPromise]);
         console.log(`✅ Email berhasil terkirim ke ${to}: ${info.messageId}`);
         return { success: true, messageId: info.messageId, delivered: true };
       } catch (err) {
-        console.error(`❌ Gagal mengirim email ke ${to} via SMTP:`, err.message);
-        // Tetap return sukses dengan status delivered: false agar tidak memblokir user saat dev/offline
+        console.error(`⚠️ Gagal/Timeout mengirim email ke ${to} via SMTP:`, err.message);
         return { success: true, delivered: false, error: err.message, devOtp: otp };
       }
     } else {
-      // SMTP tidak diset, kirim fallback simulasi
+      console.log('ℹ️ EmailService: Menggunakan mode simulasi (log server)');
       return { 
         success: true, 
         delivered: false, 
