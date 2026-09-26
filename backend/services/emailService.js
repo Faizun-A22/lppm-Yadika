@@ -21,6 +21,7 @@ class EmailService {
           port,
           secure,
           auth: { user, pass },
+          family: 4, // Gunakan IPv4 langsung untuk menghindari delay DNS/IPv6 di VPS
           connectionTimeout: 6000,
           greetingTimeout: 6000,
           socketTimeout: 6000,
@@ -47,13 +48,9 @@ class EmailService {
    */
   async sendResetPasswordEmail({ to, name, otp, resetUrl }) {
     const user = (process.env.SMTP_USER || '').trim();
-    const envFrom = (process.env.SMTP_FROM || '').trim();
     
-    // Sesuaikan sender agar cocok dengan akun Gmail pengirim (mencegah error rejected/hanging di Gmail)
-    let sender = envFrom;
-    if (!sender || sender.includes('noreply@yadika.ac.id')) {
-      sender = user ? `"LPPM ITB Yadika" <${user}>` : '"LPPM ITB Yadika" <noreply@yadika.ac.id>';
-    }
+    // Alamat sender HARUS menggunakan email Gmail terautentikasi agar Google TIDAK menahan/mengantrekan email 5 menit karena greylisting domain mismatch!
+    let sender = user ? `"LPPM ITB Yadika" <${user}>` : '"LPPM ITB Yadika" <noreply@yadika.ac.id>';
 
     const subject = '🔐 Kode OTP Reset Sandi - LPPM ITB Yadika';
 
